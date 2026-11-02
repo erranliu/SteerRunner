@@ -445,8 +445,11 @@ func (e *Engine) port(r *runstate.Record, w *worker) (b.LifecyclePort, error) {
 		p, err = codex.NewExecutionLifecycle(e.setup(r, w))
 	} else {
 		p, err = orca.NewLifecycle(e.setup(r, w))
-		if err == nil && p.(*orca.Lifecycle).StopEvidenceScope() == orca.LocalCodexStopScope && r.StopEvidenceScope != orca.LocalCodexStopScope {
-			return nil, errors.New("frozen local Codex stop evidence scope is missing or inconsistent")
+		if err == nil {
+			scope := p.(*orca.Lifecycle).StopEvidenceScope()
+			if requiresFrozenOrcaScope(r, scope) && scope != r.StopEvidenceScope {
+				return nil, errors.New("frozen Orca stop evidence scope is missing or inconsistent")
+			}
 		}
 	}
 	if err == nil {

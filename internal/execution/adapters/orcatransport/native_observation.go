@@ -194,7 +194,7 @@ func (o *nativeObservation) offer(sample native.StateSample, p NativeProof, turn
 func (l *Lifecycle) publicCandidate() *b.PublicMessage {
 	l.observationMu.Lock()
 	defer l.observationMu.Unlock()
-	if l.profile.Environment == "" || l.nativeObservation == nil {
+	if !l.profile.nativeTerminalContract() || l.nativeObservation == nil {
 		return nil
 	}
 	m := l.nativeObservation.pending

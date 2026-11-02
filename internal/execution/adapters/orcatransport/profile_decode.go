@@ -1,9 +1,11 @@
 package orcatransport
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	"strings"
 )
 
 // Decode only the current local and native remote profile contracts.
@@ -18,7 +20,7 @@ func decodeLifecycleProfile(setup b.LifecycleSetup) (Profile, int, error) {
 		if data.ImplementationKey != ProfileKey {
 			continue
 		}
-		if found || data.CodecVersion != NativeRemoteProfileVersion && data.CodecVersion != FullAccessTerminalProfileVersion {
+		if found || data.CodecVersion != NativeRemoteProfileVersion && data.CodecVersion != FullAccessTerminalProfileVersion && data.CodecVersion != NativeProfileVersion {
 			return Profile{}, 0, errors.New("invalid terminal profile codec")
 		}
 		found = true
@@ -27,28 +29,52 @@ func decodeLifecycleProfile(setup b.LifecycleSetup) (Profile, int, error) {
 			return Profile{}, 0, err
 		}
 		var err error
-		p, err = DecodeProfile(data.Payload)
+		p, err = decodeProfileCodec(data.Payload, version)
 		if err != nil {
 			return Profile{}, 0, err
-		}
-		if version == FullAccessTerminalProfileVersion && (p.Environment != "" || p.Terminal != nil && (p.Terminal.ReceiptVersion != 4 || p.Terminal.AccessMode != "full_access" || len(p.Terminal.BundleSHA256) != 64 || len(p.Terminal.EvidenceSHA256) != 64)) {
-			return Profile{}, 0, errors.New("new full-access terminal profile is incomplete or contains retired settings")
-		}
-		if version == NativeRemoteProfileVersion {
-			var fields map[string]json.RawMessage
-			_ = json.Unmarshal(data.Payload, &fields)
-			for _, key := range []string{"terminal", "runtime_executable", "runtime_sha256", "runtime_configuration_digest"} {
-				if _, present := fields[key]; present {
-					return Profile{}, 0, errors.New("native remote profile contains a helper field")
-				}
-			}
 		}
 	}
 	if !found || setup.Snapshot.Ref.Target.ID != p.Target().ID {
 		return Profile{}, 0, errors.New("terminal profile differs from frozen target")
 	}
-	if version == NativeRemoteProfileVersion && (p.Environment == "" || p.Terminal != nil || p.RuntimeExecutable != "" || p.RuntimeSHA256 != "" || p.RuntimeConfigurationDigest != "") {
-		return Profile{}, 0, errors.New("native remote profile has incompatible local/helper configuration")
+	if p.NativeTerminal && setup.Snapshot.Ref.Agent.Name != "codex" {
+		return Profile{}, 0, errors.New("native terminal profile requires Codex")
 	}
 	return p, version, nil
+}
+
+func decodeProfileCodec(raw json.RawMessage, version int) (Profile, error) {
+	if version != NativeProfileVersion && version != NativeRemoteProfileVersion && version != FullAccessTerminalProfileVersion {
+		return Profile{}, errors.New("invalid terminal profile codec")
+	}
+	p, err := DecodeProfile(raw)
+	if err != nil {
+		return Profile{}, err
+	}
+	var fields map[string]json.RawMessage
+	_ = json.Unmarshal(raw, &fields)
+	for key := range fields {
+		if strings.EqualFold(key, "native_terminal") && (version != NativeProfileVersion || key != "native_terminal") {
+			return Profile{}, errors.New("native terminal contract requires its original profile codec and canonical marker")
+		}
+	}
+	if version == NativeProfileVersion && (!p.NativeTerminal || !bytes.Equal(bytes.TrimSpace(fields["native_terminal"]), []byte("true"))) {
+		return Profile{}, errors.New("native terminal profile contract missing")
+	}
+	if version == FullAccessTerminalProfileVersion && (p.Environment != "" || p.Terminal != nil && (p.Terminal.ReceiptVersion != 4 || p.Terminal.AccessMode != "full_access" || len(p.Terminal.BundleSHA256) != 64 || len(p.Terminal.EvidenceSHA256) != 64)) {
+		return Profile{}, errors.New("new full-access terminal profile is incomplete or contains retired settings")
+	}
+	if version == NativeRemoteProfileVersion || version == NativeProfileVersion {
+		for key := range fields {
+			for _, helper := range []string{"terminal", "runtime_executable", "runtime_sha256", "runtime_configuration_digest"} {
+				if strings.EqualFold(key, helper) {
+					return Profile{}, errors.New("native terminal profile contains a helper field")
+				}
+			}
+		}
+	}
+	if version == NativeRemoteProfileVersion && p.Environment == "" {
+		return Profile{}, errors.New("native remote profile has incompatible local/helper configuration")
+	}
+	return p, nil
 }

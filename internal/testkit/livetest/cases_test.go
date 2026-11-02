@@ -57,8 +57,8 @@ func TestLiveRegistryHasCompleteL3Cases(t *testing.T) {
 			}
 		}
 	}
-	if scenarios != 23 || cases != 31 {
-		t.Fatalf("expected 23 scenarios/31 cases, got %d/%d", scenarios, cases)
+	if scenarios != 27 || cases != 35 {
+		t.Fatalf("expected 27 scenarios/35 cases, got %d/%d", scenarios, cases)
 	}
 	for _, agent := range []string{"codex", "pi", "dsh"} {
 		scenario, _, err := Lookup("orca-local."+agent, "default")

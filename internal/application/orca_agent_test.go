@@ -69,11 +69,11 @@ func TestSRFreezeOrcaAgent(t *testing.T) {
 		f.request.Execution = contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "orca_environment", Environment: "original-remote"}, Settings: canonical(settings)}
 		f.input.Input = canonical(f.request)
 		r := f.freeze()
-		if len(r.Profile) != 1 || r.Profile[0].CodecVersion != orca.NativeRemoteProfileVersion || strings.Contains(r.LaunchCommand, "steerrunner-agent") || !strings.Contains(r.LaunchCommand, `model_reasoning_effort="high"`) {
+		if len(r.Profile) != 1 || r.Profile[0].CodecVersion != orca.NativeProfileVersion || strings.Contains(r.LaunchCommand, "steerrunner-agent") || !strings.Contains(r.LaunchCommand, `model_reasoning_effort="high"`) {
 			t.Fatal("remote profile is not native", r.LaunchCommand, r.Profile)
 		}
 		profile, err := orca.DecodeProfile(r.Profile[0].Payload)
-		if err != nil || profile.RuntimeExecutable != "" || profile.RuntimeSHA256 != "" || profile.Terminal != nil {
+		if err != nil || !profile.NativeTerminal || profile.RuntimeExecutable != "" || profile.RuntimeSHA256 != "" || profile.Terminal != nil {
 			t.Fatal(profile, err)
 		}
 		// V7 has no synthetic read-only projection for a retired remote profile.

@@ -29,14 +29,14 @@ func VerifyStopped(ctx context.Context, dir string, runs []*runstate.Record) con
 		var scopeErr error
 		if r.Request.Execution.Adapter == "orca-terminal" {
 			scope, scopeErr = orca.StopEvidenceScope(setup)
-			if scopeErr == nil && (scope == orca.LocalCodexStopScope || r.StopEvidenceScope != "") && scope != r.StopEvidenceScope {
+			if scopeErr == nil && requiresFrozenOrcaScope(r, scope) && scope != r.StopEvidenceScope {
 				scopeErr = fmt.Errorf("frozen stop evidence scope is missing or inconsistent")
 			}
 		}
 		settled := stoppedRecord(r, func(id *b.ProcessIdentity) bool {
 			return process.NewServiceFacts().Probe(id).State == "absent"
 		})
-		if scopeErr != nil || scope != "" && (r.Snapshot.Ref.External.Kind != "" || scope == orca.LocalCodexStopScope && unknown(r)) {
+		if scopeErr != nil || scope != "" && (r.Snapshot.Ref.External.Kind != "" || unknown(r)) {
 			settled = false // Verify the original inventory, not a saved status label.
 		}
 		probeErr := scopeErr

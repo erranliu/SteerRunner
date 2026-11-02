@@ -18,7 +18,7 @@ const LocalCodexStopDiagnostic = "Stopped the registered original Orca terminals
 
 // StopScope is fixed by accepted configuration, including before resources exist.
 func StopScope(p Profile, agent string) string {
-	if p.Environment != "" {
+	if p.nativeTerminalContract() {
 		return "orca_terminal"
 	}
 	if agent == "codex" && p.Terminal == nil && p.RuntimeExecutable != "" {

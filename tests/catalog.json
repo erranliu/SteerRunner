@@ -199,7 +199,11 @@
     "local-codex.progress-multirun",
     "local-codex.progress-recovery",
     "orca-local.cli-wait-retry",
-    "orca-remote.cli-wait-retry"
+    "orca-remote.cli-wait-retry",
+    "orca-local.native-development",
+    "orca-local.native-active-stop",
+    "orca-remote.native-development",
+    "orca-remote.native-active-stop"
   ],
   "focused_native_scenarios": [
     {

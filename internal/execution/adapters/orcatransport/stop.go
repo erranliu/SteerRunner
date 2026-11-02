@@ -20,8 +20,8 @@ func (l *Lifecycle) reconcileStop(ctx context.Context, r b.LifecycleRequest) (b.
 		receipt, err := l.stopLocalCodex(ctx, r, false)
 		return receipt, nil, err
 	}
-	if l.profile.Environment != "" {
-		return l.reconcileRemoteStop(ctx, r)
+	if l.profile.nativeTerminalContract() {
+		return l.reconcileNativeStop(ctx, r)
 	}
 	receipt := b.LifecycleReceipt{Operation: r.Operation, Disposition: b.OperationUnknown}
 	receipt.Operation.Receipt = nil

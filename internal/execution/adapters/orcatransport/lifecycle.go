@@ -146,7 +146,7 @@ func (l *Lifecycle) PolicyCapabilities() b.LifecyclePolicyCapabilities {
 		resource = b.MechanismApplicable
 	}
 	policy := "host_managed_permissions; business_read_only_is_prompt_policy"
-	if l.profile.Environment != "" {
+	if l.profile.nativeTerminalContract() {
 		policy = "configured_native_launch_parameters; execution_host_existing_authentication; business_read_only_is_prompt_policy"
 	}
 	return b.LifecyclePolicyCapabilities{Preparation: b.PreparationCapabilities{Workspace: b.MechanismApplicable, Resource: resource, Session: b.MechanismApplicable}, ReportToolPolicy: policy}
@@ -218,15 +218,9 @@ func (l *Lifecycle) state(s b.LifecycleSnapshot) (State, error) {
 	if err := validateNativeProofFlags(state); err != nil {
 		return state, err
 	}
-	if l.profile.Environment != "" {
-
-		if state.Control != nil || state.RemoteReadiness != nil || state.TerminalOwner != nil || state.TerminalReadiness != nil || state.AdmissionAttempted || state.AdmissionAccepted {
-			return state, errors.New("native remote state contains helper preparation")
-		}
-		for _, turn := range state.Turns {
-			if turn.Recorded != nil || turn.Extension != nil || turn.WireFormat != "" || turn.ReceiptRequest != "" || !turn.ReceiptQueriedAt.IsZero() {
-				return state, errors.New("native remote state contains helper turn evidence")
-			}
+	if l.profile.nativeTerminalContract() {
+		if err := validateNativeTerminalState(state); err != nil {
+			return state, err
 		}
 	}
 	if l.usesControl() && (state.LaunchAttempted || len(state.Turns) != 0) {
@@ -282,12 +276,7 @@ func (l *Lifecycle) state(s b.LifecycleSnapshot) (State, error) {
 	return state, nil
 }
 
-func (l *Lifecycle) stateVersion() int {
-	if l.profile.Environment == "" {
-		return LocalStateVersion
-	}
-	return StateVersion
-}
+func (l *Lifecycle) stateVersion() int { return l.profile.stateCodec() }
 
 func (l *Lifecycle) envelope(s b.LifecycleSnapshot, state State) ([]b.ImplementationDataEnvelope, error) {
 	raw, err := json.Marshal(state)
@@ -552,7 +541,7 @@ func (l *Lifecycle) prepareInput(ctx context.Context, r b.LifecycleRequest) (b.L
 	if err != nil {
 		return receipt, err
 	}
-	if l.profile.Environment == "" {
+	if !l.profile.nativeTerminalContract() {
 		if err := l.checkLocalReadiness(state); err != nil {
 			return receipt, err
 		}
@@ -631,7 +620,7 @@ func (l *Lifecycle) submit(ctx context.Context, r b.LifecycleRequest) (b.Lifecyc
 	if err != nil {
 		return receipt, err
 	}
-	if l.profile.Environment == "" {
+	if !l.profile.nativeTerminalContract() {
 		if err := l.checkLocalReadiness(state); err != nil {
 			return receipt, err
 		}
@@ -705,7 +694,7 @@ func (l *Lifecycle) submit(ctx context.Context, r b.LifecycleRequest) (b.Lifecyc
 	// A completed READY hook can precede the TUI returning to its composer.
 	// Gate the only native Codex send on the original terminal becoming idle;
 	// this is input readiness, never completion/attribution evidence.
-	if (l.profile.Environment != "" || l.usesControl()) && l.profile.Terminal == nil && s.Ref.Agent.Name == "codex" {
+	if (l.profile.nativeTerminalContract() || l.usesControl()) && l.profile.Terminal == nil && s.Ref.Agent.Name == "codex" {
 		if err := l.waitOriginalComposer(ctx, s); err != nil {
 			return receipt, err
 		}
@@ -739,7 +728,7 @@ func (l *Lifecycle) submit(ctx context.Context, r b.LifecycleRequest) (b.Lifecyc
 	}
 	// Preserve the removed multiline ingress's control-character rejection.
 	// Other agents and existing wire formats retain their own input contract.
-	if l.profile.Environment != "" && l.profile.Terminal == nil && s.Ref.Agent.Name == "codex" && turn.WireFormat == "" && strings.Contains(text, "\n") && strings.ContainsAny(text, "\x00\x1b") {
+	if l.profile.nativeTerminalContract() && l.profile.Terminal == nil && s.Ref.Agent.Name == "codex" && turn.WireFormat == "" && strings.Contains(text, "\n") && strings.ContainsAny(text, "\x00\x1b") {
 		l.closeStateFeed()
 		return receipt, errors.New("native multiline input contains terminal control characters; no input sent")
 	}
@@ -750,7 +739,7 @@ func (l *Lifecycle) submit(ctx context.Context, r b.LifecycleRequest) (b.Lifecyc
 		text = strings.ReplaceAll(text, "\n", "\r")
 	}
 	send := native.TerminalSend{Handle: state.Process.Terminal, Text: text, RequestID: turn.Request}
-	if l.profileVersion == NativeRemoteProfileVersion {
+	if l.profile.nativeTerminalContract() {
 		// Orca's default receipt may precede the original turn-start observation.
 		// Wait on this single accepted request; timeout never resends input and
 		// is only a hint; original native input/history must prove business start.
@@ -977,8 +966,8 @@ func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, own
 		// The gate cancels in-flight reads; the scoped stop's in-memory fence
 		// rejects later control queries without another persistent checkpoint.
 	}
-	if l.profile.Environment != "" {
-		return l.remoteStopResult(ctx, r, true)
+	if l.profile.nativeTerminalContract() {
+		return l.nativeStopResult(ctx, r, true)
 	}
 	if l.localCodexScope() {
 		return l.stopLocalCodex(ctx, r, true)
@@ -1083,7 +1072,7 @@ func (l *Lifecycle) ShutdownLifecycle(ctx context.Context, s b.LifecycleSnapshot
 	if err := l.validate(s); err != nil {
 		return b.LifecycleStateFacts{}, err
 	}
-	if l.profile.Environment != "" {
+	if l.profile.nativeTerminalContract() {
 		l.closeStateFeed()
 		if h, ok := owned.(*observationHandle); ok {
 			if h.Identity() != s.Ref.External {

@@ -58,6 +58,30 @@ func main() {
 		fatal(err)
 	}
 	switch mode {
+	case "native-candidate-orca":
+		if m.Driver != "native-capability-runner" || m.NativeCLI == nil {
+			fatal(fmt.Errorf("native candidate audit mode requires its frozen fixture"))
+		}
+		args := fs.Args()
+		appendCall(m, map[string]any{"at": time.Now().UTC(), "phase": "dispatch", "argv": args})
+		var stderr bytes.Buffer
+		cmd := exec.Command(m.NativeCLI.Path, args...)
+		cmd.Stderr = &stderr
+		output, callErr := cmd.Output()
+		entry := map[string]any{"at": time.Now().UTC(), "phase": "result", "argv": args, "output": string(output), "stderr": stderr.String(), "exit": 0}
+		if callErr != nil {
+			entry["error"] = callErr.Error()
+			entry["exit"] = 1
+		}
+		appendCall(m, entry)
+		_, _ = os.Stdout.Write(output)
+		_, _ = os.Stderr.Write(stderr.Bytes())
+		if callErr != nil {
+			if exit, ok := callErr.(*exec.ExitError); ok {
+				os.Exit(exit.ExitCode())
+			}
+			os.Exit(1)
+		}
 	case "validate-result":
 		raw, err = os.ReadFile(filepath.Join(m.Root, "evidence", "scenario.json"))
 		if err != nil {

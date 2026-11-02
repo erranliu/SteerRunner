@@ -61,7 +61,7 @@ if ($taskExecution.adapter -eq 'codex-app-server') {
     $taskEnvironment = if ($taskExecution.target.ContainsKey('environment')) { $taskExecution.target.environment } else { '' }
     if (-not [IO.Path]::IsPathFullyQualified($taskOrca) -or -not (Test-Path -LiteralPath $taskOrca -PathType Leaf)) { throw 'Configured Orca executable is unavailable' }
     $taskLaunch = $taskExecution.settings.agent_launch
-    if ($taskExecution.target.kind -eq 'local') { $taskLocalHelper = $taskLaunch.runtime_executable }
+    if ($taskExecution.target.kind -eq 'local' -and $taskLaunch.ContainsKey('runtime_executable')) { $taskLocalHelper = $taskLaunch.runtime_executable }
     # Source hash is verified, never silently replaced by an installed build.
     if ($taskLocalHelper -and ((Get-FileHash -LiteralPath $taskLocalHelper -Algorithm SHA256).Hash.ToLowerInvariant() -cne $taskLaunch.runtime_sha256)) { throw 'Configured helper source hash changed' }
 }
@@ -111,6 +111,7 @@ if ($taskScenario.target -eq 'orca-local' -or ($taskScenario.target -eq 'orca-en
     try { & go build -trimpath -o $taskLocalAudit ./tests/helpers/stability; if ($LASTEXITCODE -ne 0) { throw 'Local audit helper build failed' } } finally { Pop-Location }
     $taskExecution.settings.transport.executable = $taskLocalAudit
     $taskExecution.settings.transport['args'] = @('local-audit','-manifest',(Join-Path $taskRoot 'manifest.json'),'-orca',$taskOrca,'--')
+    if ($taskScenario.driver -eq 'native-capability-runner') { $taskExecution.settings.transport['args'] = @('native-candidate-orca','-manifest',(Join-Path $taskRoot 'manifest.json'),'--') }
 }
 $taskSourceRevision = $taskFixture.repository.base_revision
 $taskRepository = Join-Path $taskRoot 'SteerlineTest'
@@ -125,7 +126,7 @@ $taskToolDir = Join-Path $taskRepository 'sr-smoke'
 New-Item -ItemType Directory -Path $taskToolDir | Out-Null
 $taskTemplates = Join-Path $taskRepo 'tests/fixtures/evidence-smoke'
 $taskTemplateNames = @('spec.md','plan.md','check.ps1','publish.ps1','pr-list.ps1')
-if ($taskScenario.level -eq 'L2') { $taskTemplateNames = @('spec.md','plan.md','check.ps1') }
+if ($taskScenario.level -eq 'L2' -or $taskScenario.driver -eq 'native-capability-runner') { $taskTemplateNames = @('spec.md','plan.md','check.ps1') }
 if ($taskParser) { $taskTemplateNames = @('spec.md','plan.md') }
 foreach ($taskName in $taskTemplateNames) {
     $taskText = [IO.File]::ReadAllText((Join-Path $taskTemplates $taskName))
@@ -209,6 +210,10 @@ $taskManifest = [ordered]@{
     configuration_sha256=(Get-FileHash -LiteralPath $taskFrozenConfig -Algorithm SHA256).Hash.ToLowerInvariant();configuration_path=$taskFrozenConfig;workflow=$(if ($taskRequired.operation -eq 'submit') { $taskSelected.workflow } else { $null })
     created_at=[DateTime]::UtcNow.ToString('o')
     requirements_sha256=$taskAssessment.requirements_digest
+}
+if ($taskScenario.driver -eq 'native-capability-runner') {
+    $taskManifest['native_cli'] = @{path=$taskOrca;sha256=(Get-FileHash -LiteralPath $taskOrca -Algorithm SHA256).Hash.ToLowerInvariant()}
+    $taskManifest['audit_transport'] = @{path=$taskLocalAudit;sha256=(Get-FileHash -LiteralPath $taskLocalAudit -Algorithm SHA256).Hash.ToLowerInvariant()}
 }
 if ($taskAudit) { $taskManifest.driver = 'development-audited'; $taskManifest['audit_model'] = $taskAudit }
 if ($Scenario -eq 'orca-local.mixed') {

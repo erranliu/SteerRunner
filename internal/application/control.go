@@ -264,7 +264,7 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 	defer cancel()
 	var receipt b.LifecycleReceipt
 	var err error
-	if r.Intents[index].Receipt != nil || r.StopEvidenceScope == orca.LocalCodexStopScope && !freshStop {
+	if r.Intents[index].Receipt != nil || r.StopEvidenceScope != "" && !freshStop {
 		if e.writersAbsent(r, w, r.Snapshot.Ref.External) {
 			receipt = b.LifecycleReceipt{Operation: request.Operation, Disposition: b.OperationConfirmed, State: b.LifecycleStateFacts{Stopped: true, WorkerAbsent: true, WritersAbsent: true}}
 		} else {
