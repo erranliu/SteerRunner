@@ -1,6 +1,6 @@
 # Orca 原生合同正式启用 B6 验收
 
-日期：2026-11-03。状态：ONR-01–05 已通过，B6 最终独立审计 clean；全部批次已签收，统一 PR 交付准备中。依据 [Spec](../spec/orca-native-rollout.spec.md) / [Plan](../spec/orca-native-rollout.plan.md)，B5 前置已签收，不代替以下最终资格。
+日期：2026-11-03。状态：ONR-01–05 已通过，B6 最终独立审计 clean；全部批次已签收，统一 [SteerRunner PR #93](https://github.com/erranliu/SteerRunner/pull/93) 已创建，未合并或部署。依据 [Spec](../spec/orca-native-rollout.spec.md) / [Plan](../spec/orca-native-rollout.plan.md)，B5 前置已签收，不代替以下最终资格。
 
 ## 变更与保留边界
 
