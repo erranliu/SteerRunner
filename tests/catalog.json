@@ -107,12 +107,43 @@
         "TestSRMultipleRunsIsolation",
         "TestSRResourceCreationRecovery",
         "TestSRManualReconciliation"
+      ],
+      "result-plain": [
+        "TestSRResultAcquisition"
+      ],
+      "result-audit": [
+        "TestSRResultAcquisition"
+      ],
+      "result-parser": [
+        "TestSRResultAcquisition"
       ]
     },
     "result_file_cases": {
       "execute-stop": [
         "final-seal"
       ]
+    },
+    "subcases": {
+      "result-plain": {
+        "TestSRResultAcquisition": [
+          "plain-marker"
+        ]
+      },
+      "result-audit": {
+        "TestSRResultAcquisition": [
+          "audit-zero",
+          "audit-positive",
+          "audit-offline",
+          "audit-report"
+        ]
+      },
+      "result-parser": {
+        "TestSRResultAcquisition": [
+          "parser-unsupported",
+          "parser-complete",
+          "parser-tool"
+        ]
+      }
     }
   },
   "scenarios": [

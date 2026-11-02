@@ -1,14 +1,36 @@
 # Test selection and diagnostic timings only; never creates prerequisite proof.
-function Get-SRResultFileCaseIDs { @('optional-file-failure-business-loop','final-seal') }
-
-function Assert-SRResultFileCaseSelection([string[]]$Cases) {
-    $known=@(Get-SRResultFileCaseIDs)
-    $seen=[Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
-    if (-not $Cases.Count) { throw 'ResultFile case selection must not be empty' }
-    foreach ($id in $Cases) {
-        if ($known -cnotcontains $id -or -not $seen.Add($id)) { throw "Unknown or duplicate ResultFile case: $id" }
+function Get-SRControlledCaseDefinitions {
+    [ordered]@{
+        TestSRResultFile=@('optional-file-failure-business-loop','final-seal')
+        TestSRResultAcquisition=@('plain-marker','audit-zero','audit-positive','audit-offline','audit-report','parser-unsupported','parser-complete','parser-tool')
     }
 }
+
+function Assert-SRControlledCaseSelection([string]$Parent,[string[]]$Cases) {
+    $definitions=Get-SRControlledCaseDefinitions
+    if ($Parent -cnotin @($definitions.Keys) -or -not $Cases.Count) { throw 'Unknown controlled parent or empty case selection' }
+    $seen=[Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+    foreach ($id in $Cases) {
+        if (@($definitions[$Parent]) -cnotcontains $id -or -not $seen.Add($id)) { throw "Unknown or duplicate controlled case: $Parent/$id" }
+    }
+}
+
+function ConvertTo-SRControlledCasePlan([string[]]$Paths) {
+    $plan=@{}
+    foreach ($path in $Paths) {
+        $parts=@($path.Split('/'))
+        if ($parts.Count -ne 2) { throw "Controlled case requires exact parent/case: $path" }
+        $parent=$parts[0]; $id=$parts[1]
+        Assert-SRControlledCaseSelection $parent @($id)
+        if (-not $plan.ContainsKey($parent)) { $plan[$parent]=@() }
+        if ($plan[$parent] -ccontains $id) { throw "Duplicate controlled case: $path" }
+        $plan[$parent]+=@($id)
+    }
+    $plan
+}
+
+function Get-SRResultFileCaseIDs { @((Get-SRControlledCaseDefinitions)['TestSRResultFile']) }
+function Assert-SRResultFileCaseSelection([string[]]$Cases) { Assert-SRControlledCaseSelection 'TestSRResultFile' $Cases }
 
 function Read-SRControlledSubtests([string]$Directory) {
     $records=[Collections.Generic.Dictionary[string,object]]::new([StringComparer]::Ordinal)
@@ -29,28 +51,42 @@ function Read-SRControlledSubtests([string]$Directory) {
     @{records=@($records.Values | Sort-Object test);errors=@($errors.ToArray())}
 }
 
-function Get-SRResultFileCaseEvidence([string]$Directory,[string[]]$ExpectedCases) {
-    Assert-SRResultFileCaseSelection $ExpectedCases
+function Get-SRControlledCaseEvidence([string]$Directory,[string]$Parent,[string[]]$ExpectedCases) {
+    Assert-SRControlledCaseSelection $Parent $ExpectedCases
+    $label=$Parent.Substring(6)
     $result=Get-Content -LiteralPath (Join-Path $Directory 'result.json') -Raw | ConvertFrom-Json
-    if (-not $result.PSObject.Properties['result_file_cases']) { throw 'Missing actual ResultFile case receipts' }
-    $receipts=@($result.result_file_cases)
+    if ($Parent -ceq 'TestSRResultFile') {
+        if (-not $result.PSObject.Properties['result_file_cases']) { throw 'Missing actual ResultFile case receipts' }
+        $receipts=@($result.result_file_cases)
+        if ($result.PSObject.Properties['controlled_cases']) {
+            if (-not $result.controlled_cases.PSObject.Properties[$Parent] -or
+                ($receipts | ConvertTo-Json -Depth 8 -Compress) -cne (@($result.controlled_cases.$Parent) | ConvertTo-Json -Depth 8 -Compress)) { throw 'ResultFile legacy and per-parent receipts differ' }
+        }
+    } else {
+        if (-not $result.PSObject.Properties['controlled_cases'] -or -not $result.controlled_cases.PSObject.Properties[$Parent]) { throw "Missing actual $label case receipts" }
+        $receipts=@($result.controlled_cases.$Parent)
+    }
     $actual=[Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
     foreach ($receipt in $receipts) {
         if (-not $actual.Add($receipt.id) -or $receipt.passed -isnot [bool] -or -not $receipt.passed -or
             ($receipt.duration_seconds -isnot [int] -and $receipt.duration_seconds -isnot [long] -and $receipt.duration_seconds -isnot [double] -and $receipt.duration_seconds -isnot [decimal]) -or [double]$receipt.duration_seconds -lt 0 -or
-            [double]::IsNaN([double]$receipt.duration_seconds) -or [double]::IsInfinity([double]$receipt.duration_seconds)) { throw 'Invalid actual ResultFile case receipt' }
+            [double]::IsNaN([double]$receipt.duration_seconds) -or [double]::IsInfinity([double]$receipt.duration_seconds)) { throw "Invalid actual $label case receipt" }
     }
-    if (-not $actual.SetEquals($ExpectedCases)) { throw 'Actual ResultFile cases differ from the exact selection' }
+    if (-not $actual.SetEquals($ExpectedCases)) { throw "Actual $label cases differ from the exact selection" }
     $subtests=Read-SRControlledSubtests $Directory
     if ($subtests.errors.Count) { throw ($subtests.errors -join '; ') }
     $required=@(foreach ($id in $ExpectedCases) {
-        "TestSRResultFile/$id"
-        foreach ($mask in 0..3) { "TestSRResultFile/$id/enabled-$mask" }
+        "$Parent/$id"
+        if ($Parent -ceq 'TestSRResultFile') { foreach ($mask in 0..3) { "$Parent/$id/enabled-$mask" } }
     })
-    $observed=@($subtests.records | Where-Object {$_.test.StartsWith('TestSRResultFile/',[StringComparison]::Ordinal)})
+    $observed=@($subtests.records | Where-Object {$_.test.StartsWith($Parent+'/',[StringComparison]::Ordinal)})
     if ($observed.Count -ne $required.Count -or @($observed | Where-Object {$required -cnotcontains $_.test -or $_.status -ne 'pass'}).Count -or
-        @($required | Where-Object {$_ -cnotin @($observed.test)}).Count) { throw 'Missing, failed, skipped or unexpected ResultFile subcases/enable variants' }
+        @($required | Where-Object {$_ -cnotin @($observed.test)}).Count) { throw "Missing, failed, skipped or unexpected $label subcases/enable variants" }
     @{status='passed';expected_cases=$ExpectedCases;actual_cases=@($receipts);required_paths=$required}
+}
+
+function Get-SRResultFileCaseEvidence([string]$Directory,[string[]]$ExpectedCases) {
+    Get-SRControlledCaseEvidence $Directory 'TestSRResultFile' $ExpectedCases
 }
 
 function Assert-SRControlledSelectionCatalog($Catalog) {
@@ -81,9 +117,18 @@ function Assert-SRControlledSelectionCatalog($Catalog) {
             Assert-SRResultFileCaseSelection @($definition.Value)
         }
     }
+    if ($Catalog.controlled_selection.PSObject.Properties['subcases']) {
+        foreach ($definition in $Catalog.controlled_selection.subcases.PSObject.Properties) {
+            if ($definition.Name -cnotin @($Catalog.controlled_selection.combinations.PSObject.Properties.Name)) { throw 'Subcases reference an unknown combination' }
+            foreach ($parent in $definition.Value.PSObject.Properties) {
+                if (@($Catalog.controlled_selection.combinations.($definition.Name)) -cnotcontains $parent.Name) { throw 'Subcases require their parent in the combination' }
+                Assert-SRControlledCaseSelection $parent.Name @($parent.Value)
+            }
+        }
+    }
 }
 
-function Resolve-SRControlledSelection($Catalog, [string[]]$Groups=@(), [string[]]$Combinations=@(), [string[]]$ResultFileCases=@()) {
+function Resolve-SRControlledSelection($Catalog, [string[]]$Groups=@(), [string[]]$Combinations=@(), [string[]]$ResultFileCases=@(), [string[]]$Cases=@()) {
     Assert-SRControlledSelectionCatalog $Catalog
     if (($Groups.Count -eq 0) -eq ($Combinations.Count -eq 0)) { throw 'Select either Group or Combination, with at least one exact ID' }
     $kind = if ($Groups.Count) { 'groups' } else { 'combinations' }
@@ -97,29 +142,44 @@ function Resolve-SRControlledSelection($Catalog, [string[]]$Groups=@(), [string[
     }
     $tests = @($Catalog.controlled_scenarios | Where-Object {$selected.Contains($_)})
     if (-not $tests.Count) { throw 'No Controlled tests selected' }
-    $cases=@()
+    $explicit=ConvertTo-SRControlledCasePlan $Cases
     if ($ResultFileCases.Count) {
         Assert-SRResultFileCaseSelection $ResultFileCases
-        if ($tests -cnotcontains 'TestSRResultFile') { throw 'ResultFileCase requires TestSRResultFile in the selected tests' }
-        $cases=@(Get-SRResultFileCaseIDs | Where-Object {$ResultFileCases -ccontains $_})
-    } elseif ($tests -ccontains 'TestSRResultFile') {
+        if ($explicit.ContainsKey('TestSRResultFile')) { throw 'ResultFile cannot use both Case and ResultFileCase' }
+        $explicit['TestSRResultFile']=$ResultFileCases
+    }
+    foreach ($parent in $explicit.Keys) {
+        if ($tests -cnotcontains $parent) { throw "Case requires its parent in selected tests: $parent" }
+    }
+    $plan=@{}
+    $definitions=Get-SRControlledCaseDefinitions
+    foreach ($parent in $definitions.Keys) {
+        if ($tests -cnotcontains $parent) { continue }
+        if ($explicit.ContainsKey($parent)) { $plan[$parent]=@($definitions[$parent] | Where-Object {$explicit[$parent] -ccontains $_}); continue }
         $wanted=[Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
         foreach ($id in $ids) {
-            if (@($Catalog.controlled_selection.$kind.$id) -cnotcontains 'TestSRResultFile') { continue }
+            if (@($Catalog.controlled_selection.$kind.$id) -cnotcontains $parent) { continue }
             $narrow=@()
-            if ($kind -eq 'combinations' -and $Catalog.controlled_selection.PSObject.Properties['result_file_cases']) {
-                $entry=@($Catalog.controlled_selection.result_file_cases.PSObject.Properties | Where-Object {$_.Name -ceq $id})
-                if ($entry.Count) { $narrow=@($entry[0].Value) }
+            if ($kind -eq 'combinations') {
+                if ($Catalog.controlled_selection.PSObject.Properties['subcases']) {
+                    $entry=@($Catalog.controlled_selection.subcases.PSObject.Properties | Where-Object {$_.Name -ceq $id})
+                    if ($entry.Count -and $entry[0].Value.PSObject.Properties[$parent]) { $narrow=@($entry[0].Value.$parent) }
+                }
+                if (-not $narrow.Count -and $parent -ceq 'TestSRResultFile' -and $Catalog.controlled_selection.PSObject.Properties['result_file_cases']) {
+                    $entry=@($Catalog.controlled_selection.result_file_cases.PSObject.Properties | Where-Object {$_.Name -ceq $id})
+                    if ($entry.Count) { $narrow=@($entry[0].Value) }
+                }
             }
-            if (-not $narrow.Count) { $narrow=@(Get-SRResultFileCaseIDs) }
-            foreach ($case in $narrow) { $null=$wanted.Add($case) }
+            if (-not $narrow.Count) { $narrow=@($definitions[$parent]) }
+            foreach ($caseID in $narrow) { $null=$wanted.Add($caseID) }
         }
-        $cases=@(Get-SRResultFileCaseIDs | Where-Object {$wanted.Contains($_)})
+        $plan[$parent]=@($definitions[$parent] | Where-Object {$wanted.Contains($_)})
     }
-    @{kind=$kind;ids=@($ids);tests=$tests;result_file_cases=$cases;pattern=('^('+(($tests | ForEach-Object {[regex]::Escape($_)}) -join '|')+')$')}
+    $legacy=@(if($plan.ContainsKey('TestSRResultFile')){$plan['TestSRResultFile']})
+    @{kind=$kind;ids=@($ids);tests=$tests;cases=$plan;result_file_cases=$legacy;pattern=('^('+(($tests | ForEach-Object {[regex]::Escape($_)}) -join '|')+')$')}
 }
 
-function Get-SRControlledTimingReport($Catalog, [string]$Directory, [string[]]$ExpectedTests=@(), [string[]]$ExpectedResultFileCases=@()) {
+function Get-SRControlledTimingReport($Catalog, [string]$Directory, [string[]]$ExpectedTests=@(), [string[]]$ExpectedResultFileCases=@(), [Collections.IDictionary]$ExpectedCases=@{}) {
     Assert-SRControlledSelectionCatalog $Catalog
     $directoryPath = (Resolve-Path -LiteralPath $Directory).Path
     $logPath = Join-Path $directoryPath 'integration.log'
@@ -160,11 +220,22 @@ function Get-SRControlledTimingReport($Catalog, [string]$Directory, [string[]]$E
     } else { $errors.Add('Missing harness result.json') }
     $subtests=Read-SRControlledSubtests $directoryPath
     foreach ($errorText in $subtests.errors) { $errors.Add($errorText) }
-    $caseEvidence=@{status='not_required';expected_cases=@()}
+    $casePlan=@{}
+    foreach ($parent in $ExpectedCases.Keys) { $casePlan[$parent]=@($ExpectedCases[$parent]) }
     if ($ExpectedResultFileCases.Count) {
-        try { $caseEvidence=Get-SRResultFileCaseEvidence $directoryPath $ExpectedResultFileCases }
-        catch { $errors.Add($_.Exception.Message); $caseEvidence=@{status='invalid';expected_cases=$ExpectedResultFileCases;error=$_.Exception.Message} }
-    } elseif ($records.ContainsKey('TestSRResultFile')) { $caseEvidence=@{status='unverified_import';expected_cases=@()} }
+        if ($casePlan.ContainsKey('TestSRResultFile')) { throw 'Duplicate ResultFile expected case plan' }
+        $casePlan['TestSRResultFile']=$ExpectedResultFileCases
+    }
+    $coverage=@{}
+    $definitions=Get-SRControlledCaseDefinitions
+    foreach ($parent in $casePlan.Keys) { Assert-SRControlledCaseSelection $parent @($casePlan[$parent]) }
+    foreach ($parent in $definitions.Keys) {
+        $coverage[$parent]=@{status='not_required';expected_cases=@()}
+        if ($casePlan.ContainsKey($parent)) {
+            try { $coverage[$parent]=Get-SRControlledCaseEvidence $directoryPath $parent @($casePlan[$parent]) }
+            catch { $errors.Add($_.Exception.Message); $coverage[$parent]=@{status='invalid';expected_cases=@($casePlan[$parent]);error=$_.Exception.Message} }
+        } elseif ($records.ContainsKey($parent)) { $coverage[$parent]=@{status='unverified_import';expected_cases=@()} }
+    }
     $groups = @(foreach ($definition in $Catalog.controlled_selection.groups.PSObject.Properties) {
         $observed = @($tests | Where-Object {$_.group -ceq $definition.Name})
         $measured = @($observed | Where-Object {$null -ne $_.duration_seconds})
@@ -185,6 +256,6 @@ function Get-SRControlledTimingReport($Catalog, [string]$Directory, [string[]]$E
       status=$status;evidence=$directoryPath;sources=$sources;expected_tests=$ExpectedTests;observed_count=$tests.Count;passed_count=$passed;
       missing_tests=$missing;unexpected_tests=$unexpected;unknown_tests=$unknown;incomplete_tests=$incomplete;errors=@($errors.ToArray());
       observed_top_level_seconds=[Math]::Round([double]$totalSeconds,2);
-      result_file_coverage=$caseEvidence;subtests=@($subtests.records);
+      case_coverage=$coverage;result_file_coverage=$coverage['TestSRResultFile'];subtests=@($subtests.records);
       tests=@($tests | Sort-Object test);groups=$groups;slowest=@($measured | Sort-Object @{Expression='duration_seconds';Descending=$true},test | Select-Object -First 10)}
 }

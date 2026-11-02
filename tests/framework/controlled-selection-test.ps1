@@ -33,6 +33,17 @@ Reject 'result-case-unknown' {Resolve-SRControlledSelection $taskCatalog @('file
 Reject 'result-case-duplicate' {Resolve-SRControlledSelection $taskCatalog @('files') @() @('final-seal','final-seal')}
 Reject 'result-case-without-parent' {Resolve-SRControlledSelection $taskCatalog @('foundation') @() @('final-seal')}
 $taskChecks.Add('result-case-union-and-unfiltered-pattern')
+$acquisition=Resolve-SRControlledSelection $taskCatalog @() @('result-parser')
+$acquisitionAll=Resolve-SRControlledSelection $taskCatalog @() @('result-plain','result-audit','result-parser')
+$mixed=Resolve-SRControlledSelection $taskCatalog @() @('result-plain','execute-stop')
+if($acquisition.cases['TestSRResultAcquisition'].Count -ne 3 -or $acquisitionAll.cases['TestSRResultAcquisition'].Count -ne 8 -or
+    $taskAll.cases['TestSRResultAcquisition'].Count -ne 8 -or $mixed.cases['TestSRResultFile'].Count -ne 1 -or $mixed.pattern.Contains('/')){throw 'Per-parent cases lost default/union/mixed coverage'}
+Reject 'case-path-without-parent' {Resolve-SRControlledSelection $taskCatalog @('foundation') @() @() @('TestSRResultAcquisition/plain-marker')}
+Reject 'case-path-unknown-parent' {ConvertTo-SRControlledCasePlan @('TestForeign/plain-marker')}
+Reject 'case-path-wildcard' {ConvertTo-SRControlledCasePlan @('TestSRResultAcquisition/*')}
+Reject 'case-path-duplicate' {ConvertTo-SRControlledCasePlan @('TestSRResultAcquisition/plain-marker','TestSRResultAcquisition/plain-marker')}
+Reject 'legacy-generic-conflict' {Resolve-SRControlledSelection $taskCatalog @('files') @() @('final-seal') @('TestSRResultFile/final-seal')}
+$taskChecks.Add('per-parent-case-default-union-and-isolation')
 Reject 'empty' {Resolve-SRControlledSelection $taskCatalog}
 Reject 'mixed-kinds' {Resolve-SRControlledSelection $taskCatalog @('files') @('execute-stop')}
 Reject 'unknown' {Resolve-SRControlledSelection $taskCatalog @('missing')}
@@ -88,19 +99,27 @@ $mockCatalog=$taskWire | ConvertFrom-Json
 $mockCatalog.controlled_selection.combinations | Add-Member -NotePropertyName 'all-mock' -NotePropertyValue @($mockCatalog.controlled_scenarios)
 JSON (Join-Path $taskMock 'tests/catalog.json') $mockCatalog
 [IO.File]::WriteAllText((Join-Path $taskMock 'scripts/test-foundation.ps1'),@'
-param($OutDir,$Pattern,$TimeoutMinutes,$RunnerExe,[string[]]$ResultFileCase=@())
+param($OutDir,$Pattern,$TimeoutMinutes,$RunnerExe,[string[]]$ResultFileCase=@(),[string[]]$Case=@())
+. (Join-Path $PSScriptRoot 'controlled-tests.ps1')
 $null=New-Item -ItemType Directory -Path $OutDir
 $catalog=Get-Content (Join-Path $PSScriptRoot '../tests/catalog.json') -Raw|ConvertFrom-Json
 $selected=@($catalog.controlled_scenarios|Where-Object{$_ -cmatch $Pattern})
 $log=($selected|ForEach-Object{"=== RUN   $_`n--- PASS: $_ (1.00s)"}) -join "`n"
 $result=@{exit_code=0;scenario_count=$selected.Count}
-if($selected -ccontains 'TestSRResultFile') {
-    if(-not $ResultFileCase.Count){$ResultFileCase=@('optional-file-failure-business-loop','final-seal')}
-    $result['result_file_cases']=@($ResultFileCase|ForEach-Object{@{id=$_;passed=$true;duration_seconds=0.5}})
-    foreach($id in $ResultFileCase) {
-        $log+="`n=== RUN   TestSRResultFile/$id`n"
-        foreach($mask in 0..3){$log+="=== RUN   TestSRResultFile/$id/enabled-$mask`n    --- PASS: TestSRResultFile/$id/enabled-$mask (0.10s)`n"}
-        $log+="    --- PASS: TestSRResultFile/$id (0.50s)`n"
+$plan=ConvertTo-SRControlledCasePlan $Case
+if($ResultFileCase.Count){$plan['TestSRResultFile']=$ResultFileCase}
+$result['controlled_cases']=@{}
+$definitions=Get-SRControlledCaseDefinitions
+foreach($parent in $definitions.Keys) {
+    if($selected -cnotcontains $parent){continue}
+    $ids=if($plan.ContainsKey($parent)){@($plan[$parent])}else{@($definitions[$parent])}
+    $receipts=@($ids|ForEach-Object{@{id=$_;passed=$true;duration_seconds=0.5}})
+    $result.controlled_cases[$parent]=$receipts
+    if($parent -ceq 'TestSRResultFile'){$result['result_file_cases']=$receipts}
+    foreach($id in $ids) {
+        $log+="`n=== RUN   $parent/$id`n"
+        if($parent -ceq 'TestSRResultFile'){foreach($mask in 0..3){$log+="=== RUN   $parent/$id/enabled-$mask`n    --- PASS: $parent/$id/enabled-$mask (0.10s)`n"}}
+        $log+="    --- PASS: $parent/$id (0.50s)`n"
     }
 }
 [IO.File]::WriteAllText((Join-Path $OutDir 'integration.log'),$log)
@@ -108,7 +127,7 @@ $result|ConvertTo-Json -Depth 5|Set-Content (Join-Path $OutDir 'result.json')
 @{pid=2147483646}|ConvertTo-Json|Set-Content (Join-Path $OutDir 'source-identity.json')
 '@)
 $taskShell=(Get-Process -Id $PID).Path
-foreach ($id in @('execute-stop','all-mock','acceptance-control')) {
+foreach ($id in @('execute-stop','all-mock','acceptance-control','result-plain','result-audit','result-parser')) {
     $output=Join-Path $taskRoot $id
     & $taskShell -NoProfile -File (Join-Path $taskMock 'scripts/test-controlled.ps1') -Combination $id -OutDir $output *> (Join-Path $taskRoot ($id+'.log'))
     if ($LASTEXITCODE -ne 0) {throw "Selection entry failed: $id"}
@@ -155,9 +174,44 @@ $partialLog=@(Get-Content (Join-Path $taskFullSubset 'integration.log') | Where-
 [IO.File]::WriteAllText((Join-Path $taskFullSubset 'integration.log'),$partialLog)
 $caseGateRejected=$false
 try {Assert-SRControlledEvidence $taskFullSubset @($taskCatalog.controlled_scenarios) | Out-Null}
-catch {$caseGateRejected=$_.Exception.Message -like '*Actual ResultFile cases differ*'}
+catch {$caseGateRejected=$_.Exception.Message -like '*Actual ResultFile cases differ*' -or $_.Exception.Message -like '*ResultFile legacy and per-parent receipts differ*'}
 if(-not $caseGateRejected){throw 'Complete 27-test count bypassed the actual ResultFile case gate'}
 $taskChecks.Add('full-27-count-cannot-hide-partial-result-cases')
+$acqSource=Join-Path $taskRoot 'result-parser/controlled'
+$acqProof=Get-SRControlledCaseEvidence $acqSource 'TestSRResultAcquisition' @('parser-unsupported','parser-complete','parser-tool')
+if($acqProof.required_paths.Count -ne 3){throw 'Parser subset was not verified by actual paths'}
+Reject 'parser-subset-not-full-eight' {Get-SRControlledCaseEvidence $acqSource 'TestSRResultAcquisition' @((Get-SRControlledCaseDefinitions)['TestSRResultAcquisition'])}
+$acqNegative=Join-Path $taskRoot 'acquisition-negatives'
+$null=New-Item -ItemType Directory -Path $acqNegative
+$acqLog=[IO.File]::ReadAllText((Join-Path $acqSource 'integration.log'))
+$acqResult=[IO.File]::ReadAllText((Join-Path $acqSource 'result.json'))
+foreach($mode in @('parent-only','missing-case','skipped-case','foreign-case','duplicate-case','missing-receipt','wrong-parent','false-receipt','string-duration')) {
+    $log=$acqLog;$result=$acqResult|ConvertFrom-Json
+    switch($mode) {
+        'parent-only' {$log="=== RUN   TestSRResultAcquisition`n--- PASS: TestSRResultAcquisition (1.00s)"}
+        'missing-case' {$log=($log -split "`n" | Where-Object {$_ -notlike '*TestSRResultAcquisition/parser-tool*'}) -join "`n"}
+        'skipped-case' {$log=$log.Replace('--- PASS: TestSRResultAcquisition/parser-tool','--- SKIP: TestSRResultAcquisition/parser-tool')}
+        'foreign-case' {$log=$log.Replace('parser-tool','audit-zero')}
+        'duplicate-case' {$log+="`n=== RUN   TestSRResultAcquisition/parser-tool`n"}
+        'missing-receipt' {$result.PSObject.Properties.Remove('controlled_cases')}
+        'wrong-parent' {$result.controlled_cases.PSObject.Properties.Remove('TestSRResultAcquisition')}
+        'false-receipt' {$result.controlled_cases.TestSRResultAcquisition[0].passed=$false}
+        'string-duration' {$result.controlled_cases.TestSRResultAcquisition[0].duration_seconds='0.5'}
+    }
+    [IO.File]::WriteAllText((Join-Path $acqNegative 'integration.log'),$log)
+    JSON (Join-Path $acqNegative 'result.json') $result
+    Reject ('acquisition-proof-'+$mode) {Get-SRControlledCaseEvidence $acqNegative 'TestSRResultAcquisition' @('parser-unsupported','parser-complete','parser-tool')}
+}
+$acqFullNegative=Join-Path $taskRoot 'full-count-partial-acquisition'
+$null=New-Item -ItemType Directory -Path $acqFullNegative
+foreach($name in @('integration.log','result.json','source-identity.json')){Copy-Item -LiteralPath (Join-Path $taskFullSource $name) -Destination (Join-Path $acqFullNegative $name)}
+$partial=Get-Content (Join-Path $acqFullNegative 'result.json') -Raw|ConvertFrom-Json
+$partial.controlled_cases.TestSRResultAcquisition=@($partial.controlled_cases.TestSRResultAcquisition | Where-Object {$_.id -like 'parser-*'})
+JSON (Join-Path $acqFullNegative 'result.json') $partial
+$acqGateRejected=$false
+try{Assert-SRControlledEvidence $acqFullNegative @($taskCatalog.controlled_scenarios) | Out-Null}catch{$acqGateRejected=$_.Exception.Message -like '*Actual ResultAcquisition cases differ*'}
+if(-not $acqGateRejected){throw 'Full parent count hid incomplete acquisition cases'}
+$taskChecks.Add('full-27-count-requires-all-eight-acquisition-cases')
 $source=Join-Path $taskRoot 'execute-stop/controlled'
 $before=(Get-FileHash (Join-Path $source 'integration.log')).Hash
 $import=Join-Path $taskRoot 'import'

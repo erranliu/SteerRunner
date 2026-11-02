@@ -20,34 +20,6 @@ import (
 )
 
 var resultFileCasesFlag = flag.String("result-file-cases", "", "Exact ResultFile case IDs, comma separated; empty runs both")
-var resultFileCaseResults []resultFileCaseResult
-
-type resultFileCaseResult struct {
-	ID              string  `json:"id"`
-	Passed          bool    `json:"passed"`
-	DurationSeconds float64 `json:"duration_seconds"`
-}
-
-func selectedResultFileCases(value string) ([]string, error) {
-	all := []string{"optional-file-failure-business-loop", "final-seal"}
-	if value == "" {
-		return all, nil
-	}
-	seen := map[string]bool{}
-	for _, id := range strings.Split(value, ",") {
-		if (id != all[0] && id != all[1]) || seen[id] {
-			return nil, fmt.Errorf("unknown or duplicate ResultFile case: %q", id)
-		}
-		seen[id] = true
-	}
-	selected := []string{}
-	for _, id := range all {
-		if seen[id] {
-			selected = append(selected, id)
-		}
-	}
-	return selected, nil
-}
 
 func runResultFileVariant(t *testing.T, mask int, run func(*testing.T)) bool {
 	t.Helper()
@@ -65,25 +37,14 @@ func runResultFileVariant(t *testing.T, mask int, run func(*testing.T)) bool {
 // Controlled public-EXE loop only: the native fixture is not a real remote Agent.
 func TestSRResultFile(t *testing.T) {
 	testCount.Add(1)
-	selected, err := selectedResultFileCases(*resultFileCasesFlag)
-	if err != nil {
-		t.Fatal(err)
-	}
-	for _, id := range selected {
-		executed := false
-		started := time.Now()
-		passed := t.Run(id, func(t *testing.T) {
-			executed = true
+	for _, id := range selectedControlledCases("TestSRResultFile") {
+		runControlledCase(t, "TestSRResultFile", id, func(t *testing.T) {
 			if id == "final-seal" {
 				testResultFileFinalSeal(t)
 			} else {
 				testOptionalFilesDoNotGateWorkflow(t)
 			}
 		})
-		if !executed {
-			t.Fatalf("required ResultFile case did not execute: %s; use -result-file-cases, not a global subtest filter", id)
-		}
-		resultFileCaseResults = append(resultFileCaseResults, resultFileCaseResult{ID: id, Passed: passed, DurationSeconds: time.Since(started).Seconds()})
 	}
 }
 

@@ -6,13 +6,18 @@ param(
     [string]$PreparedArtifactsDirectory = '',
     [string]$RunnerExe = '',
     [string[]]$ResultFileCase = @(),
+    [string[]]$Case = @(),
     [ValidateRange(1,60)][int]$TimeoutMinutes = 25
 )
 $ErrorActionPreference = 'Stop'
 $taskRepo = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
-if ($ResultFileCase.Count) {
+if ($ResultFileCase.Count -or $Case.Count) {
     . (Join-Path $PSScriptRoot 'controlled-tests.ps1')
-    Assert-SRResultFileCaseSelection $ResultFileCase
+    $taskCasePlan=ConvertTo-SRControlledCasePlan $Case
+    if ($ResultFileCase.Count) {
+        Assert-SRResultFileCaseSelection $ResultFileCase
+        if ($taskCasePlan.ContainsKey('TestSRResultFile')) { throw 'ResultFile cannot use both Case and ResultFileCase' }
+    }
 }
 
 if (-not $OutDir) { $OutDir = Join-Path $taskRepo ('.evidence/foundation-' + [DateTime]::UtcNow.ToString('yyyyMMdd-HHmmss')) }
@@ -61,6 +66,7 @@ function Quote-WindowsArgument([string]$Argument) {
 # fault and scenario polling deadlines are unchanged.
 $taskArgs = @("-test.run=$Pattern", '-test.v', "-test.timeout=$($TimeoutMinutes)m", '-runner-exe', $taskRunnerExe, '-evidence-dir', $taskEvidence,'-helper-exe',$taskHelperExe)
 if ($ResultFileCase.Count) { $taskArgs += @('-result-file-cases', ($ResultFileCase -join ',')) }
+if ($Case.Count) { $taskArgs += @('-controlled-cases', ($Case -join ',')) }
 
 if ($ContentNativeExecutable) { $taskArgs += @('-content-native-exe', (Resolve-Path -LiteralPath $ContentNativeExecutable).Path) }
 if ($ContentNativeModel) { $taskArgs += @('-content-native-model', $ContentNativeModel) }
@@ -89,6 +95,7 @@ $taskMetadata = [ordered]@{
     process_started_at = if($taskProcess){$taskProcess.CreationDate.ToUniversalTime().ToString('o')}else{''}
     pattern = $Pattern
     result_file_cases = @($ResultFileCase)
+    controlled_cases = @($Case)
     runner_sha256 = $taskArtifactIdentity.runner_sha256
     fixture_sha256 = $taskArtifactIdentity.fixture_sha256
     native_fixture_sha256 = $taskArtifactIdentity.native_fixture_sha256
