@@ -1,0 +1,24 @@
+{
+  "wire_and_types": "go run .evidence/dormant-lifecycle/wire-audit.go <before/after.json>",
+  "retained_functions": "go run .evidence/dormant-lifecycle/function-audit.go",
+  "components": "go test ./internal/execution/... ./internal/runstate ./internal/contracts ./internal/resources ./internal/storage -count=1 -timeout 5m -json",
+  "reliable_retry": "go test ./internal/execution/reliable -count=1 -timeout 2m -json",
+  "application": "go test ./internal/application -run '^(TestSROperation.*|TestSRManual.*|TestSRObservation.*|TestSRStopSerializesWithNativeDispatch|TestSRStopBindingCommitFailureDoesNotDispatch|TestSRStopRecoversLateCreationFactsUnderOriginalIntent|TestFrozenBudget.*|TestSRPreparationQuery.*|TestRAResumeConsumedActiveInputWaitsForOriginalEvidence|TestSingleExecutionLateFinalPreservesOriginalStop|TestSRExecutionWaitStopKeepsControlPriority|TestSRPreparationDeadlinePreservesQueuedOrcaBudgetAcrossReload)$' -count=1 -timeout 5m -json",
+  "build": "scripts/build.ps1 -OutFile .evidence/dormant-lifecycle/bin/steerrunner.exe",
+  "compile": [
+    "go test -c -tags live -o .evidence/dormant-lifecycle/bin/native.test.exe ./tests/native",
+    "go test -c -tags live -o .evidence/dormant-lifecycle/bin/integration-live.test.exe ./tests/integration"
+  ],
+  "foundation": "scripts/test-foundation.ps1 -OutDir .evidence/dormant-lifecycle/foundation-final -Pattern '^(TestSRNativeUnknownAndStop|TestSRRestartPreservesAuthorization|TestSRServiceOwnership)$' -RunnerExe .evidence/dormant-lifecycle/bin/steerrunner.exe -TimeoutMinutes 8",
+  "exit_codes": {
+    "first_wire_build": 1,
+    "wire_after_retry": 0,
+    "components": 1,
+    "reliable_after_test_cleanup": 0,
+    "application": 0,
+    "build": 0,
+    "native_compile": 0,
+    "integration_compile": 0,
+    "foundation": 0
+  }
+}

@@ -40,3 +40,6 @@ docs/acceptance/evidence/orca-local-codex-stop-reaudit-20261101/** -text -whites
 docs/acceptance/evidence/exit-proof-budget-20261101/** -text -whitespace
 
 docs/acceptance/evidence/exit-proof-budget-reaudit-20261101/** -text -whitespace
+
+docs/acceptance/evidence/dormant-lifecycle-20261101/** -text -whitespace
+docs/acceptance/evidence/dormant-lifecycle-reaudit-20261102/** -text -whitespace

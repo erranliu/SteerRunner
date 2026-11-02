@@ -1,0 +1,11 @@
+{
+  "byte_identical": true,
+  "sha256": "941cfb9f94d2175617975200e426d56e15a99a4a45b41b7b2fd90ec07a3d414c",
+  "bytes": 139060,
+  "compared": [
+    "persistent type definitions",
+    "Run/snapshot/request/receipt JSON",
+    "resources.Capabilities",
+    "resource digest"
+  ]
+}

@@ -700,10 +700,6 @@ type LifecyclePreparationPort interface {
 	PolicyCapabilities() LifecyclePolicyCapabilities
 }
 
-type LifecycleProbePort interface {
-	PreflightLifecycle(context.Context, LifecycleSetup) (CapabilityReport, error)
-}
-
 type LifecycleExecutePort interface {
 	Execute(context.Context, LifecycleRequest) (LifecycleReceipt, LifecycleObserver, error)
 }
@@ -733,10 +729,6 @@ type LifecycleStopPort interface {
 	StopLifecycle(context.Context, LifecycleRequest, StopHandle) (LifecycleReceipt, error)
 }
 
-type LifecycleCleanupPort interface {
-	CleanupLifecycle(context.Context, LifecycleRequest) (LifecycleReceipt, error)
-}
-
 type LifecycleRecoveryEvidence struct {
 	SessionAvailable bool
 	// ResourceAvailable is native identity proof, independent of process ownership.
@@ -749,25 +741,8 @@ type LifecycleRecoveryEvidence struct {
 	WritersAbsent  bool
 }
 
-// ServiceStopBehavior is frozen with the worker, independently of whether its
-// original observation can be reattached. It never asserts actual liveness.
-type ServiceStopBehavior string
-
-const (
-	StopExecutionOnServiceStop     ServiceStopBehavior = "stop_execution"
-	ContinueExecutionOnServiceStop ServiceStopBehavior = "continue_execution"
-)
-
-func (b ServiceStopBehavior) Valid() bool {
-	return b == StopExecutionOnServiceStop || b == ContinueExecutionOnServiceStop
-}
-
 type LifecycleServicePort interface {
 	ShutdownLifecycle(context.Context, LifecycleSnapshot, StopHandle) (LifecycleStateFacts, error)
-}
-
-type LifecycleWorkspacePort interface {
-	InspectLifecycleWorkspace(context.Context, LifecycleSnapshot) (WorkspaceInspection, error)
 }
 
 // Optional exact-owner audit inspection; revision-only metadata is insufficient.
@@ -780,15 +755,9 @@ type LifecycleRecoveryPort interface {
 }
 
 type LifecyclePolicyCapabilities struct {
-	Preparation             PreparationCapabilities
-	StructuredFinalEvidence bool
+	Preparation PreparationCapabilities
 	// Empty means frozen native permissions; compare report facts.
-	ReportToolPolicy          string
-	ServiceStopBehavior       ServiceStopBehavior
-	ActiveTurnFeedback        bool
-	LinkedWorkspaceWriteRoots bool
-	SeparateTurnStart         bool
-	ResumeActiveObservation   bool
+	ReportToolPolicy string
 }
 
 type LifecyclePolicyPort interface {
@@ -800,15 +769,12 @@ type LifecyclePolicyPort interface {
 // separate read-only method so an unknown operation can never be resubmitted.
 type LifecyclePort interface {
 	LifecycleServicePort
-	LifecycleProbePort
 	LifecyclePreparationPort
 	LifecycleExecutePort
 	LifecycleReconcilePort
 	LifecycleObservePort
 	LifecycleStopPort
-	LifecycleCleanupPort
 	LifecycleRecoveryPort
-	LifecycleWorkspacePort
 	LifecyclePolicyPort
 }
 

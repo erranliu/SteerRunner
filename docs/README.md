@@ -34,6 +34,7 @@
 | 实例绑定与同快照 observe | [公开读取与受理边界 Plan](spec/reliability-simplification.plan.md) |
 | 执行可见性与原会话查看 | [可见性 Plan](spec/execution-observability.plan.md)、[原会话查看 Plan](spec/native-session-viewer.plan.md)；[Orca 最后消息 Spec](spec/orca-last-message.spec.md) / [Plan](spec/orca-last-message.plan.md)，实现结果归入原可见性及远端原生验收 |
 | Git 基线、工作区名称及 PR 元数据 | [基线刷新 Plan](spec/repository-base-refresh.plan.md)、[名称前缀 Plan](spec/worktree-name-prefix.plan.md)、[PR 元数据 Plan](spec/pr-merge-metadata.plan.md) |
+| 旧准备/恢复规则与 Lifecycle 接口清理 | [Spec](spec/dormant-lifecycle-cleanup.spec.md) / [Plan](spec/dormant-lifecycle-cleanup.plan.md) / [初轮验收](acceptance/dormant-lifecycle-cleanup.md) / [实现再审计](acceptance/dormant-lifecycle-reaudit.md)：无入口规则及三端口/六字段删除，编码与真实可靠性机制保持，生产净减 688 行 |
 | 当前内部执行职责 | [执行边界 Spec](spec/execution-boundary-refactor.spec.md) / [Plan](spec/execution-boundary-refactor.plan.md) |
 | 个人多机执行器简化（选定范围及文档收口完成，汇总 PR 待评审） | [Spec](spec/personal-executor-simplification.spec.md) / [Plan](spec/personal-executor-simplification.plan.md) / [P1](acceptance/personal-executor-p1.md) / [P2](acceptance/personal-executor-p2.md) / [P3](acceptance/personal-executor-p3.md) / [P4](acceptance/personal-executor-p4.md)：该批 state/v7，净删除恢复/兼容，人工对账出口；P3 完整 L1/Controlled 与真实最小接线通过；P4 仅收口问答输入，其他候选不展开 |
 | 测试入口、场景、资格与缺口 | [测试指南](testing.md)、[测试清单](test-catalog.md)、[验收记录索引](acceptance/README.md) |

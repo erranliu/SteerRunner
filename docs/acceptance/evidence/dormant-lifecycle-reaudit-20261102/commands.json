@@ -1,0 +1,14 @@
+{
+  "components": "go test ./internal/execution/... ./internal/runstate ./internal/contracts ./internal/resources ./internal/storage -count=1 -timeout 5m -json",
+  "application": "go test ./internal/application -run '^(TestLocalCodex.*|TestServiceGeneration.*|TestWorkflowRecovery.*|TestAnswerInputCapability.*|TestContentRecovery.*)$' -count=1 -timeout 3m -json",
+  "declarations": "go run .evidence/dormant-lifecycle-reaudit/declarations.go",
+  "wire": "go run .evidence/dormant-lifecycle/wire-audit.go .evidence/dormant-lifecycle-reaudit/wire.json",
+  "exit_codes": {
+    "components": 0,
+    "application": 0,
+    "declarations": 0,
+    "wire": 0
+  },
+  "wire_sha256": "941cfb9f94d2175617975200e426d56e15a99a4a45b41b7b2fd90ec07a3d414c",
+  "base_and_latest_main": "51e897fb694ef8afe61a380da83fe0de895ec4d1"
+}

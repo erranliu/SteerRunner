@@ -43,9 +43,7 @@ func TestServiceStopWorkerFacts(t *testing.T) {
 	if err != nil || !facts.WorkerAbsent || !facts.WritersAbsent || !facts.Stopped || facts.TurnCompleted {
 		t.Fatalf("owned worker release facts: %+v, %v", facts, err)
 	}
-	if l.PolicyCapabilities().ServiceStopBehavior != executionbackend.StopExecutionOnServiceStop {
-		t.Fatal("local worker did not declare explicit stop behavior")
-	}
+
 }
 
 func TestIndependentOwnerServiceDetachPreservesOriginalTree(t *testing.T) {
@@ -65,7 +63,5 @@ func TestIndependentOwnerServiceDetachPreservesOriginalTree(t *testing.T) {
 	if err != nil || facts.Stopped || owned.WritersAbsent() || resourceprocess.InspectProcess(&id) != "matching process still exists" {
 		t.Fatalf("service detach ended original native tree: %+v %v", facts, err)
 	}
-	if l.PolicyCapabilities().ServiceStopBehavior != executionbackend.ContinueExecutionOnServiceStop {
-		t.Fatal("independent host did not declare continue execution")
-	}
+
 }

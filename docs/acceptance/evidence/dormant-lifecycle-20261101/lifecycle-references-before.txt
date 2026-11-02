@@ -1,0 +1,41 @@
+.\internal\execution\workspace\lifecycle.go:10:// InspectLifecycleWorkspace verifies a host-local workspace against its original
+.\internal\execution\workspace\lifecycle.go:12:func InspectLifecycleWorkspace(ctx context.Context, setup executionbackend.LifecycleSetup, snapshot executionbackend.LifecycleSnapshot) (executionbackend.WorkspaceInspection, error) {
+.\internal\execution\backend\lifecycle.go:704:	PreflightLifecycle(context.Context, LifecycleSetup) (CapabilityReport, error)
+.\internal\execution\backend\lifecycle.go:737:	CleanupLifecycle(context.Context, LifecycleRequest) (LifecycleReceipt, error)
+.\internal\execution\backend\lifecycle.go:752:// ServiceStopBehavior is frozen with the worker, independently of whether its
+.\internal\execution\backend\lifecycle.go:754:type ServiceStopBehavior string
+.\internal\execution\backend\lifecycle.go:757:	StopExecutionOnServiceStop     ServiceStopBehavior = "stop_execution"
+.\internal\execution\backend\lifecycle.go:758:	ContinueExecutionOnServiceStop ServiceStopBehavior = "continue_execution"
+.\internal\execution\backend\lifecycle.go:761:func (b ServiceStopBehavior) Valid() bool {
+.\internal\execution\backend\lifecycle.go:770:	InspectLifecycleWorkspace(context.Context, LifecycleSnapshot) (WorkspaceInspection, error)
+.\internal\execution\backend\lifecycle.go:784:	StructuredFinalEvidence bool
+.\internal\execution\backend\lifecycle.go:787:	ServiceStopBehavior       ServiceStopBehavior
+.\internal\execution\backend\lifecycle.go:788:	ActiveTurnFeedback        bool
+.\internal\execution\backend\lifecycle.go:789:	LinkedWorkspaceWriteRoots bool
+.\internal\execution\backend\lifecycle.go:790:	SeparateTurnStart         bool
+.\internal\execution\backend\lifecycle.go:791:	ResumeActiveObservation   bool
+.\internal\execution\adapters\codex\capability.go:36:func ProbeCapabilities(ctx context.Context, config ProbeConfig, port ProbePort) error {
+.\internal\execution\adapters\codex\capability.go:76:func ProbeManagedCLI(ctx context.Context, command executionbackend.Command, output func(context.Context, string, []string) ([]byte, error)) error {
+.\internal\execution\adapters\codex\capability_test.go:19:	err = ProbeCapabilities(context.Background(), ProbeConfig{Executable: executable, Repository: t.TempDir(), RunDir: t.TempDir()}, ProbePort{
+.\internal\execution\adapters\codex\capability_test.go:43:	err = ProbeCapabilities(context.Background(), ProbeConfig{Executable: executable}, ProbePort{
+.\internal\execution\adapters\codex\lifecycle.go:20:const ServiceStopBehavior = executionbackend.StopExecutionOnServiceStop
+.\internal\execution\adapters\codex\lifecycle.go:29:	ProbeLifecycle func(context.Context, executionbackend.LifecycleSetup) (executionbackend.CapabilityReport, error)
+.\internal\execution\adapters\codex\lifecycle.go:34:	behavior := ServiceStopBehavior
+.\internal\execution\adapters\codex\lifecycle.go:38:	return executionbackend.LifecyclePolicyCapabilities{Preparation: executionbackend.PreparationCapabilities{Workspace: executionbackend.MechanismApplicable, Resource: executionbackend.MechanismNotApplicable, Session: executionbackend.MechanismApplicable}, ServiceStopBehavior: behavior, StructuredFinalEvidence: true, ReportToolPolicy: "frozen_native_permissions; business_read_only_is_prompt_policy", LinkedWorkspaceWriteRoots: true}
+.\internal\execution\adapters\codex\lifecycle.go:88:	return &ExecutionLifecycle{setup: setup, Backend: backend, HistoryCommand: history, ProbeLifecycle: func(ctx context.Context, probeSetup executionbackend.LifecycleSetup) (executionbackend.CapabilityReport, error) {
+.\internal\execution\adapters\codex\lifecycle.go:146:	err := ProbeCapabilities(ctx, ProbeConfig{Executable: backend.Config.Executable, Args: backend.Config.Args, Repository: setup.RepositoryPath, RunDir: setup.RunDirectory}, probe)
+.\internal\execution\adapters\codex\lifecycle.go:159:func (l ExecutionLifecycle) PreflightLifecycle(ctx context.Context, setup executionbackend.LifecycleSetup) (executionbackend.CapabilityReport, error) {
+.\internal\execution\adapters\codex\lifecycle.go:160:	if l.ProbeLifecycle == nil {
+.\internal\execution\adapters\codex\lifecycle.go:163:	return l.ProbeLifecycle(ctx, setup.Clone())
+.\internal\execution\adapters\codex\lifecycle.go:593:func (l ExecutionLifecycle) CleanupLifecycle(_ context.Context, request executionbackend.LifecycleRequest) (executionbackend.LifecycleReceipt, error) {
+.\internal\execution\adapters\codex\lifecycle.go:992:func (l ExecutionLifecycle) InspectLifecycleWorkspace(ctx context.Context, snapshot executionbackend.LifecycleSnapshot) (executionbackend.WorkspaceInspection, error) {
+.\internal\execution\adapters\codex\lifecycle.go:993:	return workspace.InspectLifecycleWorkspace(ctx, l.setup, snapshot)
+.\internal\execution\adapters\orcatransport\lifecycle.go:156:	return b.LifecyclePolicyCapabilities{Preparation: b.PreparationCapabilities{Workspace: b.MechanismApplicable, Resource: resource, Session: b.MechanismApplicable}, ServiceStopBehavior: ServiceStopBehavior, StructuredFinalEvidence: true, ReportToolPolicy: policy, ResumeActiveObservation: true, LinkedWorkspaceWriteRoots: false, SeparateTurnStart: true}
+.\internal\execution\adapters\orcatransport\lifecycle.go:362:func (l *Lifecycle) PreflightLifecycle(ctx context.Context, setup b.LifecycleSetup) (b.CapabilityReport, error) {
+.\internal\execution\adapters\orcatransport\lifecycle.go:1138:func (l *Lifecycle) CleanupLifecycle(ctx context.Context, r b.LifecycleRequest) (b.LifecycleReceipt, error) {
+.\internal\execution\adapters\orcatransport\lifecycle.go:1181:func (l *Lifecycle) InspectLifecycleWorkspace(ctx context.Context, s b.LifecycleSnapshot) (b.WorkspaceInspection, error) {
+.\internal\execution\reliable\plan.go:116:func KnownAction(action b.LifecycleAction) bool {
+.\internal\execution\adapters\orcatransport\agent_test.go:20:			report, err := l.PreflightLifecycle(context.Background(), l.setup)
+.\internal\execution\adapters\orcatransport\profile.go:18:const ServiceStopBehavior = b.ContinueExecutionOnServiceStop
+.\internal\execution\adapters\codex\service_lifecycle_test.go:46:	if l.PolicyCapabilities().ServiceStopBehavior != executionbackend.StopExecutionOnServiceStop {
+.\internal\execution\adapters\codex\service_lifecycle_test.go:68:	if l.PolicyCapabilities().ServiceStopBehavior != executionbackend.ContinueExecutionOnServiceStop {

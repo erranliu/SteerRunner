@@ -1,0 +1,30 @@
+.\internal\application\artifact.go:44:	return verifyOriginalWorkspace(ctx, git, r, false)
+.\internal\application\artifact.go:46:func verifyOriginalWorkspace(ctx context.Context, git workspace.Git, r *runstate.Record, fileChannel bool) error {
+.\internal\execution\reliable\workspace.go:10:func OriginalWorkspace(snapshot b.LifecycleSnapshot) (b.WorkspaceIntent, error) {
+.\internal\execution\reliable\result.go:13:// AcceptedResult is a first-wins comparison of the already settled original
+.\internal\execution\reliable\result.go:15:func AcceptedResult(previous *b.TurnEvidence, incoming b.TurnEvidence) (bool, error) {
+.\internal\execution\reliable\result.go:62:type ContinuationConstraints struct {
+.\internal\execution\reliable\result.go:66:func (c ContinuationConstraints) RequiresAuthorization() bool {
+.\internal\execution\reliable\recovery_test.go:7:func TestClassifyRecovery(t *testing.T) {
+.\internal\execution\reliable\recovery_test.go:22:			if got := ClassifyRecovery(tc.fact); got != tc.want {
+.\internal\execution\reliable\recovery_policy.go:21:func RecoveryChange(prior RecoveryRevision, facts RecoveryFacts, available bool, unknown bool) RecoveryRevision {
+.\internal\execution\reliable\recovery_policy.go:23:	state := string(ClassifyRecovery(facts))
+.\internal\execution\reliable\recovery.go:24:func ClassifyRecovery(f RecoveryFacts) RecoveryDisposition {
+.\internal\execution\reliable\policy_test.go:111:	unchanged := RecoveryChange(prior, RecoveryFacts{WorkerLive: true}, true, false)
+.\internal\execution\reliable\policy_test.go:115:	changed := RecoveryChange(prior, RecoveryFacts{WorkerLive: true}, true, true)
+.\internal\execution\reliable\policy_test.go:130:	if !(ContinuationConstraints{PriorOwner: true}).RequiresAuthorization() {
+.\internal\application\runtime_files.go:283:		if err := verifyOriginalWorkspace(ctx, gitHost(), r, true); err != nil {
+.\internal\execution\reliable\environment.go:8:type PreparationControl struct {
+.\internal\execution\reliable\environment.go:20:func PreparationState(c PreparationControl) PreparationProgress {
+.\internal\execution\reliable\environment.go:68:func ProbeSettled(receipt *b.ProbeReceipt, evidence b.ProbeToolEvidence, invalidated bool) bool {
+.\internal\execution\backend\environment.go:8:type ProbeReceipt struct {
+.\internal\execution\backend\environment.go:17:type ProbeToolEvidence struct {
+.\internal\execution\backend\environment.go:27:type ToolContext struct {
+.\internal\execution\backend\environment.go:51:type HostOutput struct {
+.\internal\execution\backend\environment.go:56:	ProbeEvidence                                                       *ProbeToolEvidence
+.\internal\execution\backend\environment.go:59:// HostReadInput contains only immutable evidence needed to inspect one output.
+.\internal\execution\backend\environment.go:61:type HostReadInput struct {
+.\internal\execution\backend\environment.go:67:	Evidence                     ProbeToolEvidence
+.\internal\execution\backend\environment.go:70:type HostEnvironmentPort interface {
+.\internal\execution\backend\environment.go:79:	ReadProbe(ProbeIdentity, string) (*ProbeReceipt, error)
+.\internal\execution\backend\environment.go:80:	ReadWorkerOutput(context.Context, LifecycleSnapshot, HostReadInput) (HostOutput, ImplementationDataEnvelope, error)

@@ -1,0 +1,11 @@
+{
+  "schema": "steerrunner-build/v1",
+  "component": "runner",
+  "source_digest": "09d1eed0b3da70c781fe683334a2f69592b99d0640e39eb957779b2afe64f046",
+  "version": "0.2.0-dev.4",
+  "source_commit": "51e897fb694ef8afe61a380da83fe0de895ec4d1",
+  "source_dirty": true,
+  "protocol": "steerrunner-cli/v1",
+  "platform": "windows/amd64",
+  "sha256": "8d56777596af0b8bca36fec8e7228ca79e7a4a94e02194ce9135db5dfbcff978"
+}

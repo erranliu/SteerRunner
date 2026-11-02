@@ -1,0 +1,21 @@
+{
+  "checked_source_files": 694,
+  "source_mismatches": [],
+  "historical_evidence_mismatches": [],
+  "archived_wire_matches_current_saved_capture": true,
+  "wire_sha256": "941cfb9f94d2175617975200e426d56e15a99a4a45b41b7b2fd90ec07a3d414c",
+  "binaries": {
+    "integration-live.test.exe": {
+      "sha256": "efee6f714a55a3dce01450fea18efa1d77437d756f5067a4826300101d3651b2",
+      "bytes": 15627776
+    },
+    "native.test.exe": {
+      "sha256": "80345a1c7eaa5b9f8f8d24b8caddb63a4f3dd6e215580a147aae43a10e25c815",
+      "bytes": 19517440
+    },
+    "steerrunner.exe": {
+      "sha256": "8d56777596af0b8bca36fec8e7228ca79e7a4a94e02194ce9135db5dfbcff978",
+      "bytes": 21922816
+    }
+  }
+}

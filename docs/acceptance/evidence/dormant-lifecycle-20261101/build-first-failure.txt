@@ -1,0 +1,1 @@
+Initial wire-after build failed: codex/lifecycle.go retained unused workspace and os/exec imports after removing orphan wrappers; exit_code=1. Imports removed before rerun.

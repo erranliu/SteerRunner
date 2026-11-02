@@ -1,6 +1,6 @@
 # Spec：SteerRunner 产品与 CLI 契约
 
-维护日期：2026-11-01；本次核对代码基线：`8bed4c4`。本文长期维护 Runner 的能力、可靠性承诺和 CLI 契约，不随某一批实施结束而归档。
+维护日期：2026-11-01；本次核对代码基线：`51e897f` 加旧规则/Lifecycle 清理工作树差异。本文长期维护 Runner 的能力、可靠性承诺和 CLI 契约，不随某一批实施结束而归档。
 
 ## 长期产品承诺
 
@@ -92,6 +92,14 @@ scope 在新 Run 受理时冻结，公开为可选 `stop_evidence_scope`。state
 已冻结阶段输入的新派发只接受已有合法 Budget，不再从旧提示词、材料或反馈反推来源。仅 PendingTurn 副本缺失时，可在原命令、步骤、版本、Attempt、正文及模型等绑定一致、尚无该输入的持久外发意图时复制原 StageInput 的合法 Budget，并先提交再继续。尚未渲染草稿仍正常首次冻结，已有预算（包括旧来源标签）继续校验。
 
 取舍：不再保证恢复已冻结却缺 Budget 的不完整现场，即使旧算法曾能补算也拒绝新候选，可能需本人处理。此限制不阻止原查询、结果观察、accepted/unknown 只读对账、stop 或离线核验，不补写原意图/结果。state/v8、CLI 和 Workflow 版本保持，不新增迁移器或恢复框架。生产代码分项净减 103/83 行；未做同条件耗时比较，不宣称任务提速。未部署、未发布，不授予完整 L2/L3 资格。
+
+### 现行实现清理：旧规则与 Lifecycle 接口
+
+2026-11-01 已按[Spec](dormant-lifecycle-cleanup.spec.md)、[Plan](dormant-lifecycle-cleanup.plan.md)实施并完成[专项验收](../acceptance/dormant-lifecycle-cleanup.md)。删除无生产入口的旧准备/回合/恢复模型、三类未调用 Lifecycle 方法和六个无读取能力字段。实际继续资格、受理/开始区分、原操作对账、观察、结果/预算、owner/Job/reader、权限和停止仍由现有生产入口执行。
+
+保留 state/v8 的全部持久字段和动作/解码，以及 Intents/Snapshot.Operations 表示；公开 capabilities、资源摘要和编码未变。生产净减 688 行，收益为规则与维护面减少；未测同条件耗时，不承诺提速。该批取得受影响组件和三项公开受控资格，未部署/发布，不增加真实模型或完整 L1/L2/L3 资格。
+
+2026-11-02 [实现再审计](../acceptance/dormant-lifecycle-reaudit.md)复核全部保留声明和实际入口，确认持久格式及原执行、恢复、停止承诺保持；完整组件组与补充恢复/停止测试通过，无新增生产修复。
 
 ### 文档分工与维护规则
 

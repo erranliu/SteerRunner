@@ -1,0 +1,7 @@
+{
+  "allowed_changes": [
+    "Codex constructor removes dead probe callback",
+    "two PolicyCapabilities return only live fields"
+  ],
+  "retained_functions_identical": 86
+}

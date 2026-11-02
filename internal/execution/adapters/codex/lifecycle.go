@@ -8,16 +8,12 @@ import (
 	"github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/codexapp"
 	executionbackend "github.com/erranliu/SteerRunner/internal/execution/backend"
 	m "github.com/erranliu/SteerRunner/internal/execution/model"
-	"github.com/erranliu/SteerRunner/internal/execution/workspace"
-	"os/exec"
 	"path/filepath"
 	"runtime"
 	"slices"
 	"strings"
 	"time"
 )
-
-const ServiceStopBehavior = executionbackend.StopExecutionOnServiceStop
 
 // ExecutionLifecycle owns app-server session setup, turn input, observation,
 // and reconciliation. Every mutating call receives one center-persisted
@@ -26,16 +22,11 @@ type ExecutionLifecycle struct {
 	setup          executionbackend.LifecycleSetup
 	Backend        Backend
 	HistoryCommand executionbackend.Command
-	ProbeLifecycle func(context.Context, executionbackend.LifecycleSetup) (executionbackend.CapabilityReport, error)
 	prepared       *SessionHandle
 }
 
 func (l ExecutionLifecycle) PolicyCapabilities() executionbackend.LifecyclePolicyCapabilities {
-	behavior := ServiceStopBehavior
-	if l.setup.LaunchExecutionOwner != nil {
-		behavior = executionbackend.ContinueExecutionOnServiceStop
-	}
-	return executionbackend.LifecyclePolicyCapabilities{Preparation: executionbackend.PreparationCapabilities{Workspace: executionbackend.MechanismApplicable, Resource: executionbackend.MechanismNotApplicable, Session: executionbackend.MechanismApplicable}, ServiceStopBehavior: behavior, StructuredFinalEvidence: true, ReportToolPolicy: "frozen_native_permissions; business_read_only_is_prompt_policy", LinkedWorkspaceWriteRoots: true}
+	return executionbackend.LifecyclePolicyCapabilities{Preparation: executionbackend.PreparationCapabilities{Workspace: executionbackend.MechanismApplicable, Resource: executionbackend.MechanismNotApplicable, Session: executionbackend.MechanismApplicable}, ReportToolPolicy: "frozen_native_permissions; business_read_only_is_prompt_policy"}
 }
 
 func NewExecutionLifecycle(setup executionbackend.LifecycleSetup) (executionbackend.LifecyclePort, error) {
@@ -85,10 +76,7 @@ func NewExecutionLifecycle(setup executionbackend.LifecycleSetup) (executionback
 		return nil, err
 	}
 	history := ReaderCommand(executionbackend.Command{Executable: profile.Executable, Args: []string(nil)}, "")
-	return &ExecutionLifecycle{setup: setup, Backend: backend, HistoryCommand: history, ProbeLifecycle: func(ctx context.Context, probeSetup executionbackend.LifecycleSetup) (executionbackend.CapabilityReport, error) {
-		probeSetup.ProcessHost = setup.ProcessHost
-		return probeLifecycleCapabilities(ctx, backend, history, probeSetup)
-	}}, nil
+	return &ExecutionLifecycle{setup: setup, Backend: backend, HistoryCommand: history}, nil
 }
 
 func lifecycleProcessEnvironment(base []string, runID, executionID string, blocked []string) []string {
@@ -120,47 +108,6 @@ func blockedEnvironmentKey(key string, blocked []string) bool {
 		}
 	}
 	return false
-}
-
-func probeLifecycleCapabilities(ctx context.Context, backend Backend, history executionbackend.Command, setup executionbackend.LifecycleSetup) (executionbackend.CapabilityReport, error) {
-	probe := ProbePort{
-		Output: func(ctx context.Context, executable string, args []string) ([]byte, error) {
-			return setup.ProcessHost.OutputCommand(ctx, executionbackend.LaunchCommand{Executable: executable, Args: append([]string(nil), args...), WorkingDirectory: setup.RepositoryPath})
-		},
-		CheckHistory: func(ctx context.Context) error {
-			client, err := OpenHistory(ctx, history, setup.RepositoryPath, "", setup.ProcessHost.StartManaged)
-			if err != nil {
-				return err
-			}
-			client.Close()
-			return nil
-		},
-		StartManaged: func(command *exec.Cmd) (func(), error) {
-			process, err := setup.ProcessHost.StartManaged(command)
-			if err != nil {
-				return nil, err
-			}
-			return process.Close, nil
-		},
-	}
-	err := ProbeCapabilities(ctx, ProbeConfig{Executable: backend.Config.Executable, Args: backend.Config.Args, Repository: setup.RepositoryPath, RunDir: setup.RunDirectory}, probe)
-	status := executionbackend.CapabilityNotTested
-	if err == nil {
-		status = executionbackend.CapabilityVerified
-	}
-	report := executionbackend.CapabilityReport{
-		Version: 1, Backend: setup.Snapshot.Ref.Backend, Protocol: setup.Snapshot.Ref.Protocol,
-		Target: setup.Snapshot.Ref.Target, Agent: setup.Snapshot.Ref.Agent, CheckedAt: time.Now().UTC(),
-		Capabilities: []executionbackend.Capability{{Name: "start", Status: status}, {Name: "observe", Status: status}, {Name: "operation_reconciliation", Status: status}},
-	}
-	return report, err
-}
-
-func (l ExecutionLifecycle) PreflightLifecycle(ctx context.Context, setup executionbackend.LifecycleSetup) (executionbackend.CapabilityReport, error) {
-	if l.ProbeLifecycle == nil {
-		return executionbackend.CapabilityReport{}, &executionbackend.BackendError{Code: executionbackend.BackendUnsupported, Diagnostic: "lifecycle capability probe is not configured"}
-	}
-	return l.ProbeLifecycle(ctx, setup.Clone())
 }
 
 func (l ExecutionLifecycle) PreparationFacts(_ context.Context, snapshot executionbackend.LifecycleSnapshot) (executionbackend.PreparationFacts, error) {
@@ -590,10 +537,6 @@ func (l ExecutionLifecycle) StopLifecycle(ctx context.Context, request execution
 	}
 }
 
-func (l ExecutionLifecycle) CleanupLifecycle(_ context.Context, request executionbackend.LifecycleRequest) (executionbackend.LifecycleReceipt, error) {
-	return executionbackend.LifecycleReceipt{Operation: request.Operation, Disposition: executionbackend.OperationRejected}, &executionbackend.BackendError{Code: executionbackend.BackendUnsupported, Diagnostic: "app-server cleanup is owned by the workspace and process owners"}
-}
-
 func (l ExecutionLifecycle) VerifyManualRecovery(ctx context.Context, snapshot executionbackend.LifecycleSnapshot) (executionbackend.LifecycleRecoveryEvidence, error) {
 	if err := ctx.Err(); err != nil {
 		return executionbackend.LifecycleRecoveryEvidence{}, err
@@ -987,8 +930,4 @@ func (observer *lifecycleObserver) forward() {
 			return
 		}
 	}
-}
-
-func (l ExecutionLifecycle) InspectLifecycleWorkspace(ctx context.Context, snapshot executionbackend.LifecycleSnapshot) (executionbackend.WorkspaceInspection, error) {
-	return workspace.InspectLifecycleWorkspace(ctx, l.setup, snapshot)
 }
