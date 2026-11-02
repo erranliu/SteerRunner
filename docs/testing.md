@@ -210,6 +210,9 @@ PR。现行顶层数量统一见[当前清单与资格边界](test-catalog.md#�
 | result-plain | ResultAcquisition/plain-marker |
 | result-audit | ResultAcquisition/audit-zero、audit-positive、audit-offline、audit-report |
 | result-parser | ResultAcquisition/parser-unsupported、parser-complete、parser-tool |
+| restart-continuation | RestartPreservesAuthorization/graceful、kill |
+| restart-create-receipt | RestartPreservesAuthorization/creation_receipt |
+| restart-pending-stop | RestartPreservesAuthorization/pending_stop |
 
 表中测试名省略 `TestSR` 前缀。组合是常见改动的固定起点；修改共享事务、授权或原生协议时仍需按实际影响补选，不将组合当作所有改动的充分验证。
 
@@ -284,7 +287,7 @@ execute-stop 原版基线墙钟 307.29 秒，最终样本 279.10 秒；中间候
 
 八项共同保留独立现场、公开服务/submit、最终 pr_ready、thread/start=1、原权限/模型夹具、停止及服务清理。各操作和整流程的既有期限不延长。已清理的 parser-restart/parser-kill/parser-stop 条件不在原八项常量列表内，且循环变量未被重写；只删除该不可达测试分支及其专属导入，不删除业务 owner 的恢复/停止义务。
 
-本轮将 ResultFile 的回执/选择机制与 ResultAcquisition 共用，使用 `-Case <父测试/子场景>` 和 Go driver 的 `-controlled-cases`，只支持这两个已登记的父测试。每个父测试独立解析，未指定的父测试仍运行自己的完整集合；不会以全局 `-test.run` 子路径过滤其他测试。原四个组合保持，新增上表三项职责组合，当前共七个固定组合；workflow 组和完整 Controlled 的 ResultAcquisition 仍执行全部八项。
+本轮将 ResultFile 的回执/选择机制与 ResultAcquisition 共用，使用 `-Case <父测试/子场景>` 和 Go driver 的 `-controlled-cases`，支持的父测试受登记清单限制，包含 ResultFile、ResultAcquisition 和下节 Restart。每个父测试独立解析，未指定的父测试仍运行自己的完整集合；不会以全局 `-test.run` 子路径过滤其他测试。原四个组合保持，结果获取增量新增三项职责组合；加上下节 Restart 三项，当前共十个固定组合；workflow 组和完整 Controlled 的 ResultAcquisition 仍执行全部八项。
 
 ```powershell
 ./scripts/test-controlled.ps1 -Combination result-plain -OutDir .evidence/result-plain-new
@@ -300,7 +303,7 @@ execute-stop 原版基线墙钟 307.29 秒，最终样本 279.10 秒；中间候
 
 不同组合对同一父测试取并集；任一所选组/组合要求全量时保留全量。显式 Case 仅覆盖其父测试的选择，未知父测试、未知/重复 case、通配符、额外路径层级、缺父测试和旧参数冲突均拒绝。`summary.selection.cases` 与 `source-identity.controlled_cases` 记录实际请求，`result.json.controlled_cases` 按父测试记录实际完成 ID、成功布尔和包含清理的耗时。ResultFile 的原 result_file_cases 回执保留，存在通用回执时两者必须一致。
 
-`timings.case_coverage` 按父测试核实实际回执与 RUN/PASS 路径，ResultFile 还要求全部选定 enabled 叶例。完整资格须具备 ResultFile 两类和 ResultAcquisition 八项，不能仅凭 27 个父测试通过；所有定向入口仍不生成前置证明、完整资格标志始终 false。历史 ResultAcquisition 日志没有新回执时只统计成本、标 unverified_import，不补签覆盖。子场景和父测试时间不重复累计。
+`timings.case_coverage` 按父测试核实实际回执与 RUN/PASS 路径，ResultFile 还要求全部选定 enabled 叶例。完整资格须具备 ResultFile 两类、ResultAcquisition 八项及 Restart 四项，不能仅凭 27 个父测试通过；所有定向入口仍不生成前置证明、完整资格标志始终 false。历史 ResultAcquisition 日志没有新回执时只统计成本、标 unverified_import，不补签覆盖。子场景和父测试时间不重复累计。
 
 当前原版基线实际八项通过，顶层 706.39 秒（plain 50.38；audit 83.38/79.97/85.93/117.32；parser 114.49/88.90/86.01）。本轮使用固定 Runner `a7117a33ccdb0e531bad46d677b60bb502cda60d68e2c6e4d7a6aefffa03db1f`，串行采样：
 
@@ -319,6 +322,48 @@ execute-stop 原版基线墙钟 307.29 秒，最终样本 279.10 秒；中间候
 本轮完整脚本框架 27 组通过，包含选测/耗时 67 项、前置复用 75 项与 focused 契约 26 项检查；这些是框架守卫验证，不是 27 项 Controlled 全量执行。
 
 本轮实际日志、原始回执、断言对照和反例保留在 `.evidence/result-acquisition-20261102/`。这轮执行范围为定向 Controlled，完整 Controlled 集合仍为 27 项，L3/L4 不变。
+
+### Restart 职责与断言对照（2026-11-02）
+
+`TestSRRestartPreservesAuthorization` 保持一个顶层注册、默认四项，先复测原完整集合，再按职责提供定向选择。原 `execute-stop`、recovery 组及完整 Controlled 保持四项；完整 Controlled 仍为 27 项，L3/L4 不调整。
+
+| 职责 | 子场景 ID | 原有独有断言与原生预算 |
+| --- | --- | --- |
+| 原会话换代继续 | graceful、kill | 活动回合时分别优雅停服/强杀；原 owner/native 仍存活；离线原 final 完成且无后继输入；同构建换代沿原 Session 到达 pr_ready，thread/start=1、turn/start=3；显式停止后再次换代，授权关闭、ResumeRequired、revision 不变且零新输入 |
+| 创建回执恢复 | creation_receipt | 原 thread/start 已发生但 SessionID 未提交时强杀；原创建完成后换代，不要求 resume、不换 session、不重建或重发；最终 pr_ready、thread/start=1、turn/start=3 |
+| 冷启动停止优先级 | pending_stop | 活动原回合时离线，以原 run/revision/请求 ID 传 PendingStops；原回合完成也不得派发后继；重复携带已受理、revision 已旧的同一请求再换代，原请求仍可查且 turn/start=1 |
+
+四项保留独立现场、公开 EXE/CLI、原进程身份核验与资源清理。graceful/kill 退出方式及创建/停止窗口各有独有断言，保留全部四项，不合并故障窗口，不修改产品等待期限或缩短必要观察。
+
+```powershell
+./scripts/test-controlled.ps1 -Combination restart-continuation -OutDir .evidence/restart-session-new
+./scripts/test-controlled.ps1 -Combination restart-create-receipt -OutDir .evidence/restart-create-new
+./scripts/test-controlled.ps1 -Combination restart-pending-stop -OutDir .evidence/restart-stop-new
+# 三类并集恢复默认四项；现有 execute-stop 或 recovery 组也要求四项。
+./scripts/test-controlled.ps1 -Combination restart-continuation,restart-create-receipt,restart-pending-stop -OutDir .evidence/restart-all-new
+# 显式覆盖仅作用于对应父测试，ResultFile 仍按 execute-stop 运行 final-seal。
+./scripts/test-controlled.ps1 -Combination execute-stop -Case TestSRRestartPreservesAuthorization/pending_stop -OutDir .evidence/startup-stop-new
+```
+
+沿用按父测试的 Case 计划、实际完成回执和包含清理的子场景耗时；每个选中 ID 都必须在回执和 RUN/PASS 路径中精确出现。三类组合取并集，原 execute-stop、acceptance-control、recovery 及完整前置默认不收窄；显式 Case 可覆盖对应父测试。完整门禁除顶层集合外还要求 Restart 四项，只有父测试通过、完整 27 项计数或部分回执不能代替；单独核验 Restart 时也执行四项门禁。定向结果的完整资格标志保持 false，不生成前置证明。旧无回执日志只统计成本并标 unverified_import，不补签覆盖。
+
+本轮固定 Runner 为 `1e6ae83cb636f5d7043d3e4ede5b76dd92b3e4b2935ba8fbedbf60ac03d69045`，所有新版样本使用字节一致的 integration driver，串行实测如下：
+
+| 执行范围 | 实际 Restart 子场景数 | Restart 父测试耗时（秒） | 相对新版四项的样本节省 |
+| --- | --- | --- | --- |
+| 原版默认四项基线 | 4 | 134.38 | 原基线，不补签新回执 |
+| 新版默认四项 | 4 | 109.48 | 四项回执与实际路径核验通过 |
+| restart-continuation | 2 | 65.71 | 43.77 秒，39.98% |
+| restart-create-receipt | 1 | 25.05 | 84.43 秒，77.12% |
+| restart-pending-stop | 1 | 24.82 | 84.66 秒，77.33% |
+
+混合回归仅选择 Restart/pending_stop、ResultFile/final-seal，ContentGenerate 未传子场景选择；实际三项顶层全部通过，共 176.46 秒。ContentGenerate 原八项和 ResultFile 四个 enabled 叶例均完整执行，回执与日志一致。该批 Restart 单项为 55.04 秒，明显高于独立执行的 24.82 秒；全部样本保留，不以最佳单次结果推导稳定整体加速，也不将不同批次耗时相加作为一次完整覆盖。完整四项前后差异同样不能归因于本轮提速。
+
+原 graceful/kill 完整业务体提取后除缩进外一致，generation 中原创建回执及 PendingStops helper 逐字节未变，其他 workflow 测试未修改。原版/新版默认四项、三类定向和混合批次的原始 native journal 逐项核对：thread/start 均为 1，前三项 turn/start=3，pending_stop turn/start=1。实际 driver 的五种非法选择在证据创建前拒绝；显式 case 被子路径过滤、其他父测试通过但选中父测试未执行也均失败。
+
+完整脚本框架 27 组通过，包含选测/覆盖 86 项、前置复用 75 项和 focused 契约 26 项；覆盖缺项、错误父归属、跳过、重复、假回执及“完整 27 个父测试但 Restart 不全”等拒绝路径。框架组数不等于本轮执行了完整 27 项 Controlled。
+
+完整本地样本、原始调用记录、断言/职责对照和反例位于 `.evidence/restart-selection-20261102/`，汇总为 `comparison.json`。这轮是定向 Controlled 验证，完整注册仍为 27 项，未据此授予完整 L1/Controlled 或真实模型资格。
 
 ## 测试清单维护规则
 

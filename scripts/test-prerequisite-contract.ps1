@@ -131,7 +131,7 @@ function Assert-SRControlledEvidence([string]$Directory, [string[]]$Expected) {
     $passed = @([regex]::Matches($log, '(?m)^--- PASS: (Test\w+) \(') | ForEach-Object { $_.Groups[1].Value })
     Assert-SRPrerequisiteSet $passed $Expected 'Controlled'
     if ($result.exit_code -ne 0 -or $result.scenario_count -ne $Expected.Count -or $log -match '--- (SKIP|FAIL):' -or -not (Test-SRControlledHarnessComplete $Directory)) { throw 'Controlled prerequisite failed, skipped or is still running' }
-    if ($Expected -ccontains 'TestSRResultFile' -or $Expected -ccontains 'TestSRResultAcquisition') {
+    if ($Expected -ccontains 'TestSRResultFile' -or $Expected -ccontains 'TestSRResultAcquisition' -or $Expected -ccontains 'TestSRRestartPreservesAuthorization') {
         . (Join-Path $PSScriptRoot 'controlled-tests.ps1')
         $caseDefinitions=Get-SRControlledCaseDefinitions
         foreach ($parent in $caseDefinitions.Keys) {

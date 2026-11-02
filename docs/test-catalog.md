@@ -222,11 +222,13 @@ L4 的候选扩展只有证明独有覆盖、冻结可重现触发与唯一预�
 | 通用 L2–L4 合计 | 28 场景 / 36 case | 不包含独立原生专项或 Controlled 顶层测试 |
 | 独立原生 L3 专项 | 4 项 | 见下表；`test.ps1 -Level L3` 不自动执行这些专项 |
 
-Controlled 的六个主分组、七个固定选测组合（原四项加结果获取三类）、只读历史耗时统计与报告字段见[执行说明](testing.md#controlled-分组固定选测与耗时2026-11-02)。元数据位于 `tests/catalog.json.controlled_selection`，不改变原完整集合；选测即使覆盖全部注册项也不授予完整资格，不生成前置复用证明。
+Controlled 的六个主分组、十个固定选测组合（原四项加结果获取三类及 Restart 三类）、只读历史耗时统计与报告字段见[执行说明](testing.md#controlled-分组固定选测与耗时2026-11-02)。元数据位于 `tests/catalog.json.controlled_selection`，不改变原完整集合；选测即使覆盖全部注册项也不授予完整资格，不生成前置复用证明。
 
 ResultFile 仍占一个顶层注册，默认执行 `optional-file-failure-business-loop` 与 `final-seal`，各保留 enabled-0..3；`execute-stop` 仅收窄 ResultFile 为 final-seal，完整入口及 runtime-files/files 组保持两类。原断言对照、组合并集、实际叶例取证及资格拒绝规则见[ResultFile 定向说明](testing.md#resultfile-职责与定向粒度2026-11-02)。L3/L4 注册、分级和测试内容未调整。
 
 ResultAcquisition 仍为一个顶层注册、默认八项；普通结果/审计/parser 三类定向子集复用按父测试的 Case 选择和实际覆盖核验，完整前置不能缺任一原子场景。断言、原生预算、当前基线与不可达分支清理边界见[断言对照](testing.md#resultacquisition-断言对照2026-11-02)。
+
+RestartPreservesAuthorization 仍为一个顶层注册、默认 graceful/kill/creation_receipt/pending_stop 四项。新增会话换代、创建回执和冷启动停止三类定向组合；原 execute-stop 保留四项，按父测试取证和完整门禁要求四项齐全。职责及原断言对照见[Restart 定向说明](testing.md#restart-职责与断言对照2026-11-02)。
 
 专项内部子变体、审计子变体和并行调度框架检查另在原始日志登记，不重复计为通用 case。
 
