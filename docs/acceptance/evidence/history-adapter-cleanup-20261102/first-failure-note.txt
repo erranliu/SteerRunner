@@ -1,0 +1,1 @@
+First wire-after go run returned exit 1: history.go:308:60 and :309:28 undefined: executionvalues. Exact components/application JSON diagnostics archived separately. Design missed shared MessagePhase values; preserved original declarations in message_phase.go and retained actual import before rerun. This note is not complete original wire stdout.

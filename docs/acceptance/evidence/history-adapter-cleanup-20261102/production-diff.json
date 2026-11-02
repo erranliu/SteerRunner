@@ -1,0 +1,102 @@
+{
+  "production": {
+    "A": {
+      "added": 11,
+      "deleted": 886,
+      "net_removed": 875
+    },
+    "B": {
+      "added": 0,
+      "deleted": 111,
+      "net_removed": 111
+    }
+  },
+  "files": [
+    {
+      "path": "internal/execution/adapters/codex/conversation_adapter.go",
+      "added": 0,
+      "deleted": 425,
+      "group": "A",
+      "test": false
+    },
+    {
+      "path": "internal/execution/adapters/codex/conversation_adapter_test.go",
+      "added": 0,
+      "deleted": 307,
+      "group": "A",
+      "test": true
+    },
+    {
+      "path": "internal/execution/adapters/codex/final_history_test.go",
+      "added": 0,
+      "deleted": 46,
+      "group": "A",
+      "test": true
+    },
+    {
+      "path": "internal/execution/adapters/codex/history.go",
+      "added": 0,
+      "deleted": 167,
+      "group": "A",
+      "test": false
+    },
+    {
+      "path": "internal/execution/adapters/codex/history_binding.go",
+      "added": 2,
+      "deleted": 6,
+      "group": "A",
+      "test": false
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/backend.go",
+      "added": 0,
+      "deleted": 62,
+      "group": "B",
+      "test": false
+    },
+    {
+      "path": "internal/execution/backend/backend.go",
+      "added": 0,
+      "deleted": 16,
+      "group": "B",
+      "test": false
+    },
+    {
+      "path": "internal/execution/backend/capability.go",
+      "added": 0,
+      "deleted": 33,
+      "group": "B",
+      "test": false
+    },
+    {
+      "path": "internal/execution/conversation/source.go",
+      "added": 0,
+      "deleted": 67,
+      "group": "A",
+      "test": false
+    },
+    {
+      "path": "internal/execution/evidence/conversation.go",
+      "added": 0,
+      "deleted": 221,
+      "group": "A",
+      "test": false
+    },
+    {
+      "path": "internal/execution/evidence/message_phase.go",
+      "added": 9,
+      "deleted": 0,
+      "group": "A",
+      "test": false
+    },
+    {
+      "path": "internal/execution/adapters/codex/history_binding_fixture_test.go",
+      "added": 12,
+      "deleted": 0,
+      "group": "A",
+      "test": true
+    }
+  ],
+  "production_net_removed": 986,
+  "tests_net_removed": 341
+}

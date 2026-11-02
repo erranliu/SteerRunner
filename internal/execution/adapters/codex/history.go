@@ -118,17 +118,6 @@ func OpenHistory(ctx context.Context, command executionbackend.Command, dir, hom
 	return c, nil
 }
 
-func CheckHistory(ctx context.Context, command executionbackend.Command, dir string, start func(*exec.Cmd) (executionbackend.StopHandle, error)) error {
-	probeCtx, cancel := context.WithTimeout(ctx, 5*time.Second)
-	defer cancel()
-	client, err := OpenHistory(probeCtx, command, dir, "", start)
-	if err != nil {
-		return err
-	}
-	client.Close()
-	return nil
-}
-
 func (c *HistoryClient) Close() {
 	_ = c.input.Close()
 	// Let the public reader close its native stores after stdin EOF. It never
@@ -214,31 +203,6 @@ type HistoryTurn struct {
 	CompletedAt *int64            `json:"completedAt"`
 }
 
-type HistoryPage struct {
-	Data            []HistoryTurn `json:"data"`
-	NextCursor      *string       `json:"nextCursor"`
-	BackwardsCursor *string       `json:"backwardsCursor"`
-}
-
-const MaxHistoryCursorBytes = 4096
-
-func (c *HistoryClient) ReadMetadata(ctx context.Context, id, cwd string) error {
-	raw, err := c.call(ctx, "thread/read", map[string]any{"threadId": id, "includeTurns": false})
-	if err != nil {
-		return err
-	}
-	var result struct {
-		Thread HistoryThread `json:"thread"`
-	}
-	if err = json.Unmarshal(raw, &result); err != nil {
-		return err
-	}
-	if result.Thread.ID != id || canonicalPath(result.Thread.Cwd) != canonicalPath(cwd) {
-		return errors.New("Codex history session/workspace identity mismatch")
-	}
-	return nil
-}
-
 // ReadThread reads the original durable thread without resuming or starting it.
 func (c *HistoryClient) ReadThread(ctx context.Context, id, cwd string) (HistoryThread, error) {
 	raw, err := c.call(ctx, "thread/read", map[string]any{"threadId": id, "includeTurns": true})
@@ -279,117 +243,6 @@ func historyThreadIdle(thread HistoryThread, stoppedTurn string) bool {
 	return true
 }
 
-func (c *HistoryClient) ReadPage(ctx context.Context, id, cursor string) (HistoryPage, error) {
-	params := map[string]any{"threadId": id, "limit": 1, "sortDirection": "asc", "itemsView": "full"}
-	if cursor != "" {
-		params["cursor"] = cursor
-	}
-	raw, err := c.call(ctx, "thread/turns/list", params)
-	if err != nil {
-		return HistoryPage{}, err
-	}
-	var page HistoryPage
-	err = json.Unmarshal(raw, &page)
-	if len(page.Data) > 1 {
-		return HistoryPage{}, errors.New("Codex ignored the one-turn page limit")
-	}
-	for _, turn := range page.Data {
-		if turn.ItemsView != "full" {
-			return HistoryPage{}, errors.New("Codex did not return full turn items")
-		}
-	}
-	for _, token := range []*string{page.NextCursor, page.BackwardsCursor} {
-		if token != nil && len(*token) > MaxHistoryCursorBytes {
-			return HistoryPage{}, errors.New("Codex turn cursor exceeds the bounded source limit")
-		}
-	}
-	return page, err
-}
-
-func MapHistoryTurn(base executionvalues.ConversationEvent, turn HistoryTurn, sequence uint64) ([]executionvalues.ConversationWrite, error) {
-	if turn.ID == "" {
-		return nil, errors.New("Codex history turn omitted native identity")
-	}
-	base.Version, base.Source, base.SourceRole = executionvalues.ConversationVersion, "codex-app-server", executionvalues.ConversationSourceCanonical
-	base.TurnID, base.TurnQuality, base.SessionQuality = turn.ID, executionvalues.IdentityNative, executionvalues.IdentityNative
-	base.ItemQuality, base.SourceEventQuality = executionvalues.IdentityUnknown, executionvalues.IdentityDerived
-	base.Phase, base.ReceivedAt = executionvalues.MessagePhaseUnknown, time.Now().UTC()
-	base.Evidence = map[string]string{"capture": "thread/turns/list", "identity_rule": "native-session-turn-item-and-final-v1"}
-	start := base
-	start.Type, start.SourceEventID, start.FinalAvailability = executionvalues.ConversationTurnStarted, "turn:"+turn.ID+":started", executionvalues.FinalUnknown
-	start.SourceSeq = sequence
-	writes := []executionvalues.ConversationWrite{{Event: start}}
-	terminal := turn.CompletedAt != nil && (turn.Status == "completed" || turn.Status == "failed" || turn.Status == "interrupted")
-	if !terminal {
-		return writes, nil
-	}
-	finalSeen, unknownPhase, missingFinal := false, false, false
-	for _, raw := range turn.Items {
-		var item struct {
-			ID       string  `json:"id"`
-			Type     string  `json:"type"`
-			Text     *string `json:"text"`
-			Phase    string  `json:"phase"`
-			Delivery string  `json:"delivery"`
-		}
-		if err := json.Unmarshal(raw, &item); err != nil {
-			return nil, err
-		}
-		if item.Type != "agentMessage" || item.Delivery == "async" {
-			continue
-		}
-		if item.Phase != string(executionvalues.MessagePhaseFinalAnswer) {
-			unknownPhase = unknownPhase || item.Phase != string(executionvalues.MessagePhaseCommentary)
-			continue
-		}
-		if item.ID == "" {
-			return nil, errors.New("Codex final omitted native item identity")
-		}
-		if item.Text == nil {
-			missingFinal = true
-			continue
-		}
-		event := base
-		event.Type, event.Phase, event.FinalAvailability = executionvalues.ConversationMessageComplete, executionvalues.MessagePhaseFinalAnswer, executionvalues.FinalAvailable
-		event.ItemID, event.ItemQuality = item.ID, executionvalues.IdentityNative
-		event.ItemKey = conversationItemKey(event, item.ID)
-		event.SourceEventID = "turn:" + turn.ID + ":final:" + item.ID + ":" + digestValue(*item.Text)
-		writes = append(writes, executionvalues.ConversationWrite{Event: event, Body: []byte(*item.Text), BodyMode: "complete", BodySource: "codex-app-server"})
-		finalSeen = true
-	}
-	end := base
-	end.Status, end.FinalAvailability = turn.Status, executionvalues.FinalAbsent
-	if len(turn.Error) > 0 && string(turn.Error) != "null" {
-		end.Diagnostic = clip(string(turn.Error), 2000)
-	}
-	switch turn.Status {
-	case "completed":
-		end.Type = executionvalues.ConversationTurnCompleted
-	case "failed":
-		end.Type = executionvalues.ConversationTurnFailed
-	case "interrupted":
-		end.Type = executionvalues.ConversationTurnCancelled
-	}
-	if finalSeen {
-		end.FinalAvailability = executionvalues.FinalAvailable
-	} else if unknownPhase || missingFinal {
-		end.FinalAvailability = executionvalues.FinalUnknown
-	}
-	end.SourceEventID = "turn:" + turn.ID + ":status:" + turn.Status + ":final:" + string(end.FinalAvailability)
-	writes = append(writes, executionvalues.ConversationWrite{Event: end})
-	if missingFinal || !finalSeen {
-		gap := base
-		gap.Type, gap.Status, gap.FinalAvailability = executionvalues.ConversationGap, "final_unavailable", end.FinalAvailability
-		gap.SourceEventID = "turn:" + turn.ID + ":final-unavailable:" + string(end.FinalAvailability)
-		gap.Diagnostic = "The native completed turn has no verifiable complete final reply; inspect its original session."
-		writes = append(writes, executionvalues.ConversationWrite{Event: gap})
-	}
-	for i := range writes {
-		writes[i].Event.SourceSeq = sequence + uint64(i)
-	}
-	return writes, nil
-}
-
 func canonicalPath(s string) string {
 	s = filepath.Clean(s)
 	if runtime.GOOS == "windows" {
@@ -414,26 +267,6 @@ func digestValue(v any) string {
 	h := sha256.Sum256(b)
 	return hex.EncodeToString(h[:])
 }
-
-func conversationItemKey(e executionvalues.ConversationEvent, id string) string {
-	if id == "" {
-		return ""
-	}
-	e.ItemID = id
-	h := sha256.Sum256([]byte(e.ItemIdentity()))
-	return hex.EncodeToString(h[:])
-}
-
-func cloneStringMap(v map[string]string) map[string]string {
-	out := map[string]string{}
-	for k, x := range v {
-		out[k] = x
-	}
-	return out
-}
-
-func (c *HistoryClient) UserAgent() string  { return c.userAgent }
-func (c *HistoryClient) NativeHome() string { return c.serverHome }
 
 func ReaderCommand(command executionbackend.Command, profile string) executionbackend.Command {
 	command.Args = append([]string(nil), command.Args...)

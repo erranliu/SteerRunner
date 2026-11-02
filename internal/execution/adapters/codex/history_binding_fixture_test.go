@@ -1,0 +1,12 @@
+package codexworker
+
+import (
+	executionbackend "github.com/erranliu/SteerRunner/internal/execution/backend"
+	"os"
+)
+
+func historyFixtureBinding(workspace, workflow, execution, attempt, session string) HistoryBinding {
+	return HistoryBinding{Version: 1, ProjectID: "project", CorrelationID: "task", WorkflowID: workflow, ExecutionID: execution, AttemptID: attempt,
+		Backend: executionbackend.BackendLocal, Protocol: executionbackend.ProtocolLocalProcess, TargetID: "local", Workspace: workspace,
+		SessionID: session, Command: executionbackend.Command{Executable: os.Args[0], Args: []string{"-test.run=^TestConversationHistoryProtocolHelper$"}}}
+}

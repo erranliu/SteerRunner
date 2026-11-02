@@ -1,0 +1,29 @@
+{
+  "new_confirmed_defects": [],
+  "production_test_fix_required": false,
+  "moved_declarations": "4 original phase declarations + 64 KiB limit + original shared historyFixtureBinding",
+  "shared_fixture": "original function body and recovery_history_test.go unchanged; old mock-name argv remains only a frozen comparison value, not an execution consumer",
+  "text_inventory_homonyms": {
+    "Observe": "Engine/Store and Codex notification observation; distinct from retired Orca Backend method",
+    "Probe": "process facts and Host input field; distinct from retired Orca Backend probe",
+    "InspectWorkspace": "standalone live Orca workspace function; not retired Backend method",
+    "Backend": "live direct Codex type and ref fields; retired Orca wrapper had no construction",
+    "UserAgent": "native initialize field, not retired getter",
+    "FinalAvailable": "public ExecutionView field, not retired evidence enum",
+    "Capability": "preparation comment, not removed private type",
+    "clip": "workspace package helper, not removed Codex helper"
+  },
+  "format_basis": [
+    "all 46 retained declarations unchanged and 6 moves identical, 17 retained types",
+    "no changes outside reviewed production deletion files",
+    "no persistent fields/decoder/store roots removed",
+    "regenerated 140590-byte wire/capabilities/resource sample equals original baseline"
+  ],
+  "reliability_unchanged": [
+    "durable intent/receipt before dispatch",
+    "unknown read-only original reconciliation",
+    "native result provenance and phase",
+    "same-build original-owner recovery",
+    "actual StopLifecycle/ShutdownLifecycle and Job/reader cleanup"
+  ]
+}

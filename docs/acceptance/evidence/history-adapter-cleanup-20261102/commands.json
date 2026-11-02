@@ -1,0 +1,23 @@
+{
+  "wire": "go run .evidence/history-adapter-cleanup/wire-audit.go .evidence/history-adapter-cleanup/wire-before.json (before production edits); same tool to wire-after.json after phase fix",
+  "retained": "go run .evidence/history-adapter-cleanup/retained-audit.go",
+  "components": "go test ./internal/execution/... ./internal/runstate ./internal/contracts ./internal/resources ./internal/storage -count=1 -timeout 5m -json",
+  "application": "go test ./internal/application -run '^(TestSROperation.*|TestSRManual.*|TestSRObservation.*|TestSRStopSerializesWithNativeDispatch|TestSRStopBindingCommitFailureDoesNotDispatch|TestSRStopRecoversLateCreationFactsUnderOriginalIntent|TestFrozenBudget.*|TestSRPreparationQuery.*|TestRAResumeConsumedActiveInputWaitsForOriginalEvidence|TestSingleExecutionLateFinalPreservesOriginalStop|TestSRExecutionWaitStopKeepsControlPriority|TestSRPreparationDeadlinePreservesQueuedOrcaBudgetAcrossReload|TestLocalCodex.*|TestServiceGeneration.*|TestWorkflowRecovery.*|TestAnswerInputCapability.*|TestContentRecovery.*)$' -count=1 -timeout 5m -json",
+  "build": "scripts/build.ps1 -OutFile .evidence/history-adapter-cleanup/bin/steerrunner.exe",
+  "compile": [
+    "go test -c -tags live -o .evidence/history-adapter-cleanup/bin/native.test.exe ./tests/native",
+    "go test -c -tags live -o .evidence/history-adapter-cleanup/bin/integration-live.test.exe ./tests/integration"
+  ],
+  "foundation": "scripts/test-foundation.ps1 -OutDir .evidence/history-adapter-cleanup/foundation -Pattern '^(TestSRNativeUnknownAndStop|TestSRRestartPreservesAuthorization)$' -RunnerExe .evidence/history-adapter-cleanup/bin/steerrunner.exe -TimeoutMinutes 8",
+  "final_exit_codes": {
+    "wire": 0,
+    "retained": 0,
+    "components": 0,
+    "application": 0,
+    "build": 0,
+    "native_compile": 0,
+    "integration_compile": 0,
+    "foundation": 0
+  },
+  "sequence": "first phase compilation failures; phase fix; application passed; component retry exposed shared test helper; two CLI scenarios passed; move original test fixture; full component retry passed; final rebuild identical Runner bytes and formal live compile passed; no duplicate application/CLI counts"
+}

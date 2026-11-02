@@ -3,14 +3,14 @@ package codexworker
 import (
 	"encoding/json"
 	"errors"
-	executionvalues "github.com/erranliu/SteerRunner/internal/execution/evidence"
 	"io"
 	"os"
 	"path/filepath"
-	"time"
 
 	executionbackend "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
+
+const maxConversationCursorBytes = 64 << 10
 
 type HistoryBinding struct {
 	Version       int                                `json:"v"`
@@ -48,10 +48,6 @@ func (b HistoryBinding) Identity() string {
 		Session, Home, Workspace string
 		Command                  executionbackend.Command
 	}{b.SessionID, b.Home, canonicalPath(b.Workspace), b.Command})
-}
-
-func (b HistoryBinding) Event() executionvalues.ConversationEvent {
-	return executionvalues.ConversationEvent{Version: executionvalues.ConversationVersion, ProjectID: b.ProjectID, CorrelationID: b.CorrelationID, WorkflowID: b.WorkflowID, ExecutionID: b.ExecutionID, AttemptID: b.AttemptID, Backend: b.Backend, Protocol: b.Protocol, Agent: "codex", TargetID: b.TargetID, ExternalRef: b.ExternalRef, Source: "codex-app-server", SourceRole: executionvalues.ConversationSourceCanonical, SourceSegment: b.Identity(), SourceIdentity: b.Identity(), SessionID: b.SessionID, SessionQuality: executionvalues.IdentityNative, TurnQuality: executionvalues.IdentityUnknown, ItemQuality: executionvalues.IdentityUnknown, SourceEventQuality: executionvalues.IdentityDerived, Phase: executionvalues.MessagePhaseUnknown, ReceivedAt: time.Now().UTC()}
 }
 
 func WriteHistoryBinding(path string, b HistoryBinding, writeAtomic func(string, []byte) error) error {

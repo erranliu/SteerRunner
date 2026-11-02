@@ -1,0 +1,91 @@
+internal\execution\adapters\codex\conversation_adapter_test.go:85:	path := localConversationHistoryBindingPath(runDirectory, binding.SessionID)
+internal\execution\adapters\codex\conversation_adapter_test.go:86:	if err := WriteHistoryBinding(path, binding, func(path string, data []byte) error { return os.WriteFile(path, data, 0600) }); err != nil {
+internal\execution\adapters\codex\conversation_adapter_test.go:93:	port := NewConversationAdapter()
+internal\execution\adapters\codex\conversation_adapter_test.go:94:	wrong, err := port.DiscoverHistory(context.Background(), discovery)
+internal\execution\adapters\codex\conversation_adapter_test.go:100:	secondPath := localConversationHistoryBindingPath(runDirectory, second.SessionID)
+internal\execution\adapters\codex\conversation_adapter_test.go:101:	if err = WriteHistoryBinding(secondPath, second, func(path string, data []byte) error { return os.WriteFile(path, data, 0600) }); err != nil {
+internal\execution\adapters\codex\conversation_adapter_test.go:104:	result, err := port.DiscoverHistory(context.Background(), discovery)
+internal\execution\adapters\codex\conversation_adapter_test.go:118:	if err := WriteHistoryBinding(path, binding, func(path string, data []byte) error { return os.WriteFile(path, data, 0600) }); err != nil {
+internal\execution\adapters\codex\conversation_adapter_test.go:122:	_, err := NewConversationAdapter().ReadHistory(context.Background(), conversationtypes.ConversationHistoryReadRequest{Source: source}, startHistoryFixtureProcess)
+internal\execution\adapters\codex\conversation_adapter_test.go:133:	binding := HistoryBinding{Version: 1, ProjectID: "project", CorrelationID: "task", WorkflowID: "workflow", ExecutionID: "execution", AttemptID: "attempt",
+internal\execution\adapters\codex\conversation_adapter_test.go:137:	if err := WriteHistoryBinding(path, binding, func(path string, data []byte) error { return os.WriteFile(path, data, 0600) }); err != nil {
+internal\execution\adapters\codex\conversation_adapter_test.go:144:	first, err := port.ReadHistory(ctx, conversationtypes.ConversationHistoryReadRequest{Source: source}, startHistoryFixtureProcess)
+internal\execution\adapters\codex\conversation_adapter_test.go:148:	retry, err := port.ReadHistory(ctx, conversationtypes.ConversationHistoryReadRequest{Source: source}, startHistoryFixtureProcess)
+internal\execution\adapters\codex\conversation_adapter_test.go:160:	second, err := port.ReadHistory(ctx, conversationtypes.ConversationHistoryReadRequest{Source: source, Cursor: retry.Cursor, HasCheckpoint: true}, startHistoryFixtureProcess)
+internal\execution\adapters\codex\conversation_adapter_test.go:172:	resolved, err := port.ReadHistory(ctx, conversationtypes.ConversationHistoryReadRequest{Source: source, Cursor: second.Cursor, HasCheckpoint: true}, startHistoryFixtureProcess)
+internal\execution\adapters\codex\conversation_adapter_test.go:216:func historyFixtureBinding(workspace, workflow, execution, attempt, session string) HistoryBinding {
+internal\execution\adapters\codex\conversation_adapter_test.go:217:	return HistoryBinding{Version: 1, ProjectID: "project", CorrelationID: "task", WorkflowID: workflow, ExecutionID: execution, AttemptID: attempt,
+internal\execution\adapters\codex\conversation_adapter_test.go:291:	if err := WriteHistoryBinding(path, binding, func(path string, data []byte) error { return os.WriteFile(path, data, 0600) }); err != nil {
+internal\execution\adapters\codex\conversation_adapter_test.go:300:	_, err := NewConversationAdapter().ReadHistory(context.Background(), conversationtypes.ConversationHistoryReadRequest{Source: source}, func(*exec.Cmd) (executionbackend.StopHandle, error) {
+internal\execution\adapters\codex\conversation_adapter.go:19:const maxConversationCursorBytes = 64 << 10
+internal\execution\adapters\codex\conversation_adapter.go:56:func historyPosition(binding HistoryBinding, cursor codexHistoryCursor) historyPositionEnvelope {
+internal\execution\adapters\codex\conversation_adapter.go:61:func encodeHistoryPosition(binding HistoryBinding, cursor codexHistoryCursor) (string, error) {
+internal\execution\adapters\codex\conversation_adapter.go:68:	if len(raw) > maxConversationCursorBytes {
+internal\execution\adapters\codex\conversation_adapter.go:74:func decodeHistoryPosition(binding HistoryBinding, raw string) (codexHistoryCursor, error) {
+internal\execution\adapters\codex\conversation_adapter.go:76:	if len(raw) > maxConversationCursorBytes {
+internal\execution\adapters\codex\conversation_adapter.go:100:func NewConversationAdapter() conversationtypes.ConversationSourcePort {
+internal\execution\adapters\codex\conversation_adapter.go:104:func (a *ConversationAdapter) DiscoverHistory(ctx context.Context, discovery conversationtypes.ConversationDiscovery) (conversationtypes.ConversationDiscoveryResult, error) {
+internal\execution\adapters\codex\conversation_adapter.go:172:				binding, readErr := ReadHistoryBinding(bindingPath)
+internal\execution\adapters\codex\conversation_adapter.go:194:func (a *ConversationAdapter) ReadHistory(ctx context.Context, request conversationtypes.ConversationHistoryReadRequest, start func(*exec.Cmd) (executionbackend.StopHandle, error)) (conversationtypes.ConversationHistoryBatch, error) {
+internal\execution\adapters\codex\conversation_adapter.go:195:	binding, err := ReadHistoryBinding(request.Source.BindingPath)
+internal\execution\adapters\codex\conversation_adapter.go:253:			mapped, mapErr := MapHistoryTurn(base, turn, cursor.Sequence+uint64(len(writes))+1)
+internal\execution\adapters\codex\conversation_adapter.go:259:		native, inspectErr := InspectHistoryTurn(turn)
+internal\execution\adapters\codex\conversation_adapter.go:306:		native, inspectErr := InspectHistoryTurn(page.Data[0])
+internal\execution\adapters\codex\conversation_adapter.go:320:	report := &executionvalues.ConversationCapabilityReport{Version: 1, Backend: binding.Backend, Protocol: binding.Protocol, Agent: "codex", AgentVersion: version,
+internal\execution\adapters\codex\conversation_adapter.go:327:func historyCapabilities(binding HistoryBinding, page HistoryPage, hadCheckpoint bool) []executionvalues.ConversationCapability {
+internal\execution\adapters\codex\conversation_adapter.go:347:		native, err := InspectHistoryTurn(turn)
+internal\execution\adapters\codex\conversation_adapter.go:369:func bindingMatches(b HistoryBinding, base executionvalues.ConversationEvent, workspace, attempt, filename, directory string) bool {
+internal\execution\adapters\codex\conversation_adapter.go:376:	return filename == filepath.Base(localConversationHistoryBindingPath(directory, b.SessionID))
+internal\execution\adapters\codex\conversation_adapter.go:379:func localConversationHistoryBindingPath(dir, session string) string {
+internal\execution\adapters\orcatransport\backend.go:25:func (v Backend) Probe(ctx context.Context, target b.ExecutionTarget, agent b.AgentSpec) (b.CapabilityReport, error) {
+internal\execution\adapters\orcatransport\backend.go:27:		return b.CapabilityReport{}, errors.New("Orca probe differs from configured target")
+internal\execution\adapters\orcatransport\backend.go:31:		return b.CapabilityReport{}, fmt.Errorf("Orca terminal preflight: %w", err)
+internal\execution\adapters\orcatransport\backend.go:33:	return b.CapabilityReport{Version: 1, Backend: b.BackendOrca, Protocol: b.ProtocolOrcaTerminalV3, Target: target, Agent: agent, CheckedAt: time.Now().UTC(), Capabilities: []b.Capability{{Name: "start", Status: b.CapabilityNotTested}, {Name: "observe", Status: b.CapabilityNotTested}, {Name: "stop", Status: b.CapabilityNotTested}, {Name: "output_reading", Status: b.CapabilityNotTested}}}, nil
+internal\execution\evidence\conversation.go:153:type ConversationCapabilityReport struct {
+internal\execution\conversation\source.go:11:type ConversationSourcePort interface {
+internal\execution\conversation\source.go:12:	DiscoverHistory(context.Context, ConversationDiscovery) (ConversationDiscoveryResult, error)
+internal\execution\conversation\source.go:13:	ReadHistory(context.Context, ConversationHistoryReadRequest, func(*exec.Cmd) (executionbackend.StopHandle, error)) (ConversationHistoryBatch, error)
+internal\execution\conversation\source.go:66:	Capabilities *executionmodel.ConversationCapabilityReport
+internal\execution\backend\capability.go:21:type CapabilityReport struct {
+internal\execution\backend\backend.go:44:type ExecutionProbe interface {
+internal\execution\backend\backend.go:46:	Probe(context.Context, ExecutionTarget, AgentSpec) (CapabilityReport, error)
+internal\execution\backend\backend.go:50:type ExecutionBackend interface {
+internal\execution\backend\backend.go:51:	ExecutionProbe
+internal\execution\backend\backend.go:70:type ExecutionStopper interface {
+internal\execution\adapters\codex\history.go:309:func MapHistoryTurn(base executionvalues.ConversationEvent, turn HistoryTurn, sequence uint64) ([]executionvalues.ConversationWrite, error) {
+internal\execution\adapters\codex\history.go:463:func InspectHistoryTurn(turn HistoryTurn) (HistoryTurnFacts, error) {
+internal\execution\adapters\codex\lifecycle.go:398:		facts, err := InspectHistoryTurn(turn)
+internal\execution\adapters\codex\lifecycle.go:586:	path := localHistoryBindingPath(filepath.Join(l.Backend.Config.RunDir, "runs", snapshot.Session.WorkflowRunID, "turns", command), binding.SessionID)
+internal\execution\adapters\codex\lifecycle.go:587:	history, err := ReadHistoryBinding(path)
+internal\execution\adapters\codex\lifecycle.go:668:	if err := l.writeHistoryBinding(snapshot, binding, handle); err != nil {
+internal\execution\adapters\codex\lifecycle.go:718:	if err := l.writeHistoryBinding(snapshot, binding, handle); err != nil {
+internal\execution\adapters\codex\lifecycle.go:757:func (l ExecutionLifecycle) writeHistoryBinding(snapshot executionbackend.LifecycleSnapshot, binding Binding, handle *SessionHandle) error {
+internal\execution\adapters\codex\lifecycle.go:765:	history := HistoryBinding{
+internal\execution\adapters\codex\lifecycle.go:773:	if err := WriteHistoryBinding(localHistoryBindingPath(handle.Paths.TurnDir, binding.SessionID), history, l.Backend.Process.WriteAtomic); err != nil {
+internal\execution\adapters\codex\lifecycle.go:779:func localHistoryBindingPath(dir, session string) string {
+internal\execution\adapters\codex\final_history_test.go:19:	writes, err := MapHistoryTurn(base, turn, 1)
+internal\execution\adapters\codex\final_history_test.go:31:	active, err := MapHistoryTurn(base, turn, 10)
+internal\execution\adapters\codex\final_history_test.go:37:	missing, err := MapHistoryTurn(base, turn, 20)
+internal\execution\adapters\codex\history_binding.go:15:type HistoryBinding struct {
+internal\execution\adapters\codex\history_binding.go:33:func (b HistoryBinding) Validate() error {
+internal\execution\adapters\codex\history_binding.go:46:func (b HistoryBinding) Identity() string {
+internal\execution\adapters\codex\history_binding.go:53:func (b HistoryBinding) Event() executionvalues.ConversationEvent {
+internal\execution\adapters\codex\history_binding.go:57:func WriteHistoryBinding(path string, b HistoryBinding, writeAtomic func(string, []byte) error) error {
+internal\execution\adapters\codex\history_binding.go:59:		var previous HistoryBinding
+internal\execution\adapters\codex\history_binding.go:77:func ReadHistoryBinding(path string) (HistoryBinding, error) {
+internal\execution\adapters\codex\history_binding.go:78:	var b HistoryBinding
+internal\execution\adapters\codex\history_binding.go:94:	if !info.Mode().IsRegular() || info.Size() > maxConversationCursorBytes {
+internal\execution\adapters\codex\history_binding.go:102:	raw, err := io.ReadAll(io.LimitReader(file, maxConversationCursorBytes+1))
+internal\execution\adapters\codex\history_binding.go:106:	if len(raw) > maxConversationCursorBytes {
+internal\execution\adapters\codex\recovery_history_test.go:44:		change func(*HistoryBinding)
+internal\execution\adapters\codex\recovery_history_test.go:46:		{"project", func(h *HistoryBinding) { h.ProjectID = "another-project" }},
+internal\execution\adapters\codex\recovery_history_test.go:47:		{"execution", func(h *HistoryBinding) { h.ExecutionID = strings.Repeat("d", 32) }},
+internal\execution\adapters\codex\recovery_history_test.go:48:		{"attempt", func(h *HistoryBinding) { h.AttemptID = strings.Repeat("d", 32) }},
+internal\execution\adapters\codex\recovery_history_test.go:49:		{"workflow", func(h *HistoryBinding) { h.WorkflowID = strings.Repeat("d", 32) }},
+internal\execution\adapters\codex\recovery_history_test.go:50:		{"thread", func(h *HistoryBinding) { h.SessionID = "00000000-0000-0000-0000-000000000002" }},
+internal\execution\adapters\codex\recovery_history_test.go:51:		{"workspace", func(h *HistoryBinding) { h.Workspace = t.TempDir() }},
+internal\execution\adapters\codex\recovery_history_test.go:52:		{"home", func(h *HistoryBinding) { h.Home = t.TempDir() }},
+internal\execution\adapters\codex\recovery_history_test.go:53:		{"executable", func(h *HistoryBinding) { h.Command.Executable = "different-codex" }},
+internal\execution\adapters\codex\recovery_history_test.go:54:		{"arguments", func(h *HistoryBinding) { h.Command.Args = []string{"different-args"} }},
+internal\execution\adapters\codex\recovery_history_test.go:61:			path := localHistoryBindingPath(filepath.Join(root, "runs", base.WorkflowID, "turns", snapshot.Session.CurrentCommandID), session)
+internal\execution\adapters\codex\recovery_history_test.go:67:			if err := WriteHistoryBinding(path, changed, func(path string, data []byte) error { return os.WriteFile(path, data, 0600) }); err != nil {

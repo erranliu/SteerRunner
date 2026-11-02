@@ -41,18 +41,6 @@ type ExecutionRef struct {
 	Incomplete      bool              `json:"incomplete,omitempty"`
 }
 
-type ExecutionProbe interface {
-	Identity() (BackendKind, ExecutionProtocol)
-	Probe(context.Context, ExecutionTarget, AgentSpec) (CapabilityReport, error)
-}
-
-// Observation and workspace consumers do not require cancellation support.
-type ExecutionBackend interface {
-	ExecutionProbe
-	Observe(context.Context, ExecutionRef) (Observation, error)
-	InspectWorkspace(context.Context, ExecutionRef) (WorkspaceInspection, error)
-}
-
 // StopHandle is the verified native resource handle, never a center Worker.
 type StopHandle interface {
 	Identity() ProcessIdentity
@@ -65,10 +53,6 @@ type StopHandle interface {
 type OwnedProcessHandle interface {
 	StopHandle
 	OwnedProcess() bool
-}
-
-type ExecutionStopper interface {
-	StopExecution(context.Context, ExecutionRef, Operation, StopHandle) (StopReceipt, error)
 }
 
 // ProcessTreeHandle can prove all writers in the exact owned resource exited.

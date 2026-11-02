@@ -1,0 +1,12 @@
+{
+  "equal": true,
+  "bytes": 140590,
+  "before_sha256": "3e1bc96bf664599f27e75b8c3845da2ace8c1b36cf4aa55068f2dbd6efad3cd8",
+  "after_sha256": "3e1bc96bf664599f27e75b8c3845da2ace8c1b36cf4aa55068f2dbd6efad3cd8",
+  "coverage": [
+    "representative Run/snapshot/request/receipt/operation",
+    "HistoryBinding fields and JSON",
+    "selected durable AST types",
+    "public capabilities and resource digest"
+  ]
+}

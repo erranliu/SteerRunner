@@ -1,0 +1,11 @@
+{
+  "retired_symbols_in_current_sources": [],
+  "preserved_consumers": {
+    "HistoryBinding": "lifecycle.readRecoveryThread/writeHistoryBinding; unchanged file codec and field declarations",
+    "InspectHistoryTurn": "lifecycle.readRecoveryOutcome; original phase constants retained",
+    "PublicMessage": "application.acceptEvent/acceptMessage",
+    "StopLifecycle/ShutdownLifecycle": "application.control; untouched"
+  },
+  "first_compile_failure_fixed": "original MessagePhase type/constants moved unchanged to evidence/message_phase.go",
+  "source_change_scope": "A/B only; no BindingSnapshot branches, durable fields/actions/decoders or double-ledger changes"
+}

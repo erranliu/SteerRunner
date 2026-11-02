@@ -1,0 +1,29 @@
+{
+  "added_declaration": "original maxConversationCursorBytes=64\u003c\u003c10 moved unchanged from retired adapter",
+  "identical_retained_declarations": 40,
+  "identical_retained_types": 16,
+  "modified_retained_declarations": [],
+  "removed_declarations_in_shared_files": {
+    "internal/execution/adapters/codex/history.go": [
+      "func conversationItemKey",
+      "func UserAgent",
+      "func CheckHistory",
+      "func ReadMetadata",
+      "func ReadPage",
+      "func MapHistoryTurn",
+      "func cloneStringMap",
+      "func NativeHome",
+      "type HistoryPage",
+      "const MaxHistoryCursorBytes"
+    ],
+    "internal/execution/adapters/codex/history_binding.go": [
+      "func Event"
+    ],
+    "internal/execution/backend/backend.go": [
+      "type ExecutionBackend",
+      "type ExecutionStopper",
+      "type ExecutionProbe"
+    ]
+  },
+  "shared_phase_declarations_moved_identical": 4
+}

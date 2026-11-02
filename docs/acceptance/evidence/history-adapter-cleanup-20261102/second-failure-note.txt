@@ -1,0 +1,1 @@
+Component retry exit 1: recovery_history_test.go:40:10 undefined: historyFixtureBinding. Original helper in retired adapter test was shared by retained frozen-binding recovery test. Preserve the helper and all recovery assertions; rerun complete components after moving helper. Application retry passed and production source unchanged by this test-only fix.
