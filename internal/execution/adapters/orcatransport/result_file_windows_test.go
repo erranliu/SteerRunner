@@ -1,10 +1,11 @@
-package orca
+package orcatransport
 
 import (
 	"bytes"
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	"net"
 	"os"
 	"path/filepath"
@@ -92,7 +93,7 @@ func TestResultFileOriginalIPCBoundaries(t *testing.T) {
 				runtime = "foreign-runtime"
 			}
 			started := time.Now()
-			source, err := OpenResultFiles(ctx, "", runtime, host, "original-worktree", root, "original-instance", run)
+			source, err := openResultFileFixture(ctx, "", runtime, host, "original-worktree", root, "original-instance", run)
 			expected := ""
 			switch scenario {
 			case "wrong_host", "wrong_worktree", "wrong_instance", "wrong_path":
@@ -127,7 +128,7 @@ func TestResultFileOriginalIPCBoundaries(t *testing.T) {
 					if readErr != nil || !bytes.Equal(data, []byte{0, 255, 'a'}) {
 						t.Fatal("local substitution", data, readErr)
 					}
-					other, err := OpenResultFiles(ctx, "", "runtime", "local", "original-worktree", root, "original-instance", strings.Repeat("b", 32))
+					other, err := openResultFileFixture(ctx, "", "runtime", "local", "original-worktree", root, "original-instance", strings.Repeat("b", 32))
 					if err != nil {
 						t.Fatal(err)
 					}
@@ -147,4 +148,8 @@ func TestResultFileOriginalIPCBoundaries(t *testing.T) {
 			}
 		})
 	}
+}
+
+func openResultFileFixture(ctx context.Context, environment, runtime, host, worktree, workspace, instance, run string) (*native.ScopedFiles, error) {
+	return openRunFile(ctx, environment, runtime, host, worktree, workspace, instance, run, true)
 }

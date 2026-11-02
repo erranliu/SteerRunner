@@ -18,6 +18,7 @@
 | 单事件确认与旧环境分支收口 | [专项验收](event-ack-cleanup.md) / [实现再审计](event-ack-reaudit.md)：原提交/可选消息/owner journal边界保持，492个组件/application顶层和3个公开场景通过；持久格式不变，生产净减105行；新夹具首轮失败/skip单列 |
 | Orca 能力层 B4a 仓库与工作区查询 | [验收](orca-resource-query-capability.md)：1 根/17 个能力子节点、24 根/77 个原消费者子节点及依赖守卫通过；独立审计通过 |
 | Orca 能力层 B4b 资源创建 | [验收](orca-resource-create-capability.md)：2 根/25 新子节点、34 根/141 原回归子节点和依赖守卫通过；独立审计通过 |
+| Orca 能力层 B4c 受限文件 | [验收](orca-scoped-files-capability.md)：最终 5 根/24 子节点、52 根/131 原回归子节点、WS/守卫/生产与 live-tag 编译通过；待独立审计 |
 | 旧历史采集支线与 Orca Backend 清理 | [专项验收](history-adapter-cleanup.md) / [实现再审计](history-adapter-reaudit.md)：设计审计后实施，phase/恢复夹具共享遗漏已修正；生产净减 986 行，持久格式不变，490 个组件/application 顶层及两个公开场景通过；失败/skip/同产物关联单列 |
 | 旧规则与 Lifecycle 接口清理 | [专项验收](dormant-lifecycle-cleanup.md) / [实现再审计](dormant-lifecycle-reaudit.md)：设计审计后实施；生产净减 688 行，486 个组件/application 顶层及 3 个公开场景通过，编码不变；skip/首轮编译失败单列，无新增真机资格 |
 | 退出证明生产端与旧预算重建清尾（state/v8） | [初轮验收](exit-proof-budget-cleanup.md) / [实现再审计](exit-proof-budget-reaudit.md)：修正合法受理夹具、补九个原结果回归；专属 exit 文件 I/O 和三类预算反推删除；原 Job/reader、直接签名、历史读取及 unknown/stop 保持，净减 186 行；未部署/发布 |

@@ -141,7 +141,7 @@ func TestOrcaLocalIPCQueryAndUpload(t *testing.T) {
 		t.Fatal("valid remote pairing interfered with local IPC", err)
 	}
 	payload := bytes.Repeat([]byte("payload"), 100000)
-	if err := UploadWorkspaceArtifact(ctx, "", "runtime", "id:worktree", ".sr-runtime-stage/test.bin", bytes.NewReader(payload)); err != nil {
+	if err := UploadScopedFile(ctx, "", "runtime", "id:worktree", FileScope{Root: ".sr-runtime-stage", RelativePath: ".sr-runtime-stage/test.bin"}, 384<<10, bytes.NewReader(payload)); err != nil {
 		t.Fatal(err)
 	}
 	mu.Lock()
@@ -157,7 +157,7 @@ func TestOrcaLocalIPCQueryAndUpload(t *testing.T) {
 		t.Fatal("bootstrap identity accepted", err)
 	}
 	for _, path := range []string{"../escape", ".sr-runtime-stage/../escape", ".sr-runtime-stage/a\\b"} {
-		if err := UploadWorkspaceArtifact(ctx, "", "runtime", "worktree", path, strings.NewReader("bad")); err == nil {
+		if err := UploadScopedFile(ctx, "", "runtime", "worktree", FileScope{Root: ".sr-runtime-stage", RelativePath: path}, 384<<10, strings.NewReader("bad")); err == nil {
 			t.Fatal("unsafe upload accepted", path)
 		}
 	}
