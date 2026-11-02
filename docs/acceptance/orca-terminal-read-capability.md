@@ -1,6 +1,6 @@
 # Orca 终端读取能力 B2c 验收
 
-日期：2026-11-02。状态：实现与定向回归通过，待实施后独立审计。依据 [Spec](../spec/orca-terminal-read-capability.spec.md) / [Plan](../spec/orca-terminal-read-capability.plan.md)。本批只迁移原始单页读取，不授予新产品或真实 Runner 资格。
+日期：2026-11-02。状态：实现、定向回归及实施后独立审计通过。依据 [Spec](../spec/orca-terminal-read-capability.spec.md) / [Plan](../spec/orca-terminal-read-capability.plan.md)。本批只迁移原始单页读取，不授予新产品或真实 Runner 资格。
 
 ## 1. 职责与删除
 
@@ -30,4 +30,6 @@ TestLocalPreparationOriginalStream 用同一坏 next/latest 包证明 readiness 
 
 ## 3. 独立审计
 
-实现提交后独立只读审计一次，确认修复用独立 commit 并补受影响验证；完成前 B2c 保持待审计。
+对实现提交 `d26be92` 相对 `7da224e` 的独立只读审计通过，未发现确认的 P0/P1/P2。审计者复核两处消费者、原字段范围/分页算法/身份围栏及持久格式、全部 5 个归档文件 bytes/hash 和源码摘要。
+
+新能力/接线集、原定向回归、依赖守卫及固定提交 diff 检查独立复跑通过，原进程夹具使用正常权限。未启动模型或操作真实 Orca 资源，不扩大资格。无确认问题，因此无代码修复 commit。
