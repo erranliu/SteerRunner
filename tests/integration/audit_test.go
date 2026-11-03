@@ -214,7 +214,7 @@ func TestSRWorkflowDiscoveryAndSelection(t *testing.T) {
 	info := serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))
 	cleanupService(t, dir, info)
 	capabilities := call(t, dir, []string{"capabilities"}, "", 0).Data.(map[string]any)
-	expected := map[string]int{"development": 2, "development-audited": 2, "conversation": 1, "generate": 1}
+	expected := map[string]int{"development": 2, "development-audited": 2, "conversation": 1, "generate": 1, "execute": 1}
 	profiles := capabilities["workflows"].([]any)
 	if len(profiles) != len(expected) || capabilities["workflow"].(map[string]any)["id"] != "development" {
 		t.Fatal("workflow catalog missing")

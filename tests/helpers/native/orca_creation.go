@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -8,6 +9,7 @@ import (
 	"time"
 
 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
+	"github.com/erranliu/SteerRunner/internal/execution/agentlaunch"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 )
@@ -107,7 +109,28 @@ func orcaCreationFixture(args []string) int {
 		if exists(filepath.Join(root, "original-terminal-closed")) {
 			rows = []native.Terminal{}
 		}
-		return respond(map[string]any{"terminals": rows, "totalCount": len(rows), "truncated": false, "hostScope": map[string]any{"hostIds": []string{"creation-host"}, "omittedHostIds": []string{}}})
+		return respond(map[string]any{"terminals": rows, "totalCount": len(rows), "truncated": false, "hostScope": map[string]any{"hostIds": []string{"local"}, "omittedHostIds": []string{}}})
+	case "terminal send":
+		// Queue tests can reach agent preparation before stop. Accept only the
+		// compiler's exact no-work bootstrap, once; never execute it or invent
+		// agent readiness, a business input, Started or completion evidence.
+		enter := false
+		for _, a := range args {
+			enter = enter || a == "--enter"
+		}
+		if !enter || arg("--terminal") != value.Terminal.Handle || arg("--retry-request") == "" || !creationBootstrap(arg("--text"), value.Worktree.DisplayName) {
+			return 2
+		}
+		f, err := os.OpenFile(filepath.Join(root, "bootstrap-send.json"), os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0600)
+		if err != nil {
+			return 2 // Even an identical request is not a second dispatch permit.
+		}
+		err = json.NewEncoder(f).Encode(map[string]string{"request": arg("--retry-request"), "text": arg("--text")})
+		closeErr := f.Close()
+		if err != nil || closeErr != nil {
+			return 2
+		}
+		return respond(map[string]any{"send": map[string]any{"handle": value.Terminal.Handle, "accepted": true, "prompt": map[string]string{"requestId": arg("--retry-request"), "processIncarnation": value.Terminal.IncarnationID}}})
 	case "terminal close":
 		if arg("--terminal") != value.Terminal.Handle {
 			return 2
@@ -117,4 +140,22 @@ func orcaCreationFixture(args []string) int {
 	}
 	fmt.Fprintln(os.Stderr, "unexpected creation fixture command")
 	return 2
+}
+
+func creationBootstrap(command, name string) bool {
+	if len(name) < 33 || name[len(name)-33] != '-' {
+		return false
+	}
+	run := name[len(name)-32:]
+	if raw, err := hex.DecodeString(run); err != nil || len(raw) != 16 {
+		return false
+	}
+	if inner, ok := agentlaunch.UnwrapFileCommands(command, run); ok {
+		command = inner
+	}
+	if inner, ok := agentlaunch.UnwrapTeaPathLaunch(command); ok {
+		command = inner
+	}
+	expected, err := (&agentlaunch.Config{Executable: "codex", AccessMode: "full_access"}).Command("codex")
+	return err == nil && command == expected
 }

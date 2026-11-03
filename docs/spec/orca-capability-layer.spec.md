@@ -6,6 +6,8 @@
 
 统一交付：[SteerRunner PR #93](https://github.com/erranliu/SteerRunner/pull/93)，分支 `codex/orca-capability-layer`。各批提交、独立修复及验收分别保留；未合并或部署。
 
+后续完整回归发现的只读usage绑定、原生夹具和目录门禁回归，以及基线工作流目录断言，已修复并通过正式完整L1/Controlled；范围和历史失败见[B6补验记录](../acceptance/orca-native-rollout.md#2026-11-03-pr-93-完整回归修复)。原现场资格仍绑定其原构建。
+
 ## 1. 设计目标与范围
 
 以 Orca 这个外部系统为能力边界，提供可脱离执行链使用的连接、资源操作、终端操作、状态与会话读取、文件操作。执行链消费这些能力，负责业务流程、操作授权、持久化及证据判定。

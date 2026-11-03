@@ -16,7 +16,95 @@ import (
 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
+	"github.com/erranliu/SteerRunner/internal/storage"
 )
+
+// Startup acceptance is not business execution. Read the real frozen launch
+// after writer exit, and forbid any other text, request replay or second send.
+func assertCreationBootstrapOnly(t *testing.T, dir, state string) {
+	t.Helper()
+	f, err := os.Open(filepath.Join(state, "calls.jsonl"))
+	if os.IsNotExist(err) {
+		// Cancellation before the first CLI dispatch produces no call log.
+		// Require the original durable queue proof rather than treating any
+		// missing log (including a dispatched/unknown operation) as no work.
+		store, readErr := storage.OpenReader(dir)
+		if readErr != nil {
+			t.Error(readErr)
+			return
+		}
+		defer store.Close()
+		runs, readErr := store.Runs()
+		if readErr != nil || len(runs) == 0 {
+			t.Error("missing original queue records", readErr)
+			return
+		}
+		for _, run := range runs {
+			queries := 0
+			for _, intent := range run.Intents {
+				if intent.PreparationQuery != nil {
+					queries++
+					if intent.PreparationQuery.Wait.CallsStarted != 0 {
+						t.Error("dispatched original query lost its call audit")
+					}
+				}
+			}
+			if queries != 1 || run.Allowed || run.StopStatus != "stopped" || run.Snapshot.Ref.External.Kind != "" || run.Snapshot.Workspace.Path != "" {
+				t.Error("missing audit without a settled original zero-dispatch queue", run.ID)
+			}
+		}
+		return
+	}
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	defer f.Close()
+	var sends [][]string
+	scanner := bufio.NewScanner(f)
+	for scanner.Scan() {
+		var entry struct {
+			Method string
+			Args   []string
+		}
+		if err := json.Unmarshal(scanner.Bytes(), &entry); err != nil {
+			t.Error(err)
+			return
+		}
+		if entry.Method == "orca/terminal/send" {
+			sends = append(sends, entry.Args)
+		}
+	}
+	if err := scanner.Err(); err != nil {
+		t.Error(err)
+		return
+	}
+	if len(sends) == 0 {
+		return
+	}
+	store, err := storage.OpenReader(dir)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	defer store.Close()
+	runs, err := store.Runs()
+	if err != nil || len(runs) != 1 || len(sends) != 1 {
+		t.Error("unexpected bootstrap dispatch or replay", len(runs), len(sends), err)
+		return
+	}
+	arg := func(key string) string {
+		for i, value := range sends[0] {
+			if value == key && i+1 < len(sends[0]) {
+				return sends[0][i+1]
+			}
+		}
+		return ""
+	}
+	if runs[0].LaunchCommand == "" || arg("--text") != runs[0].LaunchCommand || arg("--terminal") != "original-terminal" || arg("--retry-request") == "" || runs[0].StopEvidenceScope != "orca_terminal" {
+		t.Error("non-bootstrap input or foreign resource was dispatched")
+	}
+}
 
 func creationObservationFixture(t *testing.T, dir, runtime string) {
 	t.Helper()
