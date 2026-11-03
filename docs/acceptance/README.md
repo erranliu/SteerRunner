@@ -4,6 +4,7 @@
 
 | 范围 | 记录与适用边界 |
 | --- | --- |
+| 后台用量闪窗与 Orca final 身份 | [修复与验证](runner-console-final-identity.md)：隐藏后台 CLI 控制台，区分规范化 final 绑定与原生来源，保留原始身份校验与单次调用收尾。 |
 | Orca 能力层 B0 原生可行性 | [验收](orca-native-capability-baseline.md)：双端同源同 EXE 各两轮无 helper 原生输入及原终端清理通过；独立审计唯一 P2 已修复并复核，修复后 30 个新增、原 132 个回归子例通过；不授予 B5 开发资格 |
 | Orca 能力层 B1 原终端查询 | [验收](orca-terminal-query-capability.md)：自有身份查询接入业务和控制终端，双端无模型现场及受控回归通过；双页四处围栏替换拒绝和 CLI 队列验证通过；独立审计通过 |
 | Orca 能力层 B2a 公共命令构造 | [验收](orca-cli-construction-capability.md)：3 根/13 个新增子例、21 根/35 个回归子例和依赖守卫通过；共用构造/解码，旧字节及派发边界保持；独立审计通过 |

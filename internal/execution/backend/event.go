@@ -37,9 +37,14 @@ func (f ToolReplyFact) MatchesAnswers(expected map[string][]string) bool {
 }
 
 type TurnEvidence struct {
-	NativeOutcome        string `json:"native_outcome,omitempty"` // succeeded/failed/cancelled/unknown/unreported; independent of business success
-	FinalOrigin          string `json:"final_origin,omitempty"`
-	FinalDiagnostic      string
+	NativeOutcome   string `json:"native_outcome,omitempty"` // succeeded/failed/cancelled/unknown/unreported; independent of business success
+	FinalOrigin     string `json:"final_origin,omitempty"`
+	FinalDiagnostic string
+	// FinalSessionID/FinalTurnID bind the verified final to the normalized
+	// execution route. Native IDs retain provider provenance and can differ
+	// from that route (for example an Orca terminal and its Codex session).
+	FinalSessionID       string
+	FinalTurnID          string
 	FinalNativeSessionID string
 	FinalNativeTurnID    string
 	FinalSource          string

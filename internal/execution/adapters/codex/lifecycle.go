@@ -349,7 +349,7 @@ func (l ExecutionLifecycle) ObserveLifecycle(ctx context.Context, snapshot execu
 			receipt.Disposition = executionbackend.OperationConfirmed
 			receipt.State.TurnCompleted = true
 			receipt.TurnEvidence = &executionbackend.TurnEvidence{
-				FinalNativeSessionID: outcome.SessionID, FinalNativeTurnID: recovered.TurnID, FinalSource: outcome.FinalSource, FinalItemID: outcome.FinalItemID, FinalVerified: outcome.FinalVerified, SourcePath: path, TurnID: recovered.TurnID, CommandID: commandID, SessionID: outcome.SessionID,
+				FinalSessionID: outcome.SessionID, FinalTurnID: recovered.TurnID, FinalNativeSessionID: outcome.SessionID, FinalNativeTurnID: recovered.TurnID, FinalSource: outcome.FinalSource, FinalItemID: outcome.FinalItemID, FinalVerified: outcome.FinalVerified, SourcePath: path, TurnID: recovered.TurnID, CommandID: commandID, SessionID: outcome.SessionID,
 				Started: outcome.Started, Completed: outcome.Completed, Succeeded: outcome.Succeeded, NativeOutcome: outcome.nativeOutcome(),
 				LastMessage: outcome.LastMessage, Failure: outcome.Failure, PRCandidates: append([]string(nil), outcome.PRCandidates...),
 			}
@@ -360,7 +360,7 @@ func (l ExecutionLifecycle) ObserveLifecycle(ctx context.Context, snapshot execu
 		outcome, readErr := l.readRecoveryOutcome(ctx, snapshot, recovered.Binding, recovered.TurnID)
 		if readErr == nil && outcome.Started && outcome.Completed {
 			receipt.Disposition, receipt.State.TurnCompleted = executionbackend.OperationConfirmed, true
-			receipt.TurnEvidence = &executionbackend.TurnEvidence{CommandID: commandID, TurnID: recovered.TurnID, SessionID: outcome.SessionID, Started: true, Completed: true, Succeeded: outcome.Succeeded, NativeOutcome: outcome.nativeOutcome(), LastMessage: outcome.LastMessage, Failure: outcome.Failure, FinalSource: outcome.FinalSource, FinalItemID: outcome.FinalItemID, FinalVerified: outcome.FinalVerified, FinalNativeSessionID: outcome.SessionID, FinalNativeTurnID: recovered.TurnID}
+			receipt.TurnEvidence = &executionbackend.TurnEvidence{CommandID: commandID, TurnID: recovered.TurnID, SessionID: outcome.SessionID, Started: true, Completed: true, Succeeded: outcome.Succeeded, NativeOutcome: outcome.nativeOutcome(), LastMessage: outcome.LastMessage, Failure: outcome.Failure, FinalSource: outcome.FinalSource, FinalItemID: outcome.FinalItemID, FinalVerified: outcome.FinalVerified, FinalSessionID: outcome.SessionID, FinalTurnID: recovered.TurnID, FinalNativeSessionID: outcome.SessionID, FinalNativeTurnID: recovered.TurnID}
 			return receipt, nil, nil
 		}
 		if readErr != nil {

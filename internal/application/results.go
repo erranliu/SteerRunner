@@ -116,9 +116,9 @@ func (e *Engine) finishWithGate(id string, value b.TurnEvidence, gate *sync.Mute
 			_ = e.commitLocked(r, nil, "final_unavailable")
 			return false
 		}
-		if result.ContentVerified && (value.FinalNativeSessionID != value.SessionID || value.FinalNativeTurnID != value.TurnID) {
+		if result.ContentVerified && (value.FinalSessionID != value.SessionID || value.FinalTurnID != value.TurnID || value.FinalNativeSessionID == "" || value.FinalNativeTurnID == "") {
 			r.Result = &value
-			r.Status, r.Phase, r.Diagnostic = "reconciling", "final_source_unverified", "Original final identity does not match the current native turn"
+			r.Status, r.Phase, r.Diagnostic = "reconciling", "final_source_unverified", "Original final source is incomplete or does not match the current execution route"
 			_ = e.commitLocked(r, nil, "final_unavailable")
 			return false
 		}

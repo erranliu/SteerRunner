@@ -290,6 +290,12 @@ func TestFixedControlReceiptRecovery(t *testing.T) {
 			if want && r.TurnEvidence.LastMessage != "exact native final" {
 				t.Fatal("final replaced", r.TurnEvidence)
 			}
+			if want {
+				evidence := r.TurnEvidence
+				if evidence.FinalSessionID != evidence.SessionID || evidence.FinalTurnID != evidence.TurnID || evidence.FinalNativeSessionID != c.ready.SessionID || evidence.FinalNativeTurnID == "" || evidence.FinalNativeSessionID == evidence.FinalSessionID || evidence.FinalNativeTurnID == evidence.FinalTurnID {
+					t.Fatal("normalized final binding confused with native provenance", evidence)
+				}
+			}
 			if c.creates != 1 || c.closes != 0 || f.nativeSends != 1 {
 				t.Fatal("recovery created resources or resent business", c.creates, c.closes, f.nativeSends)
 			}
