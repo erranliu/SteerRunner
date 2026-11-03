@@ -94,6 +94,60 @@ func TestUsageFullAccessTerminalProfileVersions(t *testing.T) {
 	}
 }
 
+func TestUsageHistoricalBindingDoesNotGrantLaunchQualification(t *testing.T) {
+	for _, agent := range []string{"pi", "dsh"} {
+		t.Run(agent, func(t *testing.T) {
+			s := b.LifecycleSnapshot{Ref: b.ExecutionRef{RunID: "run", AttemptID: "attempt", WorkspacePath: `C:\work`, Agent: b.AgentSpec{Name: agent}}, Session: b.SessionContext{ProjectID: "project", ExecutionID: "run", AttemptID: "attempt"}, ResourceGeneration: "generation", ConfigurationDigest: "configuration"}
+			// Historical usage needs its committed binding, not a newly launched
+			// full-access helper's receipt/bundle qualification.
+			p := Profile{Executable: "orca", WaitTimeout: "1s", Terminal: &TerminalConfig{Agent: agent, ExecutionID: "run", AttemptID: "attempt", Generation: "generation", SessionID: "original-session"}}
+			raw, _ := json.Marshal(State{Turns: []Turn{{Command: "original-command", Prompt: "original input", Accepted: true}}})
+			state, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{Purpose: b.ImplementationResourcePurpose, ImplementationKey: StateKey, CodecVersion: LocalStateVersion, ProjectID: "project", ExecutionID: "run", AttemptID: "attempt", Generation: "generation", ConfigDigest: "configuration"}, raw)
+			if err != nil {
+				t.Fatal(err)
+			}
+			s.Implementation = []b.ImplementationDataEnvelope{state}
+			bind := func(raw []byte, version int) (parsers.Binding, error) {
+				e, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{Purpose: b.ImplementationConfigPurpose, ImplementationKey: ProfileKey, CodecVersion: version, ProjectID: "project", ProfileID: "profile", AcceptedConfigVersion: "1"}, raw)
+				if err != nil {
+					t.Fatal(err)
+				}
+				binding, _, _, err := UsageBinding([]b.ImplementationDataEnvelope{e}, s)
+				return binding, err
+			}
+			raw, _ = json.Marshal(p)
+			if _, err := decodeProfileCodec(raw, ProfileVersion); err == nil {
+				t.Fatal("historical usage profile gained launch qualification")
+			}
+			got, err := bind(raw, ProfileVersion)
+			if err != nil || got.SessionID != "original-session" || len(got.Commands) != 1 || got.Commands[0].ID != "original-command" {
+				t.Fatal("historical binding lost its original usage", got, err)
+			}
+			p.Terminal.Generation = "foreign"
+			raw, _ = json.Marshal(p)
+			if _, err := bind(raw, ProfileVersion); err == nil || err.Error() != "IDENTITY_CHANGED" {
+				t.Fatal("historical reader ignored original resource binding", err)
+			}
+			p.Terminal.Generation = "generation"
+			raw, _ = json.Marshal(p)
+			var fields map[string]json.RawMessage
+			_ = json.Unmarshal(raw, &fields)
+			for _, marker := range []string{"true", "false", "null"} {
+				fields["native_terminal"] = json.RawMessage(marker)
+				marked, _ := json.Marshal(fields)
+				if _, err := bind(marked, ProfileVersion); err == nil {
+					t.Fatal("historical reader reinterpreted a new contract marker", marker)
+				}
+			}
+			fields["native_terminal"] = json.RawMessage("true")
+			marked, _ := json.Marshal(fields)
+			if _, err := bind(marked, NativeProfileVersion); err == nil {
+				t.Fatal("new native usage accepted helper evidence")
+			}
+		})
+	}
+}
+
 func TestUsageRecordedCodexIDsUseOriginalTurnAndWireDigest(t *testing.T) {
 	snapshot := b.LifecycleSnapshot{Ref: b.ExecutionRef{RunID: "run", AttemptID: "attempt", WorkspacePath: `C:\work`, Agent: b.AgentSpec{Name: "codex"}}, Session: b.SessionContext{ProjectID: "project", ExecutionID: "run", AttemptID: "attempt"}, ResourceGeneration: "generation", ConfigurationDigest: "configuration"}
 	raw, _ := json.Marshal(Profile{Executable: "orca", WaitTimeout: "1s"})

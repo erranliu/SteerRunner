@@ -88,12 +88,12 @@ function Assert-SRPrerequisiteSet([object[]]$Actual, [object[]]$Expected, [strin
 }
 
 function Get-SRL1AllowedSkips {
-    @('TestShortInputProbeInspect','TestProcessHostCommandHelper','TestServiceStopWorkerHelper','TestOrcaLocalPipeNativeEvidence','TestOrcaLocalIPCNativeProbe','TestOrcaNativeStateLiveLifecycle','TestOrcaWorkspaceStartupLive','TestOrcaStoppedNativeProbe',
+    @('TestShortInputProbeInspect','TestProcessHostCommandHelper','TestServiceStopWorkerHelper','TestOrcaLocalPipeNativeEvidence','TestOrcaLocalIPCNativeProbe','TestOrcaTerminalQueryLive','TestOrcaNativeStateLiveLifecycle','TestOrcaWorkspaceStartupLive','TestOrcaStoppedNativeProbe',
       'TestUsageLocalAcceptanceRepoCleanupLive','TestUsageExistingNativeEvidence','TestUsageRemoteCodexCleanupLive','TestUsageRemoteCodexLive','TestRunUsageLocalCodexPublicLive','TestRunUsageLocalPiPublicLive','TestRunUsageLocalDSHPublicLive','TestRunUsageRemotePublicLive')
 }
 
 function Assert-SRNoLiveOptIn {
-    foreach ($key in @('STEERRUNNER_SHORT_INPUT_INSPECT','STEERRUNNER_ORCA_STATE_PROBE_MODE','STEERRUNNER_ORCA_STATE_PROBE_ROOT','STEERRUNNER_ORCA_WORKSPACE_PROBE_ROOT','STEERRUNNER_ORCA_LOCAL_PIPE_EVIDENCE','STEERRUNNER_ORCA_IPC_PROBE_ROOT','STEERRUNNER_ORCA_STOP_PROBE_ROOT','SR_USAGE_EXISTING_STATE','SR_USAGE_LIVE_STATE','SR_USAGE_LIVE_RUN','SR_USAGE_LIVE_EVIDENCE','SR_USAGE_LIVE_PUBLIC','SR_USAGE_LIVE_CLEANUP_STATE','SR_USAGE_LOCAL_LIVE','SR_USAGE_LOCAL_STATE','SR_USAGE_LOCAL_RUN','SR_USAGE_LOCAL_EVIDENCE','SR_USAGE_LOCAL_REPO_CLEANUP','SR_USAGE_LOCAL_CLEANUP_ROOT')) {
+    foreach ($key in @('STEERRUNNER_SHORT_INPUT_INSPECT','STEERRUNNER_ORCA_TERMINAL_QUERY_TARGET','STEERRUNNER_ORCA_STATE_PROBE_MODE','STEERRUNNER_ORCA_STATE_PROBE_ROOT','STEERRUNNER_ORCA_WORKSPACE_PROBE_ROOT','STEERRUNNER_ORCA_LOCAL_PIPE_EVIDENCE','STEERRUNNER_ORCA_IPC_PROBE_ROOT','STEERRUNNER_ORCA_STOP_PROBE_ROOT','SR_USAGE_EXISTING_STATE','SR_USAGE_LIVE_STATE','SR_USAGE_LIVE_RUN','SR_USAGE_LIVE_EVIDENCE','SR_USAGE_LIVE_PUBLIC','SR_USAGE_LIVE_CLEANUP_STATE','SR_USAGE_LOCAL_LIVE','SR_USAGE_LOCAL_STATE','SR_USAGE_LOCAL_RUN','SR_USAGE_LOCAL_EVIDENCE','SR_USAGE_LOCAL_REPO_CLEANUP','SR_USAGE_LOCAL_CLEANUP_ROOT')) {
         if ([Environment]::GetEnvironmentVariable($key)) { throw "Unexpected live opt-in in L1: $key" }
     }
 }

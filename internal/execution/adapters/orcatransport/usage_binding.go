@@ -167,7 +167,7 @@ func UsageBinding(profile []b.ImplementationDataEnvelope, s b.LifecycleSnapshot,
 				return binding, p, State{}, errors.New("IDENTITY_UNVERIFIED")
 			}
 			var err error
-			p, err = decodeProfileCodec(e.Payload, e.CodecVersion)
+			p, err = decodeProfileBinding(e.Payload, e.CodecVersion)
 			if err != nil {
 				return binding, p, State{}, err
 			}

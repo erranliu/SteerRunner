@@ -32,6 +32,9 @@ func TestSROrcaCLIWaitRetry(t *testing.T) {
 			settings, _ := json.Marshal(map[string]any{"access_mode": "full_access", "transport": map[string]any{"executable": helperEXE, "args": []string{"--orca-create-fixture"}, "wait_timeout": "15s"}})
 			input.Execution = contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "local"}, Settings: settings}
 			req.Input, _ = json.Marshal(input)
+			// Registered before service cleanup, so its dispatch audit runs only
+			// after all original/replacement writers have exited.
+			t.Cleanup(func() { assertCreationBootstrapOnly(t, dir, state) })
 			service := serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))
 			cleanupService(t, dir, service)
 			ctx, cancel := context.WithTimeout(context.Background(), 80*time.Second)
@@ -65,6 +68,9 @@ func TestSROrcaCLIWaitRetry(t *testing.T) {
 			accepted := call(t, dir, []string{"submit", "--input", "-"}, string(raw), 0)
 			id := accepted.Data.(map[string]any)["run_id"].(string)
 			before := waitRun(t, dir, id, func(v contracts.RunView) bool { return v.ExecutionWait != nil && v.ExecutionWait.Stage == "queue" })
+			if before.StopEvidenceScope != "orca_terminal" {
+				t.Fatal("queue fixture did not exercise the native local contract", before)
+			}
 			q := *before.ExecutionWait
 			if mode == "three-runs-stop-queued" {
 				ids := []string{id}

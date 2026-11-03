@@ -2,9 +2,9 @@ param([Parameter(Mandatory=$true)][string]$Repository,[Parameter(Mandatory=$true
 $ErrorActionPreference='Stop'
 . (Join-Path $Repository 'scripts/live-catalog.ps1')
 $taskCatalog=Get-SRTestCatalog (Join-Path $Repository 'tests/catalog.json')
-$taskCount=0
-foreach($taskEntry in @($taskCatalog.scenarios|Where-Object {$_.level -eq 'L3'})){$taskCount+=@(Get-SRLiveCases $taskEntry).Count}
-if($taskCount -ne 31){throw 'L3 registry must retain 31 cases after merging four permission duplicates'}
+$taskExpectedCases=@(foreach($taskEntry in @(Get-SRCaseRegistry | Where-Object {$_.level -eq 'L3'})){foreach($taskCase in $taskEntry.cases){"$($taskEntry.id)/$($taskCase.id)"}})
+$taskActualCases=@(foreach($taskEntry in @($taskCatalog.scenarios | Where-Object {$_.level -eq 'L3'})){foreach($taskCase in @(Get-SRLiveCases $taskEntry)){"$($taskEntry.id)/$($taskCase.id)"}})
+if(-not $taskActualCases.Count -or ($taskActualCases | Sort-Object | Select-Object -Unique).Count -ne $taskActualCases.Count -or (($taskActualCases | Sort-Object) -join ',') -cne (($taskExpectedCases | Sort-Object) -join ',')){throw 'L3 catalog must retain every registered case exactly once'}
 $taskEntry=$taskCatalog.scenarios|Where-Object {$_.id -eq 'orca-remote.service-restart'}
 $taskEntry.cases=@('graceful-active')
 $taskRejected=$false

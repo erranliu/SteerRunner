@@ -2,6 +2,8 @@
 
 日期：2026-11-03。状态：ONR-01–05 已通过，B6 最终独立审计 clean；全部批次已签收，统一 [SteerRunner PR #93](https://github.com/erranliu/SteerRunner/pull/93) 已创建，未合并或部署。依据 [Spec](../spec/orca-native-rollout.spec.md) / [Plan](../spec/orca-native-rollout.plan.md)，B5 前置已签收，不代替以下最终资格。
 
+本页同时保存原 B6 专项记录与末节的 PR #93 完整回归修复记录；各自绑定对应源码与构建。
+
 ## 变更与保留边界
 
 Spec/Plan `766fb5a`；实施 `e7acedc`；集成 main `7f6c538` 的最终源码 `e30fc82315148efa0bde2bcd01485d9e108a1df5`。公开 capabilities 同步双端原生选择、orca_terminal 描述、模型/审计/流边界及保留例外。schema/catalog/admission、外层 state/v8/user_version、private codecs、路由摘要和 receipt/stop progress 均未改。
@@ -47,3 +49,29 @@ B5 的旧构建成功及历史失败仅前置事实；本表四场均 fresh。�
 实现及集成后代码独立审计 clean：重复 guard 不可达，公开 metadata 与选择/scope/保留消费者一致，main 证明边界与本批 native/反馈规则保留；独立关键测试通过。同一独立审计者最终收口 clean，无未关闭 P1/P2：四场反馈/开发/活动/原 scope/真实离线成立；远端 unknown 后只有原对账；经 GitHub 只读复查 #756/#757 当前 open、merged=false、精确 base/head 一致。164 文件、本地原件、归档及5组统计全部重算匹配；8个公开派生副本仅裁除10条无关仓库行、加入6处归档说明，相关语义/计数完全一致。ONR-01–05 可签收，限 Codex/development/2 原生合同与 orca_terminal；保留例外不继承资格。
 
 [证据](evidence/orca-native-rollout-20261103/README.md)：164 个 UTF-8 文件，逐文件字节/SHA，可机械复核；commands、integration、source/build、test-statistics、scene-ledger 及完整正式回执/原资源/PR/停止证据分开。公开副本只裁除无关注册仓库行，derivations 记录原始源 SHA；相关操作语义和计数保持，原完整日志本地保留。无凭据、认证帧、EXE 或数据库。
+
+## 2026-11-03 PR #93 完整回归修复
+
+用户在原专项审计后要求补做完整 L1/Controlled，再授权修复全部发现，包括基线已有的工作流目录断言。补测基线为 `8b34c59`；完整内部包原结果35/36包通过、usage采集10个顶层失败，完整Controlled原结果24/27通过。基线 `7f6c538` 对照确认 usage 和 CLI 等待回归由 PR 引入，工作流目录断言原已失败。原始结果均保留。
+
+修复与验收边界：
+
+- 分离历史只读 profile 绑定和启动资格校验。UsageBinding 恢复原4/6读取合同；原执行启动门禁保持，新9的 canonical marker、helper 字段拒绝和 state 隔离仍执行。原 usage 采集测试不改预期；新增 Pi/DSH 历史读取正例与启动拒绝、跨 generation、旧 codec 新 marker、新9 helper 证据拒绝反例。
+- 配置冻结和稳定性框架原28场景/36case、31个L3 case的硬编码分别失效；改为逐场景字段、顺序及完整 case 身份集合核对，仍拒绝缺失、重复、未知、重排及不完整场景。最终清单为32场景/40case，其中L3为35case；27个Controlled顶层清单不变。
+- 登记已存在的 TestOrcaTerminalQueryLive 默认 opt-in skip，同时将其目标环境变量加入默认L1拒绝门禁，并验证继承该变量时零工作启动。保留意外skip拒绝，未将skip计作真实原生通过。
+- Orca 创建夹具返回选定runtime的完整local host清单，并只接受一次原编译器的固定无工作bootstrap；拒绝业务文本、附加命令、外来资源/文件scope、缺request/enter及重复派发。不运行模型，不伪造readiness/Started/final。CLI等待组增核冻结scope和实际冻结启动正文；零派发撤销的无调用日志必须有原持久队列、calls_started=0、无资源及已停止事实。原7个CLI变体、7个创建恢复变体及创建一次/未知不重发/零业务输入断言均保留。
+- 工作流发现断言补齐既有 execute/1，仍逐项验证完整5种ID/版本，拒绝重复和未知workflow，并要求非法选择零原生启动。
+
+正式最终命令为 `./scripts/test.ps1 -Level @('L1','Controlled') -OutDir .evidence/pr93-repair-full-20261103-02`；status=passed、validation_scope=complete。Windows/amd64、Go1.26.4、GOMAXPROCS=4。未改Go包级20m、Controlled45m或产品/场景内期限，未删场景、缩小选择或复用旧资格。
+
+| 集合 | 最终结果 |
+| --- | --- |
+| 完整框架 | 27项通过，含全部后续调度、真实故障屏障、交付与前置资格守卫 |
+| 完整内部包 | 36包、780顶层通过；3174父子pass事件，0 fail；17项原生opt-in/helper skip均在明确白名单，无意外skip |
+| 终端扩展与原生驱动 | 29项扩展通过；live-tag构建及零匹配拒绝守卫通过 |
+| 完整Controlled | 27/27顶层通过，0 fail/skip/缺失/额外/重复；原完整子例和timings核对通过 |
+| 定向补验 | usage/codec/夹具正反例、完整配置框架、全部原失败Controlled组通过；集合有重叠，不累加 |
+
+测试基于 `8b34c59` 加冻结11文件修复，暂存diff SHA256 `6a76066643e29a6bab034f58cbdbb6fcf5e770cb9bee4ae67f5d44aec1922839`；逐文件哈希及两阶段前后输入指纹一致。构建如实记录source_dirty=true，Runner source_digest `27dbe71b845dd82fd40cc2e6a17e3321426cf1437454b0449b663b6c1708998b`、SHA256 `d318929fe49c77e7269c243c386fb878589a3b742805bdeefde3a422cc71f831`。源码在完整测试期间未变，测试结束后仅新增验收记录与归档，修复源码保持相同字节；原失败不改判成功。
+
+[补验归档](evidence/orca-pr93-repair-20261103/README.md)保存52文件及逐文件字节/SHA，含旧失败、基线对照、修复中失败和最终正式结果；测试进程收尾检查无遗留。此闭环是完整L1/Controlled资格，本次未重跑真实模型或扩大原生组合资格，原B5/B6四场仍绑定原构建。未合并、部署或迁移用户状态。

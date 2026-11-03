@@ -115,7 +115,17 @@ try {
 $taskPrerequisite=Get-Content -LiteralPath (Join-Path $taskPrerequisiteOut 'summary.json') -Raw | ConvertFrom-Json
 if($taskPrerequisiteExit -ne 1 -or $taskPrerequisite.status -ne 'failed' -or $taskPrerequisite.error -notmatch 'Unexpected live opt-in' -or $taskPrerequisite.results.Count -ne $taskL3CaseCount -or $taskPrerequisite.levels.L3.requested.Count -ne $taskL3CaseCount -or $taskPrerequisite.levels.L3.executed.Count -ne 0 -or $taskPrerequisite.unavailable_case_count -ne ($taskL3CaseCount - 5) -or $taskPrerequisite.baseline.l2_verified -or $taskPrerequisite.levels.L3.complete_level_passed){throw 'Prerequisite failure lost requested, unavailable or unexecuted case facts'}
 $taskFrozenCatalog = Get-Content -LiteralPath (Join-Path $taskPrerequisiteOut 'frozen-catalog.json') -Raw | ConvertFrom-Json
-if ($taskFrozenCatalog.scenarios.Count -ne 28 -or @($taskFrozenCatalog.scenarios | Where-Object { $_ -is [string] }).Count -ne 0 -or @($taskFrozenCatalog.scenarios | ForEach-Object { $_.cases }).Count -ne 36) { throw 'Batch catalog was not frozen as complete expanded scenario objects' }
+$taskRegisteredCatalog = @(Get-SRCaseRegistry)
+$taskSelectedIDs = @((Get-Content -LiteralPath (Join-Path $Repository 'tests/catalog.json') -Raw | ConvertFrom-Json).scenarios)
+if ($taskFrozenCatalog.scenarios.Count -ne $taskRegisteredCatalog.Count -or ($taskFrozenCatalog.scenarios.id -join ',') -cne ($taskSelectedIDs -join ',') -or @($taskFrozenCatalog.scenarios | Where-Object { $_ -is [string] }).Count -ne 0) { throw 'Batch catalog was not frozen as complete expanded scenario objects' }
+foreach ($taskFrozenEntry in $taskFrozenCatalog.scenarios) {
+    $taskRegisteredEntry = @($taskRegisteredCatalog | Where-Object { $_.id -ceq $taskFrozenEntry.id })
+    if ($taskRegisteredEntry.Count -ne 1) { throw 'Frozen batch catalog has an unknown or duplicate scenario' }
+    foreach ($taskField in @('level','driver','target','timeout_minutes','agent')) {
+        if ($taskRegisteredEntry[0].PSObject.Properties[$taskField] -and $taskFrozenEntry.$taskField -cne $taskRegisteredEntry[0].$taskField) { throw "Frozen batch catalog changed registered $taskField" }
+    }
+    if (($taskFrozenEntry.cases -join ',') -cne (($taskRegisteredEntry[0].cases | ForEach-Object { $_.id }) -join ',')) { throw 'Frozen batch catalog omitted, duplicated or reordered registered cases' }
+}
 # The short-input diagnostic is native opt-in too; never let inherited state
 # reach either the default framework or unit tests.
 $taskPriorShort=[Environment]::GetEnvironmentVariable('STEERRUNNER_SHORT_INPUT_INSPECT')
@@ -127,6 +137,15 @@ try {
 } finally { [Environment]::SetEnvironmentVariable('STEERRUNNER_SHORT_INPUT_INSPECT',$taskPriorShort) }
 $taskShort=Get-Content -LiteralPath (Join-Path $taskShortOut 'summary.json') -Raw | ConvertFrom-Json
 if($taskShortExit -ne 1 -or $taskShort.status -ne 'failed' -or $taskShort.error -cne 'Unexpected live opt-in in L1: STEERRUNNER_SHORT_INPUT_INSPECT' -or $taskShort.results.Count -ne 0 -or (Test-Path -LiteralPath (Join-Path $taskShortOut 'framework'))){throw 'Native short-input diagnostic reached L1 execution'}
+$taskPriorQuery=[Environment]::GetEnvironmentVariable('STEERRUNNER_ORCA_TERMINAL_QUERY_TARGET')
+$taskQueryOut=Join-Path $taskRoot 'terminal-query-optin-rejected'
+try {
+    $env:STEERRUNNER_ORCA_TERMINAL_QUERY_TARGET='configuration-framework-sentinel'
+    & $taskShell -NoProfile -File (Join-Path $Repository 'scripts/test.ps1') -Level L1 -OutDir $taskQueryOut *> (Join-Path $taskRoot 'terminal-query-optin-rejected.log')
+    $taskQueryExit=$LASTEXITCODE
+} finally { [Environment]::SetEnvironmentVariable('STEERRUNNER_ORCA_TERMINAL_QUERY_TARGET',$taskPriorQuery) }
+$taskQuery=Get-Content -LiteralPath (Join-Path $taskQueryOut 'summary.json') -Raw | ConvertFrom-Json
+if($taskQueryExit -ne 1 -or $taskQuery.status -ne 'failed' -or $taskQuery.error -cne 'Unexpected live opt-in in L1: STEERRUNNER_ORCA_TERMINAL_QUERY_TARGET' -or $taskQuery.results.Count -ne 0 -or (Test-Path -LiteralPath (Join-Path $taskQueryOut 'framework'))){throw 'Native terminal query diagnostic reached L1 execution'}
 # L2's native preparation is a case dependency, never a global L3 prerequisite.
 $taskBoundaryWorker=Join-Path $taskRoot 'boundary-worker.ps1'
 $taskBoundaryBody=@'
