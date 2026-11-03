@@ -1,0 +1,70 @@
+{
+  "schema": "orca-structured-quality-tests/v1",
+  "final_checks": [
+    {
+      "command": "go test ./internal/execution/adapters/orcatransport ./internal/execution/adapters/protocol/orca -count=1 -timeout 8m",
+      "exit_code": 0,
+      "log": "orca-structured-quality-adapters-final.log",
+      "result": "Both complete packages pass, including diagnostic history-gap and ordering/attribution regressions and three recorded real public journals."
+    },
+    {
+      "command": "go test ./internal/application -run 'TestSharedNativeEngineStopReconciliation|TestSharedNativeStopQueuePreservesFirstDispatch|TestSRFreezeOrcaStructuredExecuteOnly|TestSRObservationDiagnosticIsDurableAndRecoverable|TestSharedNativeConfirmedStopSurvivesOriginalHostLoss' -count=1 -timeout 12m",
+      "exit_code": 0,
+      "log": "orca-structured-quality-application-final.log",
+      "result": "Five roots pass; all 18 stop reconciliation subcases, unchanged queue cancellation tests, freeze, durable diagnostics and main host-loss proof."
+    },
+    {
+      "command": "go test ./internal/contracts ./internal/resources ./internal/runstate ./internal/usage/... ./internal/testkit/livetest -count=1 -timeout 5m",
+      "exit_code": 0,
+      "log": "orca-structured-quality-packages.log",
+      "result": "All test packages pass; runstate has no test files."
+    },
+    {
+      "command": "node --test internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs",
+      "exit_code": 0,
+      "log": "orca-structured-quality-pi-host.log",
+      "result": "21 pass, 0 fail, 0 skip."
+    },
+    {
+      "command": "go build -o .evidence/orca-structured-quality-final.exe ./cmd/steerrunner",
+      "exit_code": 0
+    },
+    {
+      "command": "service verify-stopped --state-dir <original absolute state directory> --json",
+      "exit_code": 0,
+      "log": "orca-structured-quality-offline-final.json",
+      "result": "All three original runs and aggregate resources_settled=false; no Engine, observation, create, input or close."
+    },
+    {
+      "command": "gofmt -l changed Go; git diff --check; JSON/Markdown links/manifests and sensitive-field scans",
+      "exit_code": 0
+    }
+  ],
+  "retained_failures": [
+    {
+      "log": "orca-structured-quality-red.log",
+      "kind": "Expected regression reproduction before fixing ordering/attribution and unbound approval diagnostic."
+    },
+    {
+      "log": "orca-structured-quality-gap-red.log",
+      "kind": "Expected history-gap diagnostic regression reproduction before retaining original verified IDs."
+    },
+    {
+      "log": "orca-structured-quality-adapters.log",
+      "kind": "Sandbox denied named pipes, helper processes and host file operations; rerun on host passed."
+    },
+    {
+      "log": "orca-structured-quality-application.log",
+      "kind": "Sandbox denied Git temporary repository writes; rerun on host."
+    },
+    {
+      "log": "orca-structured-quality-pi.log",
+      "kind": "Sandbox temp rename EPERM; host rerun passed."
+    },
+    {
+      "log": "orca-structured-quality-application-host.log",
+      "kind": "Real 200ms stop-fixture timeout before close in missing-host subcase; budget fixed to 5s without removing any effect/state assertions; complete five-root final rerun passed."
+    }
+  ],
+  "qualification": "Targeted final component checks and recorded public-journal replay only. The original full sweep failure and pre-audit live EXE are retained separately. No final full official L1/Controlled or new live business-agent qualification."
+}

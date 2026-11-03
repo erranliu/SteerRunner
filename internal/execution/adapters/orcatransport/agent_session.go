@@ -412,6 +412,11 @@ func (l *Lifecycle) readStructured(ctx context.Context, s b.LifecycleSnapshot) (
 	if state.CommandID == "" {
 		return receipt, errors.New("original structured input is unavailable")
 	}
+	// An incomplete later read cannot erase the already verified native binding
+	// needed to persist its diagnostic; it does not reconfirm input or liveness.
+	if state.TurnID != "" {
+		receipt.State.SessionID, receipt.State.TurnID = state.SessionID, state.TurnID
+	}
 	items, page, err := l.agentHistory(ctx, state)
 	if err != nil {
 		return receipt, err

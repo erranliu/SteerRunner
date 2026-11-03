@@ -4,7 +4,7 @@
 
 ## 构建与范围
 
-源码基线 `457ffaea20b6227a0bdaec9e56f5b9e7f54da337`，在本工作副本实现。最终运行构建为 Go 1.26.4 / windows/amd64、Runner 0.2.0-dev.4，EXE SHA-256：
+源码基线 `457ffaea20b6227a0bdaec9e56f5b9e7f54da337`，在本工作副本实现。以下三场真机验收使用审计前的同一构建：Go 1.26.4 / windows/amd64、Runner 0.2.0-dev.4，EXE SHA-256：
 
 `e497382b170ea722d9983f2dc502c4aa047d303ec382b6c73ad074193b6bd6a3`
 
@@ -30,7 +30,7 @@ model/effort 经 `firstMessage.selection`，full_access 经 `options.permissionM
 
 可选 result-file 复用原文件通道；因为 Orca 管理执行环境，其固定相对路径在冻结正文中提供，不安装环境变量。新协议 usage 暂未报告，不增加私有日志读取。
 
-## 最终同一 EXE 的正式场景
+## 审计前同一 EXE 的正式场景
 
 使用 Orca 已登记的 SteerlineTest、固定 base `9d81d9c2652177faf6354d4e9f9f3aec79535d11`，由正式 Runner submit、工厂、工作区和 SQLite 持久化链路创建独立 Run。模型只打印工具标记/同步等待；不修改仓库文件、commit、push、创建 PR 或安装软件。
 
@@ -86,3 +86,5 @@ P0 的 189 个文件、阻断再调查的 3 个文件全部通过原 manifest �
 本会话自审，未冒称独立子代理审计。确认：一个既有 Lifecycle 加冻结协议分支；只有实际 native 方法、IDs/cursor 和原意图；无未来 Pi/远端实现、通用 registry、第二 DB/blob/journal 镜像或新停止框架。首消息只在 StartTurn 的一个原子副作用中提交，准备和恢复不补发；关闭与业务结果分离；状态没有用 lease fence/PID/terminal 假造资源退出。
 
 审计收口修复了共享 metadata 对 Pi 的误伤风险、旧测试 mutex 污染，以及已退役 mixed 场景剩余 peer fixture。保留的旧 Codex/Pi 代码仍有真实消费者，既不是新链 fallback，也没有为本 PR 新增桥接。MVP-01–06 的实现/反例/正式入口证据如上；完整资源退出、provider final-only、audited 实际模型、Pi/远端结构化仍不声明已获得能力。
+
+用户要求提 PR 前的再次质量审计、修复、更新 main 后的测试和最终构建边界，见[质量审计](orca-structured-agent-session-mvp-quality-audit.md)。本页原始真机证据及 manifest 保持不变；其 EXE 摘要不冒充后续审计构建。
