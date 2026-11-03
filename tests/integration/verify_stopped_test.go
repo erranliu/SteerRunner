@@ -7,12 +7,14 @@ import (
 	"encoding/json"
 	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	"github.com/erranliu/SteerRunner/internal/execution/reliable/operation"
 	"github.com/erranliu/SteerRunner/internal/runstate"
 	"github.com/erranliu/SteerRunner/internal/storage"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
 )
@@ -76,7 +78,7 @@ func testNativeCandidateOfflineScope(t *testing.T) {
 }
 
 func testOrcaOfflineScope(t *testing.T, environment string, candidate bool) {
-	modes := []string{"absent", "active", "truncated", "legacy", "uncreated", "uncreated-mixed", "invalid-profile"}
+	modes := []string{"absent", "active", "truncated", "legacy", "uncreated", "uncreated-mixed", "invalid-profile", "receipt-restarted", "receipt-removed", "receipt-offline", "receipt-missing", "receipt-accepted", "receipt-unknown", "receipt-not-absent", "receipt-foreign", "receipt-incarnation", "receipt-generation", "receipt-input", "receipt-pending-resume", "receipt-pending-stop", "receipt-unknown-create", "receipt-corrupt", "receipt-scope-mismatch"}
 	if candidate {
 		modes = append(modes, "missing-scope", "old-state")
 	}
@@ -152,6 +154,64 @@ func testOrcaOfflineScope(t *testing.T, environment string, candidate bool) {
 			if candidate && mode != "missing-scope" {
 				record.StopEvidenceScope = "orca_terminal"
 			}
+			confirmed := mode == "receipt-restarted" || mode == "receipt-removed" || mode == "receipt-offline"
+			if strings.HasPrefix(mode, "receipt-") {
+				intent, e := operation.New(id, snap, b.LifecycleCandidate{Action: b.LifecycleStopExecution, Input: b.LifecycleInput{Stop: &b.StopInput{}}}, "original-stop", "original-stop-command", time.Now())
+				if e != nil {
+					t.Fatal(e)
+				}
+				receipt := b.LifecycleReceipt{Operation: intent.Request.Operation, Disposition: b.OperationConfirmed, State: b.LifecycleStateFacts{Stopped: true, WorkerAbsent: true}}
+				receipt.Operation.Receipt = []byte(`{"version":1,"phase":"confirmed"}`)
+				switch mode {
+				case "receipt-accepted":
+					receipt.Disposition = b.OperationAccepted
+				case "receipt-unknown":
+					receipt.Disposition = b.OperationUnknown
+				case "receipt-not-absent":
+					receipt.State.WorkerAbsent = false
+				case "receipt-foreign":
+					receipt.Operation.ID = "foreign-stop"
+				}
+				intent.SettleStop(record.Snapshot.Operations, receipt, receipt.Disposition)
+				record.Intents = []operation.Intent{intent}
+				switch mode {
+				case "receipt-missing":
+					record.Intents = nil
+				case "receipt-corrupt":
+					record.Intents[0].Request.Operation.Receipt = []byte(`{`)
+				case "receipt-incarnation":
+					record.Snapshot.Ref.External.Incarnation = "replacement"
+				case "receipt-generation":
+					record.Snapshot.ResourceGeneration = "new-generation"
+				case "receipt-input":
+					record.InputDigest = "different-input"
+				case "receipt-pending-resume":
+					record.PendingResume = "new-resume"
+				case "receipt-pending-stop":
+					record.PendingStop = "unresolved-stop"
+				case "receipt-unknown-create":
+					pending := intent
+					pending.Request = pending.Request.Clone()
+					pending.Request.Operation.Action = string(b.LifecycleCreateResource)
+					pending.Request.Operation.Status = b.OperationUnknown
+					record.Intents = append(record.Intents, pending)
+				case "receipt-scope-mismatch":
+					record.StopEvidenceScope = orca.LocalCodexStopScope
+				}
+				// Simulate a restarted host, removed workspace, or unreachable host.
+				// Successful durable proof must not consult any of these inventories.
+				var unavailable any = map[string]any{"ok": false, "error": map[string]any{"code": "selector_not_found"}, "_meta": map[string]any{"runtimeId": "original"}}
+				if mode == "receipt-restarted" {
+					unavailable = map[string]any{"ok": true, "_meta": map[string]any{"runtimeId": "replacement-runtime"}, "result": map[string]any{"terminals": []any{}, "totalCount": 0, "truncated": false, "hostScope": map[string]any{"hostIds": []string{"local"}, "omittedHostIds": []string{}}}}
+				}
+				if mode == "receipt-offline" {
+					unavailable = map[string]any{"ok": false, "error": map[string]any{"code": "remote_runtime_unavailable"}}
+				}
+				wire, _ := json.Marshal(unavailable)
+				if err = os.WriteFile(inventory, wire, 0600); err != nil {
+					t.Fatal(err)
+				}
+			}
 			store, err := storage.Open(dir)
 			if err != nil {
 				t.Fatal(err)
@@ -170,22 +230,22 @@ func testOrcaOfflineScope(t *testing.T, environment string, candidate bool) {
 			if err = json.Unmarshal(raw, &proof); err != nil {
 				t.Fatal(err)
 			}
-			want := mode == "absent" || mode == "uncreated"
+			want := mode == "absent" || mode == "uncreated" || confirmed
 			if proof.ResourcesSettled != want || len(proof.Runs) != 1 || proof.Runs[0].ResourcesSettled != want {
 				t.Fatal(proof)
 			}
 			scope := "orca_terminal"
-			if mode == "legacy" || mode == "invalid-profile" {
+			if mode == "legacy" || mode == "invalid-profile" || mode == "receipt-input" {
 				scope = ""
 			}
 			if proof.Runs[0].StopEvidenceScope != scope {
 				t.Fatal(proof)
 			}
 			after, _ := os.ReadFile(filepath.Join(dir, "runner.db"))
-			if !bytes.Equal(before, after) || !candidate && bytes.Contains(after, []byte("stop_evidence_scope")) {
+			if !bytes.Equal(before, after) || !candidate && mode != "receipt-scope-mismatch" && bytes.Contains(after, []byte("stop_evidence_scope")) {
 				t.Fatal("offline verification modified storage or persisted scope")
 			}
-			if strings.HasPrefix(mode, "uncreated") || mode == "invalid-profile" || mode == "legacy" || mode == "missing-scope" || mode == "old-state" {
+			if confirmed || mode == "receipt-incarnation" || mode == "receipt-input" || mode == "receipt-generation" || mode == "receipt-scope-mismatch" || strings.HasPrefix(mode, "uncreated") || mode == "invalid-profile" || mode == "legacy" || mode == "missing-scope" || mode == "old-state" {
 				if _, err := os.Stat(inventory + ".calls"); !os.IsNotExist(err) {
 					t.Fatal("uncreated record caused inventory or helper effect", err)
 				}
