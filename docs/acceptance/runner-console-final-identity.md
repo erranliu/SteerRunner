@@ -39,4 +39,11 @@ No live model/Orca session, installation repair or full native L2/L3 qualificati
 
 Main advanced to `da487dc9a6a57559fd89a510a0dacc362b383811` while the initial validation was running. PR #96 was initially conflicting only in the acceptance index. Both index entries were retained, and the new atomic Orca agent-session final producer now populates the same explicit final binding; its existing atomic-create/read-only-recovery test asserts that binding and native provenance. The native session/turn checks in that producer are unchanged.
 
-The complete L1 and Controlled results above describe the pre-integration tree. Validation of the merged tree is pending below; those earlier results are not represented as a complete L1 run on the merged source.
+The complete L1 and Controlled results above describe the pre-integration tree. The merged-tree validations below passed; the earlier results are not represented as a complete L1 run on the merged source.
+
+- `merged-focused/tests.jsonl`: selected actor single-execution/content, atomic session, fixed-control and usage regressions passed.
+- `merged-owners/tests.jsonl`: complete ordinary test sets for orcatransport, protocol/orca, usage/collect and codex passed; native opt-in skips remain outside native qualification.
+- `merged-controlled-flows/summary.json`: the same ten Controlled roots passed using an EXE built from the merged source.
+- `merged-controlled-orca-cli/summary.json`: the CLI group and all seven child cases passed with that same merged-source EXE.
+
+The repository originally allowed only Rebase merge. The intermediate merge of main resolved the final file conflict, but GitHub could still refuse replaying the older PR commits. The user then enabled merge/squash methods and chose Squash as the preferred workflow, so the tested branch history was retained. A short root AGENTS.md records that preference and separates per-fix acceptance records from the shared index. No rebase-specific preflight or CI workflow was added. PR96's final-file merge state was confirmed CLEAN/MERGEABLE.
