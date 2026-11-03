@@ -1,0 +1,97 @@
+{
+  "sessionId": "oas_mvp_2ad2db59abde4a8eb93d31e115c8880f",
+  "atomic_selection": {
+    "model": "gpt-6.1-sol",
+    "effort": "medium"
+  },
+  "permission_options": {
+    "permissionMode": "full-access"
+  },
+  "original_body_equal": true,
+  "user_rows": 1,
+  "turn": {
+    "contextUsage": {
+      "used": {
+        "kind": "report",
+        "model": "unknown",
+        "usedTokens": 21003,
+        "windowTokens": 475000,
+        "percentage": 4,
+        "categories": [],
+        "capturedAt": 1793692336045
+      }
+    },
+    "turnId": "01a1a064-8855-76a0-9096-ff7528ede227",
+    "state": "completed",
+    "outcome": "success",
+    "userItemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+    "startedAt": 1793692306429,
+    "requestedAt": 1793692305424,
+    "completedAt": 1793692336404,
+    "durationMs": 30827
+  },
+  "options": {
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "serviceTier": "priority",
+    "defaulted": [],
+    "reportedPermissionMode": "full-access",
+    "acceptedInputSources": {
+      "model": "saved",
+      "effort": "saved",
+      "serviceTier": "saved"
+    },
+    "permissionMode": "full-access"
+  },
+  "assistant_items": [
+    {
+      "itemId": "codex:01a1a064-7c9e-7513-97b7-12465105ea4d:01a1a064-8855-76a0-9096-ff7528ede227:1",
+      "sequence": 7,
+      "turnScope": {
+        "kind": "turn",
+        "turnItemId": "legacy:codex:oas_mvp_2ad2db59abde4a8eb93d31e115c8880f:turn-lifecycle%3A01a1a064-8855-76a0-9096-ff7528ede227"
+      },
+      "blocks": [
+        {
+          "type": "text",
+          "characters": 9
+        }
+      ]
+    },
+    {
+      "itemId": "codex:01a1a064-7c9e-7513-97b7-12465105ea4d:01a1a064-8855-76a0-9096-ff7528ede227:2",
+      "sequence": 13,
+      "turnScope": {
+        "kind": "turn",
+        "turnItemId": "legacy:codex:oas_mvp_2ad2db59abde4a8eb93d31e115c8880f:turn-lifecycle%3A01a1a064-8855-76a0-9096-ff7528ede227"
+      },
+      "blocks": [
+        {
+          "type": "text",
+          "characters": 9
+        }
+      ]
+    },
+    {
+      "itemId": "codex:01a1a064-7c9e-7513-97b7-12465105ea4d:01a1a064-8855-76a0-9096-ff7528ede227:3",
+      "sequence": 19,
+      "turnScope": {
+        "kind": "turn",
+        "turnItemId": "legacy:codex:oas_mvp_2ad2db59abde4a8eb93d31e115c8880f:turn-lifecycle%3A01a1a064-8855-76a0-9096-ff7528ede227"
+      },
+      "blocks": [
+        {
+          "type": "text",
+          "characters": 5999
+        }
+      ]
+    }
+  ],
+  "tool_items": 2,
+  "pages": 4,
+  "has_full_final": true,
+  "initial_tool_count_note": "Initial diagnostic counted tool blocks; actual Orca tools are body.kind=tool-call. Count corrected from public history.",
+  "final_line_count": 300,
+  "public_message_phase_reported": false,
+  "complete_result_policy": "Collect every complete assistant message in the bound original turn, in journal order; retain item boundaries. No provider final-phase claim."
+}

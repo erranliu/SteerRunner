@@ -10,7 +10,6 @@ import (
 	"fmt"
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
-	m "github.com/erranliu/SteerRunner/internal/execution/model"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"github.com/erranliu/SteerRunner/internal/execution/terminaltools"
 	"github.com/erranliu/SteerRunner/internal/execution/workspace"
@@ -22,7 +21,7 @@ import (
 	"time"
 )
 
-//go:embed extensions/pi-evidence.mjs extensions/pi-managed.mjs extensions/dsh-managed.mjs extensions/terminal-tools.mjs extensions/receipt.mjs
+//go:embed extensions/pi-evidence.mjs extensions/pi-managed.mjs extensions/terminal-tools.mjs extensions/receipt.mjs
 var terminalAssets embed.FS
 
 type TerminalConfig struct {
@@ -55,6 +54,9 @@ func (c *TerminalConfig) UnmarshalJSON(raw []byte) error {
 }
 
 type TerminalMetadata struct {
+	// Existing Pi helpers also emitted this shared metadata key. Accept the
+	// unused value so removing DSH does not reject a frozen Pi helper build.
+	DSHSHA256      string `json:"dsh_sha256,omitempty"`
 	Authentication string `json:"authentication"`
 	CodexTransport string `json:"codex_transport"`
 	CodexPolicy    string `json:"codex_policy"`
@@ -63,7 +65,6 @@ type TerminalMetadata struct {
 	RuntimeSHA256  string `json:"runtime_sha256"`
 	BundleSHA256   string `json:"bundle_sha256"`
 	PiSHA256       string `json:"pi_sha256"`
-	DSHSHA256      string `json:"dsh_sha256"`
 }
 
 // Metadata is captured from the selected helper before accepting a Run, so an
@@ -78,8 +79,7 @@ func TerminalRuntimeMetadata() (TerminalMetadata, error) {
 		return TerminalMetadata{}, e
 	}
 	pi, _ := terminalAssets.ReadFile("extensions/pi-evidence.mjs")
-	dsh, _ := terminalAssets.ReadFile("extensions/dsh-managed.mjs")
-	return TerminalMetadata{Version: 5, Contract: terminaltools.Contract, Authentication: "host-native", CodexTransport: codex.RemoteNativeTransport, CodexPolicy: codex.PolicyContract, RuntimeSHA256: fmt.Sprintf("%x", sha256.Sum256(raw)), BundleSHA256: TerminalExtensionDigest(), PiSHA256: fmt.Sprintf("%x", sha256.Sum256(pi)), DSHSHA256: fmt.Sprintf("%x", sha256.Sum256(dsh))}, nil
+	return TerminalMetadata{Version: 5, Contract: terminaltools.Contract, Authentication: "host-native", CodexTransport: codex.RemoteNativeTransport, CodexPolicy: codex.PolicyContract, RuntimeSHA256: fmt.Sprintf("%x", sha256.Sum256(raw)), BundleSHA256: TerminalExtensionDigest(), PiSHA256: fmt.Sprintf("%x", sha256.Sum256(pi))}, nil
 }
 
 type TerminalOwner struct {
@@ -99,7 +99,7 @@ func (c TerminalConfig) Command(runtime string) string {
 
 func TerminalExtensionDigest() string {
 	h := sha256.New()
-	for _, name := range []string{"pi-evidence.mjs", "pi-managed.mjs", "dsh-managed.mjs", "terminal-tools.mjs", "receipt.mjs"} {
+	for _, name := range []string{"pi-evidence.mjs", "pi-managed.mjs", "terminal-tools.mjs", "receipt.mjs"} {
 		raw, _ := terminalAssets.ReadFile("extensions/" + name)
 		h.Write([]byte(name))
 		h.Write(raw)
@@ -110,19 +110,7 @@ func TerminalExtensionDigest() string {
 // RunTerminalAgent keeps the original TUI on Orca's stdio. Only native tools use
 // the owned PowerShell tool host; this path never starts a Codex model/server or a Pi SDK agent.
 func RunTerminalAgent(ctx context.Context, c TerminalConfig, input io.Reader, output, diagnostics io.Writer) (result error) {
-	var inputParts []m.InputPart
-	var inputBudget *m.InputBudget
-	if c.Agent == "dsh" {
-		parts, err := terminalDescriptionParts()
-		if err != nil {
-			return err
-		}
-		if _, inputBudget, err = m.FreezeInput(parts...); err != nil {
-			return err
-		}
-		inputParts = parts
-	}
-	if c.ReceiptVersion != 4 || c.Agent != "pi" && c.Agent != "dsh" || c.AccessMode != "full_access" || !filepath.IsAbs(c.StateDirectory) || !b.StableExecutionID(c.ExecutionID) || c.SessionID == "" {
+	if c.ReceiptVersion != 4 || c.Agent != "pi" || c.AccessMode != "full_access" || !filepath.IsAbs(c.StateDirectory) || !b.StableExecutionID(c.ExecutionID) || c.SessionID == "" {
 		return errors.New("native terminal frozen launch configuration invalid")
 	}
 	metadata, err := TerminalRuntimeMetadata()
@@ -130,9 +118,6 @@ func RunTerminalAgent(ctx context.Context, c TerminalConfig, input io.Reader, ou
 		return err
 	}
 	sourceSHA := metadata.PiSHA256
-	if c.Agent == "dsh" {
-		sourceSHA = metadata.DSHSHA256
-	}
 	if c.BundleSHA256 != "" && c.BundleSHA256 != metadata.BundleSHA256 || c.EvidenceSHA256 != "" && c.EvidenceSHA256 != sourceSHA {
 		return errors.New("native terminal helper sources changed")
 	}
@@ -195,10 +180,6 @@ func RunTerminalAgent(ctx context.Context, c TerminalConfig, input io.Reader, ou
 	}
 	packageRoot := filepath.Join(moduleRoot, "@earendil-works", "pi-coding-agent")
 	expectedName, expectedVersion, binName, entry := "@earendil-works/pi-coding-agent", "0.87.1", "pi", "dist/bundle/cli.js"
-	if c.Agent == "dsh" {
-		packageRoot = filepath.Join(moduleRoot, "@deepseek-ai", "dsh")
-		expectedName, expectedVersion, binName, entry = "@deepseek-ai/dsh", "0.2.1-rc.2", "dsh", "lib/bin.js"
-	}
 	var packageMetadata struct {
 		Name    string            `json:"name"`
 		Version string            `json:"version"`
@@ -221,20 +202,13 @@ func RunTerminalAgent(ctx context.Context, c TerminalConfig, input io.Reader, ou
 	if err = policy.Validate(); err != nil {
 		return err
 	}
-	for _, name := range []string{"pi-evidence.mjs", "pi-managed.mjs", "dsh-managed.mjs", "terminal-tools.mjs", "receipt.mjs"} {
+	for _, name := range []string{"pi-evidence.mjs", "pi-managed.mjs", "terminal-tools.mjs", "receipt.mjs"} {
 		body, _ := terminalAssets.ReadFile("extensions/" + name)
 		if err = host.WriteExecutionFile(filepath.Join(c.StateDirectory, name), body); err != nil {
 			return err
 		}
 	}
 	config := map[string]any{"version": 2, "run_id": c.ExecutionID, "session_id": c.SessionID, "cwd": working, "directory": c.StateDirectory, "tool_host": self, "tool_policy": policy, "extension_bundle_sha256": TerminalExtensionDigest(), "reasoning_effort": c.ReasoningEffort, "model": c.Model}
-	if inputBudget != nil {
-		config["runner_input_budget"], config["runner_input_parts"] = inputBudget, inputParts
-	}
-	if c.Agent == "dsh" {
-		config["dsh_tools_module"] = filepath.Join(moduleRoot, "@deepseek-ai", "dsh-tools", "lib", "index.js")
-		config["dsh_llm_module"] = filepath.Join(moduleRoot, "@deepseek-ai", "dsh-llm", "lib", "index.js")
-	}
 	configBytes, _ := json.Marshal(config)
 	if err = host.WriteExecutionFile(filepath.Join(c.StateDirectory, "config.json"), configBytes); err != nil {
 		return err
@@ -245,12 +219,6 @@ func RunTerminalAgent(ctx context.Context, c TerminalConfig, input io.Reader, ou
 	}
 	if c.ReasoningEffort != "" {
 		args = append(args, "--thinking", c.ReasoningEffort)
-	}
-	if c.Agent == "dsh" {
-		if err = prepareDSHProfile(ctx, host, c, moduleRoot, shell); err != nil {
-			return err
-		}
-		args = []string{filepath.Join(packageRoot, entry), "--profile", "runner"}
 	}
 	command := exec.Command(node, args...)
 	command.Dir = working
@@ -269,16 +237,9 @@ func RunTerminalAgent(ctx context.Context, c TerminalConfig, input io.Reader, ou
 		if upper == "GH_TOKEN" || upper == "GITHUB_TOKEN" || upper == "GH_CONFIG_DIR" || strings.HasPrefix(upper, "GIT_CONFIG_") || strings.HasPrefix(upper, "SR_TERMINAL_") {
 			continue
 		}
-		if c.Agent == "dsh" && (upper == "DSH_HOME" || strings.HasPrefix(upper, "DSH_TUI_") || upper == "HOME" || upper == "USERPROFILE") {
-			continue
-		}
 		command.Env = append(command.Env, entry)
 	}
 	command.Env = append(command.Env, "SR_TERMINAL_TOOL_ENV="+string(envBytes), "SR_TERMINAL_CONFIG="+filepath.Join(c.StateDirectory, "config.json"), "PI_OFFLINE=1", "PI_TELEMETRY=0")
-	if c.Agent == "dsh" {
-		home := filepath.Join(c.StateDirectory, "home")
-		command.Env = append(command.Env, "HOME="+home, "USERPROFILE="+home, "DSH_HOME="+filepath.Join(home, ".dsh"), "DSH_TUI_PRESET=runner", "DSH_TUI_BACKEND=dsh")
-	}
 	owned, err := host.StartManaged(command)
 	if err != nil {
 		return err

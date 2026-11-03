@@ -1,0 +1,15 @@
+{
+  "runtime": "local",
+  "sessionId": "oas_p0_d3bbbda92ade431a8fa7c9137f8aa97f",
+  "marker": "P0_OAS_LOCAL_PI_OK",
+  "params": {
+    "envelope": {
+      "sessionId": "oas_p0_d3bbbda92ade431a8fa7c9137f8aa97f",
+      "clientOperationId": "1793688973203-1e217dfac2644c4fb0b408286d8e8fc2",
+      "expectedRuntimeFence": null,
+      "payloadFingerprint": "930ddf830a4cdfc77b96176fb9ea6588db0407f9c7b8c2a660f7f71885609c91"
+    },
+    "worktree": "id:faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-oas-p0-20261103-local",
+    "agent": "pi"
+  }
+}

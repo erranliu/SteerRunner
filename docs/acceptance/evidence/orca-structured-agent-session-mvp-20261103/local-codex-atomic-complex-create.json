@@ -1,0 +1,115 @@
+{
+  "id": "9999b3c4-2682-4f94-8983-2a10ef490ea4",
+  "ok": true,
+  "result": {
+    "ok": true,
+    "replayed": false,
+    "fence": 1,
+    "cursor": {
+      "epoch": "939d624d-3f19-46cd-a19a-6ff117c16142",
+      "sequence": 2
+    },
+    "value": {
+      "sessionId": "oas_mvp_2ad2db59abde4a8eb93d31e115c8880f",
+      "fence": 1,
+      "page": {
+        "sessionId": "oas_mvp_2ad2db59abde4a8eb93d31e115c8880f",
+        "epoch": "939d624d-3f19-46cd-a19a-6ff117c16142",
+        "fence": 1,
+        "direction": "tail",
+        "items": [
+          {
+            "itemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+            "revision": 0,
+            "body": {
+              "kind": "message",
+              "role": "user",
+              "blocks": [
+                {
+                  "type": "text",
+                  "text": "This is an isolated structured-input integration check. Work only in the current workspace; do not modify repository files, commit, publish, or inspect credentials.\r\nFirst send a short commentary saying STAGE_ONE, then use the shell tool to print MVP_TOOL_ONE. Next send a second commentary saying STAGE_TWO and use the shell tool again to print MVP_TOOL_TWO. Finally return exactly the 300 lines MVP_FINAL_LINE_0001 through MVP_FINAL_LINE_0300, with one line per number. Do not abbreviate the final output.\r\n\r\nLiteral input preservation only: 中文 😀 \"quotes\" docs\\spec\\example.md\r\n```text\r\n<&> a\\b\r\n```\r\n  "
+                }
+              ]
+            },
+            "sequence": 2,
+            "observedAt": 1793692301525,
+            "turnScope": {
+              "kind": "thread"
+            }
+          }
+        ],
+        "removedItemIds": [],
+        "submissions": [
+          {
+            "clientMessageId": "1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+            "fence": 1,
+            "payloadFingerprint": "419753580e70a0b2fac072bb28e8f5dc8d1d8797c2b21f2f55959c3629310934",
+            "dispatchState": "pending",
+            "providerItemId": null,
+            "reason": null,
+            "submittedAt": 1793692301525,
+            "resolvedAt": null,
+            "submittedSequence": 2,
+            "handoverRecorded": true,
+            "acceptedSequence": 2,
+            "origin": "client",
+            "source": {
+              "kind": "user"
+            },
+            "options": {
+              "model": "gpt-6.1-sol",
+              "effort": "medium"
+            }
+          }
+        ],
+        "window": {
+          "oldest": {
+            "epoch": "939d624d-3f19-46cd-a19a-6ff117c16142",
+            "sequence": 2
+          },
+          "newest": {
+            "epoch": "939d624d-3f19-46cd-a19a-6ff117c16142",
+            "sequence": 2
+          },
+          "nextCursor": {
+            "epoch": "939d624d-3f19-46cd-a19a-6ff117c16142",
+            "sequence": 2
+          }
+        },
+        "liveCursor": {
+          "epoch": "939d624d-3f19-46cd-a19a-6ff117c16142",
+          "sequence": 2
+        },
+        "hasOlder": false,
+        "hasNewer": false,
+        "latestTurn": null
+      },
+      "unconfirmedClientMessageIds": [],
+      "firstMessage": {
+        "clientMessageId": "1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+        "fence": 1,
+        "payloadFingerprint": "419753580e70a0b2fac072bb28e8f5dc8d1d8797c2b21f2f55959c3629310934",
+        "dispatchState": "pending",
+        "providerItemId": null,
+        "reason": null,
+        "submittedAt": 1793692301525,
+        "resolvedAt": null,
+        "submittedSequence": 2,
+        "handoverRecorded": true,
+        "acceptedSequence": 2,
+        "origin": "client",
+        "source": {
+          "kind": "user"
+        },
+        "options": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium"
+        }
+      },
+      "tabId": "structured-agent-session-oas_mvp_2ad2db59abde4a8eb93d31e115c8880f"
+    }
+  },
+  "_meta": {
+    "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+  }
+}

@@ -25,7 +25,7 @@ import (
 
 func auditWorkerSandbox(t *testing.T, m livetest.Manifest, run contracts.RunView) {
 	t.Helper()
-	if m.Execution.Adapter == "orca-terminal" && (run.Execution.Agent == "pi" || run.Execution.Agent == "dsh") {
+	if m.Execution.Adapter == "orca-terminal" && (run.Execution.Agent == "pi") {
 		auditTerminalWorker(t, m, run)
 		return
 	}
@@ -165,9 +165,6 @@ func auditTerminalWorker(t *testing.T, m livetest.Manifest, run contracts.RunVie
 	read("owner", &owner)
 	p := ready.Preparation
 	source := "pi-extension-v1"
-	if settings.AgentName() == "dsh" {
-		source = "dsh-plugin-v1"
-	}
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	metadataBytes, e := exec.CommandContext(ctx, settings.AgentLaunch.RuntimeExecutable, "--terminal-metadata").Output()
@@ -176,9 +173,6 @@ func auditTerminalWorker(t *testing.T, m livetest.Manifest, run contracts.RunVie
 		t.Fatal("frozen native helper metadata changed", e)
 	}
 	expectedSource := metadata.PiSHA256
-	if settings.AgentName() == "dsh" {
-		expectedSource = metadata.DSHSHA256
-	}
 	if ready.SourceSHA256 != expectedSource {
 		t.Fatal("native extension differs from frozen helper")
 	}

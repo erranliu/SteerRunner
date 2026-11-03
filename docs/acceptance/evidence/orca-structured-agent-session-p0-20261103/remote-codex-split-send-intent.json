@@ -1,0 +1,22 @@
+{
+  "envelope": {
+    "sessionId": "oas_p0_d783d07524884dc49fb4e096588199cb",
+    "clientOperationId": "1793688975342-0e23a747f3734adc9357455dd535e979",
+    "expectedRuntimeFence": 1,
+    "payloadFingerprint": "45810652dcc2bebe1a916cd38b1d40389faf339ac0d71c9d77ed748a542ceea9"
+  },
+  "body": {
+    "kind": "message",
+    "role": "user",
+    "blocks": [
+      {
+        "type": "text",
+        "text": "This is an API input fidelity check. Do not use tools or read/write files. Reply exactly P0_OAS_REMOTE_CODEX_OK.\r\nLiteral path: docs\\spec\\example.md\r\n\r\nChinese: 中文; Unicode: 😀; quotes: \"x\"\r\n```text\r\na\\b\r\n```\r\n  "
+      }
+    ]
+  },
+  "selection": {
+    "model": "gpt-6.1-sol",
+    "effort": "high"
+  }
+}

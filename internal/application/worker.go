@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable/operation"
@@ -243,6 +244,19 @@ func (e *Engine) invoke(id string, w *worker, p b.LifecyclePort, index int, reco
 		deadline = deadlines[0]
 	}
 	ctx, cancel := context.WithDeadline(e.ctx, deadline)
+	if !reconcile && r.Snapshot.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 && nativeInputAction(b.LifecycleAction(request.Operation.Action)) {
+		// The immutable in-flight intent already committed. Recheck its original
+		// authority at the IPC write, after read-only connection/qualification.
+		ctx = native.WithDispatchCheckpoint(ctx, func() error {
+			e.mu.Lock()
+			defer e.mu.Unlock()
+			current := e.runs[id]
+			if current == nil || !current.Allowed || current.ResumeRequired || current.Closed || current.PendingStop != "" || index >= len(current.Intents) || current.Intents[index].Request.Operation.ID != request.Operation.ID || current.Intents[index].Request.Operation.Status != b.OperationInFlight {
+				return errors.New("original structured dispatch authorization revoked")
+			}
+			return ctx.Err()
+		})
+	}
 	preparationRecovery := false
 	// Clone normalizes nil/empty implementation lists on both sides. Storage
 	// round trips may change that representation without changing any identity.

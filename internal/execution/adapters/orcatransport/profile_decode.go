@@ -10,6 +10,10 @@ import (
 
 // Decode only the current local and native remote profile contracts.
 func decodeLifecycleProfile(setup b.LifecycleSetup) (Profile, int, error) {
+	if setup.Snapshot.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 {
+		p, err := decodeAgentSessionProfile(setup)
+		return p.Transport, 1, err
+	}
 	if setup.Snapshot.Ref.Backend != b.BackendOrca || setup.Snapshot.Ref.Protocol != b.ProtocolOrcaTerminalV3 {
 		return Profile{}, 0, errors.New("unsupported Orca terminal lifecycle")
 	}

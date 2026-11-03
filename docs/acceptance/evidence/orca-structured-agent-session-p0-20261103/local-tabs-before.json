@@ -1,0 +1,81 @@
+{
+  "id": "2e0826bb-195b-434f-95f6-1e02daee0422",
+  "ok": true,
+  "result": {
+    "worktree": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-oas-p0-20261103-local",
+    "publicationEpoch": "renderer:a91a57e7-8c25-4bb6-9ab5-03b096e576bc",
+    "snapshotVersion": 572,
+    "activeGroupId": "c0f331bd-5ac4-4703-b64b-3b49336790b3",
+    "activeTabId": "043b32c0-f19e-4650-a9a2-2d32788942f1::aedeac80-d821-4bed-9e75-5e5b99300daa",
+    "activeTabType": "terminal",
+    "tabGroups": [
+      {
+        "id": "c0f331bd-5ac4-4703-b64b-3b49336790b3",
+        "activeTabId": "043b32c0-f19e-4650-a9a2-2d32788942f1",
+        "tabOrder": [
+          "043b32c0-f19e-4650-a9a2-2d32788942f1"
+        ]
+      }
+    ],
+    "tabGroupLayout": {
+      "type": "leaf",
+      "groupId": "c0f331bd-5ac4-4703-b64b-3b49336790b3"
+    },
+    "tabs": [
+      {
+        "type": "terminal",
+        "id": "043b32c0-f19e-4650-a9a2-2d32788942f1::aedeac80-d821-4bed-9e75-5e5b99300daa",
+        "parentTabId": "043b32c0-f19e-4650-a9a2-2d32788942f1",
+        "leafId": "aedeac80-d821-4bed-9e75-5e5b99300daa",
+        "title": "Terminal 1",
+        "customTitle": null,
+        "ptyId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-oas-p0-20261103-local@@288ba689",
+        "incarnationId": "d5d22773-440d-4d8e-8024-1c2070ed8608",
+        "terminalTheme": {
+          "mode": "dark",
+          "theme": {
+            "background": "#282c34",
+            "foreground": "#ffffff",
+            "cursor": "#ffffff",
+            "cursorAccent": "#282c34",
+            "selectionBackground": "#5a7898",
+            "selectionForeground": "#ffffff",
+            "black": "#1d1f21",
+            "red": "#cc6666",
+            "green": "#b5bd68",
+            "yellow": "#f0c674",
+            "blue": "#81a2be",
+            "magenta": "#b294bb",
+            "cyan": "#8abeb7",
+            "white": "#c5c8c6",
+            "brightBlack": "#666666",
+            "brightRed": "#d54e53",
+            "brightGreen": "#b9ca4a",
+            "brightYellow": "#e7c547",
+            "brightBlue": "#7aa6da",
+            "brightMagenta": "#c397d8",
+            "brightCyan": "#70c0b1",
+            "brightWhite": "#eaeaea"
+          }
+        },
+        "parentLayout": {
+          "root": {
+            "type": "leaf",
+            "leafId": "aedeac80-d821-4bed-9e75-5e5b99300daa"
+          },
+          "activeLeafId": "aedeac80-d821-4bed-9e75-5e5b99300daa",
+          "expandedLeafId": null,
+          "ptyIdsByLeafId": {
+            "aedeac80-d821-4bed-9e75-5e5b99300daa": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-oas-p0-20261103-local@@288ba689"
+          }
+        },
+        "isActive": true,
+        "status": "ready",
+        "terminal": "term_f11d6f91-635a-4791-bbdd-39b7363a3f59"
+      }
+    ]
+  },
+  "_meta": {
+    "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+  }
+}

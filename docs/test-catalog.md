@@ -1,5 +1,7 @@
 # SteerRunner L2–L4 测试清单
 
+2026-11-03 当前增量：移除 DSH 专用执行/历史/用量及 `orca-local.dsh`、`orca-local.mixed` 注册；当前数字以 JSON 目录为准。新增结构化 execute/1 的组件和真实场景见[实施验收](acceptance/orca-structured-agent-session-mvp.md)。下文已注明日期的 DSH 原结果仅作历史，不代表当前支持。
+
 > 2026-11-02 当前目录：现行数量统一见[当前清单与资格边界](#当前清单与资格边界)，以 tests/catalog.json 与 cases.json 为准。已有 TestSRSingleExecutionColdStop 纳入默认 Controlled；其余测试内容、分级与调度保持。当前为 state/v8；升级先排空，unknown 超时后的公开 resume 只读对账、零重建/重发见[P3 验收](acceptance/personal-executor-p3.md)。P1 的正式 test.ps1 -Focused 支持明确 L2/L3 场景、不启动完整 L1/Controlled、完整资格始终 false，见[测试指南](testing.md#快速定向验证p12026-11-01)。下文旧日期的数量、generate/takeover 建议、verify-takeover/旧兼容测试及结果仅属历史；候选接管成功场景已经退役，不作为现行测试义务。原生专项的 Pattern 不等于通用 Focused，也不授予完整 L2/L3。
 
 2026-10-31 验证编排增量：独立前置和显式 L2 复用见[入口说明](testing.md#独立前置与显式-l2-复用) / [验收](acceptance/validation-reuse.md)。本轮未增删任何场景、case、内部变体或 skip 义务；L3/L4 不开放复用。
@@ -142,8 +144,6 @@ worker/服务，须先对账原现场并收尾，再启动独占测试；当前�
 | `orca-local.smoke` | `default` | 无 pair 的真实本机 IPC 查询、原请求开始回执/新主代理 done、原生 final 及真实 PR 交付/停止 | `merged` | 独立现场/工作区/会话；当前查询式实现的真机结果单列，不要求修改 Orca |
 | `orca-local.codex` | `default` | 本机 Orca terminal 的开发、业务问答、发布后反馈拒绝、原终端/agent 身份、真实 PR 与清理 | `merged`，权限审计及 Run/服务停止 | 复用 development-feedback；含业务 reply、丢 submit 响应对账、同构建服务换代保留授权和活动 stop；实际结果见[通用接入验收](acceptance/orca-generic-agent.md) |
 | `orca-local.pi` | `default` | Pi 的同一 terminal 开发、业务问答及发布后反馈拒绝，不能继承 Codex 原生证据 | 同上 | A01 扩展、full_access 工具及原生权限审计已接线；包含业务 reply、换代和活动写者停止；实际结果见[通用接入验收](acceptance/orca-generic-agent.md) |
-| `orca-local.dsh` | `default` | DSH 的同一 terminal 开发、业务问答及发布后反馈拒绝，排除 SessionStart/子事件假完成 | 同上 | A02 原 TUI 固定 profile、原生持久事实、业务 reply 及 H01 已接线；不改 Orca，结果见[通用接入验收](acceptance/orca-generic-agent.md) |
-| `orca-local.mixed` | `default` | 同一服务的 Pi/DSH：独立输入/原生会话/回执/PR，停止 Pi 后 DSH 的原生 owner 保持可用 | 两个原 PR、隔离验证及 Run/服务停止 | 冻结 peer_execution；只验证一个混合组合 |
 | `orca-remote.multirun` | `default` | 同服务接受两个请求，独立原终端/工作区/分支/事件/PR；停止一方后另一方原生 owner 保持可用 | 两个原 PR，Run/服务停止，离线核验两项 orca_terminal scope | `orca-remote-codex`；不部署 helper，不声明远端 broker 或完整 OS 树证明 |
 | `orca-remote.smoke` | `default` | 远端适配器的工作区创建、原生会话与真实交付；与 L2 的区别在远端契约 | `merged` | 不操作共享 runtime；独立 worktree/会话/PR，按当前 workflow/2 直接交付 |
 | `orca-remote.caller-exit` | `accepted-response-lost` | 接受回执丢失后结束调用方，原服务继续；按原 request_id 找回唯一 Run，同 ID/正文重试不重复输入 | `merged` | 只结束本现场调用方及 submit 进程；核验服务和其它现场仍运行 |

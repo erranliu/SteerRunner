@@ -1,0 +1,4 @@
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca	23.385s
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport	99.455s
+ok  	github.com/erranliu/SteerRunner/internal/resources	1.573s
+ok  	github.com/erranliu/SteerRunner/internal/contracts	0.933s

@@ -1,0 +1,818 @@
+[
+  {
+    "id": "383bf908-0117-42db-88b1-b5997b9b2714",
+    "ok": true,
+    "result": {
+      "ok": true,
+      "page": {
+        "sessionId": "oas_p0_0a3ac009c57b46c49cf11a8e7d74d33f",
+        "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+        "direction": "tail",
+        "items": [
+          {
+            "itemId": "orca:1793688883878-107776c61b844268901c2f0c2a82bb1b",
+            "revision": 0,
+            "body": {
+              "kind": "message",
+              "role": "user",
+              "blocks": [
+                {
+                  "type": "text",
+                  "text": "Cancellation API probe. Do not use tools, read files, or change anything. Generate 3000 numbered lines of short original arithmetic examples. Keep producing lines until the list is complete."
+                }
+              ]
+            },
+            "sequence": 2,
+            "observedAt": 1793688883934,
+            "turnScope": {
+              "kind": "thread"
+            }
+          }
+        ],
+        "removedItemIds": [],
+        "submissions": [
+          {
+            "clientMessageId": "1793688883878-107776c61b844268901c2f0c2a82bb1b",
+            "fence": 1,
+            "payloadFingerprint": "7d206d656fd55ce37d49991646a1f514fb74a333e4b6887714b963587d7a0e66",
+            "dispatchState": "pending",
+            "providerItemId": null,
+            "reason": null,
+            "submittedAt": 1793688883934,
+            "resolvedAt": null,
+            "submittedSequence": 2,
+            "handoverRecorded": true,
+            "acceptedSequence": 2,
+            "origin": "client",
+            "source": {
+              "kind": "user"
+            },
+            "options": {}
+          }
+        ],
+        "window": {
+          "oldest": {
+            "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+            "sequence": 2
+          },
+          "newest": {
+            "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+            "sequence": 2
+          },
+          "nextCursor": {
+            "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+            "sequence": 2
+          }
+        },
+        "liveCursor": {
+          "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+          "sequence": 2
+        },
+        "hasOlder": false,
+        "hasNewer": false,
+        "latestTurn": null,
+        "actionablePromptIds": [],
+        "working": true,
+        "fence": 2,
+        "hostNow": 1793688884029,
+        "queuedMessages": [],
+        "queuePause": null,
+        "nextQueuedMessageId": null,
+        "backgroundTasks": null
+      }
+    },
+    "_meta": {
+      "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+    }
+  },
+  {
+    "id": "f44a5144-c8ba-4f76-afab-dac14d68a1d0",
+    "ok": true,
+    "result": {
+      "ok": true,
+      "page": {
+        "sessionId": "oas_p0_0a3ac009c57b46c49cf11a8e7d74d33f",
+        "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+        "direction": "tail",
+        "items": [
+          {
+            "itemId": "orca:1793688883878-107776c61b844268901c2f0c2a82bb1b",
+            "revision": 0,
+            "body": {
+              "kind": "message",
+              "role": "user",
+              "blocks": [
+                {
+                  "type": "text",
+                  "text": "Cancellation API probe. Do not use tools, read files, or change anything. Generate 3000 numbered lines of short original arithmetic examples. Keep producing lines until the list is complete."
+                }
+              ]
+            },
+            "sequence": 2,
+            "observedAt": 1793688883934,
+            "turnScope": {
+              "kind": "thread"
+            }
+          }
+        ],
+        "removedItemIds": [],
+        "submissions": [
+          {
+            "clientMessageId": "1793688883878-107776c61b844268901c2f0c2a82bb1b",
+            "fence": 1,
+            "payloadFingerprint": "7d206d656fd55ce37d49991646a1f514fb74a333e4b6887714b963587d7a0e66",
+            "dispatchState": "pending",
+            "providerItemId": null,
+            "reason": null,
+            "submittedAt": 1793688883934,
+            "resolvedAt": null,
+            "submittedSequence": 2,
+            "handoverRecorded": true,
+            "acceptedSequence": 2,
+            "origin": "client",
+            "source": {
+              "kind": "user"
+            },
+            "options": {}
+          }
+        ],
+        "window": {
+          "oldest": {
+            "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+            "sequence": 2
+          },
+          "newest": {
+            "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+            "sequence": 2
+          },
+          "nextCursor": {
+            "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+            "sequence": 2
+          }
+        },
+        "liveCursor": {
+          "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+          "sequence": 2
+        },
+        "hasOlder": false,
+        "hasNewer": false,
+        "latestTurn": null,
+        "actionablePromptIds": [],
+        "working": true,
+        "fence": 2,
+        "hostNow": 1793688884444,
+        "queuedMessages": [],
+        "queuePause": null,
+        "nextQueuedMessageId": null,
+        "backgroundTasks": null
+      }
+    },
+    "_meta": {
+      "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+    }
+  },
+  {
+    "id": "fa008c21-dcda-4fc9-ae3c-7470ec8c9776",
+    "ok": true,
+    "result": {
+      "ok": true,
+      "page": {
+        "sessionId": "oas_p0_0a3ac009c57b46c49cf11a8e7d74d33f",
+        "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+        "direction": "tail",
+        "items": [
+          {
+            "itemId": "orca:1793688883878-107776c61b844268901c2f0c2a82bb1b",
+            "revision": 0,
+            "body": {
+              "kind": "message",
+              "role": "user",
+              "blocks": [
+                {
+                  "type": "text",
+                  "text": "Cancellation API probe. Do not use tools, read files, or change anything. Generate 3000 numbered lines of short original arithmetic examples. Keep producing lines until the list is complete."
+                }
+              ]
+            },
+            "sequence": 2,
+            "observedAt": 1793688883934,
+            "turnScope": {
+              "kind": "thread"
+            }
+          }
+        ],
+        "removedItemIds": [],
+        "submissions": [
+          {
+            "clientMessageId": "1793688883878-107776c61b844268901c2f0c2a82bb1b",
+            "fence": 1,
+            "payloadFingerprint": "7d206d656fd55ce37d49991646a1f514fb74a333e4b6887714b963587d7a0e66",
+            "dispatchState": "pending",
+            "providerItemId": null,
+            "reason": null,
+            "submittedAt": 1793688883934,
+            "resolvedAt": null,
+            "submittedSequence": 2,
+            "handoverRecorded": true,
+            "acceptedSequence": 2,
+            "origin": "client",
+            "source": {
+              "kind": "user"
+            },
+            "options": {}
+          }
+        ],
+        "window": {
+          "oldest": {
+            "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+            "sequence": 2
+          },
+          "newest": {
+            "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+            "sequence": 2
+          },
+          "nextCursor": {
+            "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+            "sequence": 2
+          }
+        },
+        "liveCursor": {
+          "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+          "sequence": 2
+        },
+        "hasOlder": false,
+        "hasNewer": false,
+        "latestTurn": null,
+        "actionablePromptIds": [],
+        "working": true,
+        "fence": 2,
+        "hostNow": 1793688884856,
+        "queuedMessages": [],
+        "queuePause": null,
+        "nextQueuedMessageId": null,
+        "backgroundTasks": null
+      }
+    },
+    "_meta": {
+      "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+    }
+  },
+  {
+    "id": "ae1bcee7-c706-4aac-b28f-59c6521d8b4d",
+    "ok": true,
+    "result": {
+      "ok": true,
+      "page": {
+        "sessionId": "oas_p0_0a3ac009c57b46c49cf11a8e7d74d33f",
+        "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+        "direction": "tail",
+        "items": [
+          {
+            "itemId": "orca:1793688883878-107776c61b844268901c2f0c2a82bb1b",
+            "revision": 0,
+            "body": {
+              "kind": "message",
+              "role": "user",
+              "blocks": [
+                {
+                  "type": "text",
+                  "text": "Cancellation API probe. Do not use tools, read files, or change anything. Generate 3000 numbered lines of short original arithmetic examples. Keep producing lines until the list is complete."
+                }
+              ]
+            },
+            "sequence": 2,
+            "observedAt": 1793688883934,
+            "turnScope": {
+              "kind": "thread"
+            }
+          }
+        ],
+        "removedItemIds": [],
+        "submissions": [
+          {
+            "clientMessageId": "1793688883878-107776c61b844268901c2f0c2a82bb1b",
+            "fence": 1,
+            "payloadFingerprint": "7d206d656fd55ce37d49991646a1f514fb74a333e4b6887714b963587d7a0e66",
+            "dispatchState": "pending",
+            "providerItemId": null,
+            "reason": null,
+            "submittedAt": 1793688883934,
+            "resolvedAt": null,
+            "submittedSequence": 2,
+            "handoverRecorded": true,
+            "acceptedSequence": 2,
+            "origin": "client",
+            "source": {
+              "kind": "user"
+            },
+            "options": {}
+          }
+        ],
+        "window": {
+          "oldest": {
+            "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+            "sequence": 2
+          },
+          "newest": {
+            "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+            "sequence": 2
+          },
+          "nextCursor": {
+            "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+            "sequence": 2
+          }
+        },
+        "liveCursor": {
+          "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+          "sequence": 2
+        },
+        "hasOlder": false,
+        "hasNewer": false,
+        "latestTurn": null,
+        "actionablePromptIds": [],
+        "working": true,
+        "fence": 2,
+        "hostNow": 1793688885281,
+        "queuedMessages": [],
+        "queuePause": null,
+        "nextQueuedMessageId": null,
+        "backgroundTasks": null
+      }
+    },
+    "_meta": {
+      "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+    }
+  },
+  {
+    "id": "d4e04c9c-61a6-4ad7-9475-8f71bc7a66d9",
+    "ok": true,
+    "result": {
+      "ok": true,
+      "page": {
+        "sessionId": "oas_p0_0a3ac009c57b46c49cf11a8e7d74d33f",
+        "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+        "direction": "tail",
+        "items": [
+          {
+            "itemId": "orca:1793688883878-107776c61b844268901c2f0c2a82bb1b",
+            "revision": 0,
+            "body": {
+              "kind": "message",
+              "role": "user",
+              "blocks": [
+                {
+                  "type": "text",
+                  "text": "Cancellation API probe. Do not use tools, read files, or change anything. Generate 3000 numbered lines of short original arithmetic examples. Keep producing lines until the list is complete."
+                }
+              ]
+            },
+            "sequence": 2,
+            "observedAt": 1793688883934,
+            "turnScope": {
+              "kind": "thread"
+            }
+          }
+        ],
+        "removedItemIds": [],
+        "submissions": [
+          {
+            "clientMessageId": "1793688883878-107776c61b844268901c2f0c2a82bb1b",
+            "fence": 1,
+            "payloadFingerprint": "7d206d656fd55ce37d49991646a1f514fb74a333e4b6887714b963587d7a0e66",
+            "dispatchState": "pending",
+            "providerItemId": null,
+            "reason": null,
+            "submittedAt": 1793688883934,
+            "resolvedAt": null,
+            "submittedSequence": 2,
+            "handoverRecorded": true,
+            "acceptedSequence": 2,
+            "origin": "client",
+            "source": {
+              "kind": "user"
+            },
+            "options": {}
+          }
+        ],
+        "window": {
+          "oldest": {
+            "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+            "sequence": 2
+          },
+          "newest": {
+            "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+            "sequence": 2
+          },
+          "nextCursor": {
+            "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+            "sequence": 2
+          }
+        },
+        "liveCursor": {
+          "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+          "sequence": 2
+        },
+        "hasOlder": false,
+        "hasNewer": false,
+        "latestTurn": null,
+        "actionablePromptIds": [],
+        "working": true,
+        "fence": 2,
+        "hostNow": 1793688885695,
+        "queuedMessages": [],
+        "queuePause": null,
+        "nextQueuedMessageId": null,
+        "backgroundTasks": null
+      }
+    },
+    "_meta": {
+      "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+    }
+  },
+  {
+    "id": "29838c81-e848-46a5-a513-95b6b22e6f17",
+    "ok": true,
+    "result": {
+      "ok": true,
+      "page": {
+        "sessionId": "oas_p0_0a3ac009c57b46c49cf11a8e7d74d33f",
+        "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+        "direction": "tail",
+        "items": [
+          {
+            "itemId": "orca:1793688883878-107776c61b844268901c2f0c2a82bb1b",
+            "revision": 0,
+            "body": {
+              "kind": "message",
+              "role": "user",
+              "blocks": [
+                {
+                  "type": "text",
+                  "text": "Cancellation API probe. Do not use tools, read files, or change anything. Generate 3000 numbered lines of short original arithmetic examples. Keep producing lines until the list is complete."
+                }
+              ]
+            },
+            "sequence": 2,
+            "observedAt": 1793688883934,
+            "turnScope": {
+              "kind": "thread"
+            }
+          }
+        ],
+        "removedItemIds": [],
+        "submissions": [
+          {
+            "clientMessageId": "1793688883878-107776c61b844268901c2f0c2a82bb1b",
+            "fence": 1,
+            "payloadFingerprint": "7d206d656fd55ce37d49991646a1f514fb74a333e4b6887714b963587d7a0e66",
+            "dispatchState": "pending",
+            "providerItemId": null,
+            "reason": null,
+            "submittedAt": 1793688883934,
+            "resolvedAt": null,
+            "submittedSequence": 2,
+            "handoverRecorded": true,
+            "acceptedSequence": 2,
+            "origin": "client",
+            "source": {
+              "kind": "user"
+            },
+            "options": {}
+          }
+        ],
+        "window": {
+          "oldest": {
+            "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+            "sequence": 2
+          },
+          "newest": {
+            "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+            "sequence": 2
+          },
+          "nextCursor": {
+            "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+            "sequence": 2
+          }
+        },
+        "liveCursor": {
+          "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+          "sequence": 2
+        },
+        "hasOlder": false,
+        "hasNewer": false,
+        "latestTurn": null,
+        "actionablePromptIds": [],
+        "working": true,
+        "fence": 2,
+        "hostNow": 1793688886119,
+        "queuedMessages": [],
+        "queuePause": null,
+        "nextQueuedMessageId": null,
+        "backgroundTasks": null
+      }
+    },
+    "_meta": {
+      "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+    }
+  },
+  {
+    "id": "7d6cc268-9190-432a-86fe-aac2899b6fbb",
+    "ok": true,
+    "result": {
+      "ok": true,
+      "page": {
+        "sessionId": "oas_p0_0a3ac009c57b46c49cf11a8e7d74d33f",
+        "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+        "direction": "tail",
+        "items": [
+          {
+            "itemId": "orca:1793688883878-107776c61b844268901c2f0c2a82bb1b",
+            "revision": 0,
+            "body": {
+              "kind": "message",
+              "role": "user",
+              "blocks": [
+                {
+                  "type": "text",
+                  "text": "Cancellation API probe. Do not use tools, read files, or change anything. Generate 3000 numbered lines of short original arithmetic examples. Keep producing lines until the list is complete."
+                }
+              ]
+            },
+            "sequence": 4,
+            "observedAt": 1793688886351,
+            "turnScope": {
+              "kind": "thread"
+            }
+          }
+        ],
+        "removedItemIds": [],
+        "submissions": [
+          {
+            "clientMessageId": "1793688883878-107776c61b844268901c2f0c2a82bb1b",
+            "fence": 2,
+            "payloadFingerprint": "7d206d656fd55ce37d49991646a1f514fb74a333e4b6887714b963587d7a0e66",
+            "dispatchState": "pending",
+            "providerItemId": null,
+            "reason": null,
+            "submittedAt": 1793688883934,
+            "resolvedAt": null,
+            "submittedSequence": 2,
+            "handoverRecorded": true,
+            "acceptedSequence": 2,
+            "origin": "client",
+            "source": {
+              "kind": "user"
+            },
+            "options": {},
+            "handedOverAt": 1793688886351
+          }
+        ],
+        "window": {
+          "oldest": {
+            "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+            "sequence": 4
+          },
+          "newest": {
+            "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+            "sequence": 4
+          },
+          "nextCursor": {
+            "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+            "sequence": 4
+          }
+        },
+        "liveCursor": {
+          "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+          "sequence": 4
+        },
+        "hasOlder": false,
+        "hasNewer": false,
+        "latestTurn": null,
+        "actionablePromptIds": [],
+        "working": true,
+        "fence": 2,
+        "hostNow": 1793688886536,
+        "queuedMessages": [],
+        "queuePause": null,
+        "nextQueuedMessageId": null,
+        "backgroundTasks": null
+      },
+      "providerSession": {
+        "key": "session_id",
+        "id": "01a1a030-5608-7042-afed-21f1b9a7ea88"
+      }
+    },
+    "_meta": {
+      "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+    }
+  },
+  {
+    "id": "368edc1a-95b2-435f-b67e-dc2641cadcee",
+    "ok": true,
+    "result": {
+      "ok": true,
+      "page": {
+        "sessionId": "oas_p0_0a3ac009c57b46c49cf11a8e7d74d33f",
+        "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+        "direction": "tail",
+        "items": [
+          {
+            "itemId": "orca:1793688883878-107776c61b844268901c2f0c2a82bb1b",
+            "revision": 0,
+            "body": {
+              "kind": "message",
+              "role": "user",
+              "blocks": [
+                {
+                  "type": "text",
+                  "text": "Cancellation API probe. Do not use tools, read files, or change anything. Generate 3000 numbered lines of short original arithmetic examples. Keep producing lines until the list is complete."
+                }
+              ]
+            },
+            "sequence": 4,
+            "observedAt": 1793688886351,
+            "turnScope": {
+              "kind": "thread"
+            }
+          }
+        ],
+        "removedItemIds": [],
+        "submissions": [
+          {
+            "clientMessageId": "1793688883878-107776c61b844268901c2f0c2a82bb1b",
+            "fence": 2,
+            "payloadFingerprint": "7d206d656fd55ce37d49991646a1f514fb74a333e4b6887714b963587d7a0e66",
+            "dispatchState": "pending",
+            "providerItemId": null,
+            "reason": null,
+            "submittedAt": 1793688883934,
+            "resolvedAt": null,
+            "submittedSequence": 2,
+            "handoverRecorded": true,
+            "acceptedSequence": 2,
+            "origin": "client",
+            "source": {
+              "kind": "user"
+            },
+            "options": {},
+            "handedOverAt": 1793688886351
+          }
+        ],
+        "window": {
+          "oldest": {
+            "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+            "sequence": 4
+          },
+          "newest": {
+            "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+            "sequence": 4
+          },
+          "nextCursor": {
+            "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+            "sequence": 4
+          }
+        },
+        "liveCursor": {
+          "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+          "sequence": 4
+        },
+        "hasOlder": false,
+        "hasNewer": false,
+        "latestTurn": null,
+        "actionablePromptIds": [],
+        "working": true,
+        "fence": 2,
+        "hostNow": 1793688886951,
+        "queuedMessages": [],
+        "queuePause": null,
+        "nextQueuedMessageId": null,
+        "backgroundTasks": null
+      },
+      "providerSession": {
+        "key": "session_id",
+        "id": "01a1a030-5608-7042-afed-21f1b9a7ea88"
+      }
+    },
+    "_meta": {
+      "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+    }
+  },
+  {
+    "id": "7ccdd1dd-f1de-40f7-9075-9803cd8a6f75",
+    "ok": true,
+    "result": {
+      "ok": true,
+      "page": {
+        "sessionId": "oas_p0_0a3ac009c57b46c49cf11a8e7d74d33f",
+        "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+        "direction": "tail",
+        "items": [
+          {
+            "itemId": "orca:1793688883878-107776c61b844268901c2f0c2a82bb1b",
+            "revision": 0,
+            "body": {
+              "kind": "message",
+              "role": "user",
+              "blocks": [
+                {
+                  "type": "text",
+                  "text": "Cancellation API probe. Do not use tools, read files, or change anything. Generate 3000 numbered lines of short original arithmetic examples. Keep producing lines until the list is complete."
+                }
+              ]
+            },
+            "sequence": 4,
+            "observedAt": 1793688886351,
+            "turnScope": {
+              "kind": "thread"
+            }
+          },
+          {
+            "itemId": "legacy:codex:oas_p0_0a3ac009c57b46c49cf11a8e7d74d33f:turn-lifecycle%3A01a1a030-5c78-7782-9bfb-cff55f86d324",
+            "revision": 1,
+            "body": {
+              "kind": "turn",
+              "turnId": "01a1a030-5c78-7782-9bfb-cff55f86d324",
+              "state": "running",
+              "userItemId": "orca:1793688883878-107776c61b844268901c2f0c2a82bb1b",
+              "startedAt": 1793688886979,
+              "requestedAt": 1793688886345
+            },
+            "sequence": 5,
+            "observedAt": 1793688886979,
+            "turnScope": {
+              "kind": "thread"
+            }
+          }
+        ],
+        "removedItemIds": [],
+        "submissions": [
+          {
+            "clientMessageId": "1793688883878-107776c61b844268901c2f0c2a82bb1b",
+            "fence": 2,
+            "payloadFingerprint": "7d206d656fd55ce37d49991646a1f514fb74a333e4b6887714b963587d7a0e66",
+            "dispatchState": "pending",
+            "providerItemId": null,
+            "reason": null,
+            "submittedAt": 1793688883934,
+            "resolvedAt": null,
+            "submittedSequence": 2,
+            "handoverRecorded": true,
+            "acceptedSequence": 2,
+            "origin": "client",
+            "source": {
+              "kind": "user"
+            },
+            "options": {},
+            "handedOverAt": 1793688886351
+          }
+        ],
+        "window": {
+          "oldest": {
+            "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+            "sequence": 4
+          },
+          "newest": {
+            "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+            "sequence": 5
+          },
+          "nextCursor": {
+            "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+            "sequence": 4
+          }
+        },
+        "liveCursor": {
+          "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+          "sequence": 5
+        },
+        "hasOlder": false,
+        "hasNewer": false,
+        "latestTurn": {
+          "itemId": "legacy:codex:oas_p0_0a3ac009c57b46c49cf11a8e7d74d33f:turn-lifecycle%3A01a1a030-5c78-7782-9bfb-cff55f86d324",
+          "observedAt": 1793688886979,
+          "turn": {
+            "turnId": "01a1a030-5c78-7782-9bfb-cff55f86d324",
+            "state": "running",
+            "userItemId": "orca:1793688883878-107776c61b844268901c2f0c2a82bb1b",
+            "startedAt": 1793688886979,
+            "requestedAt": 1793688886345
+          }
+        },
+        "actionablePromptIds": [],
+        "working": true,
+        "fence": 2,
+        "hostNow": 1793688887367,
+        "queuedMessages": [],
+        "queuePause": null,
+        "nextQueuedMessageId": null,
+        "backgroundTasks": null
+      },
+      "providerSession": {
+        "key": "session_id",
+        "id": "01a1a030-5608-7042-afed-21f1b9a7ea88"
+      }
+    },
+    "_meta": {
+      "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+    }
+  }
+]

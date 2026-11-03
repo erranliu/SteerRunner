@@ -8,7 +8,7 @@ import (
 func TestTerminalAgentCapabilitiesDoNotRequireCodex(t *testing.T) {
 	count := 0
 	for _, c := range Catalog().Combinations {
-		if c.Agent != "pi" && c.Agent != "dsh" {
+		if c.Agent != "pi" {
 			continue
 		}
 		count++
@@ -21,7 +21,7 @@ func TestTerminalAgentCapabilitiesDoNotRequireCodex(t *testing.T) {
 			}
 		}
 	}
-	if count != 2 {
+	if count != 1 {
 		t.Fatal("terminal capabilities missing", count)
 	}
 }

@@ -1,0 +1,48 @@
+{
+  "id": "aba105b6-d7f2-4a44-bd8b-34ec3ba0226e",
+  "ok": true,
+  "result": {
+    "ok": true,
+    "replayed": false,
+    "fence": 1,
+    "cursor": {
+      "epoch": "7dfdac2d-9482-449e-bf86-c9c3a86618f2",
+      "sequence": 1
+    },
+    "value": {
+      "sessionId": "oas_p0_3c55bdc7057e478db3b540f151603509",
+      "fence": 1,
+      "page": {
+        "sessionId": "oas_p0_3c55bdc7057e478db3b540f151603509",
+        "epoch": "7dfdac2d-9482-449e-bf86-c9c3a86618f2",
+        "fence": 1,
+        "direction": "tail",
+        "items": [],
+        "removedItemIds": [],
+        "submissions": [],
+        "window": {
+          "oldest": null,
+          "newest": null,
+          "nextCursor": {
+            "epoch": "7dfdac2d-9482-449e-bf86-c9c3a86618f2",
+            "sequence": 0
+          }
+        },
+        "liveCursor": {
+          "epoch": "7dfdac2d-9482-449e-bf86-c9c3a86618f2",
+          "sequence": 1
+        },
+        "hasOlder": false,
+        "hasNewer": false,
+        "latestTurn": null,
+        "actionablePromptIds": [],
+        "working": false
+      },
+      "unconfirmedClientMessageIds": [],
+      "tabId": "structured-agent-session-oas_p0_3c55bdc7057e478db3b540f151603509"
+    }
+  },
+  "_meta": {
+    "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+  }
+}

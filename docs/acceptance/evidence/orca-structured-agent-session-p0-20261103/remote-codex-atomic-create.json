@@ -1,0 +1,109 @@
+{
+  "id": "ce0b1ba4-726d-4307-bd11-8592a23ae81c",
+  "ok": true,
+  "result": {
+    "ok": true,
+    "replayed": false,
+    "fence": 1,
+    "cursor": {
+      "epoch": "4bd1021c-2a68-4a0f-9403-576796214dc2",
+      "sequence": 2
+    },
+    "value": {
+      "sessionId": "oas_p0_9cd2c4200af14a9e888067cb5880640e",
+      "fence": 1,
+      "page": {
+        "sessionId": "oas_p0_9cd2c4200af14a9e888067cb5880640e",
+        "epoch": "4bd1021c-2a68-4a0f-9403-576796214dc2",
+        "fence": 1,
+        "direction": "tail",
+        "items": [
+          {
+            "itemId": "orca:1793688771795-242db14a20f347488119a2390d9fd479",
+            "revision": 0,
+            "body": {
+              "kind": "message",
+              "role": "user",
+              "blocks": [
+                {
+                  "type": "text",
+                  "text": "This is an API input fidelity check. Do not use tools or read/write files. Reply exactly P0_OAS_REMOTE_CODEX_OK.\r\nLiteral path: docs\\spec\\example.md\r\n\r\nChinese: 中文; Unicode: 😀; quotes: \"x\"\r\n```text\r\na\\b\r\n```\r\n  "
+                }
+              ]
+            },
+            "sequence": 2,
+            "observedAt": 1793688770239,
+            "turnScope": {
+              "kind": "thread"
+            }
+          }
+        ],
+        "removedItemIds": [],
+        "submissions": [
+          {
+            "clientMessageId": "1793688771795-242db14a20f347488119a2390d9fd479",
+            "fence": 1,
+            "payloadFingerprint": "e85de9ee18127d6c74370fcf4588cb3a14bd829c2712b23b426e2437b930a097",
+            "dispatchState": "pending",
+            "providerItemId": null,
+            "reason": null,
+            "submittedAt": 1793688770239,
+            "resolvedAt": null,
+            "submittedSequence": 2,
+            "handoverRecorded": true,
+            "acceptedSequence": 2,
+            "origin": "client",
+            "source": {
+              "kind": "user"
+            },
+            "options": {}
+          }
+        ],
+        "window": {
+          "oldest": {
+            "epoch": "4bd1021c-2a68-4a0f-9403-576796214dc2",
+            "sequence": 2
+          },
+          "newest": {
+            "epoch": "4bd1021c-2a68-4a0f-9403-576796214dc2",
+            "sequence": 2
+          },
+          "nextCursor": {
+            "epoch": "4bd1021c-2a68-4a0f-9403-576796214dc2",
+            "sequence": 2
+          }
+        },
+        "liveCursor": {
+          "epoch": "4bd1021c-2a68-4a0f-9403-576796214dc2",
+          "sequence": 2
+        },
+        "hasOlder": false,
+        "hasNewer": false,
+        "latestTurn": null
+      },
+      "unconfirmedClientMessageIds": [],
+      "firstMessage": {
+        "clientMessageId": "1793688771795-242db14a20f347488119a2390d9fd479",
+        "fence": 1,
+        "payloadFingerprint": "e85de9ee18127d6c74370fcf4588cb3a14bd829c2712b23b426e2437b930a097",
+        "dispatchState": "pending",
+        "providerItemId": null,
+        "reason": null,
+        "submittedAt": 1793688770239,
+        "resolvedAt": null,
+        "submittedSequence": 2,
+        "handoverRecorded": true,
+        "acceptedSequence": 2,
+        "origin": "client",
+        "source": {
+          "kind": "user"
+        },
+        "options": {}
+      },
+      "tabId": "structured-agent-session-oas_p0_9cd2c4200af14a9e888067cb5880640e"
+    }
+  },
+  "_meta": {
+    "runtimeId": "21d98aa2-d284-41f3-a6cc-42fb22d728a2"
+  }
+}

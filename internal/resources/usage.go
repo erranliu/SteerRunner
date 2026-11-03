@@ -3,7 +3,7 @@ package resources
 func UsageCapabilities() any {
 	matrix := []map[string]any{}
 	for _, target := range []string{"local", "orca_environment"} {
-		for _, agent := range []string{"codex", "pi", "dsh"} {
+		for _, agent := range []string{"codex", "pi"} {
 			supported := target == "local" || agent == "codex"
 			reason := ""
 			if !supported {

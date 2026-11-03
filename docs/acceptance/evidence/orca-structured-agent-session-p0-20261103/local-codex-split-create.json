@@ -1,0 +1,48 @@
+{
+  "id": "1c952901-63cc-4904-af8b-38337565bb41",
+  "ok": true,
+  "result": {
+    "ok": true,
+    "replayed": false,
+    "fence": 1,
+    "cursor": {
+      "epoch": "49a278b4-d2c2-4c0e-8562-de2a16ebb557",
+      "sequence": 1
+    },
+    "value": {
+      "sessionId": "oas_p0_f28a859ca3304fb5bfc178ace436b344",
+      "fence": 1,
+      "page": {
+        "sessionId": "oas_p0_f28a859ca3304fb5bfc178ace436b344",
+        "epoch": "49a278b4-d2c2-4c0e-8562-de2a16ebb557",
+        "fence": 1,
+        "direction": "tail",
+        "items": [],
+        "removedItemIds": [],
+        "submissions": [],
+        "window": {
+          "oldest": null,
+          "newest": null,
+          "nextCursor": {
+            "epoch": "49a278b4-d2c2-4c0e-8562-de2a16ebb557",
+            "sequence": 0
+          }
+        },
+        "liveCursor": {
+          "epoch": "49a278b4-d2c2-4c0e-8562-de2a16ebb557",
+          "sequence": 1
+        },
+        "hasOlder": false,
+        "hasNewer": false,
+        "latestTurn": null,
+        "actionablePromptIds": [],
+        "working": false
+      },
+      "unconfirmedClientMessageIds": [],
+      "tabId": "structured-agent-session-oas_p0_f28a859ca3304fb5bfc178ace436b344"
+    }
+  },
+  "_meta": {
+    "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+  }
+}

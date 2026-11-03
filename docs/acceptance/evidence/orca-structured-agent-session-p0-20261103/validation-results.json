@@ -1,0 +1,159 @@
+{
+  "schema": "orca-structured-p0-validation/v1",
+  "scope": "offline evidence/doc verification; unexpected native accepts are recorded failures of the safety assumption, not safety passes",
+  "checks": [
+    {
+      "name": "local-codex-atomic-history-success",
+      "ok": true
+    },
+    {
+      "name": "local-codex-atomic-single-exact-user",
+      "ok": true
+    },
+    {
+      "name": "local-codex-atomic-original-input-turn",
+      "ok": true
+    },
+    {
+      "name": "local-codex-split-history-success",
+      "ok": true
+    },
+    {
+      "name": "local-codex-split-single-exact-user",
+      "ok": true
+    },
+    {
+      "name": "local-codex-split-original-input-turn",
+      "ok": true
+    },
+    {
+      "name": "local-pi-atomic-history-success",
+      "ok": true
+    },
+    {
+      "name": "local-pi-atomic-single-exact-user",
+      "ok": true
+    },
+    {
+      "name": "local-pi-atomic-original-input-turn",
+      "ok": true
+    },
+    {
+      "name": "local-pi-split-history-success",
+      "ok": true
+    },
+    {
+      "name": "local-pi-split-single-exact-user",
+      "ok": true
+    },
+    {
+      "name": "local-pi-split-original-input-turn",
+      "ok": true
+    },
+    {
+      "name": "remote-codex-atomic-history-success",
+      "ok": true
+    },
+    {
+      "name": "remote-codex-atomic-single-exact-user",
+      "ok": true
+    },
+    {
+      "name": "remote-codex-atomic-original-input-turn",
+      "ok": true
+    },
+    {
+      "name": "remote-codex-split-history-success",
+      "ok": true
+    },
+    {
+      "name": "remote-codex-split-single-exact-user",
+      "ok": true
+    },
+    {
+      "name": "remote-codex-split-original-input-turn",
+      "ok": true
+    },
+    {
+      "name": "local-stale-negative-accepted",
+      "ok": true
+    },
+    {
+      "name": "local-stale-negative-ran",
+      "ok": true
+    },
+    {
+      "name": "local-negative-cleanup-facts",
+      "ok": true
+    },
+    {
+      "name": "local-worktree-remove-ack",
+      "ok": true
+    },
+    {
+      "name": "local-worktree-selector-absent",
+      "ok": true
+    },
+    {
+      "name": "remote-stale-negative-accepted",
+      "ok": true
+    },
+    {
+      "name": "remote-stale-negative-ran",
+      "ok": true
+    },
+    {
+      "name": "remote-negative-cleanup-facts",
+      "ok": true
+    },
+    {
+      "name": "remote-worktree-remove-ack",
+      "ok": true
+    },
+    {
+      "name": "remote-worktree-selector-absent",
+      "ok": true
+    },
+    {
+      "name": "remote-pi-refused",
+      "ok": true
+    },
+    {
+      "name": "docs/acceptance/orca-structured-agent-session.md-no-trailing-whitespace",
+      "ok": true
+    },
+    {
+      "name": "docs/spec/orca-structured-agent-session.spec.md-no-trailing-whitespace",
+      "ok": true
+    },
+    {
+      "name": "docs/spec/orca-structured-agent-session.plan.md-no-trailing-whitespace",
+      "ok": true
+    },
+    {
+      "name": "docs/README.md-no-trailing-whitespace",
+      "ok": true
+    },
+    {
+      "name": "docs/orca-execution.md-no-trailing-whitespace",
+      "ok": true
+    },
+    {
+      "name": "docs/acceptance/README.md-no-trailing-whitespace",
+      "ok": true
+    },
+    {
+      "name": "markdown-local-links",
+      "ok": true
+    }
+  ],
+  "links_checked": 312,
+  "broken_links": [],
+  "credential_scan": {
+    "json_files": 189,
+    "sensitive_value_findings": 0,
+    "credential_pattern_findings": 0,
+    "email_locations": 0
+  },
+  "production_qualification": false
+}

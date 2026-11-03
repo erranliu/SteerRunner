@@ -1,0 +1,81 @@
+{
+  "id": "a8d93cdd-e75e-40dd-adc8-32fa132c6223",
+  "ok": true,
+  "result": {
+    "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-oas-p0-20261103-remote",
+    "publicationEpoch": "renderer:536e0423-a29e-43bb-8255-95944292e2a9:client-navigation",
+    "snapshotVersion": 390,
+    "activeGroupId": "616e3877-aaf7-4e94-953e-957a70d584a2",
+    "activeTabId": "37476db7-6c7d-4b6b-98fa-632a2bcf278a::a89ba576-8f6c-4109-a6e1-10143c7da2b4",
+    "activeTabType": "terminal",
+    "tabGroups": [
+      {
+        "id": "616e3877-aaf7-4e94-953e-957a70d584a2",
+        "activeTabId": "37476db7-6c7d-4b6b-98fa-632a2bcf278a",
+        "tabOrder": [
+          "37476db7-6c7d-4b6b-98fa-632a2bcf278a"
+        ]
+      }
+    ],
+    "tabGroupLayout": {
+      "type": "leaf",
+      "groupId": "616e3877-aaf7-4e94-953e-957a70d584a2"
+    },
+    "tabs": [
+      {
+        "type": "terminal",
+        "id": "37476db7-6c7d-4b6b-98fa-632a2bcf278a::a89ba576-8f6c-4109-a6e1-10143c7da2b4",
+        "parentTabId": "37476db7-6c7d-4b6b-98fa-632a2bcf278a",
+        "leafId": "a89ba576-8f6c-4109-a6e1-10143c7da2b4",
+        "title": "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.9.0_x64__8wekyb3d8bbwe\\pwsh.exe",
+        "customTitle": null,
+        "ptyId": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-oas-p0-20261103-remote@@12d9a063",
+        "incarnationId": "2fb1d494-dc58-4bdf-83cb-a5b420b330e8",
+        "terminalTheme": {
+          "mode": "light",
+          "theme": {
+            "background": "#ffffff",
+            "foreground": "#2e3434",
+            "cursor": "#2e3434",
+            "cursorAccent": "#ffffff",
+            "selectionBackground": "#accef7",
+            "selectionForeground": "#2e3434",
+            "black": "#2e3436",
+            "red": "#cc0000",
+            "green": "#4e9a06",
+            "yellow": "#8e7700",
+            "blue": "#3465a4",
+            "magenta": "#75507b",
+            "cyan": "#05727e",
+            "white": "#6a6a6a",
+            "brightBlack": "#555753",
+            "brightRed": "#ef2929",
+            "brightGreen": "#1b7a1b",
+            "brightYellow": "#6d5a00",
+            "brightBlue": "#204a87",
+            "brightMagenta": "#ad7fa8",
+            "brightCyan": "#034b50",
+            "brightWhite": "#3d3d3d"
+          }
+        },
+        "parentLayout": {
+          "root": {
+            "type": "leaf",
+            "leafId": "a89ba576-8f6c-4109-a6e1-10143c7da2b4"
+          },
+          "activeLeafId": "a89ba576-8f6c-4109-a6e1-10143c7da2b4",
+          "expandedLeafId": null,
+          "ptyIdsByLeafId": {
+            "a89ba576-8f6c-4109-a6e1-10143c7da2b4": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-oas-p0-20261103-remote@@12d9a063"
+          }
+        },
+        "isActive": true,
+        "status": "ready",
+        "terminal": "term_f8908b97-a741-4582-af72-0e96ba7240e7"
+      }
+    ]
+  },
+  "_meta": {
+    "runtimeId": "21d98aa2-d284-41f3-a6cc-42fb22d728a2"
+  }
+}

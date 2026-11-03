@@ -1,0 +1,20 @@
+{
+  "id": "a9512c28-1a23-4c27-b7f9-0428bf88eb44",
+  "ok": true,
+  "result": {
+    "ok": true,
+    "replayed": false,
+    "fence": 2,
+    "cursor": {
+      "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+      "sequence": 9
+    },
+    "value": {
+      "turnId": "01a1a030-5c78-7782-9bfb-cff55f86d324",
+      "cancelled": true
+    }
+  },
+  "_meta": {
+    "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+  }
+}

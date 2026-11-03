@@ -91,7 +91,7 @@ Run token/独立费用增量入口：`go test ./internal/usage/... ./internal/co
 
 本机 Codex 只读现场入口为 `TestRunUsageLocalCodexPublicLive`，显式设置 `SR_USAGE_LOCAL_LIVE=1`、`SR_USAGE_LOCAL_STATE`、`SR_USAGE_LOCAL_RUN`、全新绝对 `SR_USAGE_LOCAL_EVIDENCE`；只接受当前可解码且已停止/完成的原 Run，并拒绝仍有业务授权的来源。测试不会创建模型输入，只复制已冻结、已撤权记录到隔离服务；原日志保持只读。普通 L1 入口拒绝上述遗留 opt-in；独立 seed 清理入口的 `SR_USAGE_LOCAL_REPO_CLEANUP`/`SR_USAGE_LOCAL_CLEANUP_ROOT` 同样被拒绝。
 
-本机 Pi/DSH 入口为 `TestRunUsageLocalPiPublicLive` / `TestRunUsageLocalDSHPublicLive`，复用同组 `SR_USAGE_LOCAL_*` 变量，以精确 `-run` 选择与原 Run agent 相符的测试。仅接受现存 pr_ready 主会话，以只读 `UsageRuns` 投影历史状态；隔离副本无业务授权/待执行意图。验证原生日志逐响应 command 归属、公开 EXE 自动统计、独立估价、采集服务停启/强制重读去重；不创建模型输入或目录登记，不停止原生产服务/终端。实际 token、合成价表及清理证据见同一验收记录。
+本机 Pi 入口为 `TestRunUsageLocalPiPublicLive`（DSH 专用入口已移除），复用同组 `SR_USAGE_LOCAL_*` 变量，以精确 `-run` 选择与原 Run agent 相符的测试。仅接受现存 pr_ready 主会话，以只读 `UsageRuns` 投影历史状态；隔离副本无业务授权/待执行意图。验证原生日志逐响应 command 归属、公开 EXE 自动统计、独立估价、采集服务停启/强制重读去重；不创建模型输入或目录登记，不停止原生产服务/终端。实际 token、合成价表及清理证据见同一验收记录。
 
 远端已完成 Codex Run 的显式现场入口为 `TestUsageRemoteCodexLive` / `TestRunUsageRemotePublicLive`，所需变量及撤回/清理证明见同一验收记录，默认 skip，标准 L1 拒绝远端 opt-in 遗留。手工整仓 Go 入口应使用 `go test ./... -count=1 -timeout 45m -json`：2026-10-21 实测 application 全包 625.267 秒、`TestSRResultAcquisition` 串行整组 738.65 秒，均可能超过 Go 默认 package 10 分钟上限。该聚合预算不延长产品调用或场景内期限；完整受控入口本已采用 45 分钟预算。
 
@@ -456,39 +456,34 @@ PowerShell 交互调用多个场景时可使用数组；外部命令行请传实
 L2 原生资格要求 Codex >= 0.159.2，并保留生产协议与权限检查；`configurations.local-codex` 必须提供本机
 codex-app-server、development/2、显式 full_access 和绝对 native EXE 路径；不接受脚本包装器或提示词覆盖。
 未指定模型沿生产契约使用原生默认，可显式固定 model 和 reasoning_effort。
-每个远端、Pi、DSH 或审计配置项均填写完整 execution，不继承本机配置。
+每个远端、Pi 或审计配置项均填写完整 execution，不继承本机配置。
 原生远端不注册有来源证明的审计或完整环境检查正向用例；纯校验、capabilities 和零副作用拒绝由 L1/Controlled 覆盖，不计为真机成功。`orca-remote.multirun` 使用完整的 `configurations.orca-remote-codex-full-access`，同服务两个 Run 独立发布，核验 request/command、会话、工作区、分支、分页事件、last-message 和 PR 不串线；停止一项后另一项原生 owner 保持可用，最后逐一核实原终端停止。远端不校验或伪造 Runner broker/capability 关闭。
 
 L3 远端 Orca 使用指定 CLI、已配对 environment 和远端已有的同名 SteerlineTest Git
 项目。两端分别在实际执行主机准备认证，不从调用方复制认证，也不修改全局权限配置。
 
-本机 Orca 的 `orca-local.codex`、`orca-local.pi`、`orca-local.dsh`
+本机 Orca 的 `orca-local.codex`、`orca-local.pi`
 使用 L3 development-feedback driver，覆盖业务 needs_input/reply、发布后反馈拒绝且原来源不变、独立 PR/head/合入，
 每个核心现场还用独立短 Run 验证受管 agent 的启动失败收尾，以及真实扣留一次 Orca business-send 接受响应后的 unknown、零重发和原写者停止。正常 Run 另验 request_id 查询/幂等重放和兼容服务换代后的原授权保持、原会话继续；独立实现 Run 验证实际活动写者停止。
 本机 fixture 使用 test-only CLI 转发器记录真实原终端 send；重启零输入指纹必须有非零基线，Codex 不再读取不存在的扩展目录。原 Orca CLI 和 TUI 仍是真实执行来源。
-`orca-local.mixed` 复用 multirun driver，在同一服务运行 Pi/DSH，并检查停止一个 Run 后另一个的原生资源、权限及完成来源保持有效。
+DSH 专用与 Pi/DSH 混合场景已退役；历史验收仍保留，不作为当前场景注册。
 例如 `./scripts/test.ps1 -Level L3 -Scenario orca-local.pi -Config <配置路径>`；真实结果见[通用接入验收](acceptance/orca-generic-agent.md)。
 
 Orca 配置使用 execution.settings.transport.executable、agent_launch.runtime_executable／runtime_sha256 和 fixture.repository.local_path；
 运行期间不依赖 pairing/environment，manifest 冻结 `local_runtime_id` 与 `local_repository_path`。
-Pi/DSH 分别读取各自配置的 agent_launch.executable／model／reasoning_effort，
+Pi 读取配置的 agent_launch.executable／model／reasoning_effort，
 不继承 Codex 参数。本机原 TUI 和 helper 均在所选执行主机运行。
 
-受管版本为 Pi 0.87.1、DSH 0.2.1-rc.2 + 社区 dsh-tui 0.16.1、Node 24；Windows 工具使用原 owned PowerShell host，开发仅支持 full_access，不依赖 Codex sandbox EXE。独立结果 parser 仍需要其自己的 Codex。
+受管版本为 Pi 0.87.1、Node 24；Windows 工具使用原 owned PowerShell host，开发仅支持 full_access，不依赖 Codex sandbox EXE。独立结果 parser 仍需要其自己的 Codex。
 Helper 可用 `go build -o <安装路径>/steerrunner-agent.exe ./cmd/steerrunner-agent` 构建，然后配置绝对路径；
-新 Run 要求 helper metadata v4／原生回执 v3、tools contract v2、local profile v5，回执核验实际 reasoning effort；旧冻结实例仍按原构建和来源读取。
-Pi/DSH 要求原生依赖已安装，Run 不联网安装、不修改全局 profile。独立 DSH 安装示例：
-
-```powershell
-npm install --prefix C:/AgentTools/dsh @deepseek-ai/dsh@0.2.1-rc.2 @deepseek-harness-tui/dsh-tui@0.16.1
-# 对应配置的 agent_launch.executable 指向 C:/AgentTools/dsh/node_modules/.bin/dsh.cmd
-```
+新 Run 要求 helper metadata v5／原生回执 v4、tools contract v2、local profile v6，回执核验实际 reasoning effort；旧冻结实例仍按原构建和来源读取。
+Pi 要求原生依赖已安装，Run 不联网安装、不修改全局 profile。DSH 执行和专用历史/用量已移除，不再提供安装/运行入口。
 
 原 TUI 的正式扩展提供开始/完成事实，现有 Orca 只负责资源和投递；不修改 Orca。
-Node 29 项扩展及共享工具宿主契约测试已纳入统一 L1，可单独运行：
+保留的 Pi 扩展及共享工具宿主契约测试已纳入统一 L1，可单独运行：
 
 ```powershell
-node --test internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs internal/execution/adapters/orcatransport/extensions/dsh-managed.test.mjs
+node --test internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs
 ```
 
 `scripts/probe-orca-pi.ps1` 仅诊断 Pi 0.87.1 / Orca 1.4.224 的无工具原 TUI，先运行上述测试。

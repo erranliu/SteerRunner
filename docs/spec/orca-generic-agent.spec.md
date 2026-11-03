@@ -1,5 +1,7 @@
 # Spec：通用 Orca Agent 接入
 
+> 2026-11-03 后继最小 PR（已实施，资格见实施记录）：[结构化会话 Spec](orca-structured-agent-session.spec.md) / [Plan](orca-structured-agent-session.plan.md) 移除 DSH 新执行和专用历史/用量支持，仅将本机 Codex 新 execute/1 迁为结构化会话，停止证据不足明确未核实；不修改 Orca。Pi TUI、其它 Codex Workflow/远端和非 Orca 保持，整体 helper 退役留待后续。当前支持以[实施验收](../acceptance/orca-structured-agent-session-mvp.md)为准，历史验收不改写。
+
 > 2026-11-03 当前合同更新：已验证的 Codex/development/2/full_access 在本机与明确 environment 共用无 helper 原生合同，scope=orca_terminal；实际模型和 workspace audit 不继承 managed 保证。显式 managed/audited/Pi/DSH/其他 workflow 及旧记录保持各自消费者，见[当前 Orca 合同](../orca-execution.md)与 [B6 Spec](orca-native-rollout.spec.md)。下文历史格式与验收不改写、不平移资格。
 
 > 2026-11-01 当前边界：以[个人执行器简化 Spec](personal-executor-simplification.spec.md) / [Plan](personal-executor-simplification.plan.md)为准。当前为 state/v7、user_version=7，默认 `%LOCALAPPDATA%/SteerRunner-v7`；拒绝 v6 及更旧目录，不迁移或代替原版本收尾。同构建服务重启接回原资源；升级先由原版本排空原生资源和未完成操作/控制，pr_ready 不等于排空。verify-takeover、跨构建活动任务接管及资源重建已删除。未知操作有界查询后转人工，显式 resume 最多 30 秒只读对账原操作，不重发输入、不创建替代资源，业务等待及 stop/close 保持。未来格式/契约兼容且已排空时可继续原目录并查询历史，不因 EXE 变化强制换目录。下文旧格式、接管矩阵及恢复资源条款仅供历史溯源，不覆盖此边界；原验收证据保持原构建结论。

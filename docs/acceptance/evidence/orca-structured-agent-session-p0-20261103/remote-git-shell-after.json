@@ -1,0 +1,84 @@
+{
+  "id": "1018c6ca-7c40-4f50-b7ae-106bda6e6374",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_f8908b97-a741-4582-af72-0e96ba7240e7",
+      "status": "running",
+      "tail": [
+        "PS C:\\Users\\Administrator\\orca\\workspaces\\SteerlineTest\\sr-oas-p0-20261103-remote> Write-Output 'SR_OAS_P0_VERSION_BEGIN'; codex --version; if(Get-Command pi -ErrorAction Silent",
+        "lyContinue){ pi --version }else{ Write-Output 'PI_MISSING' }; Write-Output 'SR_OAS_P0_VERSION_END'",
+        "SR_OAS_P0_VERSION_BEGIN",
+        "codex-cli 0.162.1",
+        "PI_MISSING",
+        "SR_OAS_P0_VERSION_END",
+        "PS C:\\Users\\Administrator\\orca\\workspaces\\SteerlineTest\\sr-oas-p0-20261103-remote> Write-Output 'SR_OAS_P0_GIT_STATUS_BEGIN'; git status --porcelain; git rev-parse HEAD; Write-O",
+        "utput 'SR_OAS_P0_GIT_STATUS_END'",
+        "SR_OAS_P0_GIT_STATUS_BEGIN",
+        "256b47afc14604f6f138c965156b3faf2ae634af",
+        "SR_OAS_P0_GIT_STATUS_END",
+        "PS C:\\Users\\Administrator\\orca\\workspaces\\SteerlineTest\\sr-oas-p0-20261103-remote>"
+      ],
+      "truncated": false,
+      "limited": false,
+      "oldestCursor": "0",
+      "nextCursor": "9",
+      "latestCursor": "9",
+      "returnedLineCount": 12,
+      "tailRows": [
+        {
+          "wrapped": false,
+          "trailingSpaces": 0
+        },
+        {
+          "wrapped": true,
+          "trailingSpaces": 0
+        },
+        {
+          "wrapped": false,
+          "trailingSpaces": 0
+        },
+        {
+          "wrapped": false,
+          "trailingSpaces": 0
+        },
+        {
+          "wrapped": false,
+          "trailingSpaces": 0
+        },
+        {
+          "wrapped": false,
+          "trailingSpaces": 0
+        },
+        {
+          "wrapped": false,
+          "trailingSpaces": 0
+        },
+        {
+          "wrapped": true,
+          "trailingSpaces": 66
+        },
+        {
+          "wrapped": false,
+          "trailingSpaces": 0
+        },
+        {
+          "wrapped": false,
+          "trailingSpaces": 0
+        },
+        {
+          "wrapped": false,
+          "trailingSpaces": 0
+        },
+        {
+          "wrapped": false,
+          "trailingSpaces": 1
+        }
+      ],
+      "source": "screen"
+    }
+  },
+  "_meta": {
+    "runtimeId": "21d98aa2-d284-41f3-a6cc-42fb22d728a2"
+  }
+}

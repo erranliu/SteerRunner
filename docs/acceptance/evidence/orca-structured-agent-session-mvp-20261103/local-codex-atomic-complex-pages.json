@@ -1,0 +1,519 @@
+[
+  {
+    "id": "30b6db6b-a2ab-46d7-b7f9-37c51fa45f5d",
+    "ok": true,
+    "result": {
+      "ok": true,
+      "page": {
+        "sessionId": "oas_mvp_2ad2db59abde4a8eb93d31e115c8880f",
+        "epoch": "939d624d-3f19-46cd-a19a-6ff117c16142",
+        "direction": "tail",
+        "items": [
+          {
+            "itemId": "codex:01a1a064-7c9e-7513-97b7-12465105ea4d:01a1a064-8855-76a0-9096-ff7528ede227:3",
+            "revision": 24,
+            "body": {
+              "kind": "message",
+              "role": "assistant",
+              "blocks": [
+                {
+                  "type": "text",
+                  "text": "MVP_FINAL_LINE_0001\nMVP_FINAL_LINE_0002\nMVP_FINAL_LINE_0003\nMVP_FINAL_LINE_0004\nMVP_FINAL_LINE_0005\nMVP_FINAL_LINE_0006\nMVP_FINAL_LINE_0007\nMVP_FINAL_LINE_0008\nMVP_FINAL_LINE_0009\nMVP_FINAL_LINE_0010\nMVP_FINAL_LINE_0011\nMVP_FINAL_LINE_0012\nMVP_FINAL_LINE_0013\nMVP_FINAL_LINE_0014\nMVP_FINAL_LINE_0015\nMVP_FINAL_LINE_0016\nMVP_FINAL_LINE_0017\nMVP_FINAL_LINE_0018\nMVP_FINAL_LINE_0019\nMVP_FINAL_LINE_0020\nMVP_FINAL_LINE_0021\nMVP_FINAL_LINE_0022\nMVP_FINAL_LINE_0023\nMVP_FINAL_LINE_0024\nMVP_FINAL_LINE_0025\nMVP_FINAL_LINE_0026\nMVP_FINAL_LINE_0027\nMVP_FINAL_LINE_0028\nMVP_FINAL_LINE_0029\nMVP_FINAL_LINE_0030\nMVP_FINAL_LINE_0031\nMVP_FINAL_LINE_0032\nMVP_FINAL_LINE_0033\nMVP_FINAL_LINE_0034\nMVP_FINAL_LINE_0035\nMVP_FINAL_LINE_0036\nMVP_FINAL_LINE_0037\nMVP_FINAL_LINE_0038\nMVP_FINAL_LINE_0039\nMVP_FINAL_LINE_0040\nMVP_FINAL_LINE_0041\nMVP_FINAL_LINE_0042\nMVP_FINAL_LINE_0043\nMVP_FINAL_LINE_0044\nMVP_FINAL_LINE_0045\nMVP_FINAL_LINE_0046\nMVP_FINAL_LINE_0047\nMVP_FINAL_LINE_0048\nMVP_FINAL_LINE_0049\nMVP_FINAL_LINE_0050\nMVP_FINAL_LINE_0051\nMVP_FINAL_LINE_0052\nMVP_FINAL_LINE_0053\nMVP_FINAL_LINE_0054\nMVP_FINAL_LINE_0055\nMVP_FINAL_LINE_0056\nMVP_FINAL_LINE_0057\nMVP_FINAL_LINE_0058\nMVP_FINAL_LINE_0059\nMVP_FINAL_LINE_0060\nMVP_FINAL_LINE_0061\nMVP_FINAL_LINE_0062\nMVP_FINAL_LINE_0063\nMVP_FINAL_LINE_0064\nMVP_FINAL_LINE_0065\nMVP_FINAL_LINE_0066\nMVP_FINAL_LINE_0067\nMVP_FINAL_LINE_0068\nMVP_FINAL_LINE_0069\nMVP_FINAL_LINE_0070\nMVP_FINAL_LINE_0071\nMVP_FINAL_LINE_0072\nMVP_FINAL_LINE_0073\nMVP_FINAL_LINE_0074\nMVP_FINAL_LINE_0075\nMVP_FINAL_LINE_0076\nMVP_FINAL_LINE_0077\nMVP_FINAL_LINE_0078\nMVP_FINAL_LINE_0079\nMVP_FINAL_LINE_0080\nMVP_FINAL_LINE_0081\nMVP_FINAL_LINE_0082\nMVP_FINAL_LINE_0083\nMVP_FINAL_LINE_0084\nMVP_FINAL_LINE_0085\nMVP_FINAL_LINE_0086\nMVP_FINAL_LINE_0087\nMVP_FINAL_LINE_0088\nMVP_FINAL_LINE_0089\nMVP_FINAL_LINE_0090\nMVP_FINAL_LINE_0091\nMVP_FINAL_LINE_0092\nMVP_FINAL_LINE_0093\nMVP_FINAL_LINE_0094\nMVP_FINAL_LINE_0095\nMVP_FINAL_LINE_0096\nMVP_FINAL_LINE_0097\nMVP_FINAL_LINE_0098\nMVP_FINAL_LINE_0099\nMVP_FINAL_LINE_0100\nMVP_FINAL_LINE_0101\nMVP_FINAL_LINE_0102\nMVP_FINAL_LINE_0103\nMVP_FINAL_LINE_0104\nMVP_FINAL_LINE_0105\nMVP_FINAL_LINE_0106\nMVP_FINAL_LINE_0107\nMVP_FINAL_LINE_0108\nMVP_FINAL_LINE_0109\nMVP_FINAL_LINE_0110\nMVP_FINAL_LINE_0111\nMVP_FINAL_LINE_0112\nMVP_FINAL_LINE_0113\nMVP_FINAL_LINE_0114\nMVP_FINAL_LINE_0115\nMVP_FINAL_LINE_0116\nMVP_FINAL_LINE_0117\nMVP_FINAL_LINE_0118\nMVP_FINAL_LINE_0119\nMVP_FINAL_LINE_0120\nMVP_FINAL_LINE_0121\nMVP_FINAL_LINE_0122\nMVP_FINAL_LINE_0123\nMVP_FINAL_LINE_0124\nMVP_FINAL_LINE_0125\nMVP_FINAL_LINE_0126\nMVP_FINAL_LINE_0127\nMVP_FINAL_LINE_0128\nMVP_FINAL_LINE_0129\nMVP_FINAL_LINE_0130\nMVP_FINAL_LINE_0131\nMVP_FINAL_LINE_0132\nMVP_FINAL_LINE_0133\nMVP_FINAL_LINE_0134\nMVP_FINAL_LINE_0135\nMVP_FINAL_LINE_0136\nMVP_FINAL_LINE_0137\nMVP_FINAL_LINE_0138\nMVP_FINAL_LINE_0139\nMVP_FINAL_LINE_0140\nMVP_FINAL_LINE_0141\nMVP_FINAL_LINE_0142\nMVP_FINAL_LINE_0143\nMVP_FINAL_LINE_0144\nMVP_FINAL_LINE_0145\nMVP_FINAL_LINE_0146\nMVP_FINAL_LINE_0147\nMVP_FINAL_LINE_0148\nMVP_FINAL_LINE_0149\nMVP_FINAL_LINE_0150\nMVP_FINAL_LINE_0151\nMVP_FINAL_LINE_0152\nMVP_FINAL_LINE_0153\nMVP_FINAL_LINE_0154\nMVP_FINAL_LINE_0155\nMVP_FINAL_LINE_0156\nMVP_FINAL_LINE_0157\nMVP_FINAL_LINE_0158\nMVP_FINAL_LINE_0159\nMVP_FINAL_LINE_0160\nMVP_FINAL_LINE_0161\nMVP_FINAL_LINE_0162\nMVP_FINAL_LINE_0163\nMVP_FINAL_LINE_0164\nMVP_FINAL_LINE_0165\nMVP_FINAL_LINE_0166\nMVP_FINAL_LINE_0167\nMVP_FINAL_LINE_0168\nMVP_FINAL_LINE_0169\nMVP_FINAL_LINE_0170\nMVP_FINAL_LINE_0171\nMVP_FINAL_LINE_0172\nMVP_FINAL_LINE_0173\nMVP_FINAL_LINE_0174\nMVP_FINAL_LINE_0175\nMVP_FINAL_LINE_0176\nMVP_FINAL_LINE_0177\nMVP_FINAL_LINE_0178\nMVP_FINAL_LINE_0179\nMVP_FINAL_LINE_0180\nMVP_FINAL_LINE_0181\nMVP_FINAL_LINE_0182\nMVP_FINAL_LINE_0183\nMVP_FINAL_LINE_0184\nMVP_FINAL_LINE_0185\nMVP_FINAL_LINE_0186\nMVP_FINAL_LINE_0187\nMVP_FINAL_LINE_0188\nMVP_FINAL_LINE_0189\nMVP_FINAL_LINE_0190\nMVP_FINAL_LINE_0191\nMVP_FINAL_LINE_0192\nMVP_FINAL_LINE_0193\nMVP_FINAL_LINE_0194\nMVP_FINAL_LINE_0195\nMVP_FINAL_LINE_0196\nMVP_FINAL_LINE_0197\nMVP_FINAL_LINE_0198\nMVP_FINAL_LINE_0199\nMVP_FINAL_LINE_0200\nMVP_FINAL_LINE_0201\nMVP_FINAL_LINE_0202\nMVP_FINAL_LINE_0203\nMVP_FINAL_LINE_0204\nMVP_FINAL_LINE_0205\nMVP_FINAL_LINE_0206\nMVP_FINAL_LINE_0207\nMVP_FINAL_LINE_0208\nMVP_FINAL_LINE_0209\nMVP_FINAL_LINE_0210\nMVP_FINAL_LINE_0211\nMVP_FINAL_LINE_0212\nMVP_FINAL_LINE_0213\nMVP_FINAL_LINE_0214\nMVP_FINAL_LINE_0215\nMVP_FINAL_LINE_0216\nMVP_FINAL_LINE_0217\nMVP_FINAL_LINE_0218\nMVP_FINAL_LINE_0219\nMVP_FINAL_LINE_0220\nMVP_FINAL_LINE_0221\nMVP_FINAL_LINE_0222\nMVP_FINAL_LINE_0223\nMVP_FINAL_LINE_0224\nMVP_FINAL_LINE_0225\nMVP_FINAL_LINE_0226\nMVP_FINAL_LINE_0227\nMVP_FINAL_LINE_0228\nMVP_FINAL_LINE_0229\nMVP_FINAL_LINE_0230\nMVP_FINAL_LINE_0231\nMVP_FINAL_LINE_0232\nMVP_FINAL_LINE_0233\nMVP_FINAL_LINE_0234\nMVP_FINAL_LINE_0235\nMVP_FINAL_LINE_0236\nMVP_FINAL_LINE_0237\nMVP_FINAL_LINE_0238\nMVP_FINAL_LINE_0239\nMVP_FINAL_LINE_0240\nMVP_FINAL_LINE_0241\nMVP_FINAL_LINE_0242\nMVP_FINAL_LINE_0243\nMVP_FINAL_LINE_0244\nMVP_FINAL_LINE_0245\nMVP_FINAL_LINE_0246\nMVP_FINAL_LINE_0247\nMVP_FINAL_LINE_0248\nMVP_FINAL_LINE_0249\nMVP_FINAL_LINE_0250\nMVP_FINAL_LINE_0251\nMVP_FINAL_LINE_0252\nMVP_FINAL_LINE_0253\nMVP_FINAL_LINE_0254\nMVP_FINAL_LINE_0255\nMVP_FINAL_LINE_0256\nMVP_FINAL_LINE_0257\nMVP_FINAL_LINE_0258\nMVP_FINAL_LINE_0259\nMVP_FINAL_LINE_0260\nMVP_FINAL_LINE_0261\nMVP_FINAL_LINE_0262\nMVP_FINAL_LINE_0263\nMVP_FINAL_LINE_0264\nMVP_FINAL_LINE_0265\nMVP_FINAL_LINE_0266\nMVP_FINAL_LINE_0267\nMVP_FINAL_LINE_0268\nMVP_FINAL_LINE_0269\nMVP_FINAL_LINE_0270\nMVP_FINAL_LINE_0271\nMVP_FINAL_LINE_0272\nMVP_FINAL_LINE_0273\nMVP_FINAL_LINE_0274\nMVP_FINAL_LINE_0275\nMVP_FINAL_LINE_0276\nMVP_FINAL_LINE_0277\nMVP_FINAL_LINE_0278\nMVP_FINAL_LINE_0279\nMVP_FINAL_LINE_0280\nMVP_FINAL_LINE_0281\nMVP_FINAL_LINE_0282\nMVP_FINAL_LINE_0283\nMVP_FINAL_LINE_0284\nMVP_FINAL_LINE_0285\nMVP_FINAL_LINE_0286\nMVP_FINAL_LINE_0287\nMVP_FINAL_LINE_0288\nMVP_FINAL_LINE_0289\nMVP_FINAL_LINE_0290\nMVP_FINAL_LINE_0291\nMVP_FINAL_LINE_0292\nMVP_FINAL_LINE_0293\nMVP_FINAL_LINE_0294\nMVP_FINAL_LINE_0295\nMVP_FINAL_LINE_0296\nMVP_FINAL_LINE_0297\nMVP_FINAL_LINE_0298\nMVP_FINAL_LINE_0299\nMVP_FINAL_LINE_0300"
+                }
+              ]
+            },
+            "sequence": 19,
+            "observedAt": 1793692321596,
+            "turnScope": {
+              "kind": "turn",
+              "turnItemId": "legacy:codex:oas_mvp_2ad2db59abde4a8eb93d31e115c8880f:turn-lifecycle%3A01a1a064-8855-76a0-9096-ff7528ede227"
+            }
+          },
+          {
+            "itemId": "orca:provider-frame%3Acodex%3Acdc4f48a-ebc3-49a1-b724-51f660a7d663%3A1",
+            "revision": 1,
+            "body": {
+              "kind": "status",
+              "text": "codex · notification:thread/readState/changed",
+              "providerFrame": {
+                "provider": "codex",
+                "kind": "notification:thread/readState/changed",
+                "payload": {
+                  "head": "{\"threadId\":\"01a1a064-7c9e-7513-97b7-12465105ea4d\",\"readState\":{\"firstUnread\":{\"type\":\"turn\",\"turnId\":\"01a1a064-8855-76a0-9096-ff7528ede227\"},\"revision\":\"0265aaaf-5fb4-4980-be6f-dc6e078ef200\"}}",
+                  "byteLength": 193,
+                  "digest": "a326bdc1bb3e5bc9d9133982a650a15d23b7494695ea9561dc7a19a93e3b6e9e",
+                  "truncated": false
+                }
+              }
+            },
+            "sequence": 44,
+            "observedAt": 1793692336397,
+            "turnScope": {
+              "kind": "turn",
+              "turnItemId": "legacy:codex:oas_mvp_2ad2db59abde4a8eb93d31e115c8880f:turn-lifecycle%3A01a1a064-8855-76a0-9096-ff7528ede227"
+            }
+          }
+        ],
+        "removedItemIds": [],
+        "submissions": [],
+        "window": {
+          "oldest": {
+            "epoch": "939d624d-3f19-46cd-a19a-6ff117c16142",
+            "sequence": 19
+          },
+          "newest": {
+            "epoch": "939d624d-3f19-46cd-a19a-6ff117c16142",
+            "sequence": 44
+          },
+          "nextCursor": {
+            "epoch": "939d624d-3f19-46cd-a19a-6ff117c16142",
+            "sequence": 19
+          }
+        },
+        "liveCursor": {
+          "epoch": "939d624d-3f19-46cd-a19a-6ff117c16142",
+          "sequence": 45
+        },
+        "hasOlder": true,
+        "hasNewer": false,
+        "latestTurn": {
+          "itemId": "legacy:codex:oas_mvp_2ad2db59abde4a8eb93d31e115c8880f:turn-lifecycle%3A01a1a064-8855-76a0-9096-ff7528ede227",
+          "observedAt": 1793692306429,
+          "turn": {
+            "contextUsage": {
+              "used": {
+                "kind": "report",
+                "model": "unknown",
+                "usedTokens": 21003,
+                "windowTokens": 475000,
+                "percentage": 4,
+                "categories": [],
+                "capturedAt": 1793692336045
+              }
+            },
+            "turnId": "01a1a064-8855-76a0-9096-ff7528ede227",
+            "state": "completed",
+            "outcome": "success",
+            "userItemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+            "startedAt": 1793692306429,
+            "requestedAt": 1793692305424,
+            "completedAt": 1793692336404,
+            "durationMs": 30827
+          }
+        },
+        "actionablePromptIds": [],
+        "working": false,
+        "fence": 2,
+        "hostNow": 1793692337102,
+        "queuedMessages": [],
+        "queuePause": null,
+        "nextQueuedMessageId": null,
+        "backgroundTasks": null
+      },
+      "providerSession": {
+        "key": "session_id",
+        "id": "01a1a064-7c9e-7513-97b7-12465105ea4d"
+      }
+    },
+    "_meta": {
+      "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+    }
+  },
+  {
+    "id": "d2024012-3e3c-4322-8eea-d390458e554b",
+    "ok": true,
+    "result": {
+      "ok": true,
+      "page": {
+        "sessionId": "oas_mvp_2ad2db59abde4a8eb93d31e115c8880f",
+        "epoch": "939d624d-3f19-46cd-a19a-6ff117c16142",
+        "direction": "before",
+        "items": [
+          {
+            "itemId": "codex:01a1a064-7c9e-7513-97b7-12465105ea4d:01a1a064-8855-76a0-9096-ff7528ede227:2",
+            "revision": 2,
+            "body": {
+              "kind": "message",
+              "role": "assistant",
+              "blocks": [
+                {
+                  "type": "text",
+                  "text": "STAGE_TWO"
+                }
+              ]
+            },
+            "sequence": 13,
+            "observedAt": 1793692317476,
+            "turnScope": {
+              "kind": "turn",
+              "turnItemId": "legacy:codex:oas_mvp_2ad2db59abde4a8eb93d31e115c8880f:turn-lifecycle%3A01a1a064-8855-76a0-9096-ff7528ede227"
+            }
+          },
+          {
+            "itemId": "orca:codex-item%3A01a1a064-7c9e-7513-97b7-12465105ea4d%3Aexec-012bc9ef-9b6b-4049-ac9a-cc6d3fe9a797",
+            "revision": 3,
+            "body": {
+              "kind": "tool-call",
+              "name": "shell",
+              "callId": "exec-012bc9ef-9b6b-4049-ac9a-cc6d3fe9a797",
+              "input": {
+                "command": "\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command \"Write-Output 'MVP_TOOL_TWO'\"",
+                "cwd": "C:\\Users\\lmas1\\orca\\workspaces\\SteerlineTest\\sr-oas-mvp-20261103-atomic"
+              },
+              "state": "completed",
+              "exitCode": 0,
+              "durationMs": 156,
+              "output": {
+                "head": "MVP_TOOL_TWO\r\n",
+                "byteLength": 14,
+                "digest": "804e7f1478a2199333a490c177034c5df297bd8bb8c1e7a62e0f3d22d1f958b1",
+                "truncated": false
+              }
+            },
+            "sequence": 15,
+            "observedAt": 1793692318758,
+            "turnScope": {
+              "kind": "turn",
+              "turnItemId": "legacy:codex:oas_mvp_2ad2db59abde4a8eb93d31e115c8880f:turn-lifecycle%3A01a1a064-8855-76a0-9096-ff7528ede227"
+            }
+          }
+        ],
+        "removedItemIds": [],
+        "submissions": [],
+        "window": {
+          "oldest": {
+            "epoch": "939d624d-3f19-46cd-a19a-6ff117c16142",
+            "sequence": 13
+          },
+          "newest": {
+            "epoch": "939d624d-3f19-46cd-a19a-6ff117c16142",
+            "sequence": 15
+          },
+          "nextCursor": {
+            "epoch": "939d624d-3f19-46cd-a19a-6ff117c16142",
+            "sequence": 13
+          }
+        },
+        "liveCursor": {
+          "epoch": "939d624d-3f19-46cd-a19a-6ff117c16142",
+          "sequence": 45
+        },
+        "hasOlder": true,
+        "hasNewer": true,
+        "latestTurn": {
+          "itemId": "legacy:codex:oas_mvp_2ad2db59abde4a8eb93d31e115c8880f:turn-lifecycle%3A01a1a064-8855-76a0-9096-ff7528ede227",
+          "observedAt": 1793692306429,
+          "turn": {
+            "contextUsage": {
+              "used": {
+                "kind": "report",
+                "model": "unknown",
+                "usedTokens": 21003,
+                "windowTokens": 475000,
+                "percentage": 4,
+                "categories": [],
+                "capturedAt": 1793692336045
+              }
+            },
+            "turnId": "01a1a064-8855-76a0-9096-ff7528ede227",
+            "state": "completed",
+            "outcome": "success",
+            "userItemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+            "startedAt": 1793692306429,
+            "requestedAt": 1793692305424,
+            "completedAt": 1793692336404,
+            "durationMs": 30827
+          }
+        },
+        "actionablePromptIds": [],
+        "working": false,
+        "fence": 2,
+        "hostNow": 1793692337103,
+        "queuedMessages": [],
+        "queuePause": null,
+        "nextQueuedMessageId": null,
+        "backgroundTasks": null
+      },
+      "providerSession": {
+        "key": "session_id",
+        "id": "01a1a064-7c9e-7513-97b7-12465105ea4d"
+      }
+    },
+    "_meta": {
+      "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+    }
+  },
+  {
+    "id": "b34798bf-1740-45da-93a3-16aef48dd648",
+    "ok": true,
+    "result": {
+      "ok": true,
+      "page": {
+        "sessionId": "oas_mvp_2ad2db59abde4a8eb93d31e115c8880f",
+        "epoch": "939d624d-3f19-46cd-a19a-6ff117c16142",
+        "direction": "before",
+        "items": [
+          {
+            "itemId": "codex:01a1a064-7c9e-7513-97b7-12465105ea4d:01a1a064-8855-76a0-9096-ff7528ede227:1",
+            "revision": 2,
+            "body": {
+              "kind": "message",
+              "role": "assistant",
+              "blocks": [
+                {
+                  "type": "text",
+                  "text": "STAGE_ONE"
+                }
+              ]
+            },
+            "sequence": 7,
+            "observedAt": 1793692313705,
+            "turnScope": {
+              "kind": "turn",
+              "turnItemId": "legacy:codex:oas_mvp_2ad2db59abde4a8eb93d31e115c8880f:turn-lifecycle%3A01a1a064-8855-76a0-9096-ff7528ede227"
+            }
+          },
+          {
+            "itemId": "orca:codex-item%3A01a1a064-7c9e-7513-97b7-12465105ea4d%3Aexec-212cf80c-2c0b-41ff-8812-d8e9e4453bba",
+            "revision": 3,
+            "body": {
+              "kind": "tool-call",
+              "name": "shell",
+              "callId": "exec-212cf80c-2c0b-41ff-8812-d8e9e4453bba",
+              "input": {
+                "command": "\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command \"Write-Output 'MVP_TOOL_ONE'\"",
+                "cwd": "C:\\Users\\lmas1\\orca\\workspaces\\SteerlineTest\\sr-oas-mvp-20261103-atomic"
+              },
+              "state": "completed",
+              "exitCode": 0,
+              "durationMs": 161,
+              "output": {
+                "head": "MVP_TOOL_ONE\r\n",
+                "byteLength": 14,
+                "digest": "934554f88e7e7827848860274dc71ef8f4712a901c476b25c8bee49e3190cc4d",
+                "truncated": false
+              }
+            },
+            "sequence": 9,
+            "observedAt": 1793692314888,
+            "turnScope": {
+              "kind": "turn",
+              "turnItemId": "legacy:codex:oas_mvp_2ad2db59abde4a8eb93d31e115c8880f:turn-lifecycle%3A01a1a064-8855-76a0-9096-ff7528ede227"
+            }
+          }
+        ],
+        "removedItemIds": [],
+        "submissions": [],
+        "window": {
+          "oldest": {
+            "epoch": "939d624d-3f19-46cd-a19a-6ff117c16142",
+            "sequence": 7
+          },
+          "newest": {
+            "epoch": "939d624d-3f19-46cd-a19a-6ff117c16142",
+            "sequence": 9
+          },
+          "nextCursor": {
+            "epoch": "939d624d-3f19-46cd-a19a-6ff117c16142",
+            "sequence": 7
+          }
+        },
+        "liveCursor": {
+          "epoch": "939d624d-3f19-46cd-a19a-6ff117c16142",
+          "sequence": 45
+        },
+        "hasOlder": true,
+        "hasNewer": true,
+        "latestTurn": {
+          "itemId": "legacy:codex:oas_mvp_2ad2db59abde4a8eb93d31e115c8880f:turn-lifecycle%3A01a1a064-8855-76a0-9096-ff7528ede227",
+          "observedAt": 1793692306429,
+          "turn": {
+            "contextUsage": {
+              "used": {
+                "kind": "report",
+                "model": "unknown",
+                "usedTokens": 21003,
+                "windowTokens": 475000,
+                "percentage": 4,
+                "categories": [],
+                "capturedAt": 1793692336045
+              }
+            },
+            "turnId": "01a1a064-8855-76a0-9096-ff7528ede227",
+            "state": "completed",
+            "outcome": "success",
+            "userItemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+            "startedAt": 1793692306429,
+            "requestedAt": 1793692305424,
+            "completedAt": 1793692336404,
+            "durationMs": 30827
+          }
+        },
+        "actionablePromptIds": [],
+        "working": false,
+        "fence": 2,
+        "hostNow": 1793692337104,
+        "queuedMessages": [],
+        "queuePause": null,
+        "nextQueuedMessageId": null,
+        "backgroundTasks": null
+      },
+      "providerSession": {
+        "key": "session_id",
+        "id": "01a1a064-7c9e-7513-97b7-12465105ea4d"
+      }
+    },
+    "_meta": {
+      "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+    }
+  },
+  {
+    "id": "e21ed8fd-a309-4490-bb97-81c73bc22cb8",
+    "ok": true,
+    "result": {
+      "ok": true,
+      "page": {
+        "sessionId": "oas_mvp_2ad2db59abde4a8eb93d31e115c8880f",
+        "epoch": "939d624d-3f19-46cd-a19a-6ff117c16142",
+        "direction": "before",
+        "items": [
+          {
+            "itemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+            "revision": 0,
+            "body": {
+              "kind": "message",
+              "role": "user",
+              "blocks": [
+                {
+                  "type": "text",
+                  "text": "This is an isolated structured-input integration check. Work only in the current workspace; do not modify repository files, commit, publish, or inspect credentials.\r\nFirst send a short commentary saying STAGE_ONE, then use the shell tool to print MVP_TOOL_ONE. Next send a second commentary saying STAGE_TWO and use the shell tool again to print MVP_TOOL_TWO. Finally return exactly the 300 lines MVP_FINAL_LINE_0001 through MVP_FINAL_LINE_0300, with one line per number. Do not abbreviate the final output.\r\n\r\nLiteral input preservation only: 中文 😀 \"quotes\" docs\\spec\\example.md\r\n```text\r\n<&> a\\b\r\n```\r\n  "
+                }
+              ]
+            },
+            "sequence": 4,
+            "observedAt": 1793692305431,
+            "turnScope": {
+              "kind": "thread"
+            }
+          },
+          {
+            "itemId": "legacy:codex:oas_mvp_2ad2db59abde4a8eb93d31e115c8880f:turn-lifecycle%3A01a1a064-8855-76a0-9096-ff7528ede227",
+            "revision": 5,
+            "body": {
+              "kind": "turn",
+              "contextUsage": {
+                "used": {
+                  "kind": "report",
+                  "model": "unknown",
+                  "usedTokens": 21003,
+                  "windowTokens": 475000,
+                  "percentage": 4,
+                  "categories": [],
+                  "capturedAt": 1793692336045
+                }
+              },
+              "turnId": "01a1a064-8855-76a0-9096-ff7528ede227",
+              "state": "completed",
+              "outcome": "success",
+              "userItemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+              "startedAt": 1793692306429,
+              "requestedAt": 1793692305424,
+              "completedAt": 1793692336404,
+              "durationMs": 30827
+            },
+            "sequence": 5,
+            "observedAt": 1793692306429,
+            "turnScope": {
+              "kind": "thread"
+            }
+          }
+        ],
+        "removedItemIds": [],
+        "submissions": [
+          {
+            "clientMessageId": "1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+            "fence": 2,
+            "payloadFingerprint": "419753580e70a0b2fac072bb28e8f5dc8d1d8797c2b21f2f55959c3629310934",
+            "dispatchState": "accepted",
+            "providerItemId": "codex:01a1a064-7c9e-7513-97b7-12465105ea4d:01a1a064-8855-76a0-9096-ff7528ede227:0",
+            "reason": null,
+            "submittedAt": 1793692301525,
+            "resolvedAt": 1793692311805,
+            "submittedSequence": 2,
+            "handoverRecorded": true,
+            "acceptedSequence": 2,
+            "origin": "client",
+            "source": {
+              "kind": "user"
+            },
+            "options": {
+              "model": "gpt-6.1-sol",
+              "effort": "medium"
+            },
+            "handedOverAt": 1793692305431
+          }
+        ],
+        "window": {
+          "oldest": {
+            "epoch": "939d624d-3f19-46cd-a19a-6ff117c16142",
+            "sequence": 4
+          },
+          "newest": {
+            "epoch": "939d624d-3f19-46cd-a19a-6ff117c16142",
+            "sequence": 5
+          },
+          "nextCursor": {
+            "epoch": "939d624d-3f19-46cd-a19a-6ff117c16142",
+            "sequence": 4
+          }
+        },
+        "liveCursor": {
+          "epoch": "939d624d-3f19-46cd-a19a-6ff117c16142",
+          "sequence": 45
+        },
+        "hasOlder": false,
+        "hasNewer": true,
+        "latestTurn": {
+          "itemId": "legacy:codex:oas_mvp_2ad2db59abde4a8eb93d31e115c8880f:turn-lifecycle%3A01a1a064-8855-76a0-9096-ff7528ede227",
+          "observedAt": 1793692306429,
+          "turn": {
+            "contextUsage": {
+              "used": {
+                "kind": "report",
+                "model": "unknown",
+                "usedTokens": 21003,
+                "windowTokens": 475000,
+                "percentage": 4,
+                "categories": [],
+                "capturedAt": 1793692336045
+              }
+            },
+            "turnId": "01a1a064-8855-76a0-9096-ff7528ede227",
+            "state": "completed",
+            "outcome": "success",
+            "userItemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+            "startedAt": 1793692306429,
+            "requestedAt": 1793692305424,
+            "completedAt": 1793692336404,
+            "durationMs": 30827
+          }
+        },
+        "actionablePromptIds": [],
+        "working": false,
+        "fence": 2,
+        "hostNow": 1793692337105,
+        "queuedMessages": [],
+        "queuePause": null,
+        "nextQueuedMessageId": null,
+        "backgroundTasks": null
+      },
+      "providerSession": {
+        "key": "session_id",
+        "id": "01a1a064-7c9e-7513-97b7-12465105ea4d"
+      }
+    },
+    "_meta": {
+      "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+    }
+  }
+]

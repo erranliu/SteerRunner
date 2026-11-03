@@ -21,8 +21,8 @@ func TestOrcaAgentSettings(t *testing.T) {
 		{`{"access_mode":"full_access"}`, "codex", ""},
 		{`{"access_mode":"full_access","agent":"codex"}`, "codex", ""},
 		{`{"access_mode":"full_access","agent":"pi"}`, "pi", ""},
-		{`{"agent":"dsh","access_mode":"full_access"}`, "dsh", ""},
-		{`{"access_mode":"full_access","agent":"future-agent_2"}`, "future-agent_2", ""},
+		{`{"agent":"dsh","access_mode":"full_access"}`, "", "unsupported_capability"},
+		{`{"access_mode":"full_access","agent":"future-agent_2"}`, "", "unsupported_capability"},
 		{`{"access_mode":"full_access","agent":""}`, "", "invalid_input"},
 		{`{"access_mode":"full_access","agent":null}`, "", "invalid_input"},
 		{`{"access_mode":"full_access","agent":1}`, "", "invalid_input"},
@@ -32,9 +32,7 @@ func TestOrcaAgentSettings(t *testing.T) {
 		{`{"agent":"` + strings.Repeat("a", 65) + `"}`, "", "invalid_input"},
 		{`{"Agent":"pi"}`, "", "invalid_input"},
 		{`{"access_mode":"full_access","agent":"pi","agent_launch":{"model":"m"}}`, "pi", ""},
-		{`{"access_mode":"full_access","agent":"dsh","agent_launch":{"reasoning_effort":"high"}}`, "dsh", ""},
 		{`{"access_mode":"full_access","agent":"pi","agent_launch":{"args":["--no-daemon"]}}`, "", "unsupported_capability"},
-		{`{"access_mode":"full_access","agent":"dsh","agent_launch":{"runtime_executable":"helper.exe"}}`, "dsh", ""},
 		{`{"access_mode":"full_access","agent":"codex","agent_launch":{"model":"m","reasoning_effort":"high","args":["--no-daemon"]}}`, "codex", ""},
 	} {
 		t.Run(tc.settings, func(t *testing.T) {

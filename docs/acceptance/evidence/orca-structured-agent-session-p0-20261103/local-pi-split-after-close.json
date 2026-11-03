@@ -1,0 +1,195 @@
+{
+  "id": "57023833-effa-4b68-befe-26b1cc2da354",
+  "ok": true,
+  "result": {
+    "ok": true,
+    "page": {
+      "sessionId": "oas_p0_d3bbbda92ade431a8fa7c9137f8aa97f",
+      "epoch": "c1961061-17ef-4308-9505-fcc20c8f957a",
+      "direction": "tail",
+      "items": [
+        {
+          "itemId": "orca:1793688973202-5d9af8918e86432d8c07cf9a1876d426",
+          "revision": 0,
+          "body": {
+            "kind": "message",
+            "role": "user",
+            "blocks": [
+              {
+                "type": "text",
+                "text": "This is an API input fidelity check. Do not use tools or read/write files. Reply exactly P0_OAS_LOCAL_PI_OK.\r\nLiteral path: docs\\spec\\example.md\r\n\r\nChinese: 中文; Unicode: 😀; quotes: \"x\"\r\n```text\r\na\\b\r\n```\r\n  "
+              }
+            ]
+          },
+          "sequence": 3,
+          "observedAt": 1793688974865,
+          "turnScope": {
+            "kind": "thread"
+          }
+        },
+        {
+          "itemId": "legacy:pi:oas_p0_d3bbbda92ade431a8fa7c9137f8aa97f:turn-lifecycle%3Ap%3Aoas_p0_d3bbbda92ade431a8fa7c9137f8aa97f%3Arun%253Abfb19831-2ee3-4395-be83-478cc5edca05%253A1",
+          "revision": 8,
+          "body": {
+            "kind": "turn",
+            "contextUsage": {
+              "used": {
+                "kind": "report",
+                "model": "openrouter/deepseek/deepseek-v4.1-flash",
+                "usedTokens": 3124,
+                "windowTokens": 1048576,
+                "percentage": 0.2979278564453125,
+                "categories": [],
+                "capturedAt": 1793688977509
+              },
+              "window": {
+                "tokens": 1048576,
+                "capturedAt": 1793688977517
+              }
+            },
+            "turnId": "p:oas_p0_d3bbbda92ade431a8fa7c9137f8aa97f:run%3Abfb19831-2ee3-4395-be83-478cc5edca05%3A1",
+            "state": "completed",
+            "outcome": "success",
+            "userItemId": "orca:1793688973202-5d9af8918e86432d8c07cf9a1876d426",
+            "startedAt": 1793688974891,
+            "requestedAt": 1793688974865,
+            "completedAt": 1793688977522
+          },
+          "sequence": 4,
+          "observedAt": 1793688974891,
+          "turnScope": {
+            "kind": "thread"
+          }
+        },
+        {
+          "itemId": "legacy:pi:oas_p0_d3bbbda92ade431a8fa7c9137f8aa97f:item%3Ap%3Aoas_p0_d3bbbda92ade431a8fa7c9137f8aa97f%3Amessage%253Abfb19831-2ee3-4395-be83-478cc5edca05%253A1%253A0%253Areasoning",
+          "revision": 2,
+          "body": {
+            "kind": "message",
+            "role": "reasoning",
+            "blocks": [
+              {
+                "type": "text",
+                "text": "The user says don't use tools, reply exactly P0_OAS_LOCAL_PI_OK."
+              }
+            ]
+          },
+          "sequence": 7,
+          "observedAt": 1793688977446,
+          "turnScope": {
+            "kind": "turn",
+            "turnItemId": "legacy:pi:oas_p0_d3bbbda92ade431a8fa7c9137f8aa97f:turn-lifecycle%3Ap%3Aoas_p0_d3bbbda92ade431a8fa7c9137f8aa97f%3Arun%253Abfb19831-2ee3-4395-be83-478cc5edca05%253A1"
+          }
+        },
+        {
+          "itemId": "legacy:pi:oas_p0_d3bbbda92ade431a8fa7c9137f8aa97f:item%3Ap%3Aoas_p0_d3bbbda92ade431a8fa7c9137f8aa97f%3Amessage%253Abfb19831-2ee3-4395-be83-478cc5edca05%253A1%253A1%253Aassistant",
+          "revision": 2,
+          "body": {
+            "kind": "message",
+            "role": "assistant",
+            "blocks": [
+              {
+                "type": "text",
+                "text": "P0_OAS_LOCAL_PI_OK"
+              }
+            ]
+          },
+          "sequence": 8,
+          "observedAt": 1793688977453,
+          "turnScope": {
+            "kind": "turn",
+            "turnItemId": "legacy:pi:oas_p0_d3bbbda92ade431a8fa7c9137f8aa97f:turn-lifecycle%3Ap%3Aoas_p0_d3bbbda92ade431a8fa7c9137f8aa97f%3Arun%253Abfb19831-2ee3-4395-be83-478cc5edca05%253A1"
+          }
+        }
+      ],
+      "removedItemIds": [],
+      "submissions": [
+        {
+          "clientMessageId": "1793688973202-5d9af8918e86432d8c07cf9a1876d426",
+          "fence": 1,
+          "payloadFingerprint": "93fe98bbf1d4f042b72e9fbf0e780c6ea1d39b4b996ea9f03ed390836be1f339",
+          "dispatchState": "accepted",
+          "providerItemId": "orca:1793688973202-5d9af8918e86432d8c07cf9a1876d426",
+          "reason": null,
+          "submittedAt": 1793688974404,
+          "resolvedAt": 1793688974902,
+          "submittedSequence": 2,
+          "handoverRecorded": true,
+          "acceptedSequence": 2,
+          "origin": "client",
+          "source": {
+            "kind": "user"
+          },
+          "options": {
+            "model": "openrouter/deepseek/deepseek-v4.1-flash",
+            "effort": "high"
+          },
+          "handedOverAt": 1793688974865
+        }
+      ],
+      "window": {
+        "oldest": {
+          "epoch": "c1961061-17ef-4308-9505-fcc20c8f957a",
+          "sequence": 3
+        },
+        "newest": {
+          "epoch": "c1961061-17ef-4308-9505-fcc20c8f957a",
+          "sequence": 8
+        },
+        "nextCursor": {
+          "epoch": "c1961061-17ef-4308-9505-fcc20c8f957a",
+          "sequence": 3
+        }
+      },
+      "liveCursor": {
+        "epoch": "c1961061-17ef-4308-9505-fcc20c8f957a",
+        "sequence": 16
+      },
+      "hasOlder": false,
+      "hasNewer": false,
+      "latestTurn": {
+        "itemId": "legacy:pi:oas_p0_d3bbbda92ade431a8fa7c9137f8aa97f:turn-lifecycle%3Ap%3Aoas_p0_d3bbbda92ade431a8fa7c9137f8aa97f%3Arun%253Abfb19831-2ee3-4395-be83-478cc5edca05%253A1",
+        "observedAt": 1793688974891,
+        "turn": {
+          "contextUsage": {
+            "used": {
+              "kind": "report",
+              "model": "openrouter/deepseek/deepseek-v4.1-flash",
+              "usedTokens": 3124,
+              "windowTokens": 1048576,
+              "percentage": 0.2979278564453125,
+              "categories": [],
+              "capturedAt": 1793688977509
+            },
+            "window": {
+              "tokens": 1048576,
+              "capturedAt": 1793688977517
+            }
+          },
+          "turnId": "p:oas_p0_d3bbbda92ade431a8fa7c9137f8aa97f:run%3Abfb19831-2ee3-4395-be83-478cc5edca05%3A1",
+          "state": "completed",
+          "outcome": "success",
+          "userItemId": "orca:1793688973202-5d9af8918e86432d8c07cf9a1876d426",
+          "startedAt": 1793688974891,
+          "requestedAt": 1793688974865,
+          "completedAt": 1793688977522
+        }
+      },
+      "actionablePromptIds": [],
+      "working": false,
+      "fence": 2,
+      "hostNow": 1793688978585,
+      "queuedMessages": [],
+      "queuePause": null,
+      "nextQueuedMessageId": null,
+      "backgroundTasks": null
+    },
+    "providerSession": {
+      "key": "session_id",
+      "id": "C:\\Users\\lmas1\\.pi\\agent\\sessions\\--C--Users-lmas1-orca-workspaces-SteerlineTest-sr-oas-p0-20261103-local--\\2026-11-03T06-56-14-577Z_01a1a031-b4f0-77b8-9360-95eea5256063.jsonl"
+    }
+  },
+  "_meta": {
+    "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+  }
+}

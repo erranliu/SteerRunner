@@ -1,0 +1,292 @@
+{
+  "label": "local-pi-atomic",
+  "sessionId": "oas_p0_d557d5c470d5404595e1e0bbebe3ad9a",
+  "marker": "P0_OAS_LOCAL_PI_OK",
+  "create": {
+    "ok": true,
+    "replayed": false,
+    "fence": 1,
+    "cursor": {
+      "epoch": "575f5dbf-89a1-487c-9854-83672e428750",
+      "sequence": 2
+    },
+    "value": {
+      "sessionId": "oas_p0_d557d5c470d5404595e1e0bbebe3ad9a",
+      "fence": 1,
+      "page": {
+        "sessionId": "oas_p0_d557d5c470d5404595e1e0bbebe3ad9a",
+        "epoch": "575f5dbf-89a1-487c-9854-83672e428750",
+        "fence": 1,
+        "direction": "tail",
+        "items": [
+          {
+            "itemId": "orca:1793688768849-bf747db253364b67a4af4255cbab4678",
+            "revision": 0,
+            "body": {
+              "kind": "message",
+              "role": "user",
+              "blocks": [
+                {
+                  "type": "text",
+                  "text": "This is an API input fidelity check. Do not use tools or read/write files. Reply exactly P0_OAS_LOCAL_PI_OK.\r\nLiteral path: docs\\spec\\example.md\r\n\r\nChinese: 中文; Unicode: 😀; quotes: \"x\"\r\n```text\r\na\\b\r\n```\r\n  "
+                }
+              ]
+            },
+            "sequence": 2,
+            "observedAt": 1793688769213,
+            "turnScope": {
+              "kind": "thread"
+            }
+          }
+        ],
+        "removedItemIds": [],
+        "submissions": [
+          {
+            "clientMessageId": "1793688768849-bf747db253364b67a4af4255cbab4678",
+            "fence": 1,
+            "payloadFingerprint": "9643516214dd5e0b8c91ca71eedd23c01200945c04c831f2dfc3c49adfac95dc",
+            "dispatchState": "pending",
+            "providerItemId": null,
+            "reason": null,
+            "submittedAt": 1793688769213,
+            "resolvedAt": null,
+            "submittedSequence": 2,
+            "handoverRecorded": true,
+            "acceptedSequence": 2,
+            "origin": "client",
+            "source": {
+              "kind": "user"
+            },
+            "options": {}
+          }
+        ],
+        "window": {
+          "oldest": {
+            "epoch": "575f5dbf-89a1-487c-9854-83672e428750",
+            "sequence": 2
+          },
+          "newest": {
+            "epoch": "575f5dbf-89a1-487c-9854-83672e428750",
+            "sequence": 2
+          },
+          "nextCursor": {
+            "epoch": "575f5dbf-89a1-487c-9854-83672e428750",
+            "sequence": 2
+          }
+        },
+        "liveCursor": {
+          "epoch": "575f5dbf-89a1-487c-9854-83672e428750",
+          "sequence": 2
+        },
+        "hasOlder": false,
+        "hasNewer": false,
+        "latestTurn": null
+      },
+      "unconfirmedClientMessageIds": [],
+      "firstMessage": {
+        "clientMessageId": "1793688768849-bf747db253364b67a4af4255cbab4678",
+        "fence": 1,
+        "payloadFingerprint": "9643516214dd5e0b8c91ca71eedd23c01200945c04c831f2dfc3c49adfac95dc",
+        "dispatchState": "pending",
+        "providerItemId": null,
+        "reason": null,
+        "submittedAt": 1793688769213,
+        "resolvedAt": null,
+        "submittedSequence": 2,
+        "handoverRecorded": true,
+        "acceptedSequence": 2,
+        "origin": "client",
+        "source": {
+          "kind": "user"
+        },
+        "options": {}
+      },
+      "tabId": "structured-agent-session-oas_p0_d557d5c470d5404595e1e0bbebe3ad9a"
+    }
+  },
+  "agentSession.options": {
+    "current": {
+      "model": "openrouter/deepseek/deepseek-v4.1-flash",
+      "defaulted": [],
+      "effort": "high",
+      "confirmed": [
+        "model",
+        "effort"
+      ],
+      "acceptedInputSources": {
+        "model": "saved"
+      },
+      "reportedEffort": "high"
+    }
+  },
+  "agentSession.handoffStatus": {
+    "owner": "native",
+    "direction": null,
+    "phase": "idle",
+    "stage": null,
+    "operationId": null
+  },
+  "latestTurn": {
+    "itemId": "legacy:pi:oas_p0_d557d5c470d5404595e1e0bbebe3ad9a:turn-lifecycle%3Ap%3Aoas_p0_d557d5c470d5404595e1e0bbebe3ad9a%3Arun%253A63987b47-7eaa-40e9-ad0d-ecdc0dfd4382%253A1",
+    "observedAt": 1793688770336,
+    "turn": {
+      "contextUsage": {
+        "used": {
+          "kind": "report",
+          "model": "openrouter/deepseek/deepseek-v4.1-flash",
+          "usedTokens": 3084,
+          "windowTokens": 1048576,
+          "percentage": 0.2941131591796875,
+          "categories": [],
+          "capturedAt": 1793688772304
+        },
+        "window": {
+          "tokens": 1048576,
+          "capturedAt": 1793688772313
+        }
+      },
+      "turnId": "p:oas_p0_d557d5c470d5404595e1e0bbebe3ad9a:run%3A63987b47-7eaa-40e9-ad0d-ecdc0dfd4382%3A1",
+      "state": "completed",
+      "outcome": "success",
+      "userItemId": "orca:1793688768849-bf747db253364b67a4af4255cbab4678",
+      "startedAt": 1793688770336,
+      "requestedAt": 1793688770316,
+      "completedAt": 1793688772319
+    }
+  },
+  "working": false,
+  "items": [
+    {
+      "itemId": "orca:1793688768849-bf747db253364b67a4af4255cbab4678",
+      "revision": 0,
+      "body": {
+        "kind": "message",
+        "role": "user",
+        "blocks": [
+          {
+            "type": "text",
+            "text": "This is an API input fidelity check. Do not use tools or read/write files. Reply exactly P0_OAS_LOCAL_PI_OK.\r\nLiteral path: docs\\spec\\example.md\r\n\r\nChinese: 中文; Unicode: 😀; quotes: \"x\"\r\n```text\r\na\\b\r\n```\r\n  "
+          }
+        ]
+      },
+      "sequence": 3,
+      "observedAt": 1793688770316,
+      "turnScope": {
+        "kind": "thread"
+      }
+    },
+    {
+      "itemId": "legacy:pi:oas_p0_d557d5c470d5404595e1e0bbebe3ad9a:turn-lifecycle%3Ap%3Aoas_p0_d557d5c470d5404595e1e0bbebe3ad9a%3Arun%253A63987b47-7eaa-40e9-ad0d-ecdc0dfd4382%253A1",
+      "revision": 7,
+      "body": {
+        "kind": "turn",
+        "contextUsage": {
+          "used": {
+            "kind": "report",
+            "model": "openrouter/deepseek/deepseek-v4.1-flash",
+            "usedTokens": 3084,
+            "windowTokens": 1048576,
+            "percentage": 0.2941131591796875,
+            "categories": [],
+            "capturedAt": 1793688772304
+          },
+          "window": {
+            "tokens": 1048576,
+            "capturedAt": 1793688772313
+          }
+        },
+        "turnId": "p:oas_p0_d557d5c470d5404595e1e0bbebe3ad9a:run%3A63987b47-7eaa-40e9-ad0d-ecdc0dfd4382%3A1",
+        "state": "completed",
+        "outcome": "success",
+        "userItemId": "orca:1793688768849-bf747db253364b67a4af4255cbab4678",
+        "startedAt": 1793688770336,
+        "requestedAt": 1793688770316,
+        "completedAt": 1793688772319
+      },
+      "sequence": 4,
+      "observedAt": 1793688770336,
+      "turnScope": {
+        "kind": "thread"
+      }
+    },
+    {
+      "itemId": "legacy:pi:oas_p0_d557d5c470d5404595e1e0bbebe3ad9a:item%3Ap%3Aoas_p0_d557d5c470d5404595e1e0bbebe3ad9a%3Amessage%253A63987b47-7eaa-40e9-ad0d-ecdc0dfd4382%253A1%253A0%253Aassistant",
+      "revision": 2,
+      "body": {
+        "kind": "message",
+        "role": "assistant",
+        "blocks": [
+          {
+            "type": "text",
+            "text": "P0_OAS_LOCAL_PI_OK"
+          }
+        ]
+      },
+      "sequence": 7,
+      "observedAt": 1793688772276,
+      "turnScope": {
+        "kind": "turn",
+        "turnItemId": "legacy:pi:oas_p0_d557d5c470d5404595e1e0bbebe3ad9a:turn-lifecycle%3Ap%3Aoas_p0_d557d5c470d5404595e1e0bbebe3ad9a%3Arun%253A63987b47-7eaa-40e9-ad0d-ecdc0dfd4382%253A1"
+      }
+    }
+  ],
+  "submissions": [
+    {
+      "clientMessageId": "1793688768849-bf747db253364b67a4af4255cbab4678",
+      "fence": 2,
+      "payloadFingerprint": "9643516214dd5e0b8c91ca71eedd23c01200945c04c831f2dfc3c49adfac95dc",
+      "dispatchState": "accepted",
+      "providerItemId": "orca:1793688768849-bf747db253364b67a4af4255cbab4678",
+      "reason": null,
+      "submittedAt": 1793688769213,
+      "resolvedAt": 1793688770349,
+      "submittedSequence": 2,
+      "handoverRecorded": true,
+      "acceptedSequence": 2,
+      "origin": "client",
+      "source": {
+        "kind": "user"
+      },
+      "options": {},
+      "handedOverAt": 1793688770316
+    }
+  ],
+  "close": {
+    "id": "09dac153-4137-45bd-ab2e-c1c9f3e0e604",
+    "ok": true,
+    "result": {
+      "ok": true
+    },
+    "_meta": {
+      "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+    }
+  },
+  "afterCloseLatestTurn": {
+    "itemId": "legacy:pi:oas_p0_d557d5c470d5404595e1e0bbebe3ad9a:turn-lifecycle%3Ap%3Aoas_p0_d557d5c470d5404595e1e0bbebe3ad9a%3Arun%253A63987b47-7eaa-40e9-ad0d-ecdc0dfd4382%253A1",
+    "observedAt": 1793688770336,
+    "turn": {
+      "contextUsage": {
+        "used": {
+          "kind": "report",
+          "model": "openrouter/deepseek/deepseek-v4.1-flash",
+          "usedTokens": 3084,
+          "windowTokens": 1048576,
+          "percentage": 0.2941131591796875,
+          "categories": [],
+          "capturedAt": 1793688772304
+        },
+        "window": {
+          "tokens": 1048576,
+          "capturedAt": 1793688772313
+        }
+      },
+      "turnId": "p:oas_p0_d557d5c470d5404595e1e0bbebe3ad9a:run%3A63987b47-7eaa-40e9-ad0d-ecdc0dfd4382%3A1",
+      "state": "completed",
+      "outcome": "success",
+      "userItemId": "orca:1793688768849-bf747db253364b67a4af4255cbab4678",
+      "startedAt": 1793688770336,
+      "requestedAt": 1793688770316,
+      "completedAt": 1793688772319
+    }
+  }
+}

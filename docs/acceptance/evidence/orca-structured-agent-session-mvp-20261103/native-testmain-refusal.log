@@ -1,0 +1,3 @@
+explicit -evidence-dir is required
+FAIL	github.com/erranliu/SteerRunner/tests/native	0.467s
+FAIL

@@ -121,12 +121,6 @@ func (l *Lifecycle) validateTerminalReceipt(r TerminalReceipt) error {
 		return errors.New("local native terminal profile missing")
 	}
 	sourceKind, tools := "pi-extension-v1", []string{"read", "write", "edit", "powershell"}
-	if c.Agent == "dsh" {
-		sourceKind, tools = "dsh-plugin-v1", []string{"powershell"}
-		if r.NativeSessionID == "" {
-			return errors.New("DSH native session identity missing")
-		}
-	}
 	expectedSHA := c.EvidenceSHA256
 	if expectedSHA == "" || c.BundleSHA256 == "" {
 		return errors.New("original frozen terminal source hashes missing")
@@ -138,9 +132,6 @@ func (l *Lifecycle) validateTerminalReceipt(r TerminalReceipt) error {
 		return errors.New("native terminal receipt binding changed")
 	}
 	model := c.Model
-	if c.Agent == "dsh" && model != "" {
-		model = "deepseek-official/" + model
-	}
 	if model != "" && r.Model != model {
 		return errors.New("native terminal model differs from frozen launch")
 	}

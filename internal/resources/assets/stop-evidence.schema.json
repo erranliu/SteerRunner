@@ -2,5 +2,5 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "steerrunner-stop-evidence-scope/v1",
   "type": "string",
-  "enum": ["orca_terminal", "orca_local_codex_resources"]
+  "enum": ["orca_terminal", "orca_local_codex_resources", "orca_agent_session"]
 }

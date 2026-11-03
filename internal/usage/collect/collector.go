@@ -364,15 +364,7 @@ func (c *Collector) read(ctx context.Context, binding parsers.Binding, p orca.Pr
 			return zero, cleanup, err
 		}
 		root := filepath.Join(p.Terminal.StateDirectory, "sessions")
-		if binding.Agent == "dsh" {
-			root = filepath.Join(p.Terminal.StateDirectory, "home", ".dsh", "sessions")
-		}
-		var files []string
-		if binding.Agent == "pi" {
-			files, _ = filepath.Glob(filepath.Join(root, "*"+binding.SessionID+".jsonl"))
-		} else {
-			files, _ = filepath.Glob(filepath.Join(root, "*", binding.SessionID, "session.v4.jsonl.zstd"))
-		}
+		files, _ := filepath.Glob(filepath.Join(root, "*"+binding.SessionID+".jsonl"))
 		if len(files) == 0 {
 			return zero, cleanup, errors.New("LOG_NOT_FOUND")
 		}

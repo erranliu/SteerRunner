@@ -37,7 +37,7 @@ func TestLocalOrcaAuditedModelsRequireManagedRuntime(t *testing.T) {
 }
 
 func TestTerminalAgentsCannotUseCodexAuditModels(t *testing.T) {
-	for _, agent := range []string{"pi", "dsh"} {
+	for _, agent := range []string{"pi"} {
 		t.Run(agent, func(t *testing.T) {
 			execution := Execution{Adapter: "orca-terminal", Target: Target{Kind: "local"}, Settings: json.RawMessage(`{"access_mode":"full_access","agent":"` + agent + `","agent_launch":{"runtime_executable":"helper.exe","model":"writer"}}`)}
 			if fault := ValidateExecution(execution); fault != nil {

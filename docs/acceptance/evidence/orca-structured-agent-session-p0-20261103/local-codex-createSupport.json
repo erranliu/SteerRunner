@@ -1,0 +1,13 @@
+{
+  "id": "b85b7731-33c0-4dd2-9ddd-2b516dced988",
+  "ok": true,
+  "result": {
+    "supported": true,
+    "seedOptions": {
+      "permissionMode": "full-access"
+    }
+  },
+  "_meta": {
+    "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+  }
+}

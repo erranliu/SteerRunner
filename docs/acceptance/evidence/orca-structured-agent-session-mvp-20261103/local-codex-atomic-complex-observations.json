@@ -1,0 +1,669 @@
+[
+  {
+    "at": 1793692301742,
+    "fence": 2,
+    "working": true,
+    "items": 1
+  },
+  {
+    "at": 1793692302754,
+    "fence": 2,
+    "working": true,
+    "items": 1
+  },
+  {
+    "at": 1793692303757,
+    "fence": 2,
+    "working": true,
+    "items": 1
+  },
+  {
+    "at": 1793692304763,
+    "fence": 2,
+    "working": true,
+    "items": 1
+  },
+  {
+    "at": 1793692305773,
+    "fence": 2,
+    "working": true,
+    "items": 1
+  },
+  {
+    "at": 1793692306787,
+    "fence": 2,
+    "working": true,
+    "turn": {
+      "turnId": "01a1a064-8855-76a0-9096-ff7528ede227",
+      "state": "running",
+      "userItemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+      "startedAt": 1793692306429,
+      "requestedAt": 1793692305424
+    },
+    "items": 2
+  },
+  {
+    "at": 1793692307797,
+    "fence": 2,
+    "working": true,
+    "turn": {
+      "turnId": "01a1a064-8855-76a0-9096-ff7528ede227",
+      "state": "running",
+      "userItemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+      "startedAt": 1793692306429,
+      "requestedAt": 1793692305424
+    },
+    "items": 2
+  },
+  {
+    "at": 1793692308806,
+    "fence": 2,
+    "working": true,
+    "turn": {
+      "turnId": "01a1a064-8855-76a0-9096-ff7528ede227",
+      "state": "running",
+      "userItemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+      "startedAt": 1793692306429,
+      "requestedAt": 1793692305424
+    },
+    "items": 2
+  },
+  {
+    "at": 1793692309822,
+    "fence": 2,
+    "working": true,
+    "turn": {
+      "turnId": "01a1a064-8855-76a0-9096-ff7528ede227",
+      "state": "running",
+      "userItemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+      "startedAt": 1793692306429,
+      "requestedAt": 1793692305424
+    },
+    "items": 2
+  },
+  {
+    "at": 1793692310838,
+    "fence": 2,
+    "working": true,
+    "turn": {
+      "turnId": "01a1a064-8855-76a0-9096-ff7528ede227",
+      "state": "running",
+      "userItemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+      "startedAt": 1793692306429,
+      "requestedAt": 1793692305424
+    },
+    "items": 2
+  },
+  {
+    "at": 1793692311840,
+    "fence": 2,
+    "working": true,
+    "turn": {
+      "turnId": "01a1a064-8855-76a0-9096-ff7528ede227",
+      "state": "running",
+      "userItemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+      "startedAt": 1793692306429,
+      "requestedAt": 1793692305424
+    },
+    "items": 2
+  },
+  {
+    "at": 1793692312844,
+    "fence": 2,
+    "working": true,
+    "turn": {
+      "turnId": "01a1a064-8855-76a0-9096-ff7528ede227",
+      "state": "running",
+      "userItemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+      "startedAt": 1793692306429,
+      "requestedAt": 1793692305424
+    },
+    "items": 2
+  },
+  {
+    "at": 1793692313859,
+    "fence": 2,
+    "working": true,
+    "turn": {
+      "turnId": "01a1a064-8855-76a0-9096-ff7528ede227",
+      "state": "running",
+      "userItemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+      "startedAt": 1793692306429,
+      "requestedAt": 1793692305424
+    },
+    "items": 3
+  },
+  {
+    "at": 1793692314872,
+    "fence": 2,
+    "working": true,
+    "turn": {
+      "turnId": "01a1a064-8855-76a0-9096-ff7528ede227",
+      "state": "running",
+      "userItemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+      "startedAt": 1793692306429,
+      "requestedAt": 1793692305424
+    },
+    "items": 3
+  },
+  {
+    "at": 1793692315882,
+    "fence": 2,
+    "working": true,
+    "turn": {
+      "turnId": "01a1a064-8855-76a0-9096-ff7528ede227",
+      "state": "running",
+      "userItemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+      "startedAt": 1793692306429,
+      "requestedAt": 1793692305424
+    },
+    "items": 4
+  },
+  {
+    "at": 1793692316893,
+    "fence": 2,
+    "working": true,
+    "turn": {
+      "turnId": "01a1a064-8855-76a0-9096-ff7528ede227",
+      "state": "running",
+      "userItemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+      "startedAt": 1793692306429,
+      "requestedAt": 1793692305424,
+      "contextUsage": {
+        "used": {
+          "kind": "report",
+          "model": "unknown",
+          "usedTokens": 18432,
+          "windowTokens": 475000,
+          "percentage": 4,
+          "categories": [],
+          "capturedAt": 1793692315905
+        }
+      }
+    },
+    "items": 4
+  },
+  {
+    "at": 1793692317899,
+    "fence": 2,
+    "working": true,
+    "turn": {
+      "turnId": "01a1a064-8855-76a0-9096-ff7528ede227",
+      "state": "running",
+      "userItemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+      "startedAt": 1793692306429,
+      "requestedAt": 1793692305424,
+      "contextUsage": {
+        "used": {
+          "kind": "report",
+          "model": "unknown",
+          "usedTokens": 18432,
+          "windowTokens": 475000,
+          "percentage": 4,
+          "categories": [],
+          "capturedAt": 1793692315905
+        }
+      }
+    },
+    "items": 5
+  },
+  {
+    "at": 1793692318912,
+    "fence": 2,
+    "working": true,
+    "turn": {
+      "turnId": "01a1a064-8855-76a0-9096-ff7528ede227",
+      "state": "running",
+      "userItemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+      "startedAt": 1793692306429,
+      "requestedAt": 1793692305424,
+      "contextUsage": {
+        "used": {
+          "kind": "report",
+          "model": "unknown",
+          "usedTokens": 18432,
+          "windowTokens": 475000,
+          "percentage": 4,
+          "categories": [],
+          "capturedAt": 1793692315905
+        }
+      }
+    },
+    "items": 6
+  },
+  {
+    "at": 1793692319923,
+    "fence": 2,
+    "working": true,
+    "turn": {
+      "turnId": "01a1a064-8855-76a0-9096-ff7528ede227",
+      "state": "running",
+      "userItemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+      "startedAt": 1793692306429,
+      "requestedAt": 1793692305424,
+      "contextUsage": {
+        "used": {
+          "kind": "report",
+          "model": "unknown",
+          "usedTokens": 18538,
+          "windowTokens": 475000,
+          "percentage": 4,
+          "categories": [],
+          "capturedAt": 1793692319750
+        }
+      }
+    },
+    "items": 6
+  },
+  {
+    "at": 1793692320934,
+    "fence": 2,
+    "working": true,
+    "turn": {
+      "turnId": "01a1a064-8855-76a0-9096-ff7528ede227",
+      "state": "running",
+      "userItemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+      "startedAt": 1793692306429,
+      "requestedAt": 1793692305424,
+      "contextUsage": {
+        "used": {
+          "kind": "report",
+          "model": "unknown",
+          "usedTokens": 18538,
+          "windowTokens": 475000,
+          "percentage": 4,
+          "categories": [],
+          "capturedAt": 1793692319750
+        }
+      }
+    },
+    "items": 6
+  },
+  {
+    "at": 1793692321944,
+    "fence": 2,
+    "working": true,
+    "turn": {
+      "turnId": "01a1a064-8855-76a0-9096-ff7528ede227",
+      "state": "running",
+      "userItemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+      "startedAt": 1793692306429,
+      "requestedAt": 1793692305424,
+      "contextUsage": {
+        "used": {
+          "kind": "report",
+          "model": "unknown",
+          "usedTokens": 18538,
+          "windowTokens": 475000,
+          "percentage": 4,
+          "categories": [],
+          "capturedAt": 1793692319750
+        }
+      }
+    },
+    "items": 7
+  },
+  {
+    "at": 1793692322954,
+    "fence": 2,
+    "working": true,
+    "turn": {
+      "turnId": "01a1a064-8855-76a0-9096-ff7528ede227",
+      "state": "running",
+      "userItemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+      "startedAt": 1793692306429,
+      "requestedAt": 1793692305424,
+      "contextUsage": {
+        "used": {
+          "kind": "report",
+          "model": "unknown",
+          "usedTokens": 18538,
+          "windowTokens": 475000,
+          "percentage": 4,
+          "categories": [],
+          "capturedAt": 1793692319750
+        }
+      }
+    },
+    "items": 7
+  },
+  {
+    "at": 1793692323965,
+    "fence": 2,
+    "working": true,
+    "turn": {
+      "turnId": "01a1a064-8855-76a0-9096-ff7528ede227",
+      "state": "running",
+      "userItemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+      "startedAt": 1793692306429,
+      "requestedAt": 1793692305424,
+      "contextUsage": {
+        "used": {
+          "kind": "report",
+          "model": "unknown",
+          "usedTokens": 18538,
+          "windowTokens": 475000,
+          "percentage": 4,
+          "categories": [],
+          "capturedAt": 1793692319750
+        }
+      }
+    },
+    "items": 7
+  },
+  {
+    "at": 1793692324976,
+    "fence": 2,
+    "working": true,
+    "turn": {
+      "turnId": "01a1a064-8855-76a0-9096-ff7528ede227",
+      "state": "running",
+      "userItemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+      "startedAt": 1793692306429,
+      "requestedAt": 1793692305424,
+      "contextUsage": {
+        "used": {
+          "kind": "report",
+          "model": "unknown",
+          "usedTokens": 18538,
+          "windowTokens": 475000,
+          "percentage": 4,
+          "categories": [],
+          "capturedAt": 1793692319750
+        }
+      }
+    },
+    "items": 7
+  },
+  {
+    "at": 1793692325988,
+    "fence": 2,
+    "working": true,
+    "turn": {
+      "turnId": "01a1a064-8855-76a0-9096-ff7528ede227",
+      "state": "running",
+      "userItemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+      "startedAt": 1793692306429,
+      "requestedAt": 1793692305424,
+      "contextUsage": {
+        "used": {
+          "kind": "report",
+          "model": "unknown",
+          "usedTokens": 18538,
+          "windowTokens": 475000,
+          "percentage": 4,
+          "categories": [],
+          "capturedAt": 1793692319750
+        }
+      }
+    },
+    "items": 7
+  },
+  {
+    "at": 1793692326993,
+    "fence": 2,
+    "working": true,
+    "turn": {
+      "turnId": "01a1a064-8855-76a0-9096-ff7528ede227",
+      "state": "running",
+      "userItemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+      "startedAt": 1793692306429,
+      "requestedAt": 1793692305424,
+      "contextUsage": {
+        "used": {
+          "kind": "report",
+          "model": "unknown",
+          "usedTokens": 18538,
+          "windowTokens": 475000,
+          "percentage": 4,
+          "categories": [],
+          "capturedAt": 1793692319750
+        }
+      }
+    },
+    "items": 7
+  },
+  {
+    "at": 1793692328009,
+    "fence": 2,
+    "working": true,
+    "turn": {
+      "turnId": "01a1a064-8855-76a0-9096-ff7528ede227",
+      "state": "running",
+      "userItemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+      "startedAt": 1793692306429,
+      "requestedAt": 1793692305424,
+      "contextUsage": {
+        "used": {
+          "kind": "report",
+          "model": "unknown",
+          "usedTokens": 18538,
+          "windowTokens": 475000,
+          "percentage": 4,
+          "categories": [],
+          "capturedAt": 1793692319750
+        }
+      }
+    },
+    "items": 7
+  },
+  {
+    "at": 1793692329027,
+    "fence": 2,
+    "working": true,
+    "turn": {
+      "turnId": "01a1a064-8855-76a0-9096-ff7528ede227",
+      "state": "running",
+      "userItemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+      "startedAt": 1793692306429,
+      "requestedAt": 1793692305424,
+      "contextUsage": {
+        "used": {
+          "kind": "report",
+          "model": "unknown",
+          "usedTokens": 18538,
+          "windowTokens": 475000,
+          "percentage": 4,
+          "categories": [],
+          "capturedAt": 1793692319750
+        }
+      }
+    },
+    "items": 7
+  },
+  {
+    "at": 1793692330030,
+    "fence": 2,
+    "working": true,
+    "turn": {
+      "turnId": "01a1a064-8855-76a0-9096-ff7528ede227",
+      "state": "running",
+      "userItemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+      "startedAt": 1793692306429,
+      "requestedAt": 1793692305424,
+      "contextUsage": {
+        "used": {
+          "kind": "report",
+          "model": "unknown",
+          "usedTokens": 18538,
+          "windowTokens": 475000,
+          "percentage": 4,
+          "categories": [],
+          "capturedAt": 1793692319750
+        }
+      }
+    },
+    "items": 7
+  },
+  {
+    "at": 1793692331037,
+    "fence": 2,
+    "working": true,
+    "turn": {
+      "turnId": "01a1a064-8855-76a0-9096-ff7528ede227",
+      "state": "running",
+      "userItemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+      "startedAt": 1793692306429,
+      "requestedAt": 1793692305424,
+      "contextUsage": {
+        "used": {
+          "kind": "report",
+          "model": "unknown",
+          "usedTokens": 18538,
+          "windowTokens": 475000,
+          "percentage": 4,
+          "categories": [],
+          "capturedAt": 1793692319750
+        }
+      }
+    },
+    "items": 7
+  },
+  {
+    "at": 1793692332048,
+    "fence": 2,
+    "working": true,
+    "turn": {
+      "turnId": "01a1a064-8855-76a0-9096-ff7528ede227",
+      "state": "running",
+      "userItemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+      "startedAt": 1793692306429,
+      "requestedAt": 1793692305424,
+      "contextUsage": {
+        "used": {
+          "kind": "report",
+          "model": "unknown",
+          "usedTokens": 18538,
+          "windowTokens": 475000,
+          "percentage": 4,
+          "categories": [],
+          "capturedAt": 1793692319750
+        }
+      }
+    },
+    "items": 7
+  },
+  {
+    "at": 1793692333060,
+    "fence": 2,
+    "working": true,
+    "turn": {
+      "turnId": "01a1a064-8855-76a0-9096-ff7528ede227",
+      "state": "running",
+      "userItemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+      "startedAt": 1793692306429,
+      "requestedAt": 1793692305424,
+      "contextUsage": {
+        "used": {
+          "kind": "report",
+          "model": "unknown",
+          "usedTokens": 18538,
+          "windowTokens": 475000,
+          "percentage": 4,
+          "categories": [],
+          "capturedAt": 1793692319750
+        }
+      }
+    },
+    "items": 7
+  },
+  {
+    "at": 1793692334064,
+    "fence": 2,
+    "working": true,
+    "turn": {
+      "turnId": "01a1a064-8855-76a0-9096-ff7528ede227",
+      "state": "running",
+      "userItemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+      "startedAt": 1793692306429,
+      "requestedAt": 1793692305424,
+      "contextUsage": {
+        "used": {
+          "kind": "report",
+          "model": "unknown",
+          "usedTokens": 18538,
+          "windowTokens": 475000,
+          "percentage": 4,
+          "categories": [],
+          "capturedAt": 1793692319750
+        }
+      }
+    },
+    "items": 7
+  },
+  {
+    "at": 1793692335072,
+    "fence": 2,
+    "working": true,
+    "turn": {
+      "turnId": "01a1a064-8855-76a0-9096-ff7528ede227",
+      "state": "running",
+      "userItemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+      "startedAt": 1793692306429,
+      "requestedAt": 1793692305424,
+      "contextUsage": {
+        "used": {
+          "kind": "report",
+          "model": "unknown",
+          "usedTokens": 18538,
+          "windowTokens": 475000,
+          "percentage": 4,
+          "categories": [],
+          "capturedAt": 1793692319750
+        }
+      }
+    },
+    "items": 7
+  },
+  {
+    "at": 1793692336083,
+    "fence": 2,
+    "working": true,
+    "turn": {
+      "turnId": "01a1a064-8855-76a0-9096-ff7528ede227",
+      "state": "running",
+      "userItemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+      "startedAt": 1793692306429,
+      "requestedAt": 1793692305424,
+      "contextUsage": {
+        "used": {
+          "kind": "report",
+          "model": "unknown",
+          "usedTokens": 21003,
+          "windowTokens": 475000,
+          "percentage": 4,
+          "categories": [],
+          "capturedAt": 1793692336045
+        }
+      }
+    },
+    "items": 7
+  },
+  {
+    "at": 1793692337094,
+    "fence": 2,
+    "working": false,
+    "turn": {
+      "contextUsage": {
+        "used": {
+          "kind": "report",
+          "model": "unknown",
+          "usedTokens": 21003,
+          "windowTokens": 475000,
+          "percentage": 4,
+          "categories": [],
+          "capturedAt": 1793692336045
+        }
+      },
+      "turnId": "01a1a064-8855-76a0-9096-ff7528ede227",
+      "state": "completed",
+      "outcome": "success",
+      "userItemId": "orca:1793692301448-6cdb1f86b49c4e54beffacaddd9c6615",
+      "startedAt": 1793692306429,
+      "requestedAt": 1793692305424,
+      "completedAt": 1793692336404,
+      "durationMs": 30827
+    },
+    "items": 8
+  }
+]

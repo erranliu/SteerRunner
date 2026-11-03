@@ -1,0 +1,55 @@
+{
+  "id": "66ea6b7d-efda-4ef8-8bc1-a0729f5d7068",
+  "ok": true,
+  "result": {
+    "type": "snapshot",
+    "sessionId": "oas_p0_b3cb959c554d46a99f727fb8c661d987",
+    "page": {
+      "sessionId": "oas_p0_b3cb959c554d46a99f727fb8c661d987",
+      "epoch": "861716a1-8abc-4338-9035-63ab047b2fa5",
+      "fence": 1,
+      "direction": "tail",
+      "items": [],
+      "removedItemIds": [],
+      "submissions": [],
+      "window": {
+        "oldest": null,
+        "newest": null,
+        "nextCursor": {
+          "epoch": "861716a1-8abc-4338-9035-63ab047b2fa5",
+          "sequence": 0
+        }
+      },
+      "liveCursor": {
+        "epoch": "861716a1-8abc-4338-9035-63ab047b2fa5",
+        "sequence": 1
+      },
+      "hasOlder": false,
+      "hasNewer": false,
+      "latestTurn": null,
+      "actionablePromptIds": [],
+      "working": false
+    },
+    "fence": 1,
+    "hostNow": 1793688659616,
+    "activity": null,
+    "currentRequests": {
+      "contract": "agent-session.current-requests.v1",
+      "sessionId": "oas_p0_b3cb959c554d46a99f727fb8c661d987",
+      "epoch": "861716a1-8abc-4338-9035-63ab047b2fa5",
+      "publisher": "91a36aa7-e644-44f1-b5ac-7f2b4bf16b0c",
+      "revision": 1,
+      "owner": "91a36aa7-e644-44f1-b5ac-7f2b4bf16b0c:null",
+      "version": "a2cf5897-d2d3-4984-9f5b-f392ed14e1c3"
+    },
+    "commands": null,
+    "queuedMessages": [],
+    "queuePause": null,
+    "nextQueuedMessageId": null,
+    "backgroundTasks": null
+  },
+  "_meta": {
+    "runtimeId": "21d98aa2-d284-41f3-a6cc-42fb22d728a2"
+  },
+  "streaming": true
+}

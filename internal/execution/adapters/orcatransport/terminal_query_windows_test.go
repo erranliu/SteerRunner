@@ -164,7 +164,7 @@ func originalQueryFixture(t *testing.T) (*Lifecycle, *terminalQueryHost, b.Lifec
 }
 
 func TestOriginalTerminalRPCIdentity(t *testing.T) {
-	for _, scenario := range []string{"valid", "orphaned", "refs-prefix", "initializing", "initializing-wrong-branch", "managed-pi", "managed-dsh", "runtime", "request", "handle", "incarnation", "worktree", "workspace", "branch", "agent", "disconnected", "exited", "empty", "malformed", "rejected"} {
+	for _, scenario := range []string{"valid", "orphaned", "refs-prefix", "initializing", "initializing-wrong-branch", "managed-pi", "runtime", "request", "handle", "incarnation", "worktree", "workspace", "branch", "agent", "disconnected", "exited", "empty", "malformed", "rejected"} {
 		t.Run(scenario, func(t *testing.T) {
 			l, host, s, terminal := originalQueryFixture(t)
 			valid := scenario == "valid" || scenario == "orphaned" || scenario == "refs-prefix" || scenario == "initializing" || strings.HasPrefix(scenario, "managed-")
@@ -179,7 +179,7 @@ func TestOriginalTerminalRPCIdentity(t *testing.T) {
 				terminal.Branch = "refs/heads/" + terminal.Branch
 			case "initializing-wrong-branch":
 				terminal.Branch = "foreign"
-			case "managed-pi", "managed-dsh":
+			case "managed-pi":
 				l.profile.Terminal = &TerminalConfig{}
 				s.Ref.Agent.Name = strings.TrimPrefix(scenario, "managed-")
 				l.setup.Snapshot.Ref.Agent = s.Ref.Agent

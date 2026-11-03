@@ -82,12 +82,12 @@ func TestSRCapabilityCatalogIsStaticAndResolvable(t *testing.T) {
 			t.Fatal("catalog disagrees with gate", entry)
 		}
 	}
-	// Legacy extension values remain accepted without being advertised as implemented.
+	// Retired/unknown execution agents have no implicit Codex fallback.
 	raw := `{"execution":{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"agent":"future-agent","access_mode":"full_access"}},"workflow":{"id":"development","version":2}}`
 	var input contracts.RunConfiguration
 	_ = json.Unmarshal([]byte(raw), &input)
 	result, fault := Validate("run-configuration", []byte(raw))
-	if fault != nil || !result.Valid || catalog.Declares(input.Execution, &input.Workflow, "submit") {
-		t.Fatal("catalog became an admission whitelist")
+	if fault == nil || fault.Detail.Code != "unsupported_capability" || result.Valid || catalog.Declares(input.Execution, &input.Workflow, "submit") {
+		t.Fatal("unsupported agent was admitted")
 	}
 }

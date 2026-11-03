@@ -1,0 +1,47 @@
+{
+  "protocol": "steerrunner-cli/v1",
+  "request_id": "orca-mvp-verified-active-20261103-v1",
+  "input": {
+    "title": "Orca verified structured MVP active",
+    "name_prefix": "oas-verified",
+    "repository": {
+      "url": "https://github.com/erranliu/SteerlineTest.git",
+      "local_path": "C:/Projects/SteerlineTest",
+      "remote": "origin",
+      "base_branch": "main",
+      "base_revision": "9d81d9c2652177faf6354d4e9f9f3aec79535d11"
+    },
+    "documents": {
+      "spec": {
+        "path": "README.md"
+      },
+      "plan": {
+        "path": ".gitignore"
+      }
+    },
+    "execution": {
+      "adapter": "orca-terminal",
+      "target": {
+        "kind": "local"
+      },
+      "settings": {
+        "access_mode": "full_access",
+        "transport": {
+          "executable": "C:/Users/lmas1/AppData/Local/Programs/orca/resources/bin/orca.exe",
+          "wait_timeout": "30s"
+        },
+        "agent_launch": {
+          "model": "gpt-6.1-sol",
+          "reasoning_effort": "medium"
+        }
+      }
+    },
+    "workflow": {
+      "id": "execute",
+      "version": 1,
+      "prompt_overrides": {
+        "execute": "This is an isolated active-stop acceptance for Runner execute/1. Do not modify files, commit, push, publish, install software or inspect credentials. Send a short commentary RUNNER_ACTIVE_START, then use the shell tool to wait for 120 seconds (PowerShell Start-Sleep -Seconds 120). The operator will stop this original native session while it is active. Do not create any background processes. If the wait finishes normally, return RUNNER_ACTIVE_FINISHED.\r\n\r\nLiteral body: 中文😀 \"quote\" \\path\r\n  "
+      }
+    }
+  }
+}

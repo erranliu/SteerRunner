@@ -1,0 +1,69 @@
+{
+  "schema": "orca-structured-mvp-tests/v1",
+  "full_command": "go test ./internal/... ./tests/... -count=1 -timeout 45m -json",
+  "full_exit_code": 1,
+  "full_package_results": {
+    "skip": 6,
+    "pass": 33,
+    "fail": 1
+  },
+  "full_top_level_results": {
+    "pass": 820,
+    "skip": 16,
+    "fail": 1
+  },
+  "full_failures": [
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestSharedNativeEngineStopReconciliation//lost-absent"
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestSharedNativeEngineStopReconciliation//receipt-commit-failed"
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestSharedNativeEngineStopReconciliation/paired-worker/query-failed"
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestSharedNativeEngineStopReconciliation"
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": null
+    }
+  ],
+  "integration_top_level_passed": 34,
+  "stop_fixture_fix": "Private LOCALAPPDATA/cache for sharedNativeEngine CLI mutex; original 200ms deadlines and effect assertions unchanged; no legacy runtime stop change.",
+  "stop_final_top_level_passed": [
+    "TestSRFreezeOrcaStructuredExecuteOnly",
+    "TestSharedNativeEngineStopReconciliation",
+    "TestSharedNativeStopQueuePreservesFirstDispatch"
+  ],
+  "stop_final_failures": [],
+  "selected_packages_passed": [
+    "github.com/erranliu/SteerRunner/internal/usage/api",
+    "github.com/erranliu/SteerRunner/internal/usage",
+    "github.com/erranliu/SteerRunner/internal/contracts",
+    "github.com/erranliu/SteerRunner/internal/usage/parsers",
+    "github.com/erranliu/SteerRunner/internal/usage/access",
+    "github.com/erranliu/SteerRunner/internal/resources",
+    "github.com/erranliu/SteerRunner/internal/usage/collect",
+    "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+    "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
+  ],
+  "post_rpc_fix_packages": [
+    "protocol/orca",
+    "orcatransport",
+    "resources",
+    "contracts"
+  ],
+  "pi_node_tests": {
+    "passed": 21,
+    "failed": 0,
+    "skipped": 0
+  },
+  "live_compile": "go test -c -tags live -o .evidence/orca-structured-mvp-native.test.exe ./tests/native; exit 0; no live tests executed",
+  "qualification": "Full initial sweep was not all green. Its only failing top-level test was fixed with test-only cache isolation and fully rerun; final changed protocol/adapter packages, configuration, retirement fixtures and native acceptance were checked separately. No single final official L1/Controlled prerequisite qualification claimed."
+}

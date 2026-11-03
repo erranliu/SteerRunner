@@ -1,0 +1,122 @@
+{
+  "schema": "orca-structured-p0-vectors/v1",
+  "purpose": "offline synthetic vectors only; no runtime RPC",
+  "vectors": [
+    {
+      "input": {
+        "method": "agentSession.create",
+        "sessionId": "oas_p0_contract_vector",
+        "fields": {
+          "agent": "codex",
+          "worktree": "id:synthetic",
+          "firstMessage": {
+            "clientMessageId": "1793680000000-00112233445566778899aabbccddeeff",
+            "body": {
+              "kind": "message",
+              "role": "user",
+              "blocks": [
+                {
+                  "type": "text",
+                  "text": "line1\r\n\r\n中文😀 \"quote\" \\path\n```\n<&>  \n```  "
+                }
+              ]
+            }
+          },
+          "options": {
+            "permissionMode": "full-access"
+          }
+        }
+      },
+      "canonicalJson": "{\"fields\":{\"agent\":\"codex\",\"firstMessage\":{\"body\":{\"blocks\":[{\"text\":\"line1\\r\\n\\r\\n中文😀 \\\"quote\\\" \\\\path\\n```\\n<&>  \\n```  \",\"type\":\"text\"}],\"kind\":\"message\",\"role\":\"user\"},\"clientMessageId\":\"1793680000000-00112233445566778899aabbccddeeff\"},\"options\":{\"permissionMode\":\"full-access\"},\"worktree\":\"id:synthetic\"},\"method\":\"agentSession.create\",\"sessionId\":\"oas_p0_contract_vector\"}",
+      "utf8Bytes": 389,
+      "sha256": "091f35e6c25bf3057a5b2728fd3603a2eac6f61dc6c9293720067649a085e07b",
+      "native_equal": true
+    },
+    {
+      "input": {
+        "method": "agentSession.send",
+        "sessionId": "oas_p0_contract_vector",
+        "fields": {
+          "body": {
+            "kind": "message",
+            "role": "user",
+            "blocks": [
+              {
+                "type": "text",
+                "text": "line1\r\n\r\n中文😀 \"quote\" \\path\n```\n<&>  \n```  "
+              }
+            ]
+          },
+          "selection": {
+            "model": "synthetic/model",
+            "effort": "high"
+          }
+        }
+      },
+      "canonicalJson": "{\"fields\":{\"body\":{\"blocks\":[{\"text\":\"line1\\r\\n\\r\\n中文😀 \\\"quote\\\" \\\\path\\n```\\n<&>  \\n```  \",\"type\":\"text\"}],\"kind\":\"message\",\"role\":\"user\"},\"selection\":{\"effort\":\"high\",\"model\":\"synthetic/model\"}},\"method\":\"agentSession.send\",\"sessionId\":\"oas_p0_contract_vector\"}",
+      "utf8Bytes": 274,
+      "sha256": "3dfd91ebef56656948d90cc57d1796850d963b169bf5076f64f1efeb3b84da6c",
+      "native_equal": true
+    },
+    {
+      "input": {
+        "method": "agentSession.send",
+        "sessionId": "oas_p0_contract_vector",
+        "fields": {
+          "body": {
+            "kind": "message",
+            "role": "user",
+            "blocks": [
+              {
+                "type": "text",
+                "text": "line1\r\n\r\n中文😀 \"quote\" \\path\n```\n<&>  \n```  "
+              }
+            ]
+          }
+        }
+      },
+      "canonicalJson": "{\"fields\":{\"body\":{\"blocks\":[{\"text\":\"line1\\r\\n\\r\\n中文😀 \\\"quote\\\" \\\\path\\n```\\n<&>  \\n```  \",\"type\":\"text\"}],\"kind\":\"message\",\"role\":\"user\"}},\"method\":\"agentSession.send\",\"sessionId\":\"oas_p0_contract_vector\"}",
+      "utf8Bytes": 218,
+      "sha256": "e8881d2e6a66f773be1c5658b54d95b1986777486075274db1269f636a32557f",
+      "native_equal": true
+    },
+    {
+      "input": {
+        "method": "agentSession.cancel",
+        "sessionId": "oas_p0_contract_vector",
+        "fields": {
+          "turnId": "synthetic-turn"
+        }
+      },
+      "canonicalJson": "{\"fields\":{\"turnId\":\"synthetic-turn\"},\"method\":\"agentSession.cancel\",\"sessionId\":\"oas_p0_contract_vector\"}",
+      "utf8Bytes": 106,
+      "sha256": "93f478e73837d3c524be7085de78ff5835175813243625ed63f3ef98e693074a",
+      "native_equal": true
+    },
+    {
+      "input": {
+        "method": "synthetic.canonical",
+        "sessionId": "oas_p0_contract_vector",
+        "fields": {
+          "z": null,
+          "arr": [
+            3,
+            true,
+            false,
+            null
+          ],
+          "nested": {
+            "z": 1,
+            "a": 2
+          },
+          "😀": 1,
+          "": 2
+        }
+      },
+      "canonicalJson": "{\"fields\":{\"arr\":[3,true,false,null],\"nested\":{\"a\":2,\"z\":1},\"z\":null,\"😀\":1,\"\":2},\"method\":\"synthetic.canonical\",\"sessionId\":\"oas_p0_contract_vector\"}",
+      "utf8Bytes": 155,
+      "sha256": "432dac51601abd9751f3f1cf7e35afa644a0ed5f4eadb6a5fe2a4ad17cf24634",
+      "native_equal": true
+    }
+  ]
+}

@@ -243,7 +243,7 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 		return false
 	}
 	request.Snapshot.Implementation = r.Snapshot.Clone().Implementation
-	if r.StopEvidenceScope == orca.LocalCodexStopScope {
+	if r.StopEvidenceScope == orca.LocalCodexStopScope || r.StopEvidenceScope == orca.AgentSessionStopScope {
 		request.Snapshot.Operations = r.Snapshot.Clone().Operations
 	}
 	stopBudget := 15 * time.Second
@@ -298,6 +298,11 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 	prior := e.runs[id]
 	next := prior.Clone()
 	status, diagnostic := operation.Outcome(receipt, err)
+	if next.Snapshot.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 && len(receipt.Implementation) > 0 {
+		if mergeErr := merge(next, receipt); mergeErr != nil {
+			status, diagnostic = string(b.OperationUnknown), mergeErr.Error()
+		}
+	}
 	next.Intents[index].SettleStop(next.Snapshot.Operations, receipt, b.OperationStatus(status))
 	if err == nil && receipt.State.Stopped {
 		next.StopStatus, next.Status, next.Phase = "stopped", "stopped", "stopped"
@@ -394,6 +399,9 @@ func (e *Engine) closeWorker(id string, w *worker) {
 	_ = e.commitLocked(next, nil, "service_observation_detached")
 }
 func (e *Engine) writersAbsent(r *runstate.Record, w *worker, identity b.ProcessIdentity) bool {
+	if r.Snapshot.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 {
+		return false
+	}
 	if identity == r.Snapshot.Ref.External && codexOwnerStopped(r) {
 		return true
 	}

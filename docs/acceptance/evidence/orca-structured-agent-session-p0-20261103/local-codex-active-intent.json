@@ -1,0 +1,30 @@
+{
+  "runtime": "local",
+  "sessionId": "oas_p0_0a3ac009c57b46c49cf11a8e7d74d33f",
+  "params": {
+    "envelope": {
+      "sessionId": "oas_p0_0a3ac009c57b46c49cf11a8e7d74d33f",
+      "clientOperationId": "1793688883878-e25cd79f529a4a6396bc456f6150b3cb",
+      "expectedRuntimeFence": null,
+      "payloadFingerprint": "07f578c58d02cde36527e41ca4f1af40dc3f35e25fe9029f8f81f8479cfedad2"
+    },
+    "worktree": "id:faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-oas-p0-20261103-local",
+    "agent": "codex",
+    "options": {
+      "permissionMode": "full-access"
+    },
+    "firstMessage": {
+      "clientMessageId": "1793688883878-107776c61b844268901c2f0c2a82bb1b",
+      "body": {
+        "kind": "message",
+        "role": "user",
+        "blocks": [
+          {
+            "type": "text",
+            "text": "Cancellation API probe. Do not use tools, read files, or change anything. Generate 3000 numbered lines of short original arithmetic examples. Keep producing lines until the list is complete."
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,124 @@
+{
+  "id": "56286888-ddc0-44a1-a7bc-a89aa94c4169",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_f8908b97-a741-4582-af72-0e96ba7240e7",
+      "status": "running",
+      "tail": [
+        "PS C:\\Users\\Administrator\\orca\\workspaces\\SteerlineTest\\sr-oas-p0-20261103-remote> Write-Output 'SR_OAS_P0_VERSION_BEGIN'; codex --version; if(Get-Command pi -ErrorAction Silent",
+        "lyContinue){ pi --version }else{ Write-Output 'PI_MISSING' }; Write-Output 'SR_OAS_P0_VERSION_END'",
+        "SR_OAS_P0_VERSION_BEGIN",
+        "codex-cli 0.162.1",
+        "PI_MISSING",
+        "SR_OAS_P0_VERSION_END",
+        "PS C:\\Users\\Administrator\\orca\\workspaces\\SteerlineTest\\sr-oas-p0-20261103-remote> Write-Output 'SR_OAS_P0_GIT_STATUS_BEGIN'; git status --porcelain; git rev-parse HEAD; Write-O",
+        "utput 'SR_OAS_P0_GIT_STATUS_END'",
+        "SR_OAS_P0_GIT_STATUS_BEGIN",
+        "256b47afc14604f6f138c965156b3faf2ae634af",
+        "SR_OAS_P0_GIT_STATUS_END",
+        "PS C:\\Users\\Administrator\\orca\\workspaces\\SteerlineTest\\sr-oas-p0-20261103-remote> $m=Get-Content (Join-Path $env:APPDATA 'orca/orca-runtime.json') -Raw|ConvertFrom-Json; $e=(Ge",
+        "t-Process -Id $m.pid).Path; $r=Join-Path (Split-Path -Parent $e) 'resources'; Write-Output 'SR_OAS_P0_HASH_BEGIN'; $v=[ordered]@{runtimeId=$m.runtimeId;runtimeExe=$e;runtimeExeS",
+        "HA=(Get-FileHash -LiteralPath $e -Algorithm SHA256).Hash}; $a=Join-Path $r 'app.asar'; if(Test-Path -LiteralPath $a){$v.appAsarSHA=(Get-FileHash -LiteralPath $a -Algorithm SHA25",
+        "6).Hash}; $v|ConvertTo-Json -Compress; Write-Output 'SR_OAS_P0_HASH_END'",
+        "SR_OAS_P0_HASH_BEGIN",
+        "{\"runtimeId\":\"21d98aa2-d284-41f3-a6cc-42fb22d728a2\",\"runtimeExe\":\"C:\\\\Users\\\\Administrator\\\\AppData\\\\Local\\\\Programs\\\\orca\\\\Orca.exe\",\"runtimeExeSHA\":\"606C40DD915DD211A000750B9C",
+        "5FBA42131F7F1C4DA5C3E97CFC2662181EB502\",\"appAsarSHA\":\"39915F5D1ACD910657D7597004FA595704E9672B37A4A0CDDC836A812DBDA01A\"}",
+        "SR_OAS_P0_HASH_END",
+        "PS C:\\Users\\Administrator\\orca\\workspaces\\SteerlineTest\\sr-oas-p0-20261103-remote>"
+      ],
+      "truncated": true,
+      "limited": false,
+      "oldestCursor": "0",
+      "nextCursor": "13",
+      "latestCursor": "13",
+      "returnedLineCount": 20,
+      "tailRows": [
+        {
+          "wrapped": false,
+          "trailingSpaces": 0
+        },
+        {
+          "wrapped": true,
+          "trailingSpaces": 0
+        },
+        {
+          "wrapped": false,
+          "trailingSpaces": 0
+        },
+        {
+          "wrapped": false,
+          "trailingSpaces": 0
+        },
+        {
+          "wrapped": false,
+          "trailingSpaces": 0
+        },
+        {
+          "wrapped": false,
+          "trailingSpaces": 0
+        },
+        {
+          "wrapped": false,
+          "trailingSpaces": 0
+        },
+        {
+          "wrapped": true,
+          "trailingSpaces": 66
+        },
+        {
+          "wrapped": false,
+          "trailingSpaces": 0
+        },
+        {
+          "wrapped": false,
+          "trailingSpaces": 0
+        },
+        {
+          "wrapped": false,
+          "trailingSpaces": 0
+        },
+        {
+          "wrapped": false,
+          "trailingSpaces": 0
+        },
+        {
+          "wrapped": true,
+          "trailingSpaces": 0
+        },
+        {
+          "wrapped": true,
+          "trailingSpaces": 0
+        },
+        {
+          "wrapped": true,
+          "trailingSpaces": 0
+        },
+        {
+          "wrapped": false,
+          "trailingSpaces": 0
+        },
+        {
+          "wrapped": false,
+          "trailingSpaces": 0
+        },
+        {
+          "wrapped": true,
+          "trailingSpaces": 0
+        },
+        {
+          "wrapped": false,
+          "trailingSpaces": 0
+        },
+        {
+          "wrapped": false,
+          "trailingSpaces": 1
+        }
+      ],
+      "source": "screen"
+    }
+  },
+  "_meta": {
+    "runtimeId": "21d98aa2-d284-41f3-a6cc-42fb22d728a2"
+  }
+}

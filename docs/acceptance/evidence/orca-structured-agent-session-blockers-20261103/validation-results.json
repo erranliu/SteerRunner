@@ -1,0 +1,1001 @@
+{
+  "schema": "orca-blocker-review-validation/v1",
+  "scope": "read-only source and documentation review; no runtime or model calls, no production tests or qualification",
+  "checks": [
+    {
+      "name": "orca-source-hash:shared/agent-session/lifecycle/agent-session-mutation-envelope.js",
+      "ok": true
+    },
+    {
+      "name": "orca-source-hash:shared/agent-session/lifecycle/agent-session-lease-adjudication.js",
+      "ok": true
+    },
+    {
+      "name": "orca-source-hash:shared/rpc-contract/rpc-params-catalog.generated.js",
+      "ok": true
+    },
+    {
+      "name": "orca-source-hash:shared/rpc-contract/structured-agent-session-params.js",
+      "ok": true
+    },
+    {
+      "name": "orca-source-hash:shared/agent-session/lifecycle/agent-session-stop-capabilities.js",
+      "ok": true
+    },
+    {
+      "name": "orca-source-hash:shared/structured-agent-session-stop-join.js",
+      "ok": true
+    },
+    {
+      "name": "orca-source-hash:shared/agent-session/lifecycle/agent-session-turn-record.js",
+      "ok": true
+    },
+    {
+      "name": "orca-source-hash:shared/agent-session/options/structured-agent-session-option-view.js",
+      "ok": true
+    },
+    {
+      "name": "orca-source-hash:shared/agent-session/journal/agent-session-journal-submission-schema.js",
+      "ok": true
+    },
+    {
+      "name": "orca-source-hash:main/chunks/structured-agent-session-host-assembly-CMXzHER5.js",
+      "ok": true
+    },
+    {
+      "name": "orca-source-hash:main/chunks/orcad-migration-source-retention-C-V3mc1G.js",
+      "ok": true
+    },
+    {
+      "name": "source-excerpt:conversation-cancel",
+      "ok": true
+    },
+    {
+      "name": "source-excerpt:conversation-stop-implementation",
+      "ok": true
+    },
+    {
+      "name": "source-excerpt:stop-settlement",
+      "ok": true
+    },
+    {
+      "name": "source-excerpt:cancel-target-check",
+      "ok": true
+    },
+    {
+      "name": "source-excerpt:targeted-stop-plan",
+      "ok": true
+    },
+    {
+      "name": "source-excerpt:provider-disposal",
+      "ok": true
+    },
+    {
+      "name": "source-excerpt:lifetime-close",
+      "ok": true
+    },
+    {
+      "name": "source-excerpt:lifetime-close-return",
+      "ok": true
+    },
+    {
+      "name": "source-excerpt:workspace-sleep",
+      "ok": true
+    },
+    {
+      "name": "source-excerpt:codex-close",
+      "ok": true
+    },
+    {
+      "name": "source-excerpt:pi-close",
+      "ok": true
+    },
+    {
+      "name": "source-excerpt:ran-options-snapshot",
+      "ok": true
+    },
+    {
+      "name": "source-excerpt:codex-normalized-turn",
+      "ok": true
+    },
+    {
+      "name": "source-excerpt:mutation-admission-intentionally-ignores-fence",
+      "ok": true
+    },
+    {
+      "name": "source-excerpt:public-item-normalized-only",
+      "ok": true
+    },
+    {
+      "name": "source-excerpt:public-close-wrapper",
+      "ok": true
+    },
+    {
+      "name": "source-excerpt:public-cancel-route",
+      "ok": true
+    },
+    {
+      "name": "runner-unchanged:internal/application/engine.go",
+      "ok": true
+    },
+    {
+      "name": "runner-unchanged:internal/application/worker.go",
+      "ok": true
+    },
+    {
+      "name": "runner-unchanged:internal/application/preparation_query.go",
+      "ok": true
+    },
+    {
+      "name": "runner-unchanged:internal/execution/adapters/protocol/orca/dispatch.go",
+      "ok": true
+    },
+    {
+      "name": "runner-unchanged:internal/execution/reliable/operation/effect.go",
+      "ok": true
+    },
+    {
+      "name": "runner-unchanged:internal/execution/reliable/intent.go",
+      "ok": true
+    },
+    {
+      "name": "runner-unchanged:internal/execution/reliable/binding.go",
+      "ok": true
+    },
+    {
+      "name": "runner-unchanged:internal/application/workspace_source.go",
+      "ok": true
+    },
+    {
+      "name": "runner-unchanged:internal/execution/adapters/orcatransport/workspace_audit.go",
+      "ok": true
+    },
+    {
+      "name": "runner-unchanged:internal/execution/adapters/codex/remote_workspace.go",
+      "ok": true
+    },
+    {
+      "name": "runner-unchanged:internal/execution/workspace/audit.go",
+      "ok": true
+    },
+    {
+      "name": "runner-unchanged:internal/execution/workspace/inspect.go",
+      "ok": true
+    },
+    {
+      "name": "runner-unchanged:internal/execution/workspace/git.go",
+      "ok": true
+    },
+    {
+      "name": "runner-unchanged:internal/execution/process/host.go",
+      "ok": true
+    },
+    {
+      "name": "runner-unchanged:internal/execution/adapters/orcatransport/local_codex_history.go",
+      "ok": true
+    },
+    {
+      "name": "runner-unchanged:internal/execution/adapters/codex/remote_turn.go",
+      "ok": true
+    },
+    {
+      "name": "runner-unchanged:internal/execution/workflow/remote_models.go",
+      "ok": true
+    },
+    {
+      "name": "runner-unchanged:internal/execution/adapters/orcatransport/lifecycle.go",
+      "ok": true
+    },
+    {
+      "name": "runner-unchanged:internal/execution/adapters/codex/owner_checkpoint.go",
+      "ok": true
+    },
+    {
+      "name": "runner-unchanged:internal/application/verify_stopped.go",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:contract-vectors.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:derived-results.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:investigation-notes.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-agent-versions.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-agentSession-agents-result.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-active-after-cancel.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-active-after-close.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-active-before-observations.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-active-cancel-intent.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-active-cancel.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-active-close-intent.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-active-close.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-active-create.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-active-currentRequests.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-active-intent.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-active-summary.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-atomic-after-close.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-atomic-close-intent.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-atomic-close.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-atomic-create.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-atomic-handoffStatus.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-atomic-history.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-atomic-intent.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-atomic-observations.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-atomic-options.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-atomic-summary.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-blank-after-close.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-blank-close.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-blank-create.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-blank-handoffStatus.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-blank-history.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-blank-intent.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-blank-options.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-blank-snapshot.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-createSupport.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-modelCatalog.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-split-after-close.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-split-close-intent.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-split-close.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-split-create.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-split-handoffStatus.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-split-history.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-split-intent.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-split-observations.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-split-options.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-split-send-intent.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-split-send.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-codex-split-summary.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-negative-bad-create-fingerprint.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-negative-cleanup-after.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-negative-cleanup-before.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-negative-cleanup-close.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-negative-cleanup-intent.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-negative-close-extra-envelope.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-negative-history-after.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-negative-intent.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-negative-stale-send-fence.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-negative-summary.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-own-status-after.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-active-after-cancel.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-active-after-close.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-active-before-observations.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-active-cancel-intent.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-active-cancel.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-active-close-intent.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-active-close.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-active-create.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-active-currentRequests.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-active-intent.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-active-summary.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-atomic-after-close.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-atomic-close-intent.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-atomic-close.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-atomic-create.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-atomic-handoffStatus.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-atomic-history.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-atomic-intent.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-atomic-observations.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-atomic-options.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-atomic-summary.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-blank-after-close.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-blank-close.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-blank-create.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-blank-handoffStatus.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-blank-history.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-blank-intent.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-blank-options.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-blank-snapshot.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-createSupport.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-modelCatalog.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-split-after-close.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-split-close-intent.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-split-close.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-split-create.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-split-handoffStatus.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-split-history.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-split-intent.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-split-observations.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-split-options.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-split-send-intent.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-split-send.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-pi-split-summary.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-status.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-tabs-after.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-tabs-before.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-worktree-after-cleanup.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-worktree-before-cleanup.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-worktree-cleanup.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-worktree-create.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-worktree-git-after.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:local-worktree-git-verified.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:probe.cjs",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-agentSession-agents-result.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-active-after-cancel.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-active-after-close.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-active-before-observations.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-active-cancel-intent.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-active-cancel.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-active-close-intent.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-active-close.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-active-create.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-active-currentRequests.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-active-intent.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-active-summary.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-atomic-after-close.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-atomic-close-intent.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-atomic-close.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-atomic-create.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-atomic-currentRequests.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-atomic-handoffStatus.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-atomic-history.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-atomic-intent.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-atomic-observations.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-atomic-options.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-atomic-snapshot.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-atomic-summary.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-blank-after-close.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-blank-close.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-blank-create.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-blank-handoffStatus.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-blank-history.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-blank-intent.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-blank-options.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-blank-snapshot.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-createSupport.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-modelCatalog.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-split-after-close.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-split-close-intent.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-split-close.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-split-create.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-split-currentRequests.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-split-handoffStatus.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-split-history.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-split-intent.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-split-observations.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-split-options.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-split-send-intent.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-split-send.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-split-snapshot.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-codex-split-summary.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-git-shell-after.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-git-shell-send.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-hash-shell-after.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-hash-shell-send.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-negative-bad-create-fingerprint.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-negative-cleanup-after.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-negative-cleanup-before.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-negative-cleanup-close.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-negative-cleanup-intent.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-negative-close-extra-envelope.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-negative-history-after.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-negative-intent.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-negative-stale-send-fence.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-negative-summary.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-own-status-after.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-pi-createSupport.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-pi-modelCatalog.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-status.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-tabs-after.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-tabs-before.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-version-shell-after.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-version-shell-before.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-version-shell-send.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-worktree-after-cleanup.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-worktree-before-cleanup.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-worktree-cleanup.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:remote-worktree-create.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:source-identity.json",
+      "ok": true
+    },
+    {
+      "name": "original-evidence-unchanged:validation-results.json",
+      "ok": true
+    },
+    {
+      "name": "no-trailing-whitespace:docs/acceptance/orca-structured-agent-session-blocker-review.md",
+      "ok": true
+    },
+    {
+      "name": "no-trailing-whitespace:docs/acceptance/orca-structured-agent-session.md",
+      "ok": true
+    },
+    {
+      "name": "no-trailing-whitespace:docs/spec/orca-structured-agent-session.spec.md",
+      "ok": true
+    },
+    {
+      "name": "no-trailing-whitespace:docs/spec/orca-structured-agent-session.plan.md",
+      "ok": true
+    },
+    {
+      "name": "no-trailing-whitespace:docs/README.md",
+      "ok": true
+    },
+    {
+      "name": "no-trailing-whitespace:docs/orca-execution.md",
+      "ok": true
+    },
+    {
+      "name": "no-trailing-whitespace:docs/acceptance/README.md",
+      "ok": true
+    },
+    {
+      "name": "local-file-links",
+      "ok": true
+    },
+    {
+      "name": "initial-host-source-still-matches",
+      "ok": true
+    }
+  ],
+  "links_checked": 337,
+  "broken_links": [],
+  "source_files": 11,
+  "runner_files": 20,
+  "original_evidence_files_checked": 189,
+  "source_excerpts_checked": 17,
+  "passed": true,
+  "new_runtime_calls": 0,
+  "remote_pi_install": false,
+  "production_code_changed": false,
+  "production_qualification": false
+}

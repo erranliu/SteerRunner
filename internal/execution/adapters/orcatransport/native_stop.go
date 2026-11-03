@@ -16,6 +16,9 @@ const NativeStopDiagnostic = "Stopped the original Orca terminal; detached backg
 // Scope describes the frozen contract, including when its proof is unavailable.
 // The Run saves it as a contract fact, never as authority to resume or resend.
 func (l *Lifecycle) StopEvidenceScope() string {
+	if l.structured() {
+		return AgentSessionStopScope
+	}
 	if l.profile.Environment != "" && l.profileVersion != NativeRemoteProfileVersion && l.profileVersion != NativeProfileVersion {
 		return ""
 	}
@@ -28,6 +31,9 @@ func StopEvidenceScope(setup b.LifecycleSetup) (string, error) {
 		return "", err
 	}
 	l := p.(*Lifecycle)
+	if l.structured() {
+		return AgentSessionStopScope, l.validateStructured(setup.Snapshot)
+	}
 	if err = l.validate(setup.Snapshot); err != nil {
 		return "", err
 	}

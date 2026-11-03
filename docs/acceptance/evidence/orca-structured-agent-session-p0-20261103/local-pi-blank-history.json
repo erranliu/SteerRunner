@@ -1,0 +1,41 @@
+{
+  "id": "f2f829a5-0b14-48ad-a727-eeb89819dadc",
+  "ok": true,
+  "result": {
+    "ok": true,
+    "page": {
+      "sessionId": "oas_p0_3c55bdc7057e478db3b540f151603509",
+      "epoch": "7dfdac2d-9482-449e-bf86-c9c3a86618f2",
+      "direction": "tail",
+      "items": [],
+      "removedItemIds": [],
+      "submissions": [],
+      "window": {
+        "oldest": null,
+        "newest": null,
+        "nextCursor": {
+          "epoch": "7dfdac2d-9482-449e-bf86-c9c3a86618f2",
+          "sequence": 0
+        }
+      },
+      "liveCursor": {
+        "epoch": "7dfdac2d-9482-449e-bf86-c9c3a86618f2",
+        "sequence": 1
+      },
+      "hasOlder": false,
+      "hasNewer": false,
+      "latestTurn": null,
+      "actionablePromptIds": [],
+      "working": false,
+      "fence": 1,
+      "hostNow": 1793688658210,
+      "queuedMessages": [],
+      "queuePause": null,
+      "nextQueuedMessageId": null,
+      "backgroundTasks": null
+    }
+  },
+  "_meta": {
+    "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+  }
+}

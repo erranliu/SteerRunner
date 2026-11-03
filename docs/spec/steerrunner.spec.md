@@ -141,6 +141,14 @@ Orca 对接按[能力层长期设计](orca-capability-layer.spec.md)逐批收敛
 
 B0–B6 已完成能力迁移、生产接线、正式合同与保留例外同步；最终集成构建的双端开发及活动停止、真实离线核验和独立审计均通过，见[B6 验收](../acceptance/orca-native-rollout.md)。当前选定原生合同及未验证边界见[Orca 双端执行合同](../orca-execution.md)。显式 managed/audited、Pi/DSH 与旧记录仍有消费者，保持原 scope/资格，不能把首轮原生通过扩大到这些组合。
 
+### 待实施：本机 Orca Codex execute/1 结构化执行与 DSH 退役
+
+2026-11-03 用户确认首 PR 收窄为 [Spec](orca-structured-agent-session.spec.md) / [Plan](orca-structured-agent-session.plan.md)：仅本机 Orca Codex 新 execute/1 从 native session 创建开始使用结构化单消息正文，取得原 turn 完整结果；本 PR 同时移除 DSH 执行、专用历史/用量与恢复支持。其它 Orca Codex Workflow、Pi/远端、公共 terminal、非 Orca codex-app-server 和独立 parser 保持原合同。不修改或要求修改 Orca，不依赖未来上游能力。
+
+用户接受该新协议 `orca_agent_session` scope 在停止证据不足时明确 stop_status=unknown、resources_settled=false/未核实，离线不报通过。原完整业务结果仍可读，不以 close ok 宣称资源退出，不以清理未知抹去业务结果或伪造整体 completed；此限制不推广到其它组合，也不继承旧 terminal/helper 停止证明。首 PR 按所覆盖单组合的多行完整结果、活动停止和定向回归签收，不要求先完成四组合/audited 全量迁移。DSH 旧记录必要时明确 unsupported，不物理删除用户数据或历史 evidence；旧活动任务由原构建先排空。
+
+上述仅为已确认的待实施合同，[设计复审](../acceptance/orca-structured-agent-session-mvp-design-audit.md)不代表代码/当前能力已改变。最终 Codex/Pi 全量结构化及 helper/TUI 退役仍是后续方向；audited 实际模型、完整资源结算和远端 Pi 的未验/环境缺口不追认通过。
+
 ### 现行职责收口：权限资源与原完成证明
 
 2026-11-02 已按 [Spec](native-proof-boundaries.spec.md) / [Plan](native-proof-boundaries.plan.md)先设计审计后实施，见[验收](../acceptance/native-proof-boundaries.md)。Codex adapter 统一解释原权限包与冻结 profile 的匹配，application 不再扫描原生 sandbox 参数；adapter 负责原 owner 完成证明的适用性和读取，业务侧只接收事实并保留仓库/审计来源核验。要求原证明但缺失/无效时仍等待，不能用缓存或当前 HEAD 代替。

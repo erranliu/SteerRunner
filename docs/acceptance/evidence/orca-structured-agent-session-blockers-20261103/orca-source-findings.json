@@ -1,0 +1,236 @@
+{
+  "schema": "orca-blocker-source-review/v1",
+  "kind": "read-only installed source excerpts, not new runtime qualification",
+  "root": "C:/Users/lmas1/AppData/Local/Programs/orca/resources/app.asar.unpacked/out",
+  "files": [
+    {
+      "path": "shared/agent-session/lifecycle/agent-session-mutation-envelope.js",
+      "sha256": "e8447c0455617e7968221e346311a3435767f7a1a2a6c70f9c9b6dd2e71d0040"
+    },
+    {
+      "path": "shared/agent-session/lifecycle/agent-session-lease-adjudication.js",
+      "sha256": "b5331c05031d2e2627890d75bfc48852a521c20d455212982fdfa63cd02952db"
+    },
+    {
+      "path": "shared/rpc-contract/rpc-params-catalog.generated.js",
+      "sha256": "89e8aea93c30b75d26d498d17ea25c64ff1e68dfe1ec040b41f8e2033216a2aa"
+    },
+    {
+      "path": "shared/rpc-contract/structured-agent-session-params.js",
+      "sha256": "b4ad4443c92e700b115a29e3a8669487db7e493732f556e257cc7511ff5aa9d9"
+    },
+    {
+      "path": "shared/agent-session/lifecycle/agent-session-stop-capabilities.js",
+      "sha256": "e2ecc9b8316d0dfc42f0baec1e3767e374196012500ffee81437dd15cf5b4cbe"
+    },
+    {
+      "path": "shared/structured-agent-session-stop-join.js",
+      "sha256": "b2e18063b8e998aa382cd2a6535dce7ceac4557ef04f460630d24fd54401822f"
+    },
+    {
+      "path": "shared/agent-session/lifecycle/agent-session-turn-record.js",
+      "sha256": "f16abf80b878635df8332bc085ad435323ed406b8724999408b3db8ceefe544d"
+    },
+    {
+      "path": "shared/agent-session/options/structured-agent-session-option-view.js",
+      "sha256": "36f443f6bae48530022ad56918dc331111d707bf4b2f3c74f63f4d45d69a5e19"
+    },
+    {
+      "path": "shared/agent-session/journal/agent-session-journal-submission-schema.js",
+      "sha256": "6a7bf85e8a67964ba8bf800f47d2faa9ae2965a5f6cd437155aa59937f474993"
+    },
+    {
+      "path": "main/chunks/structured-agent-session-host-assembly-CMXzHER5.js",
+      "sha256": "6382c62a30dc3e9e6d98634c677c6ef415dc2acbf7bb1faaed858a7c62188fb4"
+    },
+    {
+      "path": "main/chunks/orcad-migration-source-retention-C-V3mc1G.js",
+      "sha256": "3dcb6e7cca7fcbbf311c95e0b887fcc34c49f4776a0b9f3f3f3db1da0c312049"
+    }
+  ],
+  "public_agent_session_methods": [
+    "agentSession.acknowledgeAttention",
+    "agentSession.agents",
+    "agentSession.cancel",
+    "agentSession.close",
+    "agentSession.commands",
+    "agentSession.continuationContext",
+    "agentSession.continueInterrupted",
+    "agentSession.conversationCommand",
+    "agentSession.conversationOutline",
+    "agentSession.create",
+    "agentSession.createSupport",
+    "agentSession.currentRequests",
+    "agentSession.ensure",
+    "agentSession.handoffStatus",
+    "agentSession.history",
+    "agentSession.hold",
+    "agentSession.item",
+    "agentSession.modelCatalog",
+    "agentSession.options",
+    "agentSession.queuedMessageDelete",
+    "agentSession.queuedMessageEditHold",
+    "agentSession.queuedMessageMove",
+    "agentSession.queuedMessageSend",
+    "agentSession.queuedMessageUpdate",
+    "agentSession.queuedMessagesResume",
+    "agentSession.readVisual",
+    "agentSession.regenerateName",
+    "agentSession.release",
+    "agentSession.rename",
+    "agentSession.respondToApproval",
+    "agentSession.respondToQuestion",
+    "agentSession.restartContinue",
+    "agentSession.restartResumable",
+    "agentSession.restartResumableDismiss",
+    "agentSession.restartResume",
+    "agentSession.reveal",
+    "agentSession.rewind",
+    "agentSession.send",
+    "agentSession.setOption",
+    "agentSession.sleepWorkspace",
+    "agentSession.subscribe",
+    "agentSession.subscribeAvailability",
+    "agentSession.subscribeStatus",
+    "agentSession.subscribeTurnCompletions",
+    "agentSession.threadGoal",
+    "agentSession.unsubscribe"
+  ],
+  "snippets": [
+    {
+      "name": "conversation-cancel",
+      "path": "main/chunks/structured-agent-session-host-assembly-CMXzHER5.js",
+      "offset": 130853,
+      "token": "function Ao(",
+      "length": 1300,
+      "snippet": "function Ao(e,t,n){if(n.scope){let{sessionId:r}=n.envelope;return Va(e,t,n.envelope,uo({...n,childWork:()=>e.readChildWork(r),acknowledgeStops:t=>e.publishChildWork(r,t),captureStops:t=>e.captureChildWorkStops(r,t.map(e=>e.providerId)),...n.taskId===void 0?{unlisted:{present:()=>e.childWorkIncomplete(r),stop:()=>e.stopAgent(r,{cause:`evict`,resting:!0})}}:{}}),$i(e,n.envelope))}let r=uo(n),{prompt:i}=n,a=!i&&n.turnId===void 0?jo(e,t,n.envelope,r):null;return wo(e,t,i?{envelope:n.envelope}:{...n,stoppedPrePrompt:a?.reached===!0,stoppedSend:a?.handedOver===!0},r,(e,t)=>i?go(e,{...n.turnId===void 0?{}:{turnId:n.turnId},prompt:i},{stop:t,interrupt:()=>r.run(e)}):t().then(({outcome:e})=>e))}function jo(e,t,n,r){let{store:i}=e.deps;return mo({store:i,callerKey:t.callerKey,envelope:n,plan:r,now:e.now})?e.acquireAborts.abort(n.sessionId,`stopped while starting`):null}function Mo(e,t,n){return Va(e,t,n.envelope,fo(n),$i(e,n.envelope))}async function No(e,n,r){let i=po(r),a=n.readsOptionsWithoutModel===!1&&r.key===`model`&&r.value===``;return Va(e,n,r.envelope,{...i,conversationWrite:!0,run:async i=>{let a=await t.Ot(e.deps,i,r,{readsWithoutModel:n.readsOptionsWithoutModel!==!1});return a.ok&&Oo(e,i,r),a},...a?{settledOutcome:e=>({status:`succeeded`,sessionId:r.envelope.sessionId,optionRes"
+    },
+    {
+      "name": "conversation-stop-implementation",
+      "path": "main/chunks/structured-agent-session-host-assembly-CMXzHER5.js",
+      "offset": 121127,
+      "token": "function wo(",
+      "length": 3800,
+      "snippet": "function wo(e,n,r,i,a){let{envelope:o,turnId:s}=r,{sessionId:c}=o,l,u=r.stoppedPrePrompt===!0,d=s===void 0?{}:{turnId:s},f=t=>e.deps.logger.warn(`ending the agent process on Stop failed`,{scope:`stop-child`,sessionId:c,operationId:o.clientOperationId,error:t}),p=async(e,t)=>{if(!t.marks){let t=await qa(e);return t.ok?{ok:!0,value:{settled:!1,turnId:null}}:t}let i=e.journal.queuedMessages.userStopInForce()?.sequence,a=e.journal.submissions().some(t=>t.fence===e.fence&&(t.handoverRecorded!==!0||t.handedOverAt!==void 0)&&(t.dispatchState===`pending`||t.dispatchState===`unknown`&&!t.recovered)&&(i===void 0||(t.submittedSequence??-1)>i)),o=await Ja(e,{event:{reason:`user-stop`,caller:n.callerKey,...t.eventTurnId===null?{}:{turnId:t.eventTurnId}},fence:e.fence});return o.ok?{ok:!0,value:{settled:(o.value.withdrawn?.length??+!!t.queued)>0||a||r.stoppedSend===!0,turnId:o.value.turnId}}:o},m=async(n,r,i,a)=>{let s=e.sessions.get(n.sessionId)?.child;if(r.reach===`withdraw`||!r.child||s!==r.child)return{ok:!0,value:{...d,cancelled:i}};let{child:u}=r,p=`child:${u.fence}:${u.generation??`unknown`}`,m=u.close?.stopOutcome,h=e=>{m&&e&&(m.root=e.root===`exited`?`exited`:m.root,m.workload=e.workload===`exited`?`exited`:m.workload,e.deathEvidenceKind&&(m.deathEvidenceKind=e.deathEvidenceKind))},g=async()=>{try{e.sessions.get(c)?.child===u&&await e.stopAgent(c,{recorded:`user-stop`,observeClose:h})}finally{let e=u.exitObservation?.().close;h({...e?.processExit,deathEvidenceKind:e?.deathEvidenceKind}),u.close&&(u.close.stopOutcome??=m)}};if(r.reach===`close`)return n.agent===`codex`?(m??={pause:`unconfirmed`,interrupt:`unconfirmed`,root:`unproven`,workload:`unproven`,errors:[]},l={ctx:n,stopChild:g,owed:{outcome:m,feedbackId:p,operationId:o.clientOperationId,noteFence:()=>e.deps.store.getRecord(c)?.lease.runtimeFence??n.fence,waitsForProvider:!1,stoppedAt:Date.now(),stopNote:t.Yr(o.clientOperationId)}}):await g().catch(f),{ok:!0,value:{...d,cancelled:i}};if(r.reach===`starting`)return await g(),{ok:!0,value:{...d,cancelled:!0}};let _=e.deps.store.getRecord(n.sessionId);return t.Vt({...n,failureTextContext:B(_)},{clientOperationId:o.clientOperationId,...d,acceptedStop:a,stopChild:g,onStopChildError:f,childReleased:()=>e.sessions.get(c)?.child!==u,endSession:e=>{m=e.outcome,e.feedbackId=p,l={owed:e,ctx:n,stopChild:g}},withdrewQueued:Promise.resolve(i),noteFence:()=>e.deps.store.getRecord(c)?.lease.runtimeFence??n.fence,opensSettle:!0})},h=async n=>{let i=e.acquireAborts.captureOperations(c),a=e.startFlights.get(c),s=xo(n,{child:e.sessions.get(n.sessionId)?.child??null,...d,endsSession:!0,stoppedPrePrompt:u||i.length>0||a!==void 0,stoppedSend:r.stoppedSend});if(!s)return{ok:!0,value:{...d,cancelled:!1}};let l=s.turnId!==null&&t.Hr(s.turnId)&&t.Kr(n.journal,s.turnId),f=await p(n,s);if(!f.ok)return f;for(let e of i)e(),u=!0;a&&(s.queued||s.reach===`withdraw`||s.reach===`starting`)&&a.abort();let h=f.value.turnId??s.turnId,g={turnId:h,turnScope:s.turnScope,previouslyStopped:l,...s.reach===`interrupt`&&(s.marks||s.turnId!==null)||f.value.settled?{requestNoteWrite:eo(n,h??o.clientOperationId,{kind:`status`,text:t.Fr},s.turnScope)}:{}};try{return await m(n,s,f.value.settled||u||a!==void 0,g)}catch(e){throw await $a(n,{turnId:f.value.turnId??(s.named?s.turnId:t.$r(n).activeTurnId()),operationId:o.clientOperationId},e),e}},g=Va(e,n,o,{...i,run:e=>a(e,async()=>({outcome:await h(e),endsSession:l!==void 0}))},Qi(e,o));return e.serialize(c,async()=>{if(l){let{owed:t,ctx:n,stopChild:r}=l;await So({...n,adapter:e.deps.adapter},t,r,t=>e.deps.logger.warn(`ending a stopped chat's provider session failed`,{scope:`chat-stop`,sessionId:c,error:t}))}}).catch(f),g}async function To(e,t){if(t===void 0)return e;let n,r=new Promise(e=>{n=setTimeout(()=>e(`timeout`),Math.max(0,t"
+    },
+    {
+      "name": "stop-settlement",
+      "path": "main/chunks/structured-agent-session-host-assembly-CMXzHER5.js",
+      "offset": 119442,
+      "token": "function So(",
+      "length": 1400,
+      "snippet": "function So(e,n,r,i){let a;try{n.waitsForProvider&&await e.adapter.awaitStoppedRequestEnd?.(e.sessionId,n.stoppedAt).catch(e=>{n.outcome?.errors.length===0&&n.outcome.errors.push(e),i(e)}),await r(),await n.stopNoteWrite?.catch(i)}catch(r){i(r),n.outcome?.errors.length===0&&n.outcome.errors.push(r),a=t.Qt(t.$r(e),e.journal),await n.stopNoteWrite?.catch(i),n.outcome||await Co(e,n.stopNote).catch(i)}finally{n.settled?.(a)}let o=n.outcome,s=o?.root===`exited`||o?.deathEvidenceKind===`kill-delivered`;if(o&&(o.errors.length>0||o.pause===`unconfirmed`||o.interrupt===`unconfirmed`||!s||o.workload!==`exited`)){let r=t.Yr(n.feedbackId??n.operationId);await e.journal.appendLifecycleBatch({settlementId:`stop-outcome:${n.operationId}`,fence:Math.max(e.fence,n.noteFence?.()??e.fence),mutations:[...g.Gn(r)===g.Gn(n.stopNote)?[]:[{kind:`tombstone`,identity:n.stopNote}],{kind:`item`,identity:r,turnScope:t.oh,body:{kind:`status`,tone:`warning`,...t.nl(g.vn(`cancelUnconfirmed`),{surface:`row`,stopNotice:o.pause===`unconfirmed`&&o.interrupt!==`unconfirmed`&&s&&o.workload===`exited`?`pauseUnconfirmed`:`stopUnconfirmed`})}}]})}}async function Co(e,n){if(!t.Bt(e))return;let r=g.Gn(n),i;if(e.journal.visitItemsWithLinkage((e,t,n,a)=>{e===r&&(i=a)}),i===void 0)return;let a={kind:`status`,...t.nl(g.vn(`cancelUnconfirmed`),{surface:`row`})},o=t.$r(e).activeTurnId(),s=o===null?null:t.Ir(e.journal,o),c=o=="
+    },
+    {
+      "name": "cancel-target-check",
+      "path": "main/chunks/structured-agent-session-host-assembly-CMXzHER5.js",
+      "offset": 104711,
+      "token": "function Da(",
+      "length": 520,
+      "snippet": "function Da(e,n){let r=t.$r(e);if(t.Lr(e.journal,r,n))return`late`;let i=r.activeTurnId(),a=e.journal.queuedMessages.userStopInForce();return a===null||Oa(e.journal,a)||t.Rr(a.event.turnId,i)?`unrecorded`:`repeat`}function Oa(e,t){return e.submissions().some(e=>e.dispatchState!==`rejected`&&e.acceptedSequence!==void 0&&e.acceptedSequence>t.sequence)}var ka=(ee.s-t.X)/2,Aa=t.Pf+1024;function ja(e,t,n,r){return Ea(e).reduce((e,t)=>t.messageId===r?e:e+Ma(t.body),Ma(t))>(n?ka:ka-Aa)?g.Fn(`agent_session_operation_invali"
+    },
+    {
+      "name": "targeted-stop-plan",
+      "path": "main/chunks/structured-agent-session-host-assembly-CMXzHER5.js",
+      "offset": 118843,
+      "token": "function xo(",
+      "length": 680,
+      "snippet": "function xo(e,n){let{child:r,turnId:i}=n,a=Da(e,i);if(a===`late`)return null;let o=e.journal.submissions().some(g.gn),s={child:r,turnId:t.zr(t.$r(e),i),named:i!==void 0,turnScope:t.$r(e).turnScope(),eventTurnId:n.endsSession?null:i??null,queued:o};if(r?.close)return{...s,reach:`close`,marks:o};if(r?.phase===`starting`)return{...s,reach:`starting`,marks:!0};let c=e.agent!==void 0&&e.agents.capabilities(e.agent)?.threadGoal===!0;return!r||i===void 0&&!n.stoppedSend&&!t.Bt(e)&&!c?o||n.stoppedPrePrompt?{...s,reach:`withdraw`,marks:!0}:null:{...s,reach:`interrupt`,marks:o||a===`unrecorded`}}async function So(e,n,r,i){let a;try{n.waitsForProvider&&await e.adapter.awaitStoppedRe"
+    },
+    {
+      "name": "provider-disposal",
+      "path": "main/chunks/structured-agent-session-host-assembly-CMXzHER5.js",
+      "offset": 226449,
+      "token": "function Tu(",
+      "length": 1100,
+      "snippet": "function Tu(e,t,n){let{adapter:r,logger:i}=e.deps;return!r.disposeSession&&!r.closeSession?Promise.resolve(!0):(e.deps.store.requireWritableRecord(t),pl(async()=>await(r.disposeSession??r.closeSession)?.call(r,t,n)===!0,e=>i.warn(`the agent's process exited, but its close did not finish cleanly`,{scope:`provider-close-after-exit`,sessionId:t,error:e})).catch(e=>(i.warn(`closing the agent's process did not prove it exited`,{scope:`provider-close`,sessionId:t,error:e}),!1)))}function Eu(e,t){let n=e.sessions.get(t)?.lastEndedChild,r=e.deps.store.getRecord(t);return n?.rootGone===!0&&r!==null&&Jc(r)&&r.lease.runtimeFence===n.fence}async function Du(e,t){let n=e.sessions.get(t)?.lastEndedChild;return!n||!Eu(e,t)?!1:(await Zc({store:e.deps.store,sessionId:t,expectedFence:n.fence,now:e.now(),...n.deathEvidenceKind?{deathEvidenceKind:n.deathEvidenceKind}:{},...n.reason?{exitReason:n.reason}:{}}).catch(n=>e.deps.logger.warn(`releasing an exited agent's lease failed`,{scope:`ended-child-lease-release`,sessionId:t,error:n})),Eu(e,t))}var Ou=`trusted-local:agent-start`;function ku(e,t,n){try{e."
+    },
+    {
+      "name": "lifetime-close",
+      "path": "main/chunks/structured-agent-session-host-assembly-CMXzHER5.js",
+      "offset": 243323,
+      "token": "function od(",
+      "length": 1800,
+      "snippet": "function od(e){let n=!1,{sessions:r,serialize:i}=e,a=()=>e.context().deps,o=t.ca(k.r(()=>a().logger)),s=(t,n)=>Ku(e.context(),t,n),c=async(t,n=!1)=>!await Du(e.context(),t)&&Ju({sessions:r,closeStatus:t=>{let n=a().store.getVisibleSessionTabIndex();e.closeStatus(t,{listed:!n.present||n.sessionIds.includes(t)})}},t,n),l={sessions:r,serialize:i,closeConversation:c,deps:a},u=e=>{let t=a().store.getConversation(e);return t!==null&&a().hasOpenDispatch?.(t)===!0},d=e=>a().adapter.holdsDispatch?.(e)===!0,f=async(e,t,n)=>{let i=r.get(e),o=Yu(l,e,i);i&&await Wu(a(),e,i.journal,{mark:`always`});let s=await t();o?.();try{await c(e)}catch(e){if(!n)throw e;n(e)}return s},p=async(n,c,l)=>{let u=()=>{let e=a().store.getConversation(n)?.location;return e?.workspaceId===c&&e.executionHostId===l},d=id(()=>e.context().runtimeState,n);if(u()&&a().store.getRecord(n)){let e=r.get(n)?.journal;e&&t.ri(e),d.abort()}let p=i(n,async()=>{if(!u())return null;o.forget(n);let t=a().store.getConversation(n);if(!t)return null;let i=t.currentFence,c=a().store.admittedSendCount(n);a().store.getRecord(n)&&d.abort();let l=r.get(n)?.child,p=a().adapter.hasOwnedAcquisition?.(n)===!0,m=await f(n,()=>nd({deps:a(),sessions:r,stopAgent:s,sessionId:n,fence:i,child:l,owned:p,now:()=>e.context().now()}),e=>a().logger.warn(`closing a stopped workspace chat handle failed`,{scope:`workspace-chat-close`,sessionId:n,error:e}));return{fence:a().store.getConversation(n)?.currentFence??i,stopped:m,admittedSends:c}});return d.settle({deps:a(),sessions:r,sessionId:n},await p)},m=new ed({sessions:r,serialize:i,now:()=>e.context().now(),isDisposed:()=>n,deliveryActive:e.deliveryActive,childWorkOpen:e.childWorkOpen,store:{getConversation:e=>a().store.getConversation(e),replacedRuntime:e=>a().store.replacedRuntime(e)},hasOpenDis"
+    },
+    {
+      "name": "lifetime-close-return",
+      "path": "main/chunks/structured-agent-session-host-assembly-CMXzHER5.js",
+      "offset": 246720,
+      "token": "close:(t,n,r)=>",
+      "length": 750,
+      "snippet": "close:(t,n,r)=>(r||Qu(e,t),i(t,async()=>{r&&Qu(e,t,r),o.forget(t),a().store.selectWritableRecord(t).kind!==`unreadable`&&e.context().runtimeState.acquireAborts.abort(t,`closed while starting`),await f(t,()=>s(t,{cause:n}))}))}}function sd(e){let t=e?g.zt(e.providerHandleChain):null;return t?{key:`session_id`,id:t.handle.nativeId}:void 0}function cd(e){let t=Zl(Vl(e.journal,e.request,{scope:e.scope,rowReplay:e.replaceNormalizedHistory===!1}),e.work),n=e.record?.currentFence,r=sd(e.record);return n===void 0?r?{...t,providerSession:r}:t:{...t,page:{...t.page,fence:n},...t.ok?{}:{fence:n},...r?{providerSession:r}:{}}}function ld(e,t){return e.id===t.id&&e.kind===t.kind&&e.description===t.description&&e.name===t.name&&e.state===t.state&&e.starte"
+    },
+    {
+      "name": "workspace-sleep",
+      "path": "main/chunks/structured-agent-session-host-assembly-CMXzHER5.js",
+      "offset": 354056,
+      "token": "async function zh(",
+      "length": 2800,
+      "snippet": "async function zh(e,t,n=!1){let r;try{r=e.deps.store.listConversations()}catch(n){return e.deps.logger.warn(`workspace chat inventory failed`,{scope:`workspace-chat-inventory`,workspaceId:t,error:n}),{stoppedSessionIds:[],failures:[{reason:`inventory-unavailable`}]}}let i=e=>e.workspaceId===t&&e.executionHostId===`local`,a=[...new Set([...r.filter(e=>i(e.location)).map(e=>e.sessionId),...e.tasks.pendingMembers(t,y.t)])],o=await Promise.allSettled(a.map(async r=>{let a=await e.lifetime.closeForWorkspaceSleep(r,t,y.t);return e.tasks.serialize(r,async()=>{let t=e.deps.store.getConversation(r);return!a||!t||!i(t.location)||t.currentFence!==a.fence||e.deps.store.admittedSendCount(r)!==a.admittedSends?null:a.stopped?Bh(e,r,!0,n):{stopped:!1,fence:t.currentFence}})})),s=[],c=[];for(let[t,n]of o.entries()){let r=a[t];n.status===`rejected`?(e.deps.logger.warn(`workspace chat stop receipt could not be decided`,{scope:`workspace-chat-receipt`,sessionId:r,error:n.reason}),c.push({sessionId:r,reason:`stop-unverifiable`})):n.value?.stopped?s.push(r):n.value&&e.deps.store.getConversation(r)?.currentFence===n.value.fence&&c.push({sessionId:r,reason:`stop-unverifiable`})}return c.length>0?{stoppedSessionIds:s,failures:c}:{stoppedSessionIds:s}}async function Bh(e,t,n,r){let i=e.deps.store.getRecord(t);if(!i){let n=e.deps.store.getConversation(t);return n?{stopped:!1,fence:n.currentFence}:null}if(!n)return{stopped:!1,fence:i.lease.runtimeFence};let a=n=>{let r=e.sessions.get(t);return!(r?.child||e.tasks.hasPendingAttach(t)||e.deliveryRunning(t)||e.childWorkIncomplete(t)||r?.journal.pendingSubmissions().length||e.deps.hasOpenDispatch?.(n))};if(!r)return a(i)?{stopped:!0}:null;let o=!1,s=e.deps.now?.()??Date.now();return await e.deps.store.transitionHandoff(t,e=>(o=a(e),o?{...e,sleptAt:s,updatedAt:s}:e)),o&&e.publishRecordNotes(t),o?{stopped:!0}:null}var Vh=class{deps;conversationCommands=new Ho(()=>this.mutationContext(),this);sessions=Mp({client:()=>this.clientDelivery,delivery:()=>this.conversationDelivery,opened:e=>this.queued.onOpened(e),logger:()=>this.deps.logger,now:()=>this.now()});queued=Lh(this.sessions,()=>this.mutationContext());clientDelivery=new Ap(this.sessions,()=>this.now(),()=>this.deps,this.queued,e=>this.restartResume.onAgentStarted(e),e=>this.backgroundTasks.publish(e),e=>this.backgroundTasks.read(e),e=>this.runtimeState?.startFlights.projectsStarting(e)??!1,this.sessions);subscribers=this.clientDelivery.subscribers;tasks=new Zo;runtimeState;startup;reconcileRestartLeases=()=>this.startup.reconcileRestartLeases();lifetime;conversationDelivery;eventRecovery;backgroundTasks;restartResume;constructor(e){this.deps=e,this.deps=e=k.a(e),this.clientDelivery.watchAtRestCommands(e.adapter),this.backgroundTasks=new ff(e,this.sessions,this.subscribers,e=>this."
+    },
+    {
+      "name": "codex-close",
+      "path": "main/chunks/structured-agent-session-host-assembly-CMXzHER5.js",
+      "offset": 432941,
+      "token": "close=async(e,t)=>",
+      "length": 680,
+      "snippet": "close=async(e,t)=>{let n=this.deps.sessions.get(e)?.connection??this.deps.acquisitions.get(e)?.window.connection;try{let t=this.settled(e,await ky(e,this.deps.sessions,this.deps.acquisitions,this.deps.onEvent,this.deps.logger,!0));if(t&&n?.closeResult?.killDelivered&&n.closeResult.root!==`exited`)throw new N(Error(`codex writer killed`),`kill-delivered`);if(t&&n?.processTreeUnproven)throw new N(Error(`codex app-server exited, but its process tree was not proven gone`));return t}finally{let e=n?.closeResult;t?.(e?{root:e.root,workload:e.tree??`unverifiable`}:void 0)}};forceClose=async e=>{let t=this.deps.sessions.get(e)?.connection??this.deps.acquisitions.get(e)?.window.co"
+    },
+    {
+      "name": "pi-close",
+      "path": "main/chunks/structured-agent-session-host-assembly-CMXzHER5.js",
+      "offset": 884046,
+      "token": "async close(e,t){let n=this.sessions.get(e)",
+      "length": 580,
+      "snippet": "async close(e,t){let n=this.sessions.get(e);if(!n)return!0;let r=await n.close(t);if(r.root!==`exited`&&!r.killDelivered)return!1;if(r.root!==`exited`||r.tree!==`exited`)throw new N(Error(`Pi writer stopped without descendant exit proof`),r.root===`exited`?`exit-observed`:`kill-delivered`);return!0}releaseAcquisition(e){return this.closeSession(e.sessionId)}hasOwnedAcquisition(e){return this.sessions.has(e)}forceCloseSession(e){return this.sessions.get(e)?.fail(Error(`Pi event sink failed`)),this.close(e,!1)}disposeSession=this.closeSession;acknowledgeSessionRelease(e){let "
+    },
+    {
+      "name": "ran-options-snapshot",
+      "path": "main/chunks/structured-agent-session-host-assembly-CMXzHER5.js",
+      "offset": 184100,
+      "token": "async function Ic(",
+      "length": 850,
+      "snippet": "async function Ic(e,n,r,i,a){let o=Ac(e,n,r),{store:s,logger:c,agents:l}=e.deps,u=s.getRecord(n);if(!o||!u)return;let{message:d,executed:f}=i,p=kc.get(o)?.reported,m=a&&p!==a.reported?p?.model:void 0,h=f?f.model??m:d?.model;if(kc.set(o,{...kc.get(o),owed:f&&!h?i:void 0}),!h)return;let g=f??{effort:d?.effort},_={};for(let[e,n]of Object.entries({...g,model:h}))n&&!t.kt(l,u.provider,{[e]:n})&&(_[e]=n);_.model&&await s.reviseSessionOptions(t.At,{sessionId:n,fence:o.fence,model:h,options:_,models:void 0,now:e.now()}).catch(e=>c.warn(`recording the options a turn ran failed`,{scope:`ran-options`,sessionId:n,error:e}))}function Lc(e){let{record:t}=e;if(t.lease.runtimeFence!==e.fence)throw Error(`agent_session_stale_fence`);if(!g.Yt(e.link.handle,t.provider)||e.link.mintedAtFence!==e.fence)throw Error(`agent_session_provider_handle_invalid`);if(t"
+    },
+    {
+      "name": "codex-normalized-turn",
+      "path": "main/chunks/structured-agent-session-host-assembly-CMXzHER5.js",
+      "offset": 402342,
+      "token": "function U_(",
+      "length": 1300,
+      "snippet": "function U_(e){if(e.primaryThreadId!==e.threadId)return P_;let n=R_(e.sessionId,e.turnId),r=B_({turnId:e.turnId,state:e.state,...e.outcome===void 0?{}:{outcome:e.outcome},userItemId:e.userItemId??z_(e.threadId,e.turnId),...e.startedAt===void 0?{}:{startedAt:e.startedAt},...e.requestedAt===void 0?{}:{requestedAt:e.requestedAt},...e.completedAt===void 0?{}:{completedAt:e.completedAt},...e.durationMs===void 0?{}:{durationMs:e.durationMs}}),i={lifecycle:!0,turnScope:t.oh,...e.state===`running`&&e.startedAt!==void 0?{observedAt:e.startedAt}:{}},a=P_;if(e.sink.tryReviseResolvedItem?a=e.sink.tryReviseResolvedItem(I_(n,r),e=>({identity:n,body:L_(e,n,r)}),i):e.sink.tryAppendItem?a=e.sink.tryAppendItem(n,r,i):e.sink.appendItem(n,r,i),!a.accepted)return a;let o={lifecycle:!0,...e.state===`running`?{coalescingKey:`turn-start:${e.sessionId}:${e.turnId}`}:{}};return e.sink.tryPublish?e.sink.tryPublish(o):(e.sink.publish(o),P_)}function K(e){return typeof e==`object`&&e?e:{}}function W_(e,t){let n=e[t];return typeof n==`string`&&n.length>0?n:null}var G_=[`httpConnectionFailed`,`responseStreamConnectionFailed`,`responseStreamDisconnected`,`responseTooManyFailedAttempts`];function K_(e,t){let n=u_(e);if(n?.error!==`unauthorized`&&!(n?.status===401&&G_.includes(n.error)))return null;let r=c_(e),i="
+    },
+    {
+      "name": "mutation-admission-intentionally-ignores-fence",
+      "path": "shared/agent-session/lifecycle/agent-session-mutation-envelope.js",
+      "offset": 2577,
+      "length": 1097,
+      "snippet": "/** Check fingerprint, then ledger replay, then lease. Ignore expectedRuntimeFence: writes name their target or are last-writer-wins, so unseen owner restarts do not refuse them; older hosts still check it. */\nfunction admitAgentSessionMutation(input) {\n    const { envelope, lease, ledger } = input;\n    const mismatch = agentSessionFingerprintConflict(envelope, input.hostFingerprint);\n    if (mismatch) {\n        return { decision: 'refused', refusal: mismatch };\n    }\n    if (ledger.decision === 'refused') {\n        return { decision: 'refused', refusal: agentSessionLedgerRefusal(envelope, ledger) };\n    }\n    if (ledger.decision === 'replay') {\n        return { decision: 'replay', row: ledger.row };\n    }\n    const currentLease = typeof lease === 'function' ? lease() : lease;\n    if (input.conversationWrite) {\n        return { decision: 'admit', row: ledger.row };\n    }\n    const leaseRefusal = refuseUnlessWriterAdmitted(currentLease);\n    if (leaseRefusal) {\n        return { decision: 'refused', refusal: leaseRefusal };\n    }\n    return { decision: 'admit', row: ledger.row };\n}\n"
+    },
+    {
+      "name": "public-item-normalized-only",
+      "path": "main/chunks/orcad-migration-source-retention-C-V3mc1G.js",
+      "offset": 2364565,
+      "token": "name:`agentSession.item`",
+      "length": 390,
+      "snippet": "name:`agentSession.item`,permission:`workspace`,params:n.Nd,handler:async(e,t)=>{let r=(await(await nI(t,e.sessionId)).journalSnapshot(e.sessionId)).items.find(t=>t.itemId===e.itemId);return r?{item:n.y(r,dPt)}:{item:null}}})],pPt=[X({name:`agentSession.continuationContext`,permission:`workspace`,params:n.nf,handler:async(e,t)=>(await nI(t,e.sessionId)).continuationContext(e)}),X({name:`"
+    },
+    {
+      "name": "public-close-wrapper",
+      "path": "main/chunks/orcad-migration-source-retention-C-V3mc1G.js",
+      "offset": 2346129,
+      "token": "name:`agentSession.close`",
+      "length": 390,
+      "snippet": "name:`agentSession.close`,permission:`workspace`,params:n.Fd,handler:async(e,t)=>{YF(t);let n=$F(t),r=bO(n,e.sessionId,t.runtime);try{let i=await SO(n,e.sessionId,r,t.runtime);if(i.error!==void 0)throw i.error}finally{await n.close(e.sessionId,`user-close`)}return{ok:!0}}}),uNt=t.L({sessionId:n.if,version:t.H().uuid(),cursor:t.I().int().nonnegative().optional()}).strict();function R8(e){"
+    },
+    {
+      "name": "public-cancel-route",
+      "path": "main/chunks/orcad-migration-source-retention-C-V3mc1G.js",
+      "offset": 2368039,
+      "token": "name:`agentSession.cancel`",
+      "length": 180,
+      "snippet": "name:`agentSession.cancel`,permission:`workspace`,params:n.Ed,handler:async(e,t)=>$F(t).cancel(rI(t),e)}),...JNt,lNt,X({name:`agentSession.sleepWorkspace`,permission:`workspace`,pa"
+    }
+  ]
+}

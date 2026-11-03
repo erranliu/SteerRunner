@@ -59,16 +59,12 @@ func TestUsagePreparedLocalCodexInitialization(t *testing.T) {
 }
 
 func TestUsageFullAccessTerminalProfileVersions(t *testing.T) {
-	for _, agent := range []string{"pi", "dsh"} {
+	for _, agent := range []string{"pi"} {
 		t.Run(agent, func(t *testing.T) {
 			snapshot := b.LifecycleSnapshot{Ref: b.ExecutionRef{RunID: "run", AttemptID: "attempt", WorkspacePath: `C:\work`, Agent: b.AgentSpec{Name: agent}}, Session: b.SessionContext{ProjectID: "project", ExecutionID: "run", AttemptID: "attempt"}, ResourceGeneration: "generation", ConfigurationDigest: "configuration"}
 			p := Profile{Executable: "orca", WaitTimeout: "1s", Terminal: &TerminalConfig{Agent: agent, ReceiptVersion: 4, AccessMode: "full_access", ExecutionID: "run", AttemptID: "attempt", Generation: "generation", SessionID: "runner-session", BundleSHA256: strings.Repeat("a", 64), EvidenceSHA256: strings.Repeat("b", 64)}}
 			state := State{Turns: []Turn{{Command: "command", Accepted: true, Prompt: "original input"}}}
 			expectedSession := p.Terminal.SessionID
-			if agent == "dsh" {
-				expectedSession = "native-dsh-session"
-				state.TerminalReadiness = &TerminalReceipt{NativeSessionID: expectedSession}
-			}
 			raw, _ := json.Marshal(state)
 			envelope, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{Purpose: b.ImplementationResourcePurpose, ImplementationKey: StateKey, CodecVersion: LocalStateVersion, ProjectID: "project", ExecutionID: "run", AttemptID: "attempt", Generation: "generation", ConfigDigest: "configuration"}, raw)
 			if err != nil {
@@ -95,7 +91,7 @@ func TestUsageFullAccessTerminalProfileVersions(t *testing.T) {
 }
 
 func TestUsageHistoricalBindingDoesNotGrantLaunchQualification(t *testing.T) {
-	for _, agent := range []string{"pi", "dsh"} {
+	for _, agent := range []string{"pi"} {
 		t.Run(agent, func(t *testing.T) {
 			s := b.LifecycleSnapshot{Ref: b.ExecutionRef{RunID: "run", AttemptID: "attempt", WorkspacePath: `C:\work`, Agent: b.AgentSpec{Name: agent}}, Session: b.SessionContext{ProjectID: "project", ExecutionID: "run", AttemptID: "attempt"}, ResourceGeneration: "generation", ConfigurationDigest: "configuration"}
 			// Historical usage needs its committed binding, not a newly launched

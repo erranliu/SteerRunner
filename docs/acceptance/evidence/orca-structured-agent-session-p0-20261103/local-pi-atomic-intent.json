@@ -1,0 +1,28 @@
+{
+  "runtime": "local",
+  "sessionId": "oas_p0_d557d5c470d5404595e1e0bbebe3ad9a",
+  "marker": "P0_OAS_LOCAL_PI_OK",
+  "params": {
+    "envelope": {
+      "sessionId": "oas_p0_d557d5c470d5404595e1e0bbebe3ad9a",
+      "clientOperationId": "1793688768850-4e6827f47bfa4d1b8fd94e828e5e3b2d",
+      "expectedRuntimeFence": null,
+      "payloadFingerprint": "cf6a6407eb56f1a00b87d857fd12e8340d4535eabf89d94c76d557175fdf90d6"
+    },
+    "worktree": "id:faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-oas-p0-20261103-local",
+    "agent": "pi",
+    "firstMessage": {
+      "clientMessageId": "1793688768849-bf747db253364b67a4af4255cbab4678",
+      "body": {
+        "kind": "message",
+        "role": "user",
+        "blocks": [
+          {
+            "type": "text",
+            "text": "This is an API input fidelity check. Do not use tools or read/write files. Reply exactly P0_OAS_LOCAL_PI_OK.\r\nLiteral path: docs\\spec\\example.md\r\n\r\nChinese: 中文; Unicode: 😀; quotes: \"x\"\r\n```text\r\na\\b\r\n```\r\n  "
+          }
+        ]
+      }
+    }
+  }
+}

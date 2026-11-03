@@ -1,0 +1,20 @@
+{
+  "id": "73633c20-1f8b-4061-ae62-e139c2a30f10",
+  "ok": true,
+  "result": {
+    "marker": {
+      "contract": "agent-session.current-requests.v1",
+      "sessionId": "oas_p0_9cd2c4200af14a9e888067cb5880640e",
+      "epoch": "4bd1021c-2a68-4a0f-9403-576796214dc2",
+      "publisher": "e4a7905e-086d-4aad-85ec-6b0d890abb65",
+      "revision": 1,
+      "owner": "e4a7905e-086d-4aad-85ec-6b0d890abb65:2",
+      "version": "3abab928-b43d-4033-8b2f-0d0b6f6cde65"
+    },
+    "json": "[]",
+    "nextCursor": null
+  },
+  "_meta": {
+    "runtimeId": "21d98aa2-d284-41f3-a6cc-42fb22d728a2"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "2aa25f5c-19de-42d8-9f82-fd015a7363c4",
+  "ok": true,
+  "result": {
+    "owner": "native",
+    "direction": null,
+    "phase": "idle",
+    "stage": null,
+    "operationId": null
+  },
+  "_meta": {
+    "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+  }
+}

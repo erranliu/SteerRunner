@@ -1,0 +1,40 @@
+{
+  "id": "5c76071f-f17d-44c1-a4f0-ea1ad6027d95",
+  "ok": true,
+  "result": {
+    "ok": true,
+    "replayed": false,
+    "fence": 1,
+    "cursor": {
+      "epoch": "49a278b4-d2c2-4c0e-8562-de2a16ebb557",
+      "sequence": 2
+    },
+    "value": {
+      "clientMessageId": "1793688970855-623edc9de2dc4923a4631124dab6f3ff",
+      "submission": {
+        "clientMessageId": "1793688970855-623edc9de2dc4923a4631124dab6f3ff",
+        "fence": 1,
+        "payloadFingerprint": "697ed503cc0e8fbe0e4aff97543d944eebc2d2cb5fca8253e1506c04cb685063",
+        "dispatchState": "pending",
+        "providerItemId": null,
+        "reason": null,
+        "submittedAt": 1793688971283,
+        "resolvedAt": null,
+        "submittedSequence": 2,
+        "handoverRecorded": true,
+        "acceptedSequence": 2,
+        "origin": "client",
+        "source": {
+          "kind": "user"
+        },
+        "options": {
+          "model": "gpt-6.1-sol",
+          "effort": "high"
+        }
+      }
+    }
+  },
+  "_meta": {
+    "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+  }
+}

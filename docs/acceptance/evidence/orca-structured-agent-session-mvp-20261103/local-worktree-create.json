@@ -1,0 +1,81 @@
+{
+  "id": "0cfe3e79-4d44-4719-bb3d-53b329c1e430",
+  "ok": true,
+  "result": {
+    "worktree": {
+      "id": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-oas-mvp-20261103-atomic",
+      "identity": {
+        "key": "wt2:local:97658796-1b5b-475e-8adb-9b8dcd35473b",
+        "executionHostId": "local",
+        "instanceId": "97658796-1b5b-475e-8adb-9b8dcd35473b"
+      },
+      "instanceId": "97658796-1b5b-475e-8adb-9b8dcd35473b",
+      "repoId": "faae3ad4-da24-4d6d-9698-d8931b893789",
+      "projectId": "github:erranliu/steerlinetest",
+      "hostId": "local",
+      "projectHostSetupId": "faae3ad4-da24-4d6d-9698-d8931b893789",
+      "creatorProvenance": {
+        "kind": "host"
+      },
+      "path": "C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-oas-mvp-20261103-atomic",
+      "head": "9d81d9c2652177faf6354d4e9f9f3aec79535d11",
+      "branch": "refs/heads/erranliu/sr-oas-mvp-20261103-atomic",
+      "isBare": false,
+      "isMainWorktree": false,
+      "displayName": "sr-oas-mvp-20261103-atomic",
+      "displayNameMode": "fixed",
+      "comment": "",
+      "linkedIssue": null,
+      "linkedPR": null,
+      "linkedLinearIssue": null,
+      "linkedLinearIssueWorkspaceId": null,
+      "linkedLinearIssueOrganizationUrlKey": null,
+      "linkedGitLabMR": null,
+      "linkedGitLabIssue": null,
+      "linkedBitbucketPR": null,
+      "linkedAzureDevOpsPR": null,
+      "linkedGiteaPR": null,
+      "linkedWorkItem": null,
+      "linkedTaskSourceContext": null,
+      "isArchived": false,
+      "isUnread": false,
+      "isPinned": false,
+      "sortOrder": 1793692259469,
+      "lastActivityAt": 1793692259468,
+      "createdAt": 1793692259468,
+      "cliProvenance": {
+        "kind": "created-by-cli",
+        "createdAt": 1793692254429
+      },
+      "baseRef": "refs/remotes/origin/main",
+      "workspaceStatus": "in-progress",
+      "parentWorktreeId": null,
+      "childWorktreeIds": [],
+      "lineage": null,
+      "workspaceLineage": null,
+      "git": {
+        "path": "C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-oas-mvp-20261103-atomic",
+        "head": "9d81d9c2652177faf6354d4e9f9f3aec79535d11",
+        "branch": "refs/heads/erranliu/sr-oas-mvp-20261103-atomic",
+        "isBare": false,
+        "isMainWorktree": false
+      }
+    },
+    "lineage": null,
+    "workspaceLineage": null,
+    "warnings": [],
+    "localBaseRefRefresh": {
+      "baseRef": "origin/main",
+      "localBranch": "main",
+      "status": "updated",
+      "ownerWorktreePath": "C:/Projects/SteerlineTest"
+    },
+    "catalogVersion": {
+      "epoch": "2c4d2bc8-3351-4957-8fc4-808acb956faa",
+      "sequence": 502
+    }
+  },
+  "_meta": {
+    "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+  }
+}

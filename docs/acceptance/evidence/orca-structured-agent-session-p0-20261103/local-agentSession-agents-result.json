@@ -1,0 +1,107 @@
+{
+  "id": "0b929b62-26fa-40b1-8e41-c19711d731e0",
+  "ok": true,
+  "result": {
+    "agents": [
+      {
+        "agent": "pi",
+        "capabilities": {
+          "rewind": false,
+          "compact": true,
+          "threadGoal": false,
+          "contextUsage": true,
+          "imagePrompts": true,
+          "steering": "inject",
+          "approvalEnforcement": "provider"
+        }
+      },
+      {
+        "agent": "codex",
+        "capabilities": {
+          "rewind": true,
+          "compact": true,
+          "threadGoal": true,
+          "contextUsage": true,
+          "imagePrompts": true,
+          "steering": "inject",
+          "approvalEnforcement": "provider"
+        }
+      },
+      {
+        "agent": "claude",
+        "capabilities": {
+          "rewind": true,
+          "compact": true,
+          "threadGoal": false,
+          "contextUsage": true,
+          "imagePrompts": true,
+          "steering": "inject",
+          "approvalEnforcement": "provider"
+        }
+      },
+      {
+        "agent": "grok",
+        "capabilities": {
+          "rewind": false,
+          "compact": true,
+          "threadGoal": false,
+          "contextUsage": true,
+          "imagePrompts": true,
+          "steering": "queue",
+          "approvalEnforcement": "orca"
+        }
+      },
+      {
+        "agent": "opencode",
+        "capabilities": {
+          "rewind": false,
+          "compact": true,
+          "threadGoal": false,
+          "contextUsage": true,
+          "imagePrompts": true,
+          "steering": "queue",
+          "approvalEnforcement": "orca"
+        }
+      },
+      {
+        "agent": "opencode2",
+        "capabilities": {
+          "rewind": false,
+          "compact": true,
+          "threadGoal": false,
+          "contextUsage": true,
+          "imagePrompts": true,
+          "steering": "queue",
+          "approvalEnforcement": "orca"
+        }
+      },
+      {
+        "agent": "omp",
+        "capabilities": {
+          "rewind": false,
+          "compact": true,
+          "threadGoal": false,
+          "contextUsage": true,
+          "imagePrompts": true,
+          "steering": "queue",
+          "approvalEnforcement": "orca"
+        }
+      },
+      {
+        "agent": "antigravity",
+        "capabilities": {
+          "rewind": false,
+          "compact": false,
+          "threadGoal": false,
+          "contextUsage": true,
+          "imagePrompts": true,
+          "steering": "queue",
+          "approvalEnforcement": "orca"
+        }
+      }
+    ]
+  },
+  "_meta": {
+    "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+  }
+}

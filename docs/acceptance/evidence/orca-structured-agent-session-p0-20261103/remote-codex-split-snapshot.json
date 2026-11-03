@@ -1,0 +1,277 @@
+{
+  "id": "d839e8f1-ba70-4941-bea0-17b8d23af23f",
+  "ok": true,
+  "result": {
+    "type": "snapshot",
+    "sessionId": "oas_p0_d783d07524884dc49fb4e096588199cb",
+    "page": {
+      "sessionId": "oas_p0_d783d07524884dc49fb4e096588199cb",
+      "epoch": "0e28e8e2-c9e5-4c8e-a543-f0e705c711bc",
+      "fence": 2,
+      "direction": "tail",
+      "items": [
+        {
+          "itemId": "orca:1793688975342-0e23a747f3734adc9357455dd535e979",
+          "revision": 0,
+          "body": {
+            "kind": "message",
+            "role": "user",
+            "blocks": [
+              {
+                "type": "text",
+                "text": "This is an API input fidelity check. Do not use tools or read/write files. Reply exactly P0_OAS_REMOTE_CODEX_OK.\r\nLiteral path: docs\\spec\\example.md\r\n\r\nChinese: 中文; Unicode: 😀; quotes: \"x\"\r\n```text\r\na\\b\r\n```\r\n  "
+              }
+            ]
+          },
+          "sequence": 4,
+          "observedAt": 1793688974406,
+          "turnScope": {
+            "kind": "thread"
+          }
+        },
+        {
+          "itemId": "legacy:codex:oas_p0_d783d07524884dc49fb4e096588199cb:turn-lifecycle%3A01a1a031-b450-78f0-945b-a28d178618fa",
+          "revision": 3,
+          "body": {
+            "kind": "turn",
+            "contextUsage": {
+              "used": {
+                "kind": "report",
+                "model": "unknown",
+                "usedTokens": 15557,
+                "windowTokens": 475000,
+                "percentage": 3,
+                "categories": [],
+                "capturedAt": 1793688984865
+              }
+            },
+            "turnId": "01a1a031-b450-78f0-945b-a28d178618fa",
+            "state": "completed",
+            "outcome": "success",
+            "userItemId": "orca:1793688975342-0e23a747f3734adc9357455dd535e979",
+            "startedAt": 1793688974710,
+            "requestedAt": 1793688974401,
+            "completedAt": 1793688985168,
+            "durationMs": 10729
+          },
+          "sequence": 5,
+          "observedAt": 1793688974710,
+          "turnScope": {
+            "kind": "thread"
+          }
+        },
+        {
+          "itemId": "codex:01a1a031-b33b-7281-b6e4-898df884afab:01a1a031-b450-78f0-945b-a28d178618fa:1",
+          "revision": 2,
+          "body": {
+            "kind": "message",
+            "role": "assistant",
+            "blocks": [
+              {
+                "type": "text",
+                "text": "P0_OAS_REMOTE_CODEX_OK"
+              }
+            ]
+          },
+          "sequence": 7,
+          "observedAt": 1793688984731,
+          "turnScope": {
+            "kind": "turn",
+            "turnItemId": "legacy:codex:oas_p0_d783d07524884dc49fb4e096588199cb:turn-lifecycle%3A01a1a031-b450-78f0-945b-a28d178618fa"
+          }
+        }
+      ],
+      "removedItemIds": [],
+      "submissions": [
+        {
+          "clientMessageId": "1793688975342-0e23a747f3734adc9357455dd535e979",
+          "fence": 2,
+          "payloadFingerprint": "6ef92a0633b2057496844c36f8b704b46c95ecd977927ea9d1277ae85a9c77ce",
+          "dispatchState": "accepted",
+          "providerItemId": "codex:01a1a031-b33b-7281-b6e4-898df884afab:01a1a031-b450-78f0-945b-a28d178618fa:0",
+          "reason": null,
+          "submittedAt": 1793688973847,
+          "resolvedAt": 1793688983181,
+          "submittedSequence": 2,
+          "handoverRecorded": true,
+          "acceptedSequence": 2,
+          "origin": "client",
+          "source": {
+            "kind": "user"
+          },
+          "options": {
+            "model": "gpt-6.1-sol",
+            "effort": "high"
+          },
+          "handedOverAt": 1793688974406
+        }
+      ],
+      "window": {
+        "oldest": {
+          "epoch": "0e28e8e2-c9e5-4c8e-a543-f0e705c711bc",
+          "sequence": 4
+        },
+        "newest": {
+          "epoch": "0e28e8e2-c9e5-4c8e-a543-f0e705c711bc",
+          "sequence": 7
+        },
+        "nextCursor": {
+          "epoch": "0e28e8e2-c9e5-4c8e-a543-f0e705c711bc",
+          "sequence": 4
+        }
+      },
+      "liveCursor": {
+        "epoch": "0e28e8e2-c9e5-4c8e-a543-f0e705c711bc",
+        "sequence": 10
+      },
+      "hasOlder": false,
+      "hasNewer": false,
+      "latestTurn": {
+        "itemId": "legacy:codex:oas_p0_d783d07524884dc49fb4e096588199cb:turn-lifecycle%3A01a1a031-b450-78f0-945b-a28d178618fa",
+        "observedAt": 1793688974710,
+        "turn": {
+          "contextUsage": {
+            "used": {
+              "kind": "report",
+              "model": "unknown",
+              "usedTokens": 15557,
+              "windowTokens": 475000,
+              "percentage": 3,
+              "categories": [],
+              "capturedAt": 1793688984865
+            }
+          },
+          "turnId": "01a1a031-b450-78f0-945b-a28d178618fa",
+          "state": "completed",
+          "outcome": "success",
+          "userItemId": "orca:1793688975342-0e23a747f3734adc9357455dd535e979",
+          "startedAt": 1793688974710,
+          "requestedAt": 1793688974401,
+          "completedAt": 1793688985168,
+          "durationMs": 10729
+        }
+      },
+      "actionablePromptIds": [],
+      "working": false
+    },
+    "fence": 2,
+    "hostNow": 1793688988450,
+    "activity": null,
+    "currentRequests": {
+      "contract": "agent-session.current-requests.v1",
+      "sessionId": "oas_p0_d783d07524884dc49fb4e096588199cb",
+      "epoch": "0e28e8e2-c9e5-4c8e-a543-f0e705c711bc",
+      "publisher": "01507b4d-a6ba-4a50-8d0d-81309073247b",
+      "revision": 1,
+      "owner": "01507b4d-a6ba-4a50-8d0d-81309073247b:2",
+      "version": "7693790a-9387-42e1-a3cc-d2f4eced5f00"
+    },
+    "commands": [
+      {
+        "name": "model",
+        "kind": "command",
+        "description": "Choose the model"
+      },
+      {
+        "name": "effort",
+        "kind": "command",
+        "description": "Choose reasoning effort"
+      },
+      {
+        "name": "clear",
+        "kind": "command",
+        "description": "Clear conversation context"
+      },
+      {
+        "name": "compact",
+        "kind": "command",
+        "description": "Compact conversation context"
+      },
+      {
+        "name": "goal",
+        "kind": "command",
+        "description": "Set or view the goal"
+      },
+      {
+        "name": "documents:documents",
+        "kind": "skill",
+        "path": "C:\\Users\\Administrator\\.codex\\plugins\\cache\\openai-primary-runtime\\documents\\26.1026.10807\\skills\\documents\\SKILL.md",
+        "description": "Create and edit Word and Google Docs files"
+      },
+      {
+        "name": "orca-native-chat:orca-chat-visuals",
+        "kind": "skill",
+        "path": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\orca\\resources\\native-chat-visuals\\skills\\orca-chat-visuals\\SKILL.md",
+        "description": "Show a chart, diagram, table, report or mockup inline in this Orca chat as an HTML page. Use when a visual would help the user understand your answer. Only available when the ORCA_CHAT_SCRATCH_DIR environment variable is set."
+      },
+      {
+        "name": "pdf:pdf",
+        "kind": "skill",
+        "path": "C:\\Users\\Administrator\\.codex\\plugins\\cache\\openai-primary-runtime\\pdf\\26.1026.10807\\skills\\pdf\\SKILL.md",
+        "description": "Read, create, render, and verify PDF files"
+      },
+      {
+        "name": "presentations:Presentations",
+        "kind": "skill",
+        "path": "C:\\Users\\Administrator\\.codex\\plugins\\cache\\openai-primary-runtime\\presentations\\26.1026.10807\\skills\\presentations\\SKILL.md",
+        "description": "Create polished PowerPoint and Google Slides decks"
+      },
+      {
+        "name": "spreadsheets:Spreadsheets",
+        "kind": "skill",
+        "path": "C:\\Users\\Administrator\\.codex\\plugins\\cache\\openai-primary-runtime\\spreadsheets\\26.1026.10807\\skills\\spreadsheets\\SKILL.md",
+        "description": "Create and edit spreadsheet or Google Sheets-ready files"
+      },
+      {
+        "name": "spreadsheets:excel-live-control",
+        "kind": "skill",
+        "path": "C:\\Users\\Administrator\\.codex\\plugins\\cache\\openai-primary-runtime\\spreadsheets\\26.1026.10807\\skills\\excel-live-control\\SKILL.md",
+        "description": "Control an open Microsoft Excel workbook using Microsoft Excel desktop app live control"
+      },
+      {
+        "name": "template-creator:template-creator",
+        "kind": "skill",
+        "path": "C:\\Users\\Administrator\\.codex\\plugins\\cache\\openai-primary-runtime\\template-creator\\26.1026.10807\\skills\\template-creator\\SKILL.md",
+        "description": "Create or update personal reference-backed templates"
+      },
+      {
+        "name": "imagegen",
+        "kind": "skill",
+        "path": "C:\\Users\\Administrator\\AppData\\Roaming\\orca\\codex-accounts\\0fe4721f-dcad-47f6-a9a6-a23b7a863b25\\home\\skills\\.system\\imagegen\\SKILL.md",
+        "description": "Generate or edit images for websites, games, and more"
+      },
+      {
+        "name": "openai-docs",
+        "kind": "skill",
+        "path": "C:\\Users\\Administrator\\AppData\\Roaming\\orca\\codex-accounts\\0fe4721f-dcad-47f6-a9a6-a23b7a863b25\\home\\skills\\.system\\openai-docs\\SKILL.md",
+        "description": "OpenAI and Codex docs for models, skills, tasks, and setup"
+      },
+      {
+        "name": "review-agent",
+        "kind": "skill",
+        "path": "C:\\Users\\Administrator\\AppData\\Roaming\\orca\\codex-accounts\\0fe4721f-dcad-47f6-a9a6-a23b7a863b25\\home\\skills\\.system\\review-agent\\SKILL.md",
+        "description": "Find actionable bugs in code changes"
+      },
+      {
+        "name": "skill-creator",
+        "kind": "skill",
+        "path": "C:\\Users\\Administrator\\AppData\\Roaming\\orca\\codex-accounts\\0fe4721f-dcad-47f6-a9a6-a23b7a863b25\\home\\skills\\.system\\skill-creator\\SKILL.md",
+        "description": "Create or update a skill"
+      },
+      {
+        "name": "skill-installer",
+        "kind": "skill",
+        "path": "C:\\Users\\Administrator\\AppData\\Roaming\\orca\\codex-accounts\\0fe4721f-dcad-47f6-a9a6-a23b7a863b25\\home\\skills\\.system\\skill-installer\\SKILL.md",
+        "description": "Install curated skills from openai/skills or other repos"
+      }
+    ],
+    "queuedMessages": [],
+    "queuePause": null,
+    "nextQueuedMessageId": null,
+    "backgroundTasks": null
+  },
+  "_meta": {
+    "runtimeId": "21d98aa2-d284-41f3-a6cc-42fb22d728a2"
+  },
+  "streaming": true
+}

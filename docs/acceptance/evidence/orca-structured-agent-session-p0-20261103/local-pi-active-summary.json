@@ -1,0 +1,82 @@
+{
+  "label": "local-pi-active",
+  "sessionId": "oas_p0_b3fa905bcd63466197ab8cf6231b1b9e",
+  "before": {
+    "fence": 2,
+    "working": true,
+    "turn": {
+      "turnId": "p:oas_p0_b3fa905bcd63466197ab8cf6231b1b9e:run%3Aa6d8e6cd-af56-4b3e-9bdc-3b66e5bf288b%3A1",
+      "state": "running",
+      "userItemId": "orca:1793688882893-8b73c36f89084e6b969a52c06995e401",
+      "startedAt": 1793688884453,
+      "requestedAt": 1793688884437
+    }
+  },
+  "cancel": {
+    "id": "a8d7a19b-c32d-49a9-b490-e6e91c976c4e",
+    "ok": true,
+    "result": {
+      "ok": true,
+      "replayed": false,
+      "fence": 2,
+      "cursor": {
+        "epoch": "48c0ebb3-fa7f-4d83-ad59-77df61aea849",
+        "sequence": 8
+      },
+      "value": {
+        "turnId": "p:oas_p0_b3fa905bcd63466197ab8cf6231b1b9e:run%3Aa6d8e6cd-af56-4b3e-9bdc-3b66e5bf288b%3A1",
+        "cancelled": true
+      }
+    },
+    "_meta": {
+      "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+    }
+  },
+  "afterCancel": {
+    "fence": 2,
+    "working": false,
+    "turn": {
+      "itemId": "legacy:pi:oas_p0_b3fa905bcd63466197ab8cf6231b1b9e:turn-lifecycle%3Ap%3Aoas_p0_b3fa905bcd63466197ab8cf6231b1b9e%3Arun%253Aa6d8e6cd-af56-4b3e-9bdc-3b66e5bf288b%253A1",
+      "observedAt": 1793688884453,
+      "turn": {
+        "contextUsage": {
+          "window": {
+            "tokens": 1048576,
+            "capturedAt": 1793688884863
+          },
+          "used": {
+            "kind": "report",
+            "model": "openrouter/deepseek/deepseek-v4.1-flash",
+            "usedTokens": 2858,
+            "windowTokens": 1048576,
+            "percentage": 0.27256011962890625,
+            "categories": [],
+            "capturedAt": 1793688884858
+          }
+        },
+        "turnId": "p:oas_p0_b3fa905bcd63466197ab8cf6231b1b9e:run%3Aa6d8e6cd-af56-4b3e-9bdc-3b66e5bf288b%3A1",
+        "state": "interrupted",
+        "outcome": "cancellation",
+        "userItemId": "orca:1793688882893-8b73c36f89084e6b969a52c06995e401",
+        "startedAt": 1793688884453,
+        "requestedAt": 1793688884437,
+        "completedAt": 1793688884868
+      }
+    },
+    "backgroundTasks": null
+  },
+  "close": {
+    "id": "81cc97d5-912a-4fbe-9ff3-9e076a9b2b91",
+    "ok": true,
+    "result": {
+      "ok": true
+    },
+    "_meta": {
+      "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+    }
+  },
+  "afterClose": {
+    "fence": 3,
+    "working": false
+  }
+}

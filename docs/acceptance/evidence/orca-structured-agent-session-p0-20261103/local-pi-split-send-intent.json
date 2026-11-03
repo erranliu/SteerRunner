@@ -1,0 +1,22 @@
+{
+  "envelope": {
+    "sessionId": "oas_p0_d3bbbda92ade431a8fa7c9137f8aa97f",
+    "clientOperationId": "1793688973202-5d9af8918e86432d8c07cf9a1876d426",
+    "expectedRuntimeFence": 1,
+    "payloadFingerprint": "b8c1925683b1ff6727c6134d2e705df181235d680eee7bd6cfa6575216957f42"
+  },
+  "body": {
+    "kind": "message",
+    "role": "user",
+    "blocks": [
+      {
+        "type": "text",
+        "text": "This is an API input fidelity check. Do not use tools or read/write files. Reply exactly P0_OAS_LOCAL_PI_OK.\r\nLiteral path: docs\\spec\\example.md\r\n\r\nChinese: 中文; Unicode: 😀; quotes: \"x\"\r\n```text\r\na\\b\r\n```\r\n  "
+      }
+    ]
+  },
+  "selection": {
+    "model": "openrouter/deepseek/deepseek-v4.1-flash",
+    "effort": "high"
+  }
+}

@@ -6,14 +6,12 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
-	"io"
 	"os"
 	"reflect"
 	"testing"
 
 	"github.com/erranliu/SteerRunner/internal/usage/api"
 	"github.com/erranliu/SteerRunner/internal/usage/parsers"
-	"github.com/klauspost/compress/zstd"
 )
 
 // An independent raw-file oracle, not the production parser or normalization.
@@ -28,17 +26,6 @@ func readLocalTerminalControl(t *testing.T, file string, b parsers.Binding) loca
 	sum := sha256.Sum256(raw)
 	control := localNativeControl{SHA256: hex.EncodeToString(sum[:]), Bytes: len(raw), Responses: map[string]api.Tokens{}}
 	decoded := raw
-	if b.Agent == "dsh" {
-		decoder, e := zstd.NewReader(bytes.NewReader(raw), zstd.WithDecoderMaxMemory(256<<20))
-		if e != nil {
-			t.Fatal(e)
-		}
-		defer decoder.Close()
-		decoded, e = io.ReadAll(io.LimitReader(decoder, (256<<20)+1))
-		if e != nil || len(decoded) > 256<<20 {
-			t.Fatal("native decompression", e)
-		}
-	}
 	commands := map[string]parsers.Command{}
 	matched := map[string]bool{}
 	replies := map[string]string{}
@@ -84,17 +71,6 @@ func readLocalTerminalControl(t *testing.T, file string, b parsers.Binding) loca
 				Content json.RawMessage            `json:"content"`
 				Usage   map[string]json.RawMessage `json:"usage"`
 			} `json:"message"`
-			Data struct {
-				ID      string          `json:"id"`
-				Content json.RawMessage `json:"content"`
-				Source  struct {
-					Kind string `json:"kind"`
-				} `json:"source"`
-				Message struct {
-					ID string `json:"id"`
-				} `json:"message"`
-				Usage map[string]json.RawMessage `json:"usage"`
-			} `json:"data"`
 		}
 		if json.Unmarshal(scanner.Bytes(), &r) != nil {
 			t.Fatal("invalid native JSONL")
@@ -102,9 +78,6 @@ func readLocalTerminalControl(t *testing.T, file string, b parsers.Binding) loca
 		if r.Type == "session" {
 			headerCount++
 			wantVersion := 3
-			if b.Agent == "dsh" {
-				wantVersion = 4
-			}
 			if r.ID != b.SessionID || parsers.NormalizePath(r.CWD) != parsers.NormalizePath(b.CWD) || r.Version != wantVersion {
 				t.Fatal("foreign native session header")
 			}
@@ -112,9 +85,6 @@ func readLocalTerminalControl(t *testing.T, file string, b parsers.Binding) loca
 		uid, prompt := "", ""
 		if b.Agent == "pi" && r.Type == "message" && r.Message.Role == "user" {
 			uid, prompt = r.ID, textContent(r.Message.Content)
-		}
-		if b.Agent == "dsh" && r.Type == "user/message" && r.Data.Source.Kind != "runtime-context" {
-			uid, prompt = r.Data.ID, textContent(r.Data.Content)
 		}
 		if uid != "" {
 			hash := sha256.Sum256([]byte(prompt))
@@ -135,10 +105,7 @@ func readLocalTerminalControl(t *testing.T, file string, b parsers.Binding) loca
 		if b.Agent == "pi" && r.Type == "message" && r.Message.Role == "assistant" {
 			response, usage = r.ID, r.Message.Usage
 		}
-		if b.Agent == "dsh" && r.Type == "assistant/message" {
-			response, usage = r.Data.Message.ID, r.Data.Usage
-		}
-		isAssistant := b.Agent == "pi" && r.Type == "message" && r.Message.Role == "assistant" || b.Agent == "dsh" && r.Type == "assistant/message"
+		isAssistant := b.Agent == "pi" && r.Type == "message" && r.Message.Role == "assistant"
 		if !isAssistant {
 			continue
 		}
@@ -148,21 +115,7 @@ func readLocalTerminalControl(t *testing.T, file string, b parsers.Binding) loca
 		if current == "" || response == "" {
 			t.Fatal("unowned native usage")
 		}
-		if b.Agent == "dsh" {
-			found := false
-			for _, c := range b.Commands {
-				if c.ID == current {
-					found = r.Seq > c.InputSeq && (c.EndSeq == 0 || r.Seq <= c.EndSeq)
-				}
-			}
-			if !found {
-				t.Fatal("native usage outside command sequence range")
-			}
-		}
 		keys := []string{"input", "cacheRead", "cacheWrite", "output", "reasoning", "totalTokens"}
-		if b.Agent == "dsh" {
-			keys = []string{"inputTokens", "cacheReadTokens", "cacheWriteTokens", "outputTokens", "reasoningTokens", "totalTokens"}
-		}
 		counters := map[string]*int64{}
 		for _, key := range keys {
 			var value *int64
