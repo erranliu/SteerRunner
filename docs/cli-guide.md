@@ -216,4 +216,4 @@ Workflow 能力/状态机定义：[统一能力与边界](workflows/README.md) �
 
 本机受管 Codex 的 `stop_evidence_scope=orca_local_codex_resources` 包括原业务/控制终端、helper 与 app-server 原根进程。保留原 helper 的协作停止、Job 清理及精确身份核验；签名退出文件、control Closed 和 pending reader 响应不再决定停止成功。该范围不证明全部后代进程退出，也不撤销宿主登录。部分资源仍活或身份未知时保持 unknown；原 stop 可能已调用后只读对账，不重复 close，也不接受新 request_id 替换未解决的 stop。
 
-普通 service stop 只脱离观察。离线 verify-stopped 即使看到已保存 stopped，仍重新查询本范围原资源；不写 DB 或原 shutdown 回执。直接 Codex、Pi/DSH 与原生远端的范围保持。当前源码的实现、验证与外部集成限制见[专项验收](acceptance/orca-local-codex-stop-simplification.md)。
+普通 service stop 只脱离观察。离线 verify-stopped 不把 stopped 标签当作资源证明：orca_terminal 范围可使用既有、已持久化且绑定原 Run/input、attempt/generation、runtime/worktree/terminal/incarnation 的 confirmed 停止回执（Stopped、WorkerAbsent 与 confirmed progress 均须齐全）。该原终端的停止事实不因后续 Orca 重启、断线或工作区移除失效；停止对账也只重放原确认，不再次关闭终端。缺失、accepted/unknown、身份不符或未完成操作仍须查询原资源；不写 DB 或原 shutdown 回执，不把缺失工作区本身当作停止证明。直接 Codex、Pi/DSH 与原生远端的证明范围保持，不扩展为后台进程或凭据已清理。当前源码的实现、验证与外部集成限制见[专项验收](acceptance/orca-local-codex-stop-simplification.md)。

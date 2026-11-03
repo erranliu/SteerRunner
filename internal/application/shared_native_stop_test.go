@@ -380,3 +380,40 @@ func TestSharedNativeStopQueuePreservesFirstDispatch(t *testing.T) {
 		})
 	}
 }
+
+// Exercise the real adapter stop and production commit before losing the host.
+func TestSharedNativeConfirmedStopSurvivesOriginalHostLoss(t *testing.T) {
+	for _, environment := range []string{"", "paired-worker"} {
+		t.Run(environment, func(t *testing.T) {
+			e, w, wire, _, id := sharedNativeEngine(t, environment)
+			r := e.runs[id]
+			response := e.Handle("stop", id, "", "", "", 0, false, &contracts.Request{Protocol: contracts.Protocol, RequestID: "original-stop", Input: canonical(contracts.RevisionInput{ExpectedRevision: r.Revision})})
+			if !response.OK {
+				t.Fatal(response)
+			}
+			e.stopRun(id, w, w.port)
+			stopped := e.runs[id].Clone()
+			if !confirmedOrcaTerminalStop(stopped, "orca_terminal") || wire.closes != 1 {
+				t.Fatal("native stop did not persist usable proof", stopped.View())
+			}
+			before := canonical(stopped)
+			wire.mode = "query-failed"
+			proof := VerifyStopped(context.Background(), e.dir, []*runstate.Record{stopped})
+			if !proof.ResourcesSettled || len(proof.Runs) != 1 || proof.Runs[0].StopEvidenceScope != "orca_terminal" || wire.closes != 1 || wire.sends != 0 {
+				t.Fatal("lost confirmed stop or widened its scope", proof)
+			}
+			if string(before) != string(canonical(stopped)) {
+				t.Fatal("verification rewrote original stop")
+			}
+			for _, intent := range stopped.Intents {
+				if intent.Request.Operation.Action != string(b.LifecycleStopExecution) {
+					continue
+				}
+				replay, _, err := w.port.Reconcile(context.Background(), intent.Request.Clone())
+				if err != nil || replay.Disposition != b.OperationConfirmed || !replay.State.Stopped {
+					t.Fatal("confirmed stop reconciliation queried lost host", replay, err)
+				}
+			}
+		})
+	}
+}

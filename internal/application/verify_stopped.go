@@ -37,7 +37,9 @@ func VerifyStopped(ctx context.Context, dir string, runs []*runstate.Record) con
 			return process.NewServiceFacts().Probe(id).State == "absent"
 		})
 		if scopeErr != nil || scope != "" && (r.Snapshot.Ref.External.Kind != "" || unknown(r)) {
-			settled = false // Verify the original inventory, not a saved status label.
+			// A status label alone is insufficient. Prefer a committed receipt
+			// of the exact terminal stop; unresolved resources still need probes.
+			settled = scopeErr == nil && confirmedOrcaTerminalStop(r, scope)
 		}
 		probeErr := scopeErr
 		if scopeErr == nil && !settled && r.ID != "" && r.InputDigest != "" && r.Request.Execution.Adapter == "orca-terminal" && r.Snapshot.Ref.RunID == r.ID && r.Snapshot.Session.ExecutionID == r.ID && r.Snapshot.ConfigurationDigest == r.InputDigest {
@@ -62,6 +64,24 @@ func VerifyStopped(ctx context.Context, dir string, runs []*runstate.Record) con
 		result.Runs = append(result.Runs, v)
 	}
 	return result
+}
+
+func confirmedOrcaTerminalStop(r *runstate.Record, scope string) bool {
+	if scope != "orca_terminal" || r.StopStatus != "stopped" || r.PendingStop != "" || r.PendingResume != "" || unknown(r) ||
+		r.ID == "" || r.InputDigest == "" || r.Snapshot.Ref.RunID != r.ID ||
+		r.Snapshot.Session.ExecutionID != r.ID || r.Snapshot.ConfigurationDigest != r.InputDigest {
+		return false
+	}
+	for n := len(r.Intents) - 1; n >= 0; n-- {
+		i := r.Intents[n]
+		if i.Request.Operation.Action == string(b.LifecycleStopExecution) {
+			_, ok := orca.ConfirmedTerminalStopReceipt(i.Request, r.Snapshot)
+			return ok && i.Request.Operation.Status == b.OperationConfirmed && i.Receipt != nil &&
+				i.Receipt.ValidateFor(i.Request) == nil && i.Receipt.Disposition == b.OperationConfirmed &&
+				i.Receipt.State.Stopped && i.Receipt.State.WorkerAbsent
+		}
+	}
+	return false
 }
 
 func stoppedRecord(r *runstate.Record, absent func(*b.ProcessIdentity) bool) bool {
