@@ -171,6 +171,9 @@ func (h *sharedNativeWire) OutputCommand(_ context.Context, command b.LaunchComm
 
 func sharedNativeEngine(t *testing.T, environment string) (*Engine, *worker, *sharedNativeWire, *sql.DB, string) {
 	t.Helper()
+	// This fixture owns no real Orca resource. Give its production CLI mutex a
+	// private cache so a real user CLI or another package cannot spend its budget.
+	t.Setenv("LOCALAPPDATA", filepath.Join(t.TempDir(), "cache"))
 	f := newBaseRefreshFixture(t, "origin", "main")
 	exe, err := exec.LookPath("git")
 	if err != nil {
@@ -243,6 +246,8 @@ func sharedNativeEngine(t *testing.T, environment string) (*Engine, *worker, *sh
 }
 
 func TestSharedNativeEngineStopReconciliation(t *testing.T) {
+	// Verify durable stop/recovery effects, allowing SQLite and the real CLI
+	// queue to run under load. Queue deadline behavior has its own test below.
 	for _, environment := range []string{"", "paired-worker"} {
 		for _, mode := range []string{"lost-absent", "lost-live", "replacement", "missing-host", "wrong-runtime", "wrong-total-count", "truncated", "query-failed", "receipt-commit-failed"} {
 			t.Run(environment+"/"+mode, func(t *testing.T) {
@@ -260,12 +265,12 @@ func TestSharedNativeEngineStopReconciliation(t *testing.T) {
 				if !response.OK || accepted.CommandID == "" || e.runs[id].Allowed || e.runs[id].PendingStop != accepted.CommandID {
 					t.Fatal("stop did not durably revoke original Run", response)
 				}
-				ctx, cancel := context.WithTimeout(context.Background(), 200*time.Millisecond)
+				ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 				e.ctx = ctx
 				e.stopRun(id, w, w.port)
 				cancel()
 				if wire.closes != 1 || wire.sends != 0 {
-					t.Fatal("first stop invoked wrong effects", wire.closes, wire.sends)
+					t.Fatal("first stop invoked wrong effects", wire.closes, wire.sends, e.runs[id].Diagnostic)
 				}
 				if mode == "receipt-commit-failed" {
 					if e.runs[id].StopStatus == "stopped" {
@@ -287,7 +292,7 @@ func TestSharedNativeEngineStopReconciliation(t *testing.T) {
 						t.Fatal("new request replaced unresolved original stop", replacement)
 					}
 				}
-				ctx, cancel = context.WithTimeout(context.Background(), 200*time.Millisecond)
+				ctx, cancel = context.WithTimeout(context.Background(), 5*time.Second)
 				defer cancel()
 				e.ctx = ctx
 				e.stopRun(id, w, w.port)

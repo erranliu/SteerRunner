@@ -33,3 +33,10 @@ All commands ran from the isolated worktree with fresh output directories under 
 The earlier attempt to combine Group and Combination was rejected by the selection guard before execution; the two valid selections above were run separately. `git diff --check` passed, and the original main checkout remained clean.
 
 No live model/Orca session, installation repair or full native L2/L3 qualification is claimed.
+
+
+## Main integration after initial validation
+
+Main advanced to `da487dc9a6a57559fd89a510a0dacc362b383811` while the initial validation was running. PR #96 was initially conflicting only in the acceptance index. Both index entries were retained, and the new atomic Orca agent-session final producer now populates the same explicit final binding; its existing atomic-create/read-only-recovery test asserts that binding and native provenance. The native session/turn checks in that producer are unchanged.
+
+The complete L1 and Controlled results above describe the pre-integration tree. Validation of the merged tree is pending below; those earlier results are not represented as a complete L1 run on the merged source.

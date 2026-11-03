@@ -2,6 +2,7 @@ package resources
 
 import (
 	"encoding/json"
+	"slices"
 	"testing"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
@@ -56,5 +57,29 @@ func TestOrcaPublishedContractsMatchAdmissionAndStopScopes(t *testing.T) {
 	managed := orca.StopScope(orca.Profile{RuntimeExecutable: "explicit-helper.exe"}, "codex")
 	if published.Contracts.Managed.Scope != managed || managed == n.Scope || len(published.Stops[managed]) == 0 {
 		t.Fatal("managed roots were silently relabeled native")
+	}
+}
+
+func TestStructuredExecuteCatalogMatchesNarrowAdmission(t *testing.T) {
+	execution := contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "local"}, Settings: marshal(map[string]any{"access_mode": "full_access"})}
+	selection := contracts.Workflow{ID: "execute", Version: 1, PromptOverrides: map[string]string{"execute": "one\r\n\r\n中文😀  \n"}}
+	if fault := contracts.ValidateRunConfiguration(marshal(contracts.RunConfiguration{Execution: execution, Workflow: selection})); fault != nil {
+		t.Fatal(fault)
+	}
+	catalog := Catalog()
+	if !catalog.Declares(execution, &selection, "submit") || !catalog.Declares(execution, &selection, "stop") || catalog.Declares(execution, &selection, "reply") || catalog.Declares(execution, &selection, "resume") {
+		t.Fatal("structured execute discovery differs from its operations")
+	}
+	for _, entry := range catalog.Combinations {
+		if entry.Adapter == "orca-terminal" && entry.TargetKind == "local" && entry.Agent == "codex" && entry.Workflow.ID == "execute" {
+			if !slices.Contains(entry.Requirements, "resource_settlement_unverified") {
+				t.Fatal(entry)
+			}
+		}
+	}
+	// Other workflows retain their own executor configuration and input rules.
+	execution.Settings = marshal(map[string]any{"agent": "pi", "access_mode": "full_access"})
+	if fault := contracts.ValidateRunConfiguration(marshal(contracts.RunConfiguration{Execution: execution, Workflow: selection})); fault == nil {
+		t.Fatal("unmigrated Pi execute admission changed")
 	}
 }

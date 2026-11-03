@@ -32,10 +32,12 @@ SteerRunner 是面向个人本机与多机开发的 AI 执行器。
 ## 当前版本的限制
 
 - SteerRunner有自己的执行链路，但目前远端执行，只支持通过Orca(https://www.onorca.dev/) ，你想获得远端执行能力，这两个得一起装。
-- 目前支持的Agent是Codex, Pi，Deepseek Harness，这个扩展很容易，有需求的话给我发私信，很快会扩展更多Agent支持(这个是Orca提供的全Agent适配能力，这边只是个薄壳)
+- 目前支持 Codex 和 Pi。DSH 执行及专用历史/用量支持已移除，不删除用户数据；旧活动 DSH Run 由原构建处理。
 - 目前没有资源自动清理功能，也就是每次运行会留下一个worktree，你要自己清理，推荐在Orca里开个Agent来批量清理。
 
-本机与远端 Orca 的 **Codex/development/2/full_access** 可使用同一无 helper 原生合同；两端只改变明确 target/连接。停止范围为原终端，实际模型未独立核验、工作区审计 unreported。显式 managed、audited、Pi/DSH 等仍按各自合同，不继承此资格。配置、保证及升级排空见[Orca 双端执行合同](docs/orca-execution.md)。
+本机与远端 Orca 的 **Codex/development/2/full_access** 可使用同一无 helper 原生合同；两端只改变明确 target/连接。停止范围为原终端，实际模型未独立核验、工作区审计 unreported。显式 managed、audited、Pi 等仍按各自合同，不继承此资格。配置、保证及升级排空见[Orca 双端执行合同](docs/orca-execution.md)。
+
+本机 Orca Codex 的新 **execute/1** 使用原子结构化首消息，多行正文保持一条用户消息；完整原回合结果独立可读。原会话 close 最多一次；退出证据不足时明确 `stop_status=unknown`、`resources_settled=false`，不宣称已停止。其它 Workflow、Pi、远端及非 Orca Codex 链路保持，见[实施验收](docs/acceptance/orca-structured-agent-session-mvp.md)。
 
 ## 跟使用Orca有什么区别？
 

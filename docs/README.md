@@ -22,6 +22,7 @@
 | 开发认证改用执行主机已有登录（已实施，真机资格单列） | [Spec](spec/host-native-auth.spec.md) / [Plan](spec/host-native-auth.plan.md) / [实施验收](acceptance/host-native-auth.md)；删除 broker/CA/socket/租期，该批 state/v6 的历史证据；现行 state/v8 见停止条件收敛，人工对账沿个人执行器简化 P3，保留新建只读与原生远端链路 |
 | 旧 Check 退役与新版本边界 | [删除契约、消费者和验证](acceptance/check-retirement.md) |
 | Orca 能力层长期设计与双端逐步统一（B0–B6 已完成） | [长期设计](spec/orca-capability-layer.spec.md)：前置无 helper 可行性核验，按能力/操作迁移；B5 实现候选生产接线并经真实 Runner、离线核验和活动停止验收，B6 最终启用及退役旧链；目标不代表当前支持已改变 |
+| 本机 Orca Codex execute/1 结构化执行与 DSH 退役（已实现，停止未核实） | [Spec](spec/orca-structured-agent-session.spec.md) / [Plan](spec/orca-structured-agent-session.plan.md) / [设计复审](acceptance/orca-structured-agent-session-mvp-design-audit.md)：多行正文单消息、原完整结果；停止缺证据明确未核实；删除 DSH 执行及专用历史/用量，不修改 Orca；其它 Codex/Pi 保持；[实施与验收](acceptance/orca-structured-agent-session-mvp.md) |
 | Orca 能力层首批 B0 无 helper 原生可行性（已完成） | [Spec](spec/orca-native-capability-baseline.spec.md) / [Plan](spec/orca-native-capability-baseline.plan.md) / [验收](acceptance/orca-native-capability-baseline.md)：双端两轮原输入及原终端清理通过，独立审计确认问题已修复；不改变正式停止合同，不代表真实开发资格 |
 | Orca 能力层 B1 原终端查询（已完成） | [Spec](spec/orca-terminal-query-capability.spec.md) / [Plan](spec/orca-terminal-query-capability.plan.md) / [验收](acceptance/orca-terminal-query-capability.md)：自有身份值、业务与控制终端共用查询，每页两次身份围栏保持，双端无模型查询及独立审计通过 |
 | Orca 能力层 B2a 公共命令构造（已完成） | [Spec](spec/orca-cli-construction-capability.spec.md) / [Plan](spec/orca-cli-construction-capability.plan.md) / [验收](acceptance/orca-cli-construction-capability.md)：日常调用与 creation owner 共用构造/解码，冻结命令与原派发边界保持，独立审计通过 |

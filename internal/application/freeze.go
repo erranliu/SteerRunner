@@ -147,6 +147,7 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 	var key string
 	var codec int
 	var payload []byte
+	structured := false
 	if request.Execution.Adapter == "codex-app-server" {
 		var settings contracts.CodexSettings
 		_ = json.Unmarshal(request.Execution.Settings, &settings)
@@ -174,16 +175,17 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		var settings contracts.OrcaSettings
 		_ = json.Unmarshal(request.Execution.Settings, &settings)
 		agent = settings.AgentName()
+		structured = contracts.OrcaStructuredExecute(request.Execution, request.Workflow)
 		if settings.Transport.Executable == "" {
 			settings.Transport.Executable = "orca.exe"
 		}
 		if settings.Transport.WaitTimeout == "" {
 			settings.Transport.WaitTimeout = "30s"
 		}
-		if settings.AgentLaunch.Executable == "" && agent == "codex" {
+		if settings.AgentLaunch.Executable == "" && agent == "codex" && !structured {
 			settings.AgentLaunch.Executable = "codex"
 		}
-		if settings.AgentLaunch.Executable == "" && (agent == "pi" || agent == "dsh") {
+		if settings.AgentLaunch.Executable == "" && agent == "pi" {
 			settings.AgentLaunch.Executable = agent + ".cmd"
 		}
 		executable, err := exec.LookPath(settings.Transport.Executable)
@@ -194,7 +196,7 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		if agent == "codex" && settings.AgentLaunch.Model != "" && settings.AgentLaunch.ReasoningEffort == "" {
 			settings.AgentLaunch.ReasoningEffort = "medium"
 		}
-		if request.Execution.Target.Kind == "local" && settings.AgentLaunch.RuntimeExecutable != "" {
+		if !structured && request.Execution.Target.Kind == "local" && settings.AgentLaunch.RuntimeExecutable != "" {
 			helper, helperErr := exec.LookPath(settings.AgentLaunch.RuntimeExecutable)
 			if helperErr == nil {
 				helper, helperErr = filepath.Abs(helper)
@@ -211,50 +213,57 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		profile := orca.Profile{NativeTerminal: nativeTerminal, Executable: executable, Args: settings.Transport.Args, WaitTimeout: settings.Transport.WaitTimeout, Environment: request.Execution.Target.Environment}
 		target = profile.Target()
 		kind, protocol = b.BackendOrca, b.ProtocolOrcaTerminalV3
-		launch := agentlaunch.Config{AccessMode: settings.AccessMode, Executable: settings.AgentLaunch.Executable, Args: settings.AgentLaunch.Args, Model: settings.AgentLaunch.Model, ReasoningEffort: settings.AgentLaunch.ReasoningEffort}
-		if request.Execution.Target.Kind == "orca_environment" {
-			launch.RepositoryURL, launch.RepositoryRemote = request.Repository.URL, request.Repository.Remote
-		}
-		if request.Execution.Target.Kind == "local" {
-			launch.RuntimeExecutable, launch.RepositoryURL = settings.AgentLaunch.RuntimeExecutable, request.Repository.URL
-			if request.Workflow.AuditModel != nil {
-				model := *request.Workflow.AuditModel
-				if model.ReasoningEffort == "" {
-					model.ReasoningEffort = settings.AgentLaunch.ReasoningEffort
+		if structured {
+			settings.AccessMode = "full_access"
+			r.Request.Execution.Settings = canonical(settings)
+			protocol = b.ProtocolOrcaAgentSessionV1
+			key, codec, payload = orca.AgentSessionProfileKey, orca.AgentSessionVersion, canonical(orca.AgentSessionProfile{Transport: profile, Model: settings.AgentLaunch.Model, ReasoningEffort: settings.AgentLaunch.ReasoningEffort, AccessMode: settings.AccessMode})
+		} else {
+			launch := agentlaunch.Config{AccessMode: settings.AccessMode, Executable: settings.AgentLaunch.Executable, Args: settings.AgentLaunch.Args, Model: settings.AgentLaunch.Model, ReasoningEffort: settings.AgentLaunch.ReasoningEffort}
+			if request.Execution.Target.Kind == "orca_environment" {
+				launch.RepositoryURL, launch.RepositoryRemote = request.Repository.URL, request.Repository.Remote
+			}
+			if request.Execution.Target.Kind == "local" {
+				launch.RuntimeExecutable, launch.RepositoryURL = settings.AgentLaunch.RuntimeExecutable, request.Repository.URL
+				if request.Workflow.AuditModel != nil {
+					model := *request.Workflow.AuditModel
+					if model.ReasoningEffort == "" {
+						model.ReasoningEffort = settings.AgentLaunch.ReasoningEffort
+					}
+					r.Request.Workflow.AuditModel = &model
+					launch.AuditModel = &model
 				}
-				r.Request.Workflow.AuditModel = &model
-				launch.AuditModel = &model
+				profile.RuntimeExecutable = launch.RuntimeExecutable
+				profile.RuntimeSHA256 = settings.AgentLaunch.RuntimeSHA256
 			}
-			profile.RuntimeExecutable = launch.RuntimeExecutable
-			profile.RuntimeSHA256 = settings.AgentLaunch.RuntimeSHA256
-		}
-		if launch.RuntimeExecutable != "" && agent == "codex" {
-			metadataBytes, probeErr := process.New(30*time.Second).OutputCommand(ctx, b.LaunchCommand{Executable: launch.RuntimeExecutable, Args: []string{"--terminal-metadata"}})
-			var metadata orca.TerminalMetadata
-			if probeErr != nil || len(metadataBytes) > 4096 || contracts.DecodeStrict(metadataBytes, &metadata) != nil || metadata.Version != 5 || metadata.Authentication != "host-native" || metadata.CodexTransport != codex.RemoteNativeTransport || metadata.CodexPolicy != codex.PolicyContract || len(metadata.RuntimeSHA256) != 64 || settings.AgentLaunch.RuntimeSHA256 != "" && settings.AgentLaunch.RuntimeSHA256 != metadata.RuntimeSHA256 {
-				return nil, contracts.Fail(4, "environment_unavailable", "The selected host-native Codex helper metadata or build does not match.")
+			if launch.RuntimeExecutable != "" && agent == "codex" {
+				metadataBytes, probeErr := process.New(30*time.Second).OutputCommand(ctx, b.LaunchCommand{Executable: launch.RuntimeExecutable, Args: []string{"--terminal-metadata"}})
+				var metadata orca.TerminalMetadata
+				if probeErr != nil || len(metadataBytes) > 4096 || contracts.DecodeStrict(metadataBytes, &metadata) != nil || metadata.Version != 5 || metadata.Authentication != "host-native" || metadata.CodexTransport != codex.RemoteNativeTransport || metadata.CodexPolicy != codex.PolicyContract || len(metadata.RuntimeSHA256) != 64 || settings.AgentLaunch.RuntimeSHA256 != "" && settings.AgentLaunch.RuntimeSHA256 != metadata.RuntimeSHA256 {
+					return nil, contracts.Fail(4, "environment_unavailable", "The selected host-native Codex helper metadata or build does not match.")
+				}
+				settings.AgentLaunch.RuntimeSHA256 = metadata.RuntimeSHA256
+				profile.RuntimeSHA256 = metadata.RuntimeSHA256
 			}
-			settings.AgentLaunch.RuntimeSHA256 = metadata.RuntimeSHA256
-			profile.RuntimeSHA256 = metadata.RuntimeSHA256
-		}
-		if launch.RuntimeExecutable != "" && agent == "codex" {
-			profile.RuntimeConfigurationDigest = codex.RemoteConfigurationDigest(launch.RemoteConfig())
-		}
-		if agent == "codex" || settings.AgentLaunch.Executable != "" && agent != "pi" && agent != "dsh" {
-			r.LaunchCommand, err = launch.Command(agent)
-			if err == nil && agent == "codex" {
-				_, r.LaunchInput, err = m.FreezeInput(launch.InitializationParts()...)
+			if launch.RuntimeExecutable != "" && agent == "codex" {
+				profile.RuntimeConfigurationDigest = codex.RemoteConfigurationDigest(launch.RemoteConfig())
 			}
-		}
-		if err != nil {
-			return nil, contracts.Fail(2, "invalid_input", "Invalid frozen agent launch configuration.")
-		}
-		r.Request.Execution.Settings = canonical(settings)
-		key, codec, payload = orca.ProfileKey, orca.ProfileVersion, canonical(profile)
-		if profile.NativeTerminal {
-			codec = orca.NativeProfileVersion
-		} else if profile.Environment != "" {
-			codec = orca.NativeRemoteProfileVersion
+			if agent == "codex" || settings.AgentLaunch.Executable != "" && agent != "pi" {
+				r.LaunchCommand, err = launch.Command(agent)
+				if err == nil && agent == "codex" {
+					_, r.LaunchInput, err = m.FreezeInput(launch.InitializationParts()...)
+				}
+			}
+			if err != nil {
+				return nil, contracts.Fail(2, "invalid_input", "Invalid frozen agent launch configuration.")
+			}
+			r.Request.Execution.Settings = canonical(settings)
+			key, codec, payload = orca.ProfileKey, orca.ProfileVersion, canonical(profile)
+			if profile.NativeTerminal {
+				codec = orca.NativeProfileVersion
+			} else if profile.Environment != "" {
+				codec = orca.NativeRemoteProfileVersion
+			}
 		}
 	}
 	r.InputDigest = reliable.Digest(canonical(r.Request))
@@ -349,7 +358,7 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		return nil, err
 	}
 	r.RepositoryPath, r.RepositoryCommon = repo.Path, repo.CommonDir
-	if agent == "pi" || agent == "dsh" {
+	if agent == "pi" {
 		var settings contracts.OrcaSettings
 		_ = json.Unmarshal(r.Request.Execution.Settings, &settings)
 		var p orca.Profile
@@ -357,7 +366,7 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		if settings.AgentLaunch.RuntimeExecutable != "" {
 			metadataBytes, e := process.New(30*time.Second).OutputCommand(ctx, b.LaunchCommand{Executable: settings.AgentLaunch.RuntimeExecutable, Args: []string{"--terminal-metadata"}})
 			var metadata orca.TerminalMetadata
-			if e != nil || len(metadataBytes) > 4096 || contracts.DecodeStrict(metadataBytes, &metadata) != nil || metadata.Version != 5 || metadata.Authentication != "host-native" || metadata.Contract != terminaltools.Contract || len(metadata.RuntimeSHA256) != 64 || len(metadata.BundleSHA256) != 64 || len(metadata.PiSHA256) != 64 || len(metadata.DSHSHA256) != 64 || settings.AgentLaunch.RuntimeSHA256 != "" && metadata.RuntimeSHA256 != settings.AgentLaunch.RuntimeSHA256 {
+			if e != nil || len(metadataBytes) > 4096 || contracts.DecodeStrict(metadataBytes, &metadata) != nil || metadata.Version != 5 || metadata.Authentication != "host-native" || metadata.Contract != terminaltools.Contract || len(metadata.RuntimeSHA256) != 64 || len(metadata.BundleSHA256) != 64 || len(metadata.PiSHA256) != 64 || settings.AgentLaunch.RuntimeSHA256 != "" && metadata.RuntimeSHA256 != settings.AgentLaunch.RuntimeSHA256 {
 				return nil, contracts.Fail(4, "environment_unavailable", "The selected local terminal helper metadata or frozen build does not match.")
 			}
 			settings.AgentLaunch.RuntimeSHA256 = metadata.RuntimeSHA256
@@ -370,9 +379,6 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 			c := orca.TerminalConfig{ReceiptVersion: 4, Agent: agent, ProjectID: repo.CommonDir, ExecutionID: id, AttemptID: attempt, Generation: generation, ConfigurationDigest: r.InputDigest, SessionID: contracts.NewID(), Executable: settings.AgentLaunch.Executable, StateDirectory: filepath.Join(dir, "terminal-agents", id, attempt), RepositoryURL: request.Repository.URL, AccessMode: settings.AccessMode, Model: settings.AgentLaunch.Model, ReasoningEffort: settings.AgentLaunch.ReasoningEffort}
 			c.BundleSHA256 = metadata.BundleSHA256
 			c.EvidenceSHA256 = metadata.PiSHA256
-			if agent == "dsh" {
-				c.EvidenceSHA256 = metadata.DSHSHA256
-			}
 			// Pi session IDs use its native UUID spelling; the Run remains a hex ID.
 			c.SessionID = c.SessionID[:8] + "-" + c.SessionID[8:12] + "-" + c.SessionID[12:16] + "-" + c.SessionID[16:20] + "-" + c.SessionID[20:]
 			codec = orca.FullAccessTerminalProfileVersion
@@ -381,7 +387,7 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		}
 		payload = canonical(p)
 	}
-	if r.Request.Execution.Adapter == "orca-terminal" && (r.Request.ProgressFile != nil || r.Request.ResultFile != nil || r.LaunchCommand != "") {
+	if r.Request.Execution.Adapter == "orca-terminal" && !structured && (r.Request.ProgressFile != nil || r.Request.ResultFile != nil || r.LaunchCommand != "") {
 		progressRun := ""
 		if r.Request.ProgressFile != nil {
 			progressRun = r.ID
@@ -397,7 +403,9 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		return nil, err
 	}
 	r.Profile = []b.ImplementationDataEnvelope{profile}
-	if request.Execution.Adapter == "orca-terminal" {
+	if structured {
+		r.StopEvidenceScope = orca.AgentSessionStopScope
+	} else if request.Execution.Adapter == "orca-terminal" {
 		var p orca.Profile
 		if err := json.Unmarshal(payload, &p); err != nil {
 			return nil, err
@@ -563,10 +571,15 @@ func queueInput(r *runstate.Record, input workflow.StageInput, feedback string) 
 				if priorFileInstruction(r, "result_file") {
 					text = workflow.ContinueResultInstruction
 				}
+				if r.Snapshot.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 {
+					// Native Orca owns the environment. Supply the existing bounded
+					// channel's exact workspace-relative path in this frozen input.
+					text = strings.ReplaceAll(text, "STEERLINE_RESULT_FILE", ".steerrunner/result/"+r.ID+"/result.bin")
+				}
 				parts = append(parts, m.InputPart{Source: "result_file", Owner: m.RunnerInput, Text: "\n" + text})
 			}
 		}
-		if r.Request.Execution.Adapter == "orca-terminal" {
+		if r.Request.Execution.Adapter == "orca-terminal" && r.Snapshot.Ref.Protocol != b.ProtocolOrcaAgentSessionV1 {
 			// Preserve the frozen logical body; native normalization/framing owns
 			// the final send budget. Validate the normalized body early as well.
 			_, _, err = m.FreezeInput(m.NativeInputParts(parts)...)

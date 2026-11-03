@@ -1,0 +1,57 @@
+{
+  "id": "f0344ef3-7f8a-4542-912f-a1de7d42ba7b",
+  "ok": true,
+  "result": {
+    "models": [
+      {
+        "id": "gpt-6.1-sol",
+        "label": "GPT 6.1 Sol",
+        "description": "gpt-6.1-sol",
+        "isDefault": false,
+        "efforts": [],
+        "effortsKnown": false
+      }
+    ],
+    "current": {
+      "model": "gpt-6.1-sol",
+      "effort": "medium",
+      "serviceTier": "priority",
+      "defaulted": [],
+      "acceptedInputSources": {
+        "model": "saved",
+        "effort": "saved",
+        "serviceTier": "saved"
+      },
+      "permissionMode": "full-access"
+    },
+    "modelsKnown": false,
+    "canSwitchAccount": false,
+    "rewind": {
+      "supported": true
+    },
+    "conversationCommands": [
+      "clear",
+      "compact"
+    ],
+    "acceptsImages": true,
+    "threadGoal": {
+      "current": null
+    },
+    "contextUsage": {
+      "current": {
+        "used": {
+          "kind": "report",
+          "model": "unknown",
+          "usedTokens": 20250,
+          "windowTokens": 475000,
+          "percentage": 4,
+          "categories": [],
+          "capturedAt": 1793695188252
+        }
+      }
+    }
+  },
+  "_meta": {
+    "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+  }
+}

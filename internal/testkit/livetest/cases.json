@@ -88,35 +88,6 @@
       ]
     },
     {
-      "id": "orca-local.dsh",
-      "level": "L3",
-      "driver": "development-feedback",
-      "target": "orca-local",
-      "agent": "dsh",
-      "timeout_minutes": 30,
-      "cases": [
-        {
-          "id": "default",
-          "outcome": "merged",
-          "requirements": {
-            "operation": "submit",
-            "publication": true,
-            "roles": {
-              "primary": {
-                "agent": "dsh",
-                "adapter": "orca-terminal",
-                "configuration": "orca-local-dsh",
-                "target_kind": "local",
-                "access_mode": "full_access",
-                "workflow": "development"
-              }
-            },
-            "admin": false
-          }
-        }
-      ]
-    },
-    {
       "id": "local-codex.smoke",
       "level": "L2",
       "driver": "development-smoke",
@@ -604,43 +575,6 @@
                 "agent": "codex",
                 "adapter": "orca-terminal",
                 "configuration": "orca-local-codex",
-                "target_kind": "local",
-                "access_mode": "full_access",
-                "workflow": "development"
-              }
-            },
-            "admin": false
-          }
-        }
-      ]
-    },
-    {
-      "id": "orca-local.mixed",
-      "level": "L3",
-      "driver": "development-multirun",
-      "target": "orca-local",
-      "agent": "pi",
-      "timeout_minutes": 30,
-      "cases": [
-        {
-          "id": "default",
-          "outcome": "pr_ready",
-          "requirements": {
-            "operation": "submit",
-            "publication": true,
-            "roles": {
-              "secondary": {
-                "adapter": "orca-terminal",
-                "access_mode": "full_access",
-                "configuration": "orca-local-dsh",
-                "target_kind": "local",
-                "agent": "dsh",
-                "workflow": "development"
-              },
-              "primary": {
-                "agent": "pi",
-                "adapter": "orca-terminal",
-                "configuration": "orca-local-pi",
                 "target_kind": "local",
                 "access_mode": "full_access",
                 "workflow": "development"

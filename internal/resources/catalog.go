@@ -31,7 +31,7 @@ func Catalog() CapabilityCatalog {
 	}}
 	for _, adapter := range []string{"codex-app-server", "orca-terminal"} {
 		for _, target := range []string{"local", "orca_environment"} {
-			for _, agent := range []string{"codex", "pi", "dsh"} {
+			for _, agent := range []string{"codex", "pi"} {
 				if adapter == "codex-app-server" && (target != "local" || agent != "codex") {
 					continue
 				}
@@ -63,6 +63,11 @@ func Catalog() CapabilityCatalog {
 						selection := contracts.Workflow{ID: profile.ID, Version: profile.Version}
 						candidate := execution
 						needed := slices.Clone(requirements)
+						structured := contracts.OrcaStructuredExecute(candidate, selection)
+						if structured {
+							needed = []string{"execution_host_authentication", "native_orca_atomic_first_message", "resource_settlement_unverified"}
+							selection.PromptOverrides = map[string]string{"execute": "caller operation"}
+						}
 						if profile.AuditModelRequired {
 							selection.AuditModel = &workflow.ModelSettings{Model: "audit-model"}
 							values := map[string]any{"access_mode": mode, "model": "execution-model"}
@@ -77,7 +82,12 @@ func Catalog() CapabilityCatalog {
 						}
 						// Model examples are only used to evaluate the production route gate.
 						selection.AuditModel = nil
-						result.Combinations = append(result.Combinations, Combination{adapter, target, agent, selection, mode, []string{"submit", "reply", "resume", "stop"}, "/configuration_schemas/run_configuration", needed})
+						selection.PromptOverrides = nil
+						operations := []string{"submit", "reply", "resume", "stop"}
+						if structured {
+							operations = []string{"submit", "inspect", "stop"}
+						}
+						result.Combinations = append(result.Combinations, Combination{adapter, target, agent, selection, mode, operations, "/configuration_schemas/run_configuration", needed})
 					}
 
 				}

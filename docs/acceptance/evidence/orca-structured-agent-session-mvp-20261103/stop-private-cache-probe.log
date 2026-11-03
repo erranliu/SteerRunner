@@ -1,0 +1,6 @@
+=== RUN   TestSharedNativeEngineStopReconciliation
+=== RUN   TestSharedNativeEngineStopReconciliation//lost-absent
+--- PASS: TestSharedNativeEngineStopReconciliation (9.77s)
+    --- PASS: TestSharedNativeEngineStopReconciliation//lost-absent (9.77s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/application	10.132s

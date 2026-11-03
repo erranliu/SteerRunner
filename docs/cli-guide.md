@@ -134,7 +134,7 @@ worker 的 common Git 目录只属于该 Run。开发 full_access 不再编译�
 代价是每个 Run 多一份本机仓库副本。
 已有 Run 的共享缓存和冻结权限保持原样，不在恢复时扩大授权；该修复通过新 Run 生效。
 
-开发执行继承宿主机 HOME、Git 配置、credential helper、gh 和 SSH 登录。Runner 不导出 token 到 argv、配置或证据，不再创建认证 broker、CA、socket、capability 或租期。Pi/DSH 通用工具保留宿主 HOME，过滤模型 provider 密钥；DSH 自身的隔离 HOME 不改变工具登录位置。PR 查询 provider 的服务端 TokenEnv/command 认证仍保留。
+开发执行继承宿主机 HOME、Git 配置、credential helper、gh 和 SSH 登录。Runner 不导出 token 到 argv、配置或证据，不再创建认证 broker、CA、socket、capability 或租期。Pi 通用工具保留宿主 HOME，过滤模型 provider 密钥。DSH 执行及专用历史/用量支持已移除。PR 查询 provider 的服务端 TokenEnv/command 认证仍保留。
 
 默认的新状态目录为 `%LOCALAPPDATA%/SteerRunner-v8`。已保存的客户端 state_dir 与实例绑定不会自动改写；旧目录明确返回 unsupported_schema，需使用全新目录重新绑定，不迁移旧记录。
 
@@ -146,8 +146,7 @@ L1–L4 定义、维护规则和执行入口见[测试指南](testing.md)，具�
 [测试清单](test-catalog.md)：L1 为快速单元/集成测试，
 L2 为最小核心 smoke，L3 为尽量正交、可并行的不同流程及核心可靠性测试，L4 为更复杂
 边界或确实无法并行的测试。调用方退出、断连、服务换代、停止撤销和发布对账保留在 L3。
-当前已注册 L2 一 case、L3 二十五场景／三十五 case（含远端可靠性、本机反馈拒绝／审计／多 Run、progress、CLI 等待及 Pi／DSH），
-L4 四个受控边界场景，共二十八场景／三十八 case；默认 Controlled 二十二个顶层测试。受控前置已纳入审计及多 Run，支持有界并行与 L4 独占；L2 直接执行最小交付路径，不读取反馈资格文件。真实后端并行资格及远端原生范围分别登记，逐项内容见清单。
+当前注册数量以[当前清单与资格边界](test-catalog.md#当前清单与资格边界)及 JSON 目录为准；DSH 专用及 Pi/DSH mixed 场景已退役。受控前置已纳入审计及多 Run，支持有界并行与 L4 独占；L2 直接执行最小交付路径，不读取反馈资格文件。真实后端并行资格及远端原生范围分别登记，逐项内容见清单。
 历史实际结果见[稳定性验收](acceptance/l3-execution-stability.md)，
 该受测套件完整资格为同构建连续三轮。
 历史[主线复测](archive/2026-10/acceptance/l3-rebase-20261016.md)及[不可达撤销修复复测](archive/2026-10/acceptance/l3-revocation-fix-20261016.md)保留当时构建结果与认证阻断；
@@ -216,4 +215,6 @@ Workflow 能力/状态机定义：[统一能力与边界](workflows/README.md) �
 
 本机受管 Codex 的 `stop_evidence_scope=orca_local_codex_resources` 包括原业务/控制终端、helper 与 app-server 原根进程。保留原 helper 的协作停止、Job 清理及精确身份核验；签名退出文件、control Closed 和 pending reader 响应不再决定停止成功。该范围不证明全部后代进程退出，也不撤销宿主登录。部分资源仍活或身份未知时保持 unknown；原 stop 可能已调用后只读对账，不重复 close，也不接受新 request_id 替换未解决的 stop。
 
-普通 service stop 只脱离观察。离线 verify-stopped 不把 stopped 标签当作资源证明：orca_terminal 范围可使用既有、已持久化且绑定原 Run/input、attempt/generation、runtime/worktree/terminal/incarnation 的 confirmed 停止回执（Stopped、WorkerAbsent 与 confirmed progress 均须齐全）。该原终端的停止事实不因后续 Orca 重启、断线或工作区移除失效；停止对账也只重放原确认，不再次关闭终端。缺失、accepted/unknown、身份不符或未完成操作仍须查询原资源；不写 DB 或原 shutdown 回执，不把缺失工作区本身当作停止证明。直接 Codex、Pi/DSH 与原生远端的证明范围保持，不扩展为后台进程或凭据已清理。当前源码的实现、验证与外部集成限制见[专项验收](acceptance/orca-local-codex-stop-simplification.md)。
+普通 service stop 只脱离观察。离线 verify-stopped 不把 stopped 标签当作资源证明：orca_terminal 范围可使用既有、已持久化且绑定原 Run/input、attempt/generation、runtime/worktree/terminal/incarnation 的 confirmed 停止回执（Stopped、WorkerAbsent 与 confirmed progress 均须齐全）。该原终端的停止事实不因后续 Orca 重启、断线或工作区移除失效；停止对账也只重放原确认，不再次关闭终端。缺失、accepted/unknown、身份不符或未完成操作仍须查询原资源；不写 DB 或原 shutdown 回执，不把缺失工作区本身当作停止证明。直接 Codex、Pi 与原生远端的证明范围保持，不扩展为后台进程或凭据已清理。当前源码的实现、验证与外部集成限制见[专项验收](acceptance/orca-local-codex-stop-simplification.md)。
+
+本机 Orca Codex 新 execute/1 使用原子结构化首消息；`orca_agent_session` 的 close 回执不证明完整资源退出，`stop_status=unknown`、`resources_settled=false`，完整业务结果仍可读。该范围不使用上述 terminal 停止回执追认结算，详见[实施验收](acceptance/orca-structured-agent-session-mvp.md)。

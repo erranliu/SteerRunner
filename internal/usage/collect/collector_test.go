@@ -501,7 +501,7 @@ func TestUsageEmptyTerminalListingProof(t *testing.T) {
 }
 
 func TestUsageRemoteProductionBindingUnsupported(t *testing.T) {
-	for _, agent := range []string{"pi", "dsh"} {
+	for _, agent := range []string{"pi"} {
 		t.Run(agent, func(t *testing.T) {
 			s, r, _ := localFixture(t)
 			var p orca.Profile

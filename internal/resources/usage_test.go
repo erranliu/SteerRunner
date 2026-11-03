@@ -17,7 +17,7 @@ func TestUsageCapabilitiesBoundariesAndSeparation(t *testing.T) {
 		}
 	}
 	matrix := caps["matrix"].([]map[string]any)
-	if len(matrix) != 6 {
+	if len(matrix) != 4 {
 		t.Fatal(matrix)
 	}
 	seen := map[string]bool{}

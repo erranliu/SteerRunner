@@ -2,6 +2,7 @@ package application
 
 import (
 	"errors"
+	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	m "github.com/erranliu/SteerRunner/internal/execution/model"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/runstate"
@@ -34,7 +35,7 @@ func ensureStageBudget(r *runstate.Record, i *workflow.StageInput) error {
 	if err != nil {
 		return err
 	}
-	if r.Request.Execution.Adapter == "orca-terminal" {
+	if r.Request.Execution.Adapter == "orca-terminal" && r.Snapshot.Ref.Protocol != b.ProtocolOrcaAgentSessionV1 {
 		parts = m.NativeInputParts(parts)
 	}
 	_, _, err = m.FreezeInput(parts...)

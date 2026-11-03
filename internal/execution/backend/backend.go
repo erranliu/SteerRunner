@@ -18,6 +18,7 @@ const (
 	ProtocolLocalProcess        ExecutionProtocol = "local_process"
 	ProtocolLocalCodexAppServer ExecutionProtocol = "local_codex_app_server_v1"
 	ProtocolOrcaTerminalV3      ExecutionProtocol = "orca_terminal_v3"
+	ProtocolOrcaAgentSessionV1  ExecutionProtocol = "orca_agent_session_v1"
 	ExecutionRecordVersion                        = 1
 )
 

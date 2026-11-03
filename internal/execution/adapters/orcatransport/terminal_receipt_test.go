@@ -12,7 +12,7 @@ import (
 )
 
 func TestExtensionStateKeepsPreparationSeparateFromCodexProof(t *testing.T) {
-	for _, agent := range []string{"pi", "dsh"} {
+	for _, agent := range []string{"pi"} {
 		t.Run(agent, func(t *testing.T) {
 			l, _, s := fixture(t)
 			s.Ref.Agent.Name = agent
@@ -20,9 +20,6 @@ func TestExtensionStateKeepsPreparationSeparateFromCodexProof(t *testing.T) {
 			l.setup.Snapshot = s
 			l.profile.Terminal = &TerminalConfig{Agent: agent, ExecutionID: s.Session.ExecutionID, SessionID: "native-original", AccessMode: "full_access", ReceiptVersion: 4}
 			file, source, tools := "pi-evidence.mjs", "pi-extension-v1", []string{"read", "write", "edit", "powershell"}
-			if agent == "dsh" {
-				file, source, tools = "dsh-managed.mjs", "dsh-plugin-v1", []string{"powershell"}
-			}
 			body, _ := terminalAssets.ReadFile("extensions/" + file)
 			l.profile.Terminal.EvidenceSHA256 = fmt.Sprintf("%x", sha256.Sum256(body))
 			l.profile.Terminal.BundleSHA256 = TerminalExtensionDigest()
@@ -43,9 +40,6 @@ func TestExtensionStateKeepsPreparationSeparateFromCodexProof(t *testing.T) {
 				t.Fatal("different native model accepted")
 			}
 			ready.Model = "requested-model"
-			if agent == "dsh" {
-				ready.Model = "deepseek-official/requested-model"
-			}
 			if err := l.validateTerminalReceipt(ready); err != nil {
 				t.Fatal(err)
 			}
@@ -103,13 +97,10 @@ func TestTerminalReceiptRejectsMissingUnboundedAndUnknownFields(t *testing.T) {
 }
 
 func TestManagedReadinessRequiresEffectiveThinkingForNewSources(t *testing.T) {
-	for _, agent := range []string{"pi", "dsh"} {
+	for _, agent := range []string{"pi"} {
 		l, _, s := fixture(t)
 		l.profile.Terminal = &TerminalConfig{Agent: agent, ReceiptVersion: 4, ExecutionID: s.Session.ExecutionID, SessionID: "native-original", AccessMode: "full_access", ReasoningEffort: "high"}
 		kind, file, tools := "pi-extension-v1", "pi-evidence.mjs", []string{"read", "write", "edit", "powershell"}
-		if agent == "dsh" {
-			kind, file, tools = "dsh-plugin-v1", "dsh-managed.mjs", []string{"powershell"}
-		}
 		source, _ := terminalAssets.ReadFile("extensions/" + file)
 		l.profile.Terminal.EvidenceSHA256 = fmt.Sprintf("%x", sha256.Sum256(source))
 		l.profile.Terminal.BundleSHA256 = TerminalExtensionDigest()

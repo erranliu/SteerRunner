@@ -1,0 +1,1 @@
+{"protocol":"steerrunner-cli/v1","ok":false,"request_id":"orca-mvp-normal-20261103-v1","data":null,"error":{"code":"invalid_input","message":"Run configuration does not satisfy the published contract."}}

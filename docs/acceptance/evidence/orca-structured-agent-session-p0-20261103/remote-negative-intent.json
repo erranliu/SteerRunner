@@ -1,0 +1,50 @@
+{
+  "requests": [
+    [
+      "bad-create-fingerprint",
+      "agentSession.create",
+      {
+        "envelope": {
+          "sessionId": "oas_p0_9939c673a26845d2ac66df826948f8c1",
+          "clientOperationId": "1793689052895-500be6e2725a4d53b811c70fe5f0376a",
+          "expectedRuntimeFence": null,
+          "payloadFingerprint": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "worktree": "id:903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-oas-p0-20261103-remote",
+        "agent": "codex"
+      }
+    ],
+    [
+      "stale-send-fence",
+      "agentSession.send",
+      {
+        "envelope": {
+          "sessionId": "oas_p0_9cd2c4200af14a9e888067cb5880640e",
+          "clientOperationId": "1793689052896-7a7ee7eca5d14ef49e066b7e1f2e883d",
+          "expectedRuntimeFence": 1,
+          "payloadFingerprint": "fa83bcf80d7ea7a89a1e93de80e0c82d01b31e05685fb877a017a7509527f976"
+        },
+        "body": {
+          "kind": "message",
+          "role": "user",
+          "blocks": [
+            {
+              "type": "text",
+              "text": "P0 invalid request: this input must be rejected without dispatch."
+            }
+          ]
+        }
+      }
+    ],
+    [
+      "close-extra-envelope",
+      "agentSession.close",
+      {
+        "sessionId": "oas_p0_9cd2c4200af14a9e888067cb5880640e",
+        "envelope": {
+          "expectedRuntimeFence": 1
+        }
+      }
+    ]
+  ]
+}

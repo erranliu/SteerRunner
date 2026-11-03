@@ -23,9 +23,6 @@ func developmentMultipleRuns(t *testing.T, m livetest.Manifest) {
 	var ids [2]string
 	var commands [2]string
 	manifests := [2]livetest.Manifest{m, m}
-	if m.PeerExecution != nil {
-		manifests[1].Execution = *m.PeerExecution
-	}
 	t.Cleanup(func() {
 		r.Passed = !t.Failed() && r.RunStopped && r.ServiceStopped && len(r.Runs) == 2
 		if r.Passed {
@@ -168,7 +165,7 @@ func developmentMultipleRuns(t *testing.T, m livetest.Manifest) {
 			if manifests[i].Execution.Target.Kind == "orca_environment" {
 				names = []string{"native-call-audit.json", "native-launch-contract.json"}
 			}
-			if runs[i].Execution.Agent == "pi" || runs[i].Execution.Agent == "dsh" {
+			if runs[i].Execution.Agent == "pi" {
 				names = []string{runs[i].Execution.Agent + "-native-permission-audit.json"}
 			}
 		}

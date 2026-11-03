@@ -1,0 +1,18 @@
+{
+  "runtime": "local",
+  "sessionId": "oas_p0_f28a859ca3304fb5bfc178ace436b344",
+  "marker": "P0_OAS_LOCAL_CODEX_OK",
+  "params": {
+    "envelope": {
+      "sessionId": "oas_p0_f28a859ca3304fb5bfc178ace436b344",
+      "clientOperationId": "1793688970855-be12a1c6da29489ea9537c28690f7226",
+      "expectedRuntimeFence": null,
+      "payloadFingerprint": "3a2a1d7079c96d0abe30c11be40c8d41f188299a99566068430afaedd741aab0"
+    },
+    "worktree": "id:faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-oas-p0-20261103-local",
+    "agent": "codex",
+    "options": {
+      "permissionMode": "full-access"
+    }
+  }
+}

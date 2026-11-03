@@ -1,0 +1,100 @@
+{
+  "schema": "orca-structured-quality-evidence/v1",
+  "algorithm": "SHA-256",
+  "excludes": [
+    "manifest.json"
+  ],
+  "qualification": "Targeted final component checks and recorded public-journal replay only. The original full sweep failure and pre-audit live EXE are retained separately. No final full official L1/Controlled or new live business-agent qualification.",
+  "files": [
+    {
+      "path": "build-source.json",
+      "bytes": 7532,
+      "sha256": "88597c834b4530eeb731cd644c3b11f0e1bfb2f9feb2bbfd79cb01e3ed2a11ac"
+    },
+    {
+      "path": "orca-structured-quality-adapters-final.log",
+      "bytes": 177,
+      "sha256": "cbd3b41a672e21b9e88ff9fa6372d6913ca514a669788b23b3907fa45c6243ac"
+    },
+    {
+      "path": "orca-structured-quality-adapters-host.log",
+      "bytes": 177,
+      "sha256": "759cb7d2e5e43a62e1f195f4208658e53f2d11c00966d7415321daf51647b250"
+    },
+    {
+      "path": "orca-structured-quality-adapters.log",
+      "bytes": 10888,
+      "sha256": "59c46436aaccb8cfd922ff6b629f3a7c3fbf2d56b47c488f0328068d634291c5"
+    },
+    {
+      "path": "orca-structured-quality-application-final.log",
+      "bytes": 68,
+      "sha256": "335b417a2c567f380afc57764e2a44d11b35f416ef0fb1ad163fe97f7483567d"
+    },
+    {
+      "path": "orca-structured-quality-application-host.log",
+      "bytes": 346,
+      "sha256": "2b0812f79c87d8c4247bc94cc49a536f95e655cbbb1d39b74af8348bab353a3b"
+    },
+    {
+      "path": "orca-structured-quality-application.log",
+      "bytes": 14434,
+      "sha256": "e9d6d8f02eeaac4306d74f3eb0b2fec822981001d1cb687afb4a11c5ec69d5d7"
+    },
+    {
+      "path": "orca-structured-quality-gap-red.log",
+      "bytes": 264,
+      "sha256": "e66638ba96f32cf1f949928178134f00e12687c25730f7f854224b7836d30743"
+    },
+    {
+      "path": "orca-structured-quality-host-loss.log",
+      "bytes": 67,
+      "sha256": "4bd35de8d22da82598d3fc639006d2f00a1ec9822cbb44a842929e2e8122d7c9"
+    },
+    {
+      "path": "orca-structured-quality-offline-final.json",
+      "bytes": 1437,
+      "sha256": "f79b4be4019feb8f5bbdd367bfb870869f889dfb8abc56c7fe97eec763b9c28b"
+    },
+    {
+      "path": "orca-structured-quality-offline.json",
+      "bytes": 1437,
+      "sha256": "f79b4be4019feb8f5bbdd367bfb870869f889dfb8abc56c7fe97eec763b9c28b"
+    },
+    {
+      "path": "orca-structured-quality-packages.log",
+      "bytes": 599,
+      "sha256": "7578db9375663e1251c32f391a02260fd0b98d2f809cc6eb356da739f27aff8a"
+    },
+    {
+      "path": "orca-structured-quality-pi-host.log",
+      "bytes": 2055,
+      "sha256": "fcd1ef1a99cafbcaacd5783120f3a0bfbea6419fe15bc764853691051d303ed1"
+    },
+    {
+      "path": "orca-structured-quality-pi.log",
+      "bytes": 41204,
+      "sha256": "6f086647aaa6c283feb0733a03f6bee701dc626dc8ce28e145ce87d87e4a0656"
+    },
+    {
+      "path": "orca-structured-quality-red.log",
+      "bytes": 15206,
+      "sha256": "2e4c4e4d7eabc719178b9ba2e88f954fd0e081e959ab84e906cca76763c5da37"
+    },
+    {
+      "path": "orca-structured-quality-structured-final.log",
+      "bytes": 87,
+      "sha256": "22dc4f27cb52ecf799a94b7f4a84b98d7f00f3c3958d4c57a48f54b71e9efab9"
+    },
+    {
+      "path": "orca-structured-quality-structured.log",
+      "bytes": 87,
+      "sha256": "433e3c98c822aca6b1bcda06633559391653aef01fb1f6e51b5b8850faa79caf"
+    },
+    {
+      "path": "test-summary.json",
+      "bytes": 3604,
+      "sha256": "fdf8ac51b709dee9edbb52b3aa2c14e0b2cc090482a3aef926932c2ebdb6f6c5"
+    }
+  ]
+}

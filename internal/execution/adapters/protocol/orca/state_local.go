@@ -15,10 +15,11 @@ import (
 )
 
 type localState struct {
-	conn    net.Conn
-	reader  *bufio.Reader
-	token   string
-	runtime string
+	conn         net.Conn
+	reader       *bufio.Reader
+	token        string
+	runtime      string
+	capabilities []string
 }
 
 func openLocalState(ctx context.Context, runtime string) (*localState, error) {
@@ -60,16 +61,35 @@ func openLocalState(ctx context.Context, runtime string) (*localState, error) {
 		return nil, &StateConnectionError{Cause: err}
 	}
 	s := &localState{conn: conn, reader: bufio.NewReaderSize(conn, 64<<10), token: metadata.AuthToken, runtime: runtime}
-	if _, err := callState(ctx, s, "status.get", nil); err != nil {
+	status, err := callState(ctx, s, "status.get", nil)
+	if err != nil {
 		_ = s.close()
 		return nil, err
 	}
+	s.capabilities = localRuntimeCapabilities(status)
 	return s, nil
+}
+
+func localRuntimeCapabilities(status json.RawMessage) []string {
+	// RPC status.get is flat; CLI status nests these facts under runtime.
+	var advertised struct {
+		Capabilities []string `json:"capabilities"`
+	}
+	if json.Unmarshal(status, &advertised) != nil {
+		return nil
+	}
+	return advertised.Capabilities
 }
 
 func (s *localState) close() error { return s.conn.Close() }
 
 func (s *localState) request(ctx context.Context, method string, params any) (string, error) {
+	return s.requestWithCapabilities(ctx, method, params, []string{"agent-session.session-boundary.v1"}, false)
+}
+
+// The ordinary state reader retains its original capabilities and read-only
+// behavior. Structured mutations consume their durable gate at the real write.
+func (s *localState) requestWithCapabilities(ctx context.Context, method string, params any, capabilities []string, mutation bool) (string, error) {
 	if err := ctx.Err(); err != nil {
 		return "", err
 	}
@@ -79,12 +99,17 @@ func (s *localState) request(ctx context.Context, method string, params any) (st
 	}
 	requestID := hex.EncodeToString(id[:])
 	data, err := json.Marshal(map[string]any{"id": requestID, "authToken": s.token, "method": method, "params": params,
-		"clientCapabilities": []string{"agent-session.session-boundary.v1"}})
+		"clientCapabilities": capabilities})
 	if err != nil {
 		return "", err
 	}
 	stop := context.AfterFunc(ctx, func() { _ = s.close() })
 	defer stop()
+	if mutation {
+		if err := CheckpointDispatch(ctx); err != nil {
+			return "", err
+		}
+	}
 	data = append(data, '\n')
 	for len(data) > 0 {
 		n, err := s.conn.Write(data)

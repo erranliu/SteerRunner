@@ -1,0 +1,80 @@
+{
+  "sessionId": "oas_863cbff40f2810c3d41a786249098902",
+  "epoch": "7c75cf30-6c68-4f68-b3dc-55ed894c8770",
+  "working": true,
+  "latestTurn": {
+    "itemId": "legacy:codex:oas_863cbff40f2810c3d41a786249098902:turn-lifecycle%3A01a1a07f-0814-7ce0-aac1-a39b35dd6eed",
+    "observedAt": 1793694042834,
+    "turn": {
+      "turnId": "01a1a07f-0814-7ce0-aac1-a39b35dd6eed",
+      "state": "running",
+      "userItemId": "orca:1793694032472-50c69158997c34cf5cc2846eb68e5086",
+      "startedAt": 1793694042834,
+      "requestedAt": 1793694042080,
+      "contextUsage": {
+        "used": {
+          "kind": "report",
+          "model": "unknown",
+          "usedTokens": 18565,
+          "windowTokens": 475000,
+          "percentage": 4,
+          "categories": [],
+          "capturedAt": 1793694067668
+        }
+      }
+    }
+  },
+  "userCount": 1,
+  "userBodySHA256": [
+    "9acc23e4ab93474420bc68a1cde16f7a20f53f438547cf5632379a120b091af7"
+  ],
+  "submissions": [
+    {
+      "clientMessageId": "1793694032472-50c69158997c34cf5cc2846eb68e5086",
+      "fence": 2,
+      "payloadFingerprint": "6866f7aa9b0f144120cc5c2f237b7bcb831369a7bf205e7b8bfbd5d0d0cec562",
+      "dispatchState": "accepted",
+      "providerItemId": "codex:01a1a07e-ff99-78c0-b6c7-064c6b664de9:01a1a07f-0814-7ce0-aac1-a39b35dd6eed:0",
+      "reason": null,
+      "submittedAt": 1793694039064,
+      "resolvedAt": 1793694045909,
+      "submittedSequence": 2,
+      "handoverRecorded": true,
+      "acceptedSequence": 2,
+      "origin": "client",
+      "source": {
+        "kind": "user"
+      },
+      "options": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium"
+      },
+      "handedOverAt": 1793694042087
+    }
+  ],
+  "assistantItems": [
+    {
+      "itemId": "codex:01a1a07e-ff99-78c0-b6c7-064c6b664de9:01a1a07f-0814-7ce0-aac1-a39b35dd6eed:1",
+      "sequence": 7,
+      "turnScope": {
+        "kind": "turn",
+        "turnItemId": "legacy:codex:oas_863cbff40f2810c3d41a786249098902:turn-lifecycle%3A01a1a07f-0814-7ce0-aac1-a39b35dd6eed"
+      },
+      "characters": 20
+    }
+  ],
+  "toolItems": 1,
+  "options": {
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "serviceTier": "priority",
+    "defaulted": [],
+    "reportedPermissionMode": "full-access",
+    "acceptedInputSources": {
+      "model": "saved",
+      "effort": "saved",
+      "serviceTier": "saved"
+    },
+    "permissionMode": "full-access"
+  }
+}

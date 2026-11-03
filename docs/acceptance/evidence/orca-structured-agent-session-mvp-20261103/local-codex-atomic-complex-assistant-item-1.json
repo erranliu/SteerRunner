@@ -1,0 +1,29 @@
+{
+  "id": "9b894e38-685a-4cd9-8cce-93a0e135ece0",
+  "ok": true,
+  "result": {
+    "item": {
+      "itemId": "codex:01a1a064-7c9e-7513-97b7-12465105ea4d:01a1a064-8855-76a0-9096-ff7528ede227:2",
+      "revision": 2,
+      "body": {
+        "kind": "message",
+        "role": "assistant",
+        "blocks": [
+          {
+            "type": "text",
+            "text": "STAGE_TWO"
+          }
+        ]
+      },
+      "sequence": 13,
+      "observedAt": 1793692317476,
+      "turnScope": {
+        "kind": "turn",
+        "turnItemId": "legacy:codex:oas_mvp_2ad2db59abde4a8eb93d31e115c8880f:turn-lifecycle%3A01a1a064-8855-76a0-9096-ff7528ede227"
+      }
+    }
+  },
+  "_meta": {
+    "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+  }
+}

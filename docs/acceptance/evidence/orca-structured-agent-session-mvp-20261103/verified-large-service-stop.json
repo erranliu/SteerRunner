@@ -1,0 +1,1 @@
+{"protocol":"steerrunner-cli/v1","ok":true,"request_id":"orca-mvp-verified-large-service-stop","data":{"action_status":"pending","command_id":"08d729fc99ac6df4a6e64a6ddb82ef3b","instance_id":"e425f712250d403247eea2cc139216c2","receipt_status":"accepted","run_id":null},"error":null}

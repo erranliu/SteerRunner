@@ -174,7 +174,6 @@
   "scenarios": [
     "orca-local.codex",
     "orca-local.pi",
-    "orca-local.dsh",
     "local-codex.result-acquisition",
     "local-codex.smoke",
     "orca-remote.smoke",
@@ -191,7 +190,6 @@
     "controlled.resource-pressure",
     "orca-remote.multirun",
     "orca-local.smoke",
-    "orca-local.mixed",
     "orca-remote.initialization-stop",
     "local-codex.progress-file",
     "orca-local.progress-file",

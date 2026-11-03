@@ -104,14 +104,6 @@ func timestamp(raw json.RawMessage) *time.Time {
 	return &v
 }
 
-func dshTimestamp(raw json.RawMessage) *time.Time {
-	var millis int64
-	if json.Unmarshal(raw, &millis) != nil || millis <= 0 || millis > 253402300799999 {
-		return nil
-	}
-	value := time.UnixMilli(millis).UTC()
-	return &value
-}
 func token(o object, agent string) api.Tokens {
 	var t api.Tokens
 	if agent == "codex" {
@@ -126,9 +118,6 @@ func token(o object, agent string) api.Tokens {
 		}
 	} else {
 		keys := []string{"input", "cacheRead", "cacheWrite", "output", "reasoning", "totalTokens"}
-		if agent == "dsh" {
-			keys = []string{"inputTokens", "cacheReadTokens", "cacheWriteTokens", "outputTokens", "reasoningTokens", "totalTokens"}
-		}
 		t.InputUncached = number(o, keys[0])
 		t.CacheRead = number(o, keys[1])
 		t.CacheWrite = number(o, keys[2])
@@ -152,6 +141,10 @@ func Parse(ctx context.Context, b Binding, raw []byte, compressed bool) Result {
 	issue := func(code string) {
 		r.Issues = append(r.Issues, api.Issue{Category: "usage", Code: code, Retryable: code == "LOG_TAIL_INCOMPLETE"})
 		r.Complete = false
+	}
+	if b.Agent != "codex" && b.Agent != "pi" {
+		issue("FORMAT_UNSUPPORTED")
+		return r
 	}
 	if len(raw) > MaxSource {
 		issue("BUDGET_EXCEEDED")
@@ -224,7 +217,7 @@ func Parse(ctx context.Context, b Binding, raw []byte, compressed bool) Result {
 		issue("IDENTITY_CHANGED")
 		return r
 	}
-	if b.Agent == "pi" && (number(h, "version") == nil || *number(h, "version") != 3) || b.Agent == "dsh" && (number(h, "version") == nil || *number(h, "version") != 4) {
+	if b.Agent == "pi" && (number(h, "version") == nil || *number(h, "version") != 3) {
 		issue("FORMAT_UNSUPPORTED")
 		return r
 	}
@@ -260,7 +253,6 @@ func Parse(ctx context.Context, b Binding, raw []byte, compressed bool) Result {
 		kind := str(v, "type")
 		p := obj(v["payload"])
 		message := obj(v["message"])
-		data := obj(v["data"])
 		var user, uid string
 		var seq int64
 		if n := number(v, "seq"); n != nil {
@@ -287,28 +279,6 @@ func Parse(ctx context.Context, b Binding, raw []byte, compressed bool) Result {
 			if kind == "message" && str(message, "role") == "user" {
 				user = text(message["content"])
 				uid = str(v, "id")
-			}
-		case "dsh":
-			if kind == "user/message" {
-				// DSH persists runtime-context snapshots as role=user. They are
-				// native context updates inside the same request, not human input.
-				if str(obj(data["source"]), "kind") != "runtime-context" {
-					user = text(data["content"])
-					uid = str(data, "id")
-				}
-			}
-			if kind == "request/header" {
-				config := obj(obj(data["header"])["config"])
-				model = str(config, "model")
-				provider = str(config, "provider")
-			}
-			if kind == "request/context" {
-				if value := str(data, "model"); value != "" {
-					model = value
-				}
-				if value := str(data, "provider"); value != "" {
-					provider = value
-				}
 			}
 		}
 		if uid != "" || user != "" {
@@ -355,16 +325,6 @@ func Parse(ctx context.Context, b Binding, raw []byte, compressed bool) Result {
 			response = str(v, "id")
 			model = str(message, "model")
 			provider = str(message, "provider")
-		case "dsh":
-			if kind != "assistant/message" {
-				continue
-			}
-			usageRaw = data["usage"]
-			message = obj(data["message"])
-			response = str(message, "id")
-			if owner.InputSeq > 0 && seq <= owner.InputSeq || owner.EndSeq > 0 && seq > owner.EndSeq {
-				owner = Command{}
-			}
 		default:
 			issue("FORMAT_UNSUPPORTED")
 			return r
@@ -418,9 +378,6 @@ func Parse(ctx context.Context, b Binding, raw []byte, compressed bool) Result {
 			e.Provider = &p
 		}
 		e.CallTime = timestamp(v["timestamp"])
-		if b.Agent == "dsh" {
-			e.CallTime = dshTimestamp(v["time"])
-		}
 		if e.CallTime == nil {
 			e.TimeBasis = "unknown"
 		}

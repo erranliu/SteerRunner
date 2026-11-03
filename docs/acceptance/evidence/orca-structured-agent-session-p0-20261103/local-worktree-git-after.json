@@ -1,0 +1,7 @@
+{
+  "path": "C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-oas-p0-20261103-local",
+  "head": null,
+  "status": [],
+  "verified": false,
+  "failure": "Sandbox denied both git read commands; null/empty output is not a clean-worktree proof. See local-worktree-git-verified.json for the escalated successful check."
+}

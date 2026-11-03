@@ -97,6 +97,7 @@ type OperationView struct {
 	OriginalDiagnostic string `json:"original_diagnostic,omitempty"`
 }
 type RunView struct {
+	ResourcesSettled  *bool             `json:"resources_settled,omitempty"`
 	StopEvidenceScope string            `json:"stop_evidence_scope,omitempty"`
 	RepositorySource  *RepositorySource `json:"repository_source,omitempty"`
 	ExecutionWait     *b.ExecutionWait  `json:"execution_wait"`

@@ -1,0 +1,5 @@
+--- FAIL: TestStructuredObserverKeepsOriginalDiagnosticBindingDuringHistoryGap (0.01s)
+    agent_session_test.go:291: history gap lost original diagnostic binding
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport	0.401s
+FAIL

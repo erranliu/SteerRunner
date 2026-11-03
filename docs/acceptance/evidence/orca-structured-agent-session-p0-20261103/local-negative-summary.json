@@ -1,0 +1,80 @@
+[
+  {
+    "name": "bad-create-fingerprint",
+    "response": {
+      "id": "25e49337-0498-45ff-bc06-b007b07ce47c",
+      "ok": true,
+      "result": {
+        "ok": false,
+        "refusal": {
+          "code": "agent_session_operation_conflict",
+          "message": "The payload does not match the fingerprint the client declared for this operation.",
+          "details": {
+            "reason": "fingerprintMismatch"
+          }
+        }
+      },
+      "_meta": {
+        "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+      }
+    }
+  },
+  {
+    "name": "stale-send-fence",
+    "response": {
+      "id": "0e328234-d1b2-4b86-a314-c85674c3ede3",
+      "ok": true,
+      "result": {
+        "ok": true,
+        "replayed": false,
+        "fence": 3,
+        "cursor": {
+          "epoch": "3ac7057f-e597-4760-9a27-041badfc1ea1",
+          "sequence": 13
+        },
+        "value": {
+          "clientMessageId": "1793689052601-4ccc367de2e94592ae0bd472c9ec1083",
+          "submission": {
+            "clientMessageId": "1793689052601-4ccc367de2e94592ae0bd472c9ec1083",
+            "fence": 3,
+            "payloadFingerprint": "29b801f684c43bcb04c857cd43edd2a3395f8de7336333eaebde31eca2f598af",
+            "dispatchState": "pending",
+            "providerItemId": null,
+            "reason": null,
+            "submittedAt": 1793689052617,
+            "resolvedAt": null,
+            "submittedSequence": 13,
+            "handoverRecorded": true,
+            "acceptedSequence": 13,
+            "origin": "client",
+            "source": {
+              "kind": "user"
+            },
+            "options": {
+              "model": "gpt-6.1-sol",
+              "effort": "high",
+              "serviceTier": "priority"
+            }
+          }
+        }
+      },
+      "_meta": {
+        "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+      }
+    }
+  },
+  {
+    "name": "close-extra-envelope",
+    "response": {
+      "id": "baf52caf-9109-4431-8479-d1903906eb27",
+      "ok": false,
+      "error": {
+        "code": "invalid_argument",
+        "message": "Unrecognized key: \"envelope\""
+      },
+      "_meta": {
+        "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+      }
+    }
+  }
+]

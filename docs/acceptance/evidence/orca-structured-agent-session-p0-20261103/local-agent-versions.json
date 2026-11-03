@@ -1,0 +1,15 @@
+{
+  "local_node": "v24.13.0",
+  "local_codex": "codex-cli 0.166.0",
+  "local_pi": "0.87.1",
+  "resolved_commands": [
+    {
+      "path": "C:\\Users\\lmas1\\.local\\bin\\codex.cmd",
+      "sha256": "c54db6755e710c39703f7c37512f9e35ed41042d8080558d2b84b8d2694323c3"
+    },
+    {
+      "path": "C:\\Users\\lmas1\\AppData\\Roaming\\npm\\pi.cmd",
+      "sha256": "35ec1b2b20461eadbbaaf10e209e0ffe9a0f8cc2f948ae4670023ea85caff296"
+    }
+  ]
+}

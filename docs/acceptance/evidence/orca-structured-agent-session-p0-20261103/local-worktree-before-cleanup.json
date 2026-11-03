@@ -1,0 +1,68 @@
+{
+  "id": "ee7d7f72-a585-42a7-a60a-4fd9f00bc200",
+  "ok": true,
+  "result": {
+    "worktree": {
+      "id": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-oas-p0-20261103-local",
+      "identity": {
+        "key": "wt2:local:ed7cfd2a-be94-42be-aca3-3d5c2f54e1c9",
+        "executionHostId": "local",
+        "instanceId": "ed7cfd2a-be94-42be-aca3-3d5c2f54e1c9"
+      },
+      "instanceId": "ed7cfd2a-be94-42be-aca3-3d5c2f54e1c9",
+      "repoId": "faae3ad4-da24-4d6d-9698-d8931b893789",
+      "projectId": "github:erranliu/steerlinetest",
+      "hostId": "local",
+      "projectHostSetupId": "faae3ad4-da24-4d6d-9698-d8931b893789",
+      "creatorProvenance": {
+        "kind": "host"
+      },
+      "path": "C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-oas-p0-20261103-local",
+      "head": "256b47afc14604f6f138c965156b3faf2ae634af",
+      "branch": "refs/heads/erranliu/sr-oas-p0-20261103-local",
+      "isBare": false,
+      "isMainWorktree": false,
+      "displayName": "sr-oas-p0-20261103-local",
+      "displayNameMode": "fixed",
+      "comment": "",
+      "linkedIssue": null,
+      "linkedPR": null,
+      "linkedLinearIssue": null,
+      "linkedLinearIssueWorkspaceId": null,
+      "linkedLinearIssueOrganizationUrlKey": null,
+      "linkedGitLabMR": null,
+      "linkedGitLabIssue": null,
+      "linkedBitbucketPR": null,
+      "linkedAzureDevOpsPR": null,
+      "linkedGiteaPR": null,
+      "linkedWorkItem": null,
+      "linkedTaskSourceContext": null,
+      "isArchived": false,
+      "isUnread": true,
+      "isPinned": false,
+      "sortOrder": 1793688543236,
+      "lastActivityAt": 1793688772382,
+      "createdAt": 1793688543234,
+      "cliProvenance": {
+        "kind": "created-by-cli",
+        "createdAt": 1793688537936
+      },
+      "baseRef": "refs/remotes/origin/main",
+      "workspaceStatus": "in-progress",
+      "parentWorktreeId": null,
+      "childWorktreeIds": [],
+      "lineage": null,
+      "git": {
+        "path": "C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-oas-p0-20261103-local",
+        "head": "256b47afc14604f6f138c965156b3faf2ae634af",
+        "branch": "refs/heads/erranliu/sr-oas-p0-20261103-local",
+        "isBare": false,
+        "isMainWorktree": false
+      },
+      "linkedItems": []
+    }
+  },
+  "_meta": {
+    "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+  }
+}

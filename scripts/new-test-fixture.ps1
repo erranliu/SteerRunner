@@ -216,12 +216,6 @@ if ($taskScenario.driver -eq 'native-capability-runner') {
     $taskManifest['audit_transport'] = @{path=$taskLocalAudit;sha256=(Get-FileHash -LiteralPath $taskLocalAudit -Algorithm SHA256).Hash.ToLowerInvariant()}
 }
 if ($taskAudit) { $taskManifest.driver = 'development-audited'; $taskManifest['audit_model'] = $taskAudit }
-if ($Scenario -eq 'orca-local.mixed') {
-    $taskPeerSlot = $taskRequired.roles.secondary.configuration
-    $taskPeer = $taskConfig.configurations[$taskPeerSlot].execution | ConvertTo-Json -Depth 40 | ConvertFrom-Json -AsHashtable
-    $taskPeer.settings.transport = $taskExecution.settings.transport
-    $taskManifest['peer_execution'] = $taskPeer
-}
 if ($taskStability) {
     function Frozen-Tool([string]$Path) { return @{path=$Path;sha256=(Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash.ToLowerInvariant()} }
     $taskManifest.schema = 'steerrunner-test/v2'

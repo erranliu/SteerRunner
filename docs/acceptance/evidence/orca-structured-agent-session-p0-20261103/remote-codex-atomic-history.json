@@ -1,0 +1,166 @@
+{
+  "id": "c2648f63-5198-4637-9ff9-54eec3719883",
+  "ok": true,
+  "result": {
+    "ok": true,
+    "page": {
+      "sessionId": "oas_p0_9cd2c4200af14a9e888067cb5880640e",
+      "epoch": "4bd1021c-2a68-4a0f-9403-576796214dc2",
+      "direction": "tail",
+      "items": [
+        {
+          "itemId": "orca:1793688771795-242db14a20f347488119a2390d9fd479",
+          "revision": 0,
+          "body": {
+            "kind": "message",
+            "role": "user",
+            "blocks": [
+              {
+                "type": "text",
+                "text": "This is an API input fidelity check. Do not use tools or read/write files. Reply exactly P0_OAS_REMOTE_CODEX_OK.\r\nLiteral path: docs\\spec\\example.md\r\n\r\nChinese: 中文; Unicode: 😀; quotes: \"x\"\r\n```text\r\na\\b\r\n```\r\n  "
+              }
+            ]
+          },
+          "sequence": 4,
+          "observedAt": 1793688770835,
+          "turnScope": {
+            "kind": "thread"
+          }
+        },
+        {
+          "itemId": "legacy:codex:oas_p0_9cd2c4200af14a9e888067cb5880640e:turn-lifecycle%3A01a1a02e-991a-7893-b8b0-098e36578ee2",
+          "revision": 3,
+          "body": {
+            "kind": "turn",
+            "contextUsage": {
+              "used": {
+                "kind": "report",
+                "model": "unknown",
+                "usedTokens": 15557,
+                "windowTokens": 475000,
+                "percentage": 3,
+                "categories": [],
+                "capturedAt": 1793688779581
+              }
+            },
+            "turnId": "01a1a02e-991a-7893-b8b0-098e36578ee2",
+            "state": "completed",
+            "outcome": "success",
+            "userItemId": "orca:1793688771795-242db14a20f347488119a2390d9fd479",
+            "startedAt": 1793688771620,
+            "requestedAt": 1793688770833,
+            "completedAt": 1793688779889,
+            "durationMs": 9029
+          },
+          "sequence": 5,
+          "observedAt": 1793688771620,
+          "turnScope": {
+            "kind": "thread"
+          }
+        },
+        {
+          "itemId": "codex:01a1a02e-981b-7d81-8a05-fd2014ba6ed2:01a1a02e-991a-7893-b8b0-098e36578ee2:1",
+          "revision": 2,
+          "body": {
+            "kind": "message",
+            "role": "assistant",
+            "blocks": [
+              {
+                "type": "text",
+                "text": "P0_OAS_REMOTE_CODEX_OK"
+              }
+            ]
+          },
+          "sequence": 7,
+          "observedAt": 1793688779221,
+          "turnScope": {
+            "kind": "turn",
+            "turnItemId": "legacy:codex:oas_p0_9cd2c4200af14a9e888067cb5880640e:turn-lifecycle%3A01a1a02e-991a-7893-b8b0-098e36578ee2"
+          }
+        }
+      ],
+      "removedItemIds": [],
+      "submissions": [
+        {
+          "clientMessageId": "1793688771795-242db14a20f347488119a2390d9fd479",
+          "fence": 2,
+          "payloadFingerprint": "e85de9ee18127d6c74370fcf4588cb3a14bd829c2712b23b426e2437b930a097",
+          "dispatchState": "accepted",
+          "providerItemId": "codex:01a1a02e-981b-7d81-8a05-fd2014ba6ed2:01a1a02e-991a-7893-b8b0-098e36578ee2:0",
+          "reason": null,
+          "submittedAt": 1793688770239,
+          "resolvedAt": 1793688777546,
+          "submittedSequence": 2,
+          "handoverRecorded": true,
+          "acceptedSequence": 2,
+          "origin": "client",
+          "source": {
+            "kind": "user"
+          },
+          "options": {},
+          "handedOverAt": 1793688770835
+        }
+      ],
+      "window": {
+        "oldest": {
+          "epoch": "4bd1021c-2a68-4a0f-9403-576796214dc2",
+          "sequence": 4
+        },
+        "newest": {
+          "epoch": "4bd1021c-2a68-4a0f-9403-576796214dc2",
+          "sequence": 7
+        },
+        "nextCursor": {
+          "epoch": "4bd1021c-2a68-4a0f-9403-576796214dc2",
+          "sequence": 4
+        }
+      },
+      "liveCursor": {
+        "epoch": "4bd1021c-2a68-4a0f-9403-576796214dc2",
+        "sequence": 10
+      },
+      "hasOlder": false,
+      "hasNewer": false,
+      "latestTurn": {
+        "itemId": "legacy:codex:oas_p0_9cd2c4200af14a9e888067cb5880640e:turn-lifecycle%3A01a1a02e-991a-7893-b8b0-098e36578ee2",
+        "observedAt": 1793688771620,
+        "turn": {
+          "contextUsage": {
+            "used": {
+              "kind": "report",
+              "model": "unknown",
+              "usedTokens": 15557,
+              "windowTokens": 475000,
+              "percentage": 3,
+              "categories": [],
+              "capturedAt": 1793688779581
+            }
+          },
+          "turnId": "01a1a02e-991a-7893-b8b0-098e36578ee2",
+          "state": "completed",
+          "outcome": "success",
+          "userItemId": "orca:1793688771795-242db14a20f347488119a2390d9fd479",
+          "startedAt": 1793688771620,
+          "requestedAt": 1793688770833,
+          "completedAt": 1793688779889,
+          "durationMs": 9029
+        }
+      },
+      "actionablePromptIds": [],
+      "working": false,
+      "fence": 2,
+      "hostNow": 1793688780575,
+      "queuedMessages": [],
+      "queuePause": null,
+      "nextQueuedMessageId": null,
+      "backgroundTasks": null
+    },
+    "providerSession": {
+      "key": "session_id",
+      "id": "01a1a02e-981b-7d81-8a05-fd2014ba6ed2"
+    }
+  },
+  "_meta": {
+    "runtimeId": "21d98aa2-d284-41f3-a6cc-42fb22d728a2"
+  }
+}

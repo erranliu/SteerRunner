@@ -1,0 +1,28 @@
+{
+  "id": "020bf183-86a2-4285-bb99-4613f593bff3",
+  "ok": true,
+  "result": {
+    "models": [],
+    "current": {
+      "defaulted": [],
+      "acceptedInputSources": {}
+    },
+    "modelsKnown": false,
+    "canSwitchAccount": false,
+    "rewind": {
+      "supported": false,
+      "reason": "unsupported"
+    },
+    "conversationCommands": [
+      "clear",
+      "compact"
+    ],
+    "acceptsImages": true,
+    "contextUsage": {
+      "current": {}
+    }
+  },
+  "_meta": {
+    "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+  }
+}

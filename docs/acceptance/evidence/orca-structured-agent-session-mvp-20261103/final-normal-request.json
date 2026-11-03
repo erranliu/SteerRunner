@@ -1,0 +1,47 @@
+{
+  "protocol": "steerrunner-cli/v1",
+  "request_id": "orca-mvp-final-normal-20261103-v1",
+  "input": {
+    "title": "Orca final structured MVP normal",
+    "name_prefix": "oas-final",
+    "repository": {
+      "url": "https://github.com/erranliu/SteerlineTest.git",
+      "local_path": "C:/Projects/SteerlineTest",
+      "remote": "origin",
+      "base_branch": "main",
+      "base_revision": "9d81d9c2652177faf6354d4e9f9f3aec79535d11"
+    },
+    "documents": {
+      "spec": {
+        "path": "README.md"
+      },
+      "plan": {
+        "path": ".gitignore"
+      }
+    },
+    "execution": {
+      "adapter": "orca-terminal",
+      "target": {
+        "kind": "local"
+      },
+      "settings": {
+        "access_mode": "full_access",
+        "transport": {
+          "executable": "C:/Users/lmas1/AppData/Local/Programs/orca/resources/bin/orca.exe",
+          "wait_timeout": "30s"
+        },
+        "agent_launch": {
+          "model": "gpt-6.1-sol",
+          "reasoning_effort": "medium"
+        }
+      }
+    },
+    "workflow": {
+      "id": "execute",
+      "version": 1,
+      "prompt_overrides": {
+        "execute": "This is an isolated Runner execute/1 structured input acceptance. Do not modify files, commit, push, create a PR, install software, or inspect credentials. First send commentary RUNNER_STAGE_ONE, then use the shell tool to print RUNNER_TOOL_ONE. Send commentary RUNNER_STAGE_TWO and use the shell tool to print RUNNER_TOOL_TWO. Finally return all 300 lines RUNNER_FINAL_LINE_0001 through RUNNER_FINAL_LINE_0300, one line per number, without abbreviation.\r\n\r\nLiteral preservation only: 中文 😀 \"quotes\" docs\\spec\\example.md\r\n```text\r\n<&> a\\b\r\n```\r\n  "
+      }
+    }
+  }
+}

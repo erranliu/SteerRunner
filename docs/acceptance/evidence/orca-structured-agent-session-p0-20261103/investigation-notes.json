@@ -1,0 +1,45 @@
+{
+  "schema": "orca-structured-p0-notes/v1",
+  "kind": "investigator transcription, not raw RPC",
+  "preflight_failures": [
+    {
+      "count": 3,
+      "operation": "blank preparation",
+      "error": "randomUuid is not a function",
+      "boundary": "before intent file, socket and mutation; corrected helper callback"
+    },
+    {
+      "operation": "local IPC sandbox access",
+      "error": "EPERM/runtime_access_denied",
+      "resolution": "approved runtime access; no Orca restart"
+    },
+    {
+      "operation": "local worktree Git read",
+      "error": "sandbox rejected",
+      "resolution": "separate escalated readonly check saved"
+    }
+  ],
+  "source_references": [
+    {
+      "path": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\app.asar.unpacked\\out\\shared\\rpc-contract\\structured-agent-session-question-params.js",
+      "sha256": "47ca95fbea27060d0176e9514db70472d882d7331bd339843eb641aaa7b882df"
+    },
+    {
+      "path": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\app.asar.unpacked\\out\\shared\\agent-session\\lifecycle\\structured-agent-session-mutation.js",
+      "sha256": "b480a985078b949f6fdaa5197b2d2e9d6df51b8bddcaf27374cdb0e034107eab"
+    }
+  ],
+  "unverified": [
+    "provider child executable/version/hash",
+    "local WebSocket subscribe",
+    "real native question answer/revision roundtrip",
+    "item detail read",
+    "formal Runner workflows, restart and offline stop"
+  ],
+  "harness_provenance": "probe.cjs evolved during investigation; final digest does not identify every earlier invocation",
+  "offline_validation_initial_failure": {
+    "check": "local-codex-atomic-original-input-turn",
+    "reason": "validator incorrectly required providerItemId===normalized user itemId",
+    "correction": "require accepted submission for original clientMessage, normalized user orca:<clientMessageId> and turn.userItemId; preserve separate providerItemId"
+  }
+}

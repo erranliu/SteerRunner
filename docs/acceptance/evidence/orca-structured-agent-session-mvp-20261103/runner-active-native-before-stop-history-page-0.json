@@ -1,0 +1,183 @@
+{
+  "id": "21cf8110-34e2-4a87-a1c3-691cf9994406",
+  "ok": true,
+  "result": {
+    "ok": true,
+    "page": {
+      "sessionId": "oas_863cbff40f2810c3d41a786249098902",
+      "epoch": "7c75cf30-6c68-4f68-b3dc-55ed894c8770",
+      "direction": "tail",
+      "items": [
+        {
+          "itemId": "orca:1793694032472-50c69158997c34cf5cc2846eb68e5086",
+          "revision": 0,
+          "body": {
+            "kind": "message",
+            "role": "user",
+            "blocks": [
+              {
+                "type": "text",
+                "text": "This is an isolated active-stop acceptance for Runner execute/1. Do not modify files, commit, push, publish, install software or inspect credentials. Send a short commentary RUNNER_ACTIVE_START, then use the shell tool to wait for 120 seconds (PowerShell Start-Sleep -Seconds 120). The operator will stop this original native session while it is active. Do not create any background processes. If the wait finishes normally, return RUNNER_ACTIVE_FINISHED.\r\n\r\nLiteral body: 中文😀 \"quote\" \\path\r\n  "
+              }
+            ]
+          },
+          "sequence": 4,
+          "observedAt": 1793694042087,
+          "turnScope": {
+            "kind": "thread"
+          }
+        },
+        {
+          "itemId": "legacy:codex:oas_863cbff40f2810c3d41a786249098902:turn-lifecycle%3A01a1a07f-0814-7ce0-aac1-a39b35dd6eed",
+          "revision": 3,
+          "body": {
+            "kind": "turn",
+            "turnId": "01a1a07f-0814-7ce0-aac1-a39b35dd6eed",
+            "state": "running",
+            "userItemId": "orca:1793694032472-50c69158997c34cf5cc2846eb68e5086",
+            "startedAt": 1793694042834,
+            "requestedAt": 1793694042080,
+            "contextUsage": {
+              "used": {
+                "kind": "report",
+                "model": "unknown",
+                "usedTokens": 18565,
+                "windowTokens": 475000,
+                "percentage": 4,
+                "categories": [],
+                "capturedAt": 1793694067668
+              }
+            }
+          },
+          "sequence": 5,
+          "observedAt": 1793694042834,
+          "turnScope": {
+            "kind": "thread"
+          }
+        },
+        {
+          "itemId": "codex:01a1a07e-ff99-78c0-b6c7-064c6b664de9:01a1a07f-0814-7ce0-aac1-a39b35dd6eed:1",
+          "revision": 2,
+          "body": {
+            "kind": "message",
+            "role": "assistant",
+            "blocks": [
+              {
+                "type": "text",
+                "text": "RUNNER_ACTIVE_START\n"
+              }
+            ]
+          },
+          "sequence": 7,
+          "observedAt": 1793694048191,
+          "turnScope": {
+            "kind": "turn",
+            "turnItemId": "legacy:codex:oas_863cbff40f2810c3d41a786249098902:turn-lifecycle%3A01a1a07f-0814-7ce0-aac1-a39b35dd6eed"
+          }
+        },
+        {
+          "itemId": "orca:codex-item%3A01a1a07e-ff99-78c0-b6c7-064c6b664de9%3Aexec-5c9f9daf-9496-4a78-a658-c2370561d2ff",
+          "revision": 1,
+          "body": {
+            "kind": "tool-call",
+            "name": "shell",
+            "callId": "exec-5c9f9daf-9496-4a78-a658-c2370561d2ff",
+            "input": {
+              "command": "\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'Start-Sleep -Seconds 120'",
+              "cwd": "C:\\Users\\lmas1\\orca\\workspaces\\SteerlineTest\\oas-mvp-dd1d0ffa0f672a8e1eb43b3036eeb425"
+            },
+            "state": "running"
+          },
+          "sequence": 9,
+          "observedAt": 1793694049615,
+          "turnScope": {
+            "kind": "turn",
+            "turnItemId": "legacy:codex:oas_863cbff40f2810c3d41a786249098902:turn-lifecycle%3A01a1a07f-0814-7ce0-aac1-a39b35dd6eed"
+          }
+        }
+      ],
+      "removedItemIds": [],
+      "submissions": [
+        {
+          "clientMessageId": "1793694032472-50c69158997c34cf5cc2846eb68e5086",
+          "fence": 2,
+          "payloadFingerprint": "6866f7aa9b0f144120cc5c2f237b7bcb831369a7bf205e7b8bfbd5d0d0cec562",
+          "dispatchState": "accepted",
+          "providerItemId": "codex:01a1a07e-ff99-78c0-b6c7-064c6b664de9:01a1a07f-0814-7ce0-aac1-a39b35dd6eed:0",
+          "reason": null,
+          "submittedAt": 1793694039064,
+          "resolvedAt": 1793694045909,
+          "submittedSequence": 2,
+          "handoverRecorded": true,
+          "acceptedSequence": 2,
+          "origin": "client",
+          "source": {
+            "kind": "user"
+          },
+          "options": {
+            "model": "gpt-6.1-sol",
+            "effort": "medium"
+          },
+          "handedOverAt": 1793694042087
+        }
+      ],
+      "window": {
+        "oldest": {
+          "epoch": "7c75cf30-6c68-4f68-b3dc-55ed894c8770",
+          "sequence": 4
+        },
+        "newest": {
+          "epoch": "7c75cf30-6c68-4f68-b3dc-55ed894c8770",
+          "sequence": 9
+        },
+        "nextCursor": {
+          "epoch": "7c75cf30-6c68-4f68-b3dc-55ed894c8770",
+          "sequence": 4
+        }
+      },
+      "liveCursor": {
+        "epoch": "7c75cf30-6c68-4f68-b3dc-55ed894c8770",
+        "sequence": 11
+      },
+      "hasOlder": false,
+      "hasNewer": false,
+      "latestTurn": {
+        "itemId": "legacy:codex:oas_863cbff40f2810c3d41a786249098902:turn-lifecycle%3A01a1a07f-0814-7ce0-aac1-a39b35dd6eed",
+        "observedAt": 1793694042834,
+        "turn": {
+          "turnId": "01a1a07f-0814-7ce0-aac1-a39b35dd6eed",
+          "state": "running",
+          "userItemId": "orca:1793694032472-50c69158997c34cf5cc2846eb68e5086",
+          "startedAt": 1793694042834,
+          "requestedAt": 1793694042080,
+          "contextUsage": {
+            "used": {
+              "kind": "report",
+              "model": "unknown",
+              "usedTokens": 18565,
+              "windowTokens": 475000,
+              "percentage": 4,
+              "categories": [],
+              "capturedAt": 1793694067668
+            }
+          }
+        }
+      },
+      "actionablePromptIds": [],
+      "working": true,
+      "fence": 2,
+      "hostNow": 1793694084017,
+      "queuedMessages": [],
+      "queuePause": null,
+      "nextQueuedMessageId": null,
+      "backgroundTasks": null
+    },
+    "providerSession": {
+      "key": "session_id",
+      "id": "01a1a07e-ff99-78c0-b6c7-064c6b664de9"
+    }
+  },
+  "_meta": {
+    "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+  }
+}

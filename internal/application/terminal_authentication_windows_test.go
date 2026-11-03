@@ -28,7 +28,7 @@ func TestMain(m *testing.M) {
 }
 
 func TestSRFreezeManagedTerminalAuthenticationPath(t *testing.T) {
-	for _, agent := range []string{"pi", "dsh"} {
+	for _, agent := range []string{"pi"} {
 		t.Run(agent, func(t *testing.T) {
 			f := newBaseRefreshFixture(t, "origin", "main")
 			state, err := os.MkdirTemp("", "sr-auth-")
@@ -39,6 +39,8 @@ func TestSRFreezeManagedTerminalAuthenticationPath(t *testing.T) {
 			f.state = state
 			self, _ := os.Executable()
 			digest := strings.Repeat("a", 64)
+			// A previously installed Pi helper may still advertise the retired
+			// shared metadata key. It must remain usable without DSH support.
 			t.Setenv("SR_TEST_TERMINAL_METADATA", string(canonical(orca.TerminalMetadata{Version: 5, Contract: terminaltools.Contract, Authentication: "host-native", CodexPolicy: codex.PolicyContract, CodexTransport: codex.RemoteNativeTransport, RuntimeSHA256: digest, BundleSHA256: digest, PiSHA256: digest, DSHSHA256: digest})))
 			// The managed terminal path must not discover or require Codex.
 			git, err := exec.LookPath("git")

@@ -1,0 +1,5 @@
+{
+  "sessionId": "oas_p0_9cd2c4200af14a9e888067cb5880640e",
+  "observedFence": 4,
+  "reason": "cleaning a new acquisition caused by accepted stale-fence test; not replaying an unknown close"
+}
