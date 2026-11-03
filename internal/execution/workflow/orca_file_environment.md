@@ -1,0 +1,1 @@
+Orca file bindings are worktree-relative. Before invoking a script that reads them, resolve the existing bound files to absolute paths and set the named environment variables in that command process. Preserve the caller executable and arguments; do not initialize the files.

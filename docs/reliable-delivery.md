@@ -1,5 +1,7 @@
 # SteerRunner 可靠性交付链路与简化分析
 
+Orca 原会话关闭与额外资源清理分别处理：关闭成功后允许业务收尾及按冻结 scope 核验，额外清理不保证且不构成新门禁；关闭本身未知仍保持未知。现行责任、文件变量绑定和重启/部署规则统一见[Orca 执行链路设计](orca-execution.md)。
+
 能力和可靠性承诺统一维护在[长期产品承诺](spec/steerrunner.spec.md#长期产品承诺)；本文解释实现链路和历史分析，不另立承诺。本机 Orca Codex 已按[现行长期承诺](spec/steerrunner.spec.md#现行停止范围本机-orca-codex)收敛停止范围，证据及限制见[专项验收](acceptance/orca-local-codex-stop-simplification.md)。
 
 > 2026-11-01：当前运行指引已按[个人执行器简化](spec/personal-executor-simplification.spec.md)及停止条件收敛更新为 v8、升级先排空和人工对账。下文历史调查基线、试验、验收引用保留原范围；P1–P4 资格分别见[总状态](spec/personal-executor-simplification.plan.md#71-本轮总状态与交付边界)，不表示外部 SteerLine 已联验。

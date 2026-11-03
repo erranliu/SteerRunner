@@ -1,5 +1,7 @@
 # Spec：本机 Orca Codex execute/1 结构化执行与 DSH 退役
 
+> 2026-11-03 后续决策：用户接受 Orca 额外资源清理不保证。原 session close 成功即可满足 `orca_agent_session` 停止范围，允许结果封存和正常流程；close 自身未知仍不能报停止。文件变量由 Agent 按明确绑定传给脚本。本文下述 MVP 的“成功 close 仍一律未知”“不设置脚本环境变量”是此前阶段限制，已由[长期设计](../orca-execution.md)及[本次修复](../acceptance/orca-session-result-settlement.md)取代；旧验收不改写。
+
 日期：2026-11-03。状态：用户已确认本 PR 范围及停止证据限制；已实现窄范围，验收和未核实项见[实施记录](../acceptance/orca-structured-agent-session-mvp.md)。代码基线 `457ffaea20b6227a0bdaec9e56f5b9e7f54da337`。对应 [Plan](orca-structured-agent-session.plan.md)、[本轮设计审计](../acceptance/orca-structured-agent-session-mvp-design-audit.md)。[P0 现场](../acceptance/orca-structured-agent-session.md)和[阻断再调查](../acceptance/orca-structured-agent-session-blocker-review.md)保留调查事实；本文件取代其先前“必须等全部组合与完整停止取证才能迁移”的实施门禁。
 
 ## 1. 本 PR 的交付边界

@@ -37,7 +37,7 @@ SteerRunner 是面向个人本机与多机开发的 AI 执行器。
 
 本机与远端 Orca 的 **Codex/development/2/full_access** 可使用同一无 helper 原生合同；两端只改变明确 target/连接。停止范围为原终端，实际模型未独立核验、工作区审计 unreported。显式 managed、audited、Pi 等仍按各自合同，不继承此资格。配置、保证及升级排空见[Orca 双端执行合同](docs/orca-execution.md)。
 
-本机 Orca Codex 的新 **execute/1** 使用原子结构化首消息，多行正文保持一条用户消息；完整原回合结果独立可读。原会话 close 最多一次；退出证据不足时明确 `stop_status=unknown`、`resources_settled=false`，不宣称已停止。其它 Workflow、Pi、远端及非 Orca Codex 链路保持，见[实施验收](docs/acceptance/orca-structured-agent-session-mvp.md)。
+本机 Orca Codex 的新 **execute/1** 使用原子结构化首消息，多行正文保持一条用户消息；完整原回合结果独立可读。原会话 close 最多一次；成功回执确认原会话范围停止，允许结果收取和正常流程。额外资源清理不保证，也不作为额外门禁；close 自身未知仍保持 unknown。其它 Workflow、Pi、远端及非 Orca Codex 链路保持，见[实施验收](docs/acceptance/orca-structured-agent-session-mvp.md)。
 
 ## 跟使用Orca有什么区别？
 

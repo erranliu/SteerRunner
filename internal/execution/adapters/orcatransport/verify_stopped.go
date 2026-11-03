@@ -20,7 +20,7 @@ func VerifyStopped(ctx context.Context, setup b.LifecycleSetup) error {
 		if err := l.validateStructured(setup.Snapshot); err != nil {
 			return err
 		}
-		return errors.New(AgentSessionStopDiagnostic)
+		return l.verifyAgentSessionStopped(setup.Snapshot)
 	}
 	return l.verifyStopped(ctx, setup.Snapshot)
 }

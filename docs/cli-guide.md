@@ -1,5 +1,7 @@
 # CLI 与运维指南
 
+Orca 原会话关闭与额外资源清理分别处理：关闭成功后允许业务收尾及按冻结 scope 核验，额外清理不保证且不构成新门禁；关闭本身未知仍保持未知。现行责任、文件变量绑定和重启/部署规则统一见[Orca 执行链路设计](orca-execution.md)。
+
 本指南面向直接集成 CLI 和维护 Runner 服务的用户。首次使用请从[项目介绍与快速开始](../README.md)进入；专题文档见[文档索引](README.md)。以下命令均在仓库根目录执行。
 
 ## 构建和启动
@@ -217,4 +219,4 @@ Workflow 能力/状态机定义：[统一能力与边界](workflows/README.md) �
 
 普通 service stop 只脱离观察。离线 verify-stopped 不把 stopped 标签当作资源证明：orca_terminal 范围可使用既有、已持久化且绑定原 Run/input、attempt/generation、runtime/worktree/terminal/incarnation 的 confirmed 停止回执（Stopped、WorkerAbsent 与 confirmed progress 均须齐全）。该原终端的停止事实不因后续 Orca 重启、断线或工作区移除失效；停止对账也只重放原确认，不再次关闭终端。缺失、accepted/unknown、身份不符或未完成操作仍须查询原资源；不写 DB 或原 shutdown 回执，不把缺失工作区本身当作停止证明。直接 Codex、Pi 与原生远端的证明范围保持，不扩展为后台进程或凭据已清理。当前源码的实现、验证与外部集成限制见[专项验收](acceptance/orca-local-codex-stop-simplification.md)。
 
-本机 Orca Codex 新 execute/1 使用原子结构化首消息；`orca_agent_session` 的 close 回执不证明完整资源退出，`stop_status=unknown`、`resources_settled=false`，完整业务结果仍可读。该范围不使用上述 terminal 停止回执追认结算，详见[实施验收](acceptance/orca-structured-agent-session-mvp.md)。
+本机 Orca Codex execute/1 使用原子结构化首消息；`orca_agent_session` 以原 session 关闭成功回执确认停止范围，允许结果封存及正常流程。它不证明完整资源清理，也不因缺少额外清理保证阻断；close 自身失败或丢回执仍保持 unknown。离线核验读取绑定原身份的已持久回执，不以 terminal 缺席代替会话关闭，详见[长期设计](orca-execution.md)与[本次验收](acceptance/orca-session-result-settlement.md)。
