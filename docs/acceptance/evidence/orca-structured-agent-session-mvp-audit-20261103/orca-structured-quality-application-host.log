@@ -1,0 +1,6 @@
+--- FAIL: TestSharedNativeEngineStopReconciliation (204.31s)
+    --- FAIL: TestSharedNativeEngineStopReconciliation//missing-host (18.91s)
+        shared_native_stop_test.go:271: first stop invoked wrong effects 0 0 Orca CLI queue ended before command invocation
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/application	237.949s
+FAIL

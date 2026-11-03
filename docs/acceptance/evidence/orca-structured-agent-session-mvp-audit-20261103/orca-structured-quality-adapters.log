@@ -1,0 +1,112 @@
+--- FAIL: TestOrcaCLICommandEncodingAndConsumers (1.29s)
+    --- FAIL: TestOrcaCLICommandEncodingAndConsumers/#00 (0.64s)
+        cli_command_test.go:49: consumers did not share original command or receipt {[]    false} Access is denied. 1
+    --- FAIL: TestOrcaCLICommandEncodingAndConsumers/paired_host (0.65s)
+        cli_command_test.go:49: consumers did not share original command or receipt {[]    false} Access is denied. 1
+--- FAIL: TestCreationOwnerRetainsWorkspaceAcrossCallerLoss (6.02s)
+    --- FAIL: TestCreationOwnerRetainsWorkspaceAcrossCallerLoss/#00 (3.01s)
+        creation_owner_test.go:122: original create was not dispatched
+    --- FAIL: TestCreationOwnerRetainsWorkspaceAcrossCallerLoss/paired-worker (3.01s)
+        creation_owner_test.go:122: original create was not dispatched
+--- FAIL: TestCreationOwnerInitialTerminalPlanSurvivesDelayedWorkspaceReceipt (6.02s)
+    --- FAIL: TestCreationOwnerInitialTerminalPlanSurvivesDelayedWorkspaceReceipt/#00 (3.01s)
+        creation_owner_test.go:122: original create was not dispatched
+    --- FAIL: TestCreationOwnerInitialTerminalPlanSurvivesDelayedWorkspaceReceipt/paired-worker (3.01s)
+        creation_owner_test.go:122: original create was not dispatched
+--- FAIL: TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch (6.26s)
+    --- FAIL: TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/wire-loss (0.66s)
+        creation_owner_test.go:209: unknown creation repeated effects or guessed ownership wire-loss
+    --- FAIL: TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/missing-result (0.70s)
+        creation_owner_test.go:209: unknown creation repeated effects or guessed ownership missing-result
+    --- FAIL: TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/corrupt-result (0.67s)
+        creation_owner_test.go:209: unknown creation repeated effects or guessed ownership corrupt-result
+    --- FAIL: TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/foreign-result (0.67s)
+        creation_owner_test.go:209: unknown creation repeated effects or guessed ownership foreign-result
+    --- FAIL: TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/changed-output (0.68s)
+        creation_owner_test.go:209: unknown creation repeated effects or guessed ownership changed-output
+    --- FAIL: TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/foreign-operation (0.88s)
+        creation_owner_test.go:209: unknown creation repeated effects or guessed ownership foreign-operation
+    --- FAIL: TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/changed-command (0.70s)
+        creation_owner_test.go:209: unknown creation repeated effects or guessed ownership changed-command
+    --- FAIL: TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/missing-plan (0.65s)
+        creation_owner_test.go:209: unknown creation repeated effects or guessed ownership missing-plan
+    --- FAIL: TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/write-failed (0.66s)
+        creation_owner_test.go:209: unknown creation repeated effects or guessed ownership write-failed
+--- FAIL: TestCreationOwnerControlReceiptSurvivesServiceLoss (0.70s)
+    creation_owner_test.go:238: {{1 original-operation-create_resource     {      } create_resource  [] [] digest  0001-01-01 00:00:00 +0000 UTC 0001-01-01 00:00:00 +0000 UTC  [] 0x3c32bff9cd00 0x3c32bfb9f200} outcome_unknown   <nil> <nil> <nil> <nil> [] []   {false false    false false false false false false false  false   } <nil> <nil>} original native control creation unverified; zero business input and no replacement
+--- FAIL: TestCreationOwnerIncompleteLaunchClaimNeverRetries (2.05s)
+    --- FAIL: TestCreationOwnerIncompleteLaunchClaimNeverRetries/launch-failed (0.65s)
+        creation_owner_test.go:286: original launch claim repeated an effect launch-failed 0 0
+    --- FAIL: TestCreationOwnerIncompleteLaunchClaimNeverRetries/launch-response-lost (0.65s)
+        creation_owner_test.go:286: original launch claim repeated an effect launch-response-lost 0 0
+    --- FAIL: TestCreationOwnerIncompleteLaunchClaimNeverRetries/completed (0.71s)
+        creation_owner_test.go:286: original launch claim repeated an effect completed 0 0
+--- FAIL: TestCreationOwnerStartupUsesOriginalDeadline (0.88s)
+    creation_owner_test.go:312: owner startup escaped original creation deadline outcome_unknown Access is denied.
+--- FAIL: TestCreationOwnerMissingTerminalReceiptNeverAdoptsInventory (0.86s)
+    creation_owner_test.go:346: fixture did not reach caller-only terminal selection Access is denied.
+--- FAIL: TestCreationOwnerInitialTerminalReceiptAndEmptyRecovery (0.83s)
+    --- FAIL: TestCreationOwnerInitialTerminalReceiptAndEmptyRecovery/receipt-before-checkpoint (0.83s)
+        creation_owner_test.go:412: original initial terminal was lost or replaced {       false false  []} open C:\Users\lmas1\AppData\Local\Packages\sandbox.{ba8bad52-f569-4ca8-9cab-88464070595a}\AC\Temp\TestCreationOwnerInitialTerminalReceiptAndEmptyRecoveryreceipt-1455599038\002\orca-initial-terminals\1b0c38e07577947ea7f7b9156ebc304cc7f51fb52d335c56cd3404808c3b9f2d.json: The system cannot find the file specified.
+            original initial terminal preparation plan unavailable 0 0
+--- FAIL: TestNativeReceiptPublicationAcrossWindowsReaders (2.97s)
+    --- FAIL: TestNativeReceiptPublicationAcrossWindowsReaders/reader-closes-publication-recovers (1.47s)
+        receipt_write_windows_test.go:76: brief reader stranded native completion exit status 1 {started} node:fs:1018
+              binding.rename(
+                      ^
+            
+            Error: EPERM: operation not permitted, rename 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{ba8bad52-f569-4ca8-9cab-88464070595a}\AC\Temp\TestNativeReceiptPublicationAcrossWindowsReadersreader-closes-p3343416097\001\original.json.tmp' -> 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{ba8bad52-f569-4ca8-9cab-88464070595a}\AC\Temp\TestNativeReceiptPublicationAcrossWindowsReadersreader-closes-p3343416097\001\original.json'
+                at Object.renameSync (node:fs:1018:11)
+                at writeReceipt (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/receipt.mjs:24:10)
+                at file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/[eval1]:1:137 {
+              errno: -4048,
+              code: 'EPERM',
+              syscall: 'rename',
+              path: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{ba8bad52-f569-4ca8-9cab-88464070595a}\\AC\\Temp\\TestNativeReceiptPublicationAcrossWindowsReadersreader-closes-p3343416097\\001\\original.json.tmp',
+              dest: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{ba8bad52-f569-4ca8-9cab-88464070595a}\\AC\\Temp\\TestNativeReceiptPublicationAcrossWindowsReadersreader-closes-p3343416097\\001\\original.json'
+            }
+            
+            Node.js v24.13.0
+            
+--- FAIL: TestTerminalStartupFailureCanStopWithoutInventingWorker (0.97s)
+    terminal_receipt_windows_test.go:95: exit status 1 --- FAIL: TestTerminalStartupFailureCanStopWithoutInventingWorker (0.81s)
+            terminal_receipt_windows_test.go:33: helper did not persist its original startup error  git failed: exit status 128 (fatal: not a git repository (or any of the parent directories): .git
+                )
+                Access is denied. GetFileAttributesEx C:\Users\lmas1\AppData\Local\Packages\sandbox.{ba8bad52-f569-4ca8-9cab-88464070595a}\AC\Temp\TestTerminalStartupFailureCanStopWithoutInventingWorker1189543830\003\startup-exit.json: The system cannot find the file specified.
+        FAIL
+        
+--- FAIL: TestManagedNativeChannelRejectsMissingChangedAndLateFacts (0.73s)
+    terminal_receipt_windows_test.go:219: Access is denied.
+    --- FAIL: TestManagedNativeChannelRejectsMissingChangedAndLateFacts/missing (0.68s)
+        testing.go:1913: test executed panic(nil) or runtime.Goexit: subtest may have called FailNow on a parent test
+--- FAIL: TestManagedStopWaitsForOriginalExitAndAuthenticationCleanup (10.04s)
+    terminal_receipt_windows_test.go:371: original owner missing GetFileAttributesEx C:\Users\lmas1\AppData\Local\Packages\sandbox.{ba8bad52-f569-4ca8-9cab-88464070595a}\AC\Temp\TestManagedStopWaitsForOriginalExitAndAuthenticationCleanup4032838772\003\owner.json: The system cannot find the file specified.
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport	133.202s
+--- FAIL: TestOrcaCLIPreparationSharesMutexAndRecoversKilledOwner (0.35s)
+    cli_lock_windows_test.go:108: preparation did not acquire the same mutex  EOF
+--- FAIL: TestStateConnectionFailureClassification (0.01s)
+    --- FAIL: TestStateConnectionFailureClassification/Unauthorized (0.00s)
+        state_connection_test.go:23: unsafe failure classification Orca state streaming connection failed: transport unavailable
+    --- FAIL: TestStateConnectionFailureClassification/Forbidden (0.00s)
+        state_connection_test.go:23: unsafe failure classification Orca state streaming connection failed: transport unavailable
+--- FAIL: TestOrcaNativeStateStream (0.13s)
+    --- FAIL: TestOrcaNativeStateStream/subscription-query (0.01s)
+        state_stream_test.go:220: Orca state streaming connection failed: transport unavailable
+    --- FAIL: TestOrcaNativeStateStream/sample-feed (0.01s)
+        state_stream_test.go:156: Orca state streaming connection failed: transport unavailable
+    --- FAIL: TestOrcaNativeStateStream/wrong-runtime (0.01s)
+        state_stream_test.go:215: native identity conflict was classified as retryable Orca state streaming connection failed: transport unavailable
+    --- FAIL: TestOrcaNativeStateStream/wrong-request (0.01s)
+        state_stream_test.go:215: native identity conflict was classified as retryable Orca state streaming connection failed: transport unavailable
+    --- FAIL: TestOrcaNativeStateStream/terminal-query (0.02s)
+        state_stream_test.go:140: {       false false  []} Orca state streaming connection failed: transport unavailable
+    --- FAIL: TestOrcaNativeStateStream/terminal-query-runtime (0.02s)
+        state_stream_test.go:148: identity conflict lost Orca state streaming connection failed: transport unavailable
+    --- FAIL: TestOrcaNativeStateStream/terminal-query-request (0.01s)
+        state_stream_test.go:148: identity conflict lost Orca state streaming connection failed: transport unavailable
+    --- FAIL: TestOrcaNativeStateStream/terminal-query-cancelled (0.02s)
+        state_stream_test.go:144: Orca state streaming connection failed: transport unavailable
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca	20.329s
+FAIL

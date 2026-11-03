@@ -1,0 +1,408 @@
+✖ failed native initialization publishes a bounded failure for either terminal agent (2388.256ms)
+✖ an observed input or agent_end cannot certify start or completion (2373.479ms)
+✖ same prompt with distinct command IDs retains separate native inputs (2099.0655ms)
+✖ duplicate, manual and altered input are fenced without a second execution (1386.0803ms)
+✔ non-TUI or enabled tools cannot become ready (19.3854ms)
+✖ a changed expanded or committed input cannot settle successfully (1284.9864ms)
+✖ retry outcomes are observed until the real settled boundary (1041.0957ms)
+✖ a provider error remains a settled failure, never a successful reply (1042.0872ms)
+✖ missing native entries, pending continuations and oversized replies remain unverified (1373.9334ms)
+✖ writer failures fence input and incomplete temporary files are never a final receipt (1557.4229ms)
+✖ native shell shortcut is replaced even though no built-in tools are active (1579.9265ms)
+✖ the fixed-text probe caps the native payload without changing the provider or model (1222.469ms)
+✖ shutdown or identity change cannot rewrite a frozen result or certify a new session (1364.3408ms)
+✖ reply boundaries count UTF-8 bytes and never truncate (1431.1229ms)
+✖ a failed final receipt write fences later input even if Pi catches the callback error (1282.9204ms)
+✖ non-text final content cannot masquerade as a complete text reply (1329.7093ms)
+✖ reinitializing an extension on the same session changes its frozen load identity (1366.0277ms)
+✖ managed tools revalidate the live model, tools, thinking and workspace before execution (1357.5955ms)
+✖ managed thinking is read from Pi and an explicit clamped request blocks readiness (1211.8843ms)
+✖ native selection changes fence the instance before a later tool or input (1069.0236ms)
+✔ unknown native host outcomes fence later tools while ordinary command failures remain retryable (3.5018ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 2
+ℹ fail 19
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 27978.0425
+
+✖ failing tests:
+
+test at internal\execution\adapters\orcatransport\extensions\pi-evidence.test.mjs:13:1
+✖ failed native initialization publishes a bounded failure for either terminal agent (2388.256ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /native_tool_preparation_failed/. Input:
+  
+  "Error: EPERM: operation not permitted, rename 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\sr-preparation-failure-uebask\\preparation-failure.json.tmp' -> 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\sr-preparation-failure-uebask\\preparation-failure.json'"
+  
+      at async TestContext.<anonymous> (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs:26:5)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: EPERM: operation not permitted, rename 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\sr-preparation-failure-uebask\preparation-failure.json.tmp' -> 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\sr-preparation-failure-uebask\preparation-failure.json'
+        at Object.renameSync (node:fs:1018:11)
+        at writeReceipt (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/receipt.mjs:24:10)
+        at prepareTerminalTools (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/terminal-tools.mjs:98:9)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs:26:5)
+        at async Test.run (node:internal/test_runner/test:1113:7)
+        at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3),
+    expected: /native_tool_preparation_failed/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at internal\execution\adapters\orcatransport\extensions\pi-evidence.test.mjs:75:1
+✖ an observed input or agent_end cannot certify start or completion (2373.479ms)
+  Error: EPERM: operation not permitted, rename 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\runner-pi-evidence-test-201dYU\readiness.json.tmp' -> 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\runner-pi-evidence-test-201dYU\readiness.json'
+      at Object.renameSync (node:fs:1018:11)
+      at writeReceipt (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/receipt.mjs:24:10)
+      at save (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:21:11)
+      at ready (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:61:7)
+      at file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:64:5
+      at Object.emit (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs:57:58)
+      at TestContext.<anonymous> (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs:76:27)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18) {
+    errno: -4048,
+    code: 'EPERM',
+    syscall: 'rename',
+    path: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\runner-pi-evidence-test-201dYU\\readiness.json.tmp',
+    dest: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\runner-pi-evidence-test-201dYU\\readiness.json'
+  }
+
+test at internal\execution\adapters\orcatransport\extensions\pi-evidence.test.mjs:89:1
+✖ same prompt with distinct command IDs retains separate native inputs (2099.0655ms)
+  Error: EPERM: operation not permitted, rename 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\runner-pi-evidence-test-qU3WMQ\readiness.json.tmp' -> 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\runner-pi-evidence-test-qU3WMQ\readiness.json'
+      at Object.renameSync (node:fs:1018:11)
+      at writeReceipt (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/receipt.mjs:24:10)
+      at save (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:21:11)
+      at ready (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:61:7)
+      at file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:64:5
+      at Object.emit (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs:57:58)
+      at TestContext.<anonymous> (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs:90:27)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18) {
+    errno: -4048,
+    code: 'EPERM',
+    syscall: 'rename',
+    path: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\runner-pi-evidence-test-qU3WMQ\\readiness.json.tmp',
+    dest: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\runner-pi-evidence-test-qU3WMQ\\readiness.json'
+  }
+
+test at internal\execution\adapters\orcatransport\extensions\pi-evidence.test.mjs:97:1
+✖ duplicate, manual and altered input are fenced without a second execution (1386.0803ms)
+  Error: EPERM: operation not permitted, rename 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\runner-pi-evidence-test-N1gy7o\readiness.json.tmp' -> 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\runner-pi-evidence-test-N1gy7o\readiness.json'
+      at Object.renameSync (node:fs:1018:11)
+      at writeReceipt (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/receipt.mjs:24:10)
+      at save (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:21:11)
+      at ready (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:61:7)
+      at file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:64:5
+      at Object.emit (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs:57:58)
+      at TestContext.<anonymous> (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs:99:29)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18) {
+    errno: -4048,
+    code: 'EPERM',
+    syscall: 'rename',
+    path: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\runner-pi-evidence-test-N1gy7o\\readiness.json.tmp',
+    dest: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\runner-pi-evidence-test-N1gy7o\\readiness.json'
+  }
+
+test at internal\execution\adapters\orcatransport\extensions\pi-evidence.test.mjs:116:1
+✖ a changed expanded or committed input cannot settle successfully (1284.9864ms)
+  Error: EPERM: operation not permitted, rename 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\runner-pi-evidence-test-U581Oh\readiness.json.tmp' -> 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\runner-pi-evidence-test-U581Oh\readiness.json'
+      at Object.renameSync (node:fs:1018:11)
+      at writeReceipt (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/receipt.mjs:24:10)
+      at save (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:21:11)
+      at ready (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:61:7)
+      at file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:64:5
+      at Object.emit (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs:57:58)
+      at TestContext.<anonymous> (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs:118:29)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18) {
+    errno: -4048,
+    code: 'EPERM',
+    syscall: 'rename',
+    path: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\runner-pi-evidence-test-U581Oh\\readiness.json.tmp',
+    dest: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\runner-pi-evidence-test-U581Oh\\readiness.json'
+  }
+
+test at internal\execution\adapters\orcatransport\extensions\pi-evidence.test.mjs:126:1
+✖ retry outcomes are observed until the real settled boundary (1041.0957ms)
+  Error: EPERM: operation not permitted, rename 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\runner-pi-evidence-test-d9aftg\readiness.json.tmp' -> 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\runner-pi-evidence-test-d9aftg\readiness.json'
+      at Object.renameSync (node:fs:1018:11)
+      at writeReceipt (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/receipt.mjs:24:10)
+      at save (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:21:11)
+      at ready (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:61:7)
+      at file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:64:5
+      at Object.emit (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs:57:58)
+      at TestContext.<anonymous> (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs:127:27)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18) {
+    errno: -4048,
+    code: 'EPERM',
+    syscall: 'rename',
+    path: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\runner-pi-evidence-test-d9aftg\\readiness.json.tmp',
+    dest: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\runner-pi-evidence-test-d9aftg\\readiness.json'
+  }
+
+test at internal\execution\adapters\orcatransport\extensions\pi-evidence.test.mjs:135:1
+✖ a provider error remains a settled failure, never a successful reply (1042.0872ms)
+  Error: EPERM: operation not permitted, rename 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\runner-pi-evidence-test-5gorv5\readiness.json.tmp' -> 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\runner-pi-evidence-test-5gorv5\readiness.json'
+      at Object.renameSync (node:fs:1018:11)
+      at writeReceipt (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/receipt.mjs:24:10)
+      at save (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:21:11)
+      at ready (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:61:7)
+      at file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:64:5
+      at Object.emit (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs:57:58)
+      at TestContext.<anonymous> (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs:136:27)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18) {
+    errno: -4048,
+    code: 'EPERM',
+    syscall: 'rename',
+    path: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\runner-pi-evidence-test-5gorv5\\readiness.json.tmp',
+    dest: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\runner-pi-evidence-test-5gorv5\\readiness.json'
+  }
+
+test at internal\execution\adapters\orcatransport\extensions\pi-evidence.test.mjs:141:1
+✖ missing native entries, pending continuations and oversized replies remain unverified (1373.9334ms)
+  Error: EPERM: operation not permitted, rename 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\runner-pi-evidence-test-HoMehG\readiness.json.tmp' -> 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\runner-pi-evidence-test-HoMehG\readiness.json'
+      at Object.renameSync (node:fs:1018:11)
+      at writeReceipt (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/receipt.mjs:24:10)
+      at save (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:21:11)
+      at ready (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:61:7)
+      at file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:64:5
+      at Object.emit (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs:57:58)
+      at TestContext.<anonymous> (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs:142:39)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18) {
+    errno: -4048,
+    code: 'EPERM',
+    syscall: 'rename',
+    path: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\runner-pi-evidence-test-HoMehG\\readiness.json.tmp',
+    dest: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\runner-pi-evidence-test-HoMehG\\readiness.json'
+  }
+
+test at internal\execution\adapters\orcatransport\extensions\pi-evidence.test.mjs:150:1
+✖ writer failures fence input and incomplete temporary files are never a final receipt (1557.4229ms)
+  Error: EPERM: operation not permitted, rename 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\runner-pi-evidence-test-hlT55n\readiness.json.tmp' -> 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\runner-pi-evidence-test-hlT55n\readiness.json'
+      at Object.renameSync (node:fs:1018:11)
+      at writeReceipt (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/receipt.mjs:24:10)
+      at save (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:21:11)
+      at ready (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:61:7)
+      at file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:64:5
+      at Object.emit (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs:57:58)
+      at TestContext.<anonymous> (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs:151:27)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18) {
+    errno: -4048,
+    code: 'EPERM',
+    syscall: 'rename',
+    path: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\runner-pi-evidence-test-hlT55n\\readiness.json.tmp',
+    dest: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\runner-pi-evidence-test-hlT55n\\readiness.json'
+  }
+
+test at internal\execution\adapters\orcatransport\extensions\pi-evidence.test.mjs:158:1
+✖ native shell shortcut is replaced even though no built-in tools are active (1579.9265ms)
+  Error: EPERM: operation not permitted, rename 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\runner-pi-evidence-test-Bwuo26\readiness.json.tmp' -> 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\runner-pi-evidence-test-Bwuo26\readiness.json'
+      at Object.renameSync (node:fs:1018:11)
+      at writeReceipt (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/receipt.mjs:24:10)
+      at save (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:21:11)
+      at ready (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:61:7)
+      at file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:64:5
+      at Object.emit (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs:57:58)
+      at TestContext.<anonymous> (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs:159:27)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18) {
+    errno: -4048,
+    code: 'EPERM',
+    syscall: 'rename',
+    path: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\runner-pi-evidence-test-Bwuo26\\readiness.json.tmp',
+    dest: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\runner-pi-evidence-test-Bwuo26\\readiness.json'
+  }
+
+test at internal\execution\adapters\orcatransport\extensions\pi-evidence.test.mjs:165:1
+✖ the fixed-text probe caps the native payload without changing the provider or model (1222.469ms)
+  Error: EPERM: operation not permitted, rename 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\runner-pi-evidence-test-g8Kuk8\readiness.json.tmp' -> 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\runner-pi-evidence-test-g8Kuk8\readiness.json'
+      at Object.renameSync (node:fs:1018:11)
+      at writeReceipt (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/receipt.mjs:24:10)
+      at save (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:21:11)
+      at ready (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:61:7)
+      at file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:64:5
+      at Object.emit (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs:57:58)
+      at TestContext.<anonymous> (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs:166:27)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18) {
+    errno: -4048,
+    code: 'EPERM',
+    syscall: 'rename',
+    path: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\runner-pi-evidence-test-g8Kuk8\\readiness.json.tmp',
+    dest: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\runner-pi-evidence-test-g8Kuk8\\readiness.json'
+  }
+
+test at internal\execution\adapters\orcatransport\extensions\pi-evidence.test.mjs:174:1
+✖ shutdown or identity change cannot rewrite a frozen result or certify a new session (1364.3408ms)
+  Error: EPERM: operation not permitted, rename 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\runner-pi-evidence-test-ukBnyZ\readiness.json.tmp' -> 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\runner-pi-evidence-test-ukBnyZ\readiness.json'
+      at Object.renameSync (node:fs:1018:11)
+      at writeReceipt (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/receipt.mjs:24:10)
+      at save (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:21:11)
+      at ready (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:61:7)
+      at file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:64:5
+      at Object.emit (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs:57:58)
+      at TestContext.<anonymous> (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs:175:27)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18) {
+    errno: -4048,
+    code: 'EPERM',
+    syscall: 'rename',
+    path: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\runner-pi-evidence-test-ukBnyZ\\readiness.json.tmp',
+    dest: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\runner-pi-evidence-test-ukBnyZ\\readiness.json'
+  }
+
+test at internal\execution\adapters\orcatransport\extensions\pi-evidence.test.mjs:190:1
+✖ reply boundaries count UTF-8 bytes and never truncate (1431.1229ms)
+  Error: EPERM: operation not permitted, rename 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\runner-pi-evidence-test-7YJklr\readiness.json.tmp' -> 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\runner-pi-evidence-test-7YJklr\readiness.json'
+      at Object.renameSync (node:fs:1018:11)
+      at writeReceipt (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/receipt.mjs:24:10)
+      at save (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:21:11)
+      at ready (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:61:7)
+      at file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:64:5
+      at Object.emit (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs:57:58)
+      at TestContext.<anonymous> (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs:191:35)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18) {
+    errno: -4048,
+    code: 'EPERM',
+    syscall: 'rename',
+    path: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\runner-pi-evidence-test-7YJklr\\readiness.json.tmp',
+    dest: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\runner-pi-evidence-test-7YJklr\\readiness.json'
+  }
+
+test at internal\execution\adapters\orcatransport\extensions\pi-evidence.test.mjs:197:1
+✖ a failed final receipt write fences later input even if Pi catches the callback error (1282.9204ms)
+  Error: EPERM: operation not permitted, rename 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\runner-pi-evidence-test-KIFgU5\readiness.json.tmp' -> 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\runner-pi-evidence-test-KIFgU5\readiness.json'
+      at Object.renameSync (node:fs:1018:11)
+      at writeReceipt (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/receipt.mjs:24:10)
+      at save (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:21:11)
+      at ready (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:61:7)
+      at file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:64:5
+      at Object.emit (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs:57:58)
+      at TestContext.<anonymous> (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs:198:27)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18) {
+    errno: -4048,
+    code: 'EPERM',
+    syscall: 'rename',
+    path: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\runner-pi-evidence-test-KIFgU5\\readiness.json.tmp',
+    dest: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\runner-pi-evidence-test-KIFgU5\\readiness.json'
+  }
+
+test at internal\execution\adapters\orcatransport\extensions\pi-evidence.test.mjs:206:1
+✖ non-text final content cannot masquerade as a complete text reply (1329.7093ms)
+  Error: EPERM: operation not permitted, rename 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\runner-pi-evidence-test-aLic9z\readiness.json.tmp' -> 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\runner-pi-evidence-test-aLic9z\readiness.json'
+      at Object.renameSync (node:fs:1018:11)
+      at writeReceipt (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/receipt.mjs:24:10)
+      at save (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:21:11)
+      at ready (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:61:7)
+      at file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:64:5
+      at Object.emit (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs:57:58)
+      at TestContext.<anonymous> (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs:207:27)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18) {
+    errno: -4048,
+    code: 'EPERM',
+    syscall: 'rename',
+    path: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\runner-pi-evidence-test-aLic9z\\readiness.json.tmp',
+    dest: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\runner-pi-evidence-test-aLic9z\\readiness.json'
+  }
+
+test at internal\execution\adapters\orcatransport\extensions\pi-evidence.test.mjs:214:1
+✖ reinitializing an extension on the same session changes its frozen load identity (1366.0277ms)
+  Error: EPERM: operation not permitted, rename 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\runner-pi-evidence-test-ZWZEod\readiness.json.tmp' -> 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\runner-pi-evidence-test-ZWZEod\readiness.json'
+      at Object.renameSync (node:fs:1018:11)
+      at writeReceipt (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/receipt.mjs:24:10)
+      at save (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:21:11)
+      at ready (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:61:7)
+      at file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:64:5
+      at Object.emit (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs:57:58)
+      at TestContext.<anonymous> (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs:215:27)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18) {
+    errno: -4048,
+    code: 'EPERM',
+    syscall: 'rename',
+    path: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\runner-pi-evidence-test-ZWZEod\\readiness.json.tmp',
+    dest: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\runner-pi-evidence-test-ZWZEod\\readiness.json'
+  }
+
+test at internal\execution\adapters\orcatransport\extensions\pi-evidence.test.mjs:223:1
+✖ managed tools revalidate the live model, tools, thinking and workspace before execution (1357.5955ms)
+  Error: EPERM: operation not permitted, rename 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\runner-pi-evidence-test-GiPTSl\readiness.json.tmp' -> 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\runner-pi-evidence-test-GiPTSl\readiness.json'
+      at Object.renameSync (node:fs:1018:11)
+      at writeReceipt (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/receipt.mjs:24:10)
+      at save (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:21:11)
+      at ready (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:61:7)
+      at async TestContext.<anonymous> (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs:225:42)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    errno: -4048,
+    code: 'EPERM',
+    syscall: 'rename',
+    path: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\runner-pi-evidence-test-GiPTSl\\readiness.json.tmp',
+    dest: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\runner-pi-evidence-test-GiPTSl\\readiness.json'
+  }
+
+test at internal\execution\adapters\orcatransport\extensions\pi-evidence.test.mjs:230:1
+✖ managed thinking is read from Pi and an explicit clamped request blocks readiness (1211.8843ms)
+  Error: EPERM: operation not permitted, rename 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\runner-pi-evidence-test-wlxYu1\readiness.json.tmp' -> 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\runner-pi-evidence-test-wlxYu1\readiness.json'
+      at Object.renameSync (node:fs:1018:11)
+      at writeReceipt (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/receipt.mjs:24:10)
+      at save (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:21:11)
+      at fail (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:34:19)
+      at ready (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:59:9)
+      at async TestContext.<anonymous> (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs:232:3)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    errno: -4048,
+    code: 'EPERM',
+    syscall: 'rename',
+    path: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\runner-pi-evidence-test-wlxYu1\\readiness.json.tmp',
+    dest: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\runner-pi-evidence-test-wlxYu1\\readiness.json'
+  }
+
+test at internal\execution\adapters\orcatransport\extensions\pi-evidence.test.mjs:236:1
+✖ native selection changes fence the instance before a later tool or input (1069.0236ms)
+  Error: EPERM: operation not permitted, rename 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\runner-pi-evidence-test-X177Wq\readiness.json.tmp' -> 'C:\Users\lmas1\AppData\Local\Packages\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\AC\Temp\runner-pi-evidence-test-X177Wq\readiness.json'
+      at Object.renameSync (node:fs:1018:11)
+      at writeReceipt (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/receipt.mjs:24:10)
+      at save (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:21:11)
+      at ready (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs:61:7)
+      at async TestContext.<anonymous> (file:///C:/Users/lmas1/.codex/worktrees/d634/SteerRunner/internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs:237:101)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    errno: -4048,
+    code: 'EPERM',
+    syscall: 'rename',
+    path: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\runner-pi-evidence-test-X177Wq\\readiness.json.tmp',
+    dest: 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{15a0116c-905c-4761-af29-0eeea6b5ef72}\\AC\\Temp\\runner-pi-evidence-test-X177Wq\\readiness.json'
+  }

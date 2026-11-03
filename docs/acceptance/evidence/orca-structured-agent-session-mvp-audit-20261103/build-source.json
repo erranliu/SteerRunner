@@ -1,0 +1,211 @@
+{
+  "schema": "orca-structured-quality-build/v1",
+  "base_commit": "69a4d4b24625a8ac74a454c74d8fcdac70191144",
+  "source_commit": "4cd2c131055b2814bc280ad3b63d20977eff544e",
+  "executable_sha256": "1aba3ad47d9de603e0db9e001e994c046aa707c96bd1cebfe84594e0a1037121",
+  "build_command": "go build -o .evidence/orca-structured-quality-final.exe ./cmd/steerrunner",
+  "production_changes": [
+    {
+      "path": "internal/application/control.go",
+      "deleted": false,
+      "sha256": "605897bd458c3ab571963b59651727c163af5d43f18bd3aa23f27ae0875031b2",
+      "bytes": 15738
+    },
+    {
+      "path": "internal/application/freeze.go",
+      "deleted": false,
+      "sha256": "3bc39945339cc33d759a6baa4961db39b736392211b1765b70282caad4a08e97",
+      "bytes": 32179
+    },
+    {
+      "path": "internal/application/input_budget.go",
+      "deleted": false,
+      "sha256": "2192f7731fea5d86be875bb59ea048f29ac2150d63570be6c14359f30a728d05",
+      "bytes": 1279
+    },
+    {
+      "path": "internal/application/worker.go",
+      "deleted": false,
+      "sha256": "0b3238c0550e019cc71ac0e8a8791b87fd0ab6de1ebe43ea083034d7eba0a5cd",
+      "bytes": 17024
+    },
+    {
+      "path": "internal/contracts/run.go",
+      "deleted": false,
+      "sha256": "6eb4c5ca765c88b5dd814bc4ede666f8ee4f931b33a0dfdcd6001b40c0154adc",
+      "bytes": 21144
+    },
+    {
+      "path": "internal/contracts/view.go",
+      "deleted": false,
+      "sha256": "c5f503239a53f03e3e33fb4445fb859dd360cb71466cbab475cd27dc32c0fe9f",
+      "bytes": 8697
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/agent_session.go",
+      "deleted": false,
+      "sha256": "b9f933a65e19e40b815bd6e90893556208aba56a6bf101dd8bdef22b19f598d5",
+      "bytes": 29329
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/dsh_profile.go",
+      "deleted": true
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/extensions/dsh-managed.mjs",
+      "deleted": true
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/input_contract.go",
+      "deleted": false,
+      "sha256": "4f9aba3a0eb0ba5720a90e8fd1eef4ec73ff28db41e0b86dde96dedc1277f3a4",
+      "bytes": 499
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/lifecycle.go",
+      "deleted": false,
+      "sha256": "b2339410c88d167287639c932d5cb339645b9f7ceac983cdd71e249a15c9e010",
+      "bytes": 51895
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/native_stop.go",
+      "deleted": false,
+      "sha256": "92b64e3e389763e87d3410cae519ea1e2d12d75d72564805dbae9e5a078879ff",
+      "bytes": 7036
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/profile_decode.go",
+      "deleted": false,
+      "sha256": "e4ff9dace83cc46da707cd0d8c8c09aa7b386975d0f7fc951f090cac87629a18",
+      "bytes": 4193
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/progress.go",
+      "deleted": false,
+      "sha256": "f92d23215e7348f3750aed2f26148dc09eeda5fb40940261ddc6c02213aa4021",
+      "bytes": 2981
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/terminal_receipt.go",
+      "deleted": false,
+      "sha256": "4f9e81c58cc995b2ad41a573842b0e920b86703fd5598f09c96300a00d9a3d1a",
+      "bytes": 18497
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/terminal_runtime.go",
+      "deleted": false,
+      "sha256": "8e9702b99ec066196b9a865bc6e1a689cb5ca6a886d2168dd7172d52aec6df53",
+      "bytes": 12426
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/usage_binding.go",
+      "deleted": false,
+      "sha256": "89a73ce2f28175630892e886f5ab008c5004043c9548af0732b3f76bff9728b8",
+      "bytes": 11560
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/verify_stopped.go",
+      "deleted": false,
+      "sha256": "4c7a70413d1b39f2b725a67f5b9ab3bfb1f7cf33ffee28498a61c247f8228199",
+      "bytes": 3722
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/workspace.go",
+      "deleted": false,
+      "sha256": "24378adf79348f588d127e39434bb028383b804ba01c1f22e08a50da5364ed9f",
+      "bytes": 16213
+    },
+    {
+      "path": "internal/execution/adapters/protocol/orca/agent_session.go",
+      "deleted": false,
+      "sha256": "75aa80631760d99dcb66a44582bab27da4cd1c41f98703f95ccd8ad046e6f6ee",
+      "bytes": 12614
+    },
+    {
+      "path": "internal/execution/adapters/protocol/orca/state_local.go",
+      "deleted": false,
+      "sha256": "0a0c9be06a7f30d2605810d0b28868ed18979a8653bc24c1633302824e3c9eed",
+      "bytes": 4479
+    },
+    {
+      "path": "internal/execution/backend/backend.go",
+      "deleted": false,
+      "sha256": "396aeb8d20b03631f17698078323d94fe6c7f0d295dd36db1f4821155eae2bb4",
+      "bytes": 3734
+    },
+    {
+      "path": "internal/resources/assets/settings.schema.json",
+      "deleted": false,
+      "sha256": "d3b7b2f36dd2c1ec4db8f0cfc15f85533dfbe0bbef1aabbf9aa4cb42e49c6ccb",
+      "bytes": 9587
+    },
+    {
+      "path": "internal/resources/assets/stop-evidence.schema.json",
+      "deleted": false,
+      "sha256": "7591b3cdc17d85918ceac9498af6f3630f79a68b288fd031e3b70a7659b955bf",
+      "bytes": 212
+    },
+    {
+      "path": "internal/resources/catalog.go",
+      "deleted": false,
+      "sha256": "77ebfee2e6ac7fa717951370b901146bf3644ef408197b0f2a803776a37aae75",
+      "bytes": 6426
+    },
+    {
+      "path": "internal/resources/resources.go",
+      "deleted": false,
+      "sha256": "bbd19704f429fa17d32b2d2a7bce84d0160136d2d42ae588fda0a81f7441a325",
+      "bytes": 11800
+    },
+    {
+      "path": "internal/resources/usage.go",
+      "deleted": false,
+      "sha256": "d5e3ba96aea30b1f9ea722f4b9ce8ea21ef3fcfeaef1f5a0f71cafa2667f4134",
+      "bytes": 1352
+    },
+    {
+      "path": "internal/runstate/record.go",
+      "deleted": false,
+      "sha256": "03c04b4b11a30cd1f55a1e1ca9e58211991a7c0471b15336196c44631862135a",
+      "bytes": 11255
+    },
+    {
+      "path": "internal/testkit/livetest/cases.json",
+      "deleted": false,
+      "sha256": "16a184a9c278a289b5ae7ac9234f6315d185e1acfe53d37b3a904c3cdb28ad0d",
+      "bytes": 25996
+    },
+    {
+      "path": "internal/testkit/livetest/config.go",
+      "deleted": false,
+      "sha256": "08808f95bba3654f5dba0fa5be28a1aab0fe7c08d27d9bb08568cba02fadb231",
+      "bytes": 12809
+    },
+    {
+      "path": "internal/testkit/livetest/manifest.go",
+      "deleted": false,
+      "sha256": "05ec8a620833b0698d551fe39be283f4a8c67dc8fc6925d4aea9e53da61eb821",
+      "bytes": 20632
+    },
+    {
+      "path": "internal/usage/api/policy.go",
+      "deleted": false,
+      "sha256": "7e7efa481732ceff5a713cc201266a1c365d13d0de35213289c33bc2912af7a6",
+      "bytes": 2848
+    },
+    {
+      "path": "internal/usage/collect/collector.go",
+      "deleted": false,
+      "sha256": "861b3b0ba1813c17c6322519d461bd62e53a2eb30f019e951edeeb3e1d3e9d24",
+      "bytes": 25544
+    },
+    {
+      "path": "internal/usage/parsers/parse.go",
+      "deleted": false,
+      "sha256": "cbd7a3f2195f2c622803f7faddcbcbd30e78b0672dc04fa6c72e9b54d9c7f34c",
+      "bytes": 11877
+    }
+  ],
+  "qualification": "Post-audit component/recorded-public-history replay and readonly offline verification only. No new live creation, input or close; pre-audit live build is separately recorded.",
+  "source_dirty": true
+}

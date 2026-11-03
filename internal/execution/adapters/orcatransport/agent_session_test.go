@@ -272,6 +272,30 @@ func TestStructuredObserverBindsDelayedNativeStart(t *testing.T) {
 	}
 }
 
+func TestStructuredObserverKeepsOriginalDiagnosticBindingDuringHistoryGap(t *testing.T) {
+	l, s, f := structuredFixture(t)
+	verified, err := l.readStructured(context.Background(), s)
+	if err != nil {
+		t.Fatal(err)
+	}
+	s.Implementation = verified.Implementation
+	s.Session.SessionID, s.Session.CurrentTurnID = verified.State.SessionID, verified.State.TurnID
+	// A later incomplete observation does not undo the previously verified IDs
+	// or authorize another mutation. Its diagnostic must still reach Engine.
+	f.pages = []native.AgentPage{{SessionID: verified.State.SessionID, Epoch: "original-epoch"}}
+	o := l.observeStructured(s)
+	defer o.Close(context.Background())
+	select {
+	case event := <-o.Events():
+		if event.Observation == nil || event.Observation.Diagnostic == "" || event.Fact.Kind != b.EventStatus || event.Fact.SessionID != verified.State.SessionID || event.Fact.StartedTurnID != "native-turn" {
+			t.Fatal("history gap lost original diagnostic binding")
+		}
+		event.Persisted <- nil
+	case <-time.After(time.Second):
+		t.Fatal("history gap diagnostic missing")
+	}
+}
+
 func TestStructuredServiceShutdownOnlyDetaches(t *testing.T) {
 	l, s, f := structuredFixture(t)
 	facts, err := l.ShutdownLifecycle(context.Background(), s, nil)
@@ -284,9 +308,9 @@ func TestStructuredServiceShutdownOnlyDetaches(t *testing.T) {
 // real Orca journal shape and ordering, without creating another live session.
 func TestStructuredRecordedPublicResults(t *testing.T) {
 	for _, tc := range []struct {
-		name, outcome string
-		bytes         int
-	}{{"normal", "succeeded", 7027}, {"large", "succeeded", 13927}, {"active-after-stop", "cancelled", 0}} {
+		name, outcome, sha256 string
+		bytes                 int
+	}{{"normal", "succeeded", "5ec2625fd5a37c6e3f2f69e97e9cb23fe4a54bcf8896654e88574da767bbe362", 7027}, {"large", "succeeded", "0a94d0df689cb7b14418619ad1fc6a85e2119b4791a38eba9f3b8143e9ddadbe", 13927}, {"active-after-stop", "cancelled", "", 0}} {
 		t.Run(tc.name, func(t *testing.T) {
 			l, s, f := structuredFixture(t)
 			name := "verified-" + tc.name + "-native-history-page-0.json"
@@ -330,7 +354,7 @@ func TestStructuredRecordedPublicResults(t *testing.T) {
 			if err != nil || receipt.TurnEvidence == nil || !receipt.TurnEvidence.FinalVerified || receipt.TurnEvidence.NativeOutcome != tc.outcome {
 				t.Fatal("recorded original result rejected", err)
 			}
-			if tc.bytes > 0 && len(receipt.TurnEvidence.LastMessage) != tc.bytes {
+			if tc.bytes > 0 && (len(receipt.TurnEvidence.LastMessage) != tc.bytes || digest([]byte(receipt.TurnEvidence.LastMessage)) != tc.sha256) {
 				t.Fatal("recorded result truncated or reordered", len(receipt.TurnEvidence.LastMessage))
 			}
 		})

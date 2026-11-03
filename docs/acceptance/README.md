@@ -4,7 +4,7 @@
 
 | 范围 | 记录与适用边界 |
 | --- | --- |
-| 本机 Orca Codex execute/1 实施 | [实施与验收](orca-structured-agent-session-mvp.md)：原子首消息、复杂回合完整结果、活动 stop 和资源未核实边界；DSH 执行及专用历史/用量移除；其它链路回归范围单列 |
+| 本机 Orca Codex execute/1 实施 | [实施与验收](orca-structured-agent-session-mvp.md) / [提 PR 前质量审计](orca-structured-agent-session-mvp-quality-audit.md)：原子首消息、复杂回合完整结果、活动 stop 和资源未核实边界；DSH 执行及专用历史/用量移除；其它链路回归范围单列 |
 | 本机 Orca Codex execute/1 与 DSH 退役设计（历史轮次） | [一轮设计复审](orca-structured-agent-session-mvp-design-audit.md)：首 PR 限单组合结构化输入/完整结果和停止请求，缺资源证据明确未核实；DSH 执行及专用历史/用量一并移除。只改文档，未实现/运行测试，不授予新资格 |
 | Orca Codex/Pi 结构化会话 P0 | [现场核验](orca-structured-agent-session.md) / [阻断再调查](orca-structured-agent-session-blocker-review.md)：三组合短探针；Runner 可复用授权围栏和本机 Git/checkpoint，原会话资源结算与逐回合实际模型公开事实仍缺；远端 Pi 仅环境阻断，未安装；未改运行代码，无正式 Runner 资格 |
 | Orca 能力层 B0 原生可行性 | [验收](orca-native-capability-baseline.md)：双端同源同 EXE 各两轮无 helper 原生输入及原终端清理通过；独立审计唯一 P2 已修复并复核，修复后 30 个新增、原 132 个回归子例通过；不授予 B5 开发资格 |

@@ -1,0 +1,89 @@
+--- FAIL: TestSRFreezeOrcaStructuredExecuteOnly (0.38s)
+    orca_structured_test.go:18: git [init --quiet --bare C:\Users\lmas1\AppData\Local\Packages\sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}\AC\Temp\TestSRFreezeOrcaStructuredExecuteOnly2532960735\001\remote.git]: git failed: exit status 128 (error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}/AC/Temp/TestSRFreezeOrcaStructuredExecuteOnly2532960735/001/remote.git/config: Permission denied
+        fatal: could not set 'core.repositoryformatversion' to '0'
+        )
+--- FAIL: TestSharedNativeEngineStopReconciliation (4.89s)
+    --- FAIL: TestSharedNativeEngineStopReconciliation//lost-absent (0.31s)
+        shared_native_stop_test.go:252: git [init --quiet --bare C:\Users\lmas1\AppData\Local\Packages\sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}\AC\Temp\TestSharedNativeEngineStopReconciliationlost-absent2844780953\002\remote.git]: git failed: exit status 128 (error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}/AC/Temp/TestSharedNativeEngineStopReconciliationlost-absent2844780953/002/remote.git/config: Permission denied
+            fatal: could not set 'core.repositoryformatversion' to '0'
+            )
+    --- FAIL: TestSharedNativeEngineStopReconciliation//lost-live (0.40s)
+        shared_native_stop_test.go:252: git [init --quiet --bare C:\Users\lmas1\AppData\Local\Packages\sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}\AC\Temp\TestSharedNativeEngineStopReconciliationlost-live2784526317\002\remote.git]: git failed: exit status 128 (error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}/AC/Temp/TestSharedNativeEngineStopReconciliationlost-live2784526317/002/remote.git/config: Permission denied
+            fatal: could not set 'core.repositoryformatversion' to '0'
+            )
+    --- FAIL: TestSharedNativeEngineStopReconciliation//replacement (0.25s)
+        shared_native_stop_test.go:252: git [init --quiet --bare C:\Users\lmas1\AppData\Local\Packages\sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}\AC\Temp\TestSharedNativeEngineStopReconciliationreplacement3892608103\002\remote.git]: git failed: exit status 128 (error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}/AC/Temp/TestSharedNativeEngineStopReconciliationreplacement3892608103/002/remote.git/config: Permission denied
+            fatal: could not set 'core.repositoryformatversion' to '0'
+            )
+    --- FAIL: TestSharedNativeEngineStopReconciliation//missing-host (0.22s)
+        shared_native_stop_test.go:252: git [init --quiet --bare C:\Users\lmas1\AppData\Local\Packages\sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}\AC\Temp\TestSharedNativeEngineStopReconciliationmissing-host3717109044\002\remote.git]: git failed: exit status 128 (error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}/AC/Temp/TestSharedNativeEngineStopReconciliationmissing-host3717109044/002/remote.git/config: Permission denied
+            fatal: could not set 'core.repositoryformatversion' to '0'
+            )
+    --- FAIL: TestSharedNativeEngineStopReconciliation//wrong-runtime (0.22s)
+        shared_native_stop_test.go:252: git [init --quiet --bare C:\Users\lmas1\AppData\Local\Packages\sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}\AC\Temp\TestSharedNativeEngineStopReconciliationwrong-runtime1825225011\002\remote.git]: git failed: exit status 128 (error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}/AC/Temp/TestSharedNativeEngineStopReconciliationwrong-runtime1825225011/002/remote.git/config: Permission denied
+            fatal: could not set 'core.repositoryformatversion' to '0'
+            )
+    --- FAIL: TestSharedNativeEngineStopReconciliation//wrong-total-count (0.23s)
+        shared_native_stop_test.go:252: git [init --quiet --bare C:\Users\lmas1\AppData\Local\Packages\sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}\AC\Temp\TestSharedNativeEngineStopReconciliationwrong-total-count2177472416\002\remote.git]: git failed: exit status 128 (error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}/AC/Temp/TestSharedNativeEngineStopReconciliationwrong-total-count2177472416/002/remote.git/config: Permission denied
+            fatal: could not set 'core.repositoryformatversion' to '0'
+            )
+    --- FAIL: TestSharedNativeEngineStopReconciliation//truncated (0.37s)
+        shared_native_stop_test.go:252: git [init --quiet --bare C:\Users\lmas1\AppData\Local\Packages\sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}\AC\Temp\TestSharedNativeEngineStopReconciliationtruncated1877411820\002\remote.git]: git failed: exit status 128 (error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}/AC/Temp/TestSharedNativeEngineStopReconciliationtruncated1877411820/002/remote.git/config: Permission denied
+            fatal: could not set 'core.repositoryformatversion' to '0'
+            )
+    --- FAIL: TestSharedNativeEngineStopReconciliation//query-failed (0.27s)
+        shared_native_stop_test.go:252: git [init --quiet --bare C:\Users\lmas1\AppData\Local\Packages\sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}\AC\Temp\TestSharedNativeEngineStopReconciliationquery-failed3813949401\002\remote.git]: git failed: exit status 128 (error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}/AC/Temp/TestSharedNativeEngineStopReconciliationquery-failed3813949401/002/remote.git/config: Permission denied
+            fatal: could not set 'core.repositoryformatversion' to '0'
+            )
+    --- FAIL: TestSharedNativeEngineStopReconciliation//receipt-commit-failed (0.30s)
+        shared_native_stop_test.go:252: git [init --quiet --bare C:\Users\lmas1\AppData\Local\Packages\sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}\AC\Temp\TestSharedNativeEngineStopReconciliationreceipt-commit-failed1110998771\002\remote.git]: git failed: exit status 128 (error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}/AC/Temp/TestSharedNativeEngineStopReconciliationreceipt-commit-failed1110998771/002/remote.git/config: Permission denied
+            fatal: could not set 'core.repositoryformatversion' to '0'
+            )
+    --- FAIL: TestSharedNativeEngineStopReconciliation/paired-worker/lost-absent (0.26s)
+        shared_native_stop_test.go:252: git [init --quiet --bare C:\Users\lmas1\AppData\Local\Packages\sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}\AC\Temp\TestSharedNativeEngineStopReconciliationpaired-workerlost-abse201034330\002\remote.git]: git failed: exit status 128 (error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}/AC/Temp/TestSharedNativeEngineStopReconciliationpaired-workerlost-abse201034330/002/remote.git/config: Permission denied
+            fatal: could not set 'core.repositoryformatversion' to '0'
+            )
+    --- FAIL: TestSharedNativeEngineStopReconciliation/paired-worker/lost-live (0.24s)
+        shared_native_stop_test.go:252: git [init --quiet --bare C:\Users\lmas1\AppData\Local\Packages\sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}\AC\Temp\TestSharedNativeEngineStopReconciliationpaired-workerlost-live844320586\002\remote.git]: git failed: exit status 128 (error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}/AC/Temp/TestSharedNativeEngineStopReconciliationpaired-workerlost-live844320586/002/remote.git/config: Permission denied
+            fatal: could not set 'core.repositoryformatversion' to '0'
+            )
+    --- FAIL: TestSharedNativeEngineStopReconciliation/paired-worker/replacement (0.29s)
+        shared_native_stop_test.go:252: git [init --quiet --bare C:\Users\lmas1\AppData\Local\Packages\sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}\AC\Temp\TestSharedNativeEngineStopReconciliationpaired-workerreplaceme1974421119\002\remote.git]: git failed: exit status 128 (error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}/AC/Temp/TestSharedNativeEngineStopReconciliationpaired-workerreplaceme1974421119/002/remote.git/config: Permission denied
+            fatal: could not set 'core.repositoryformatversion' to '0'
+            )
+    --- FAIL: TestSharedNativeEngineStopReconciliation/paired-worker/missing-host (0.28s)
+        shared_native_stop_test.go:252: git [init --quiet --bare C:\Users\lmas1\AppData\Local\Packages\sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}\AC\Temp\TestSharedNativeEngineStopReconciliationpaired-workermissing-h171668139\002\remote.git]: git failed: exit status 128 (error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}/AC/Temp/TestSharedNativeEngineStopReconciliationpaired-workermissing-h171668139/002/remote.git/config: Permission denied
+            fatal: could not set 'core.repositoryformatversion' to '0'
+            )
+    --- FAIL: TestSharedNativeEngineStopReconciliation/paired-worker/wrong-runtime (0.29s)
+        shared_native_stop_test.go:252: git [init --quiet --bare C:\Users\lmas1\AppData\Local\Packages\sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}\AC\Temp\TestSharedNativeEngineStopReconciliationpaired-workerwrong-run1598093011\002\remote.git]: git failed: exit status 128 (error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}/AC/Temp/TestSharedNativeEngineStopReconciliationpaired-workerwrong-run1598093011/002/remote.git/config: Permission denied
+            fatal: could not set 'core.repositoryformatversion' to '0'
+            )
+    --- FAIL: TestSharedNativeEngineStopReconciliation/paired-worker/wrong-total-count (0.24s)
+        shared_native_stop_test.go:252: git [init --quiet --bare C:\Users\lmas1\AppData\Local\Packages\sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}\AC\Temp\TestSharedNativeEngineStopReconciliationpaired-workerwrong-tot2948298767\002\remote.git]: git failed: exit status 128 (error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}/AC/Temp/TestSharedNativeEngineStopReconciliationpaired-workerwrong-tot2948298767/002/remote.git/config: Permission denied
+            fatal: could not set 'core.repositoryformatversion' to '0'
+            )
+    --- FAIL: TestSharedNativeEngineStopReconciliation/paired-worker/truncated (0.21s)
+        shared_native_stop_test.go:252: git [init --quiet --bare C:\Users\lmas1\AppData\Local\Packages\sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}\AC\Temp\TestSharedNativeEngineStopReconciliationpaired-workertruncated130527178\002\remote.git]: git failed: exit status 128 (error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}/AC/Temp/TestSharedNativeEngineStopReconciliationpaired-workertruncated130527178/002/remote.git/config: Permission denied
+            fatal: could not set 'core.repositoryformatversion' to '0'
+            )
+    --- FAIL: TestSharedNativeEngineStopReconciliation/paired-worker/query-failed (0.28s)
+        shared_native_stop_test.go:252: git [init --quiet --bare C:\Users\lmas1\AppData\Local\Packages\sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}\AC\Temp\TestSharedNativeEngineStopReconciliationpaired-workerquery-fai1055411371\002\remote.git]: git failed: exit status 128 (error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}/AC/Temp/TestSharedNativeEngineStopReconciliationpaired-workerquery-fai1055411371/002/remote.git/config: Permission denied
+            fatal: could not set 'core.repositoryformatversion' to '0'
+            )
+    --- FAIL: TestSharedNativeEngineStopReconciliation/paired-worker/receipt-commit-failed (0.21s)
+        shared_native_stop_test.go:252: git [init --quiet --bare C:\Users\lmas1\AppData\Local\Packages\sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}\AC\Temp\TestSharedNativeEngineStopReconciliationpaired-workerreceipt-c1508231404\002\remote.git]: git failed: exit status 128 (error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}/AC/Temp/TestSharedNativeEngineStopReconciliationpaired-workerreceipt-c1508231404/002/remote.git/config: Permission denied
+            fatal: could not set 'core.repositoryformatversion' to '0'
+            )
+--- FAIL: TestSharedNativeStopQueuePreservesFirstDispatch (0.76s)
+    --- FAIL: TestSharedNativeStopQueuePreservesFirstDispatch/#00 (0.31s)
+        shared_native_stop_test.go:326: git [init --quiet --bare C:\Users\lmas1\AppData\Local\Packages\sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}\AC\Temp\TestSharedNativeStopQueuePreservesFirstDispatch#00534596596\002\remote.git]: git failed: exit status 128 (error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}/AC/Temp/TestSharedNativeStopQueuePreservesFirstDispatch#00534596596/002/remote.git/config: Permission denied
+            fatal: could not set 'core.repositoryformatversion' to '0'
+            )
+    --- FAIL: TestSharedNativeStopQueuePreservesFirstDispatch/paired-worker (0.46s)
+        shared_native_stop_test.go:326: git [init --quiet --bare C:\Users\lmas1\AppData\Local\Packages\sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}\AC\Temp\TestSharedNativeStopQueuePreservesFirstDispatchpaired-worker1456414073\002\remote.git]: git failed: exit status 128 (error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{b9872b4c-320c-492a-961f-607c01c0f837}/AC/Temp/TestSharedNativeStopQueuePreservesFirstDispatchpaired-worker1456414073/002/remote.git/config: Permission denied
+            fatal: could not set 'core.repositoryformatversion' to '0'
+            )
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/application	6.917s
+FAIL
