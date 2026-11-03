@@ -48,7 +48,6 @@ type Manifest struct {
 	PlanPath            string                  `json:"plan_path"`
 	PlanSHA256          string                  `json:"plan_sha256"`
 	Execution           contracts.Execution     `json:"execution"`
-	PeerExecution       *contracts.Execution    `json:"peer_execution,omitempty"`
 	Publication         contracts.Publication   `json:"publication"`
 	RemoteRuntimeID     string                  `json:"remote_runtime_id,omitempty"`
 	LocalRuntimeID      string                  `json:"local_runtime_id,omitempty"`
@@ -185,14 +184,6 @@ func (m Manifest) Validate() error {
 		if contracts.ValidateRunConfiguration(raw) != nil {
 			return errors.New("frozen workflow violates the public configuration contract")
 		}
-	}
-	if m.Scenario == "orca-local.mixed" {
-		var first, peer contracts.OrcaSettings
-		if m.Driver != "development-multirun" || m.PeerExecution == nil || m.PeerExecution.Adapter != "orca-terminal" || m.PeerExecution.Target.Kind != "local" || m.PeerExecution.Target.Environment != "" || contracts.ValidateExecution(*m.PeerExecution) != nil || contracts.DecodeStrict(m.Execution.Settings, &first) != nil || contracts.DecodeStrict(m.PeerExecution.Settings, &peer) != nil || first.AgentName() != "pi" || peer.AgentName() != "dsh" || peer.AccessMode != "full_access" || peer.AgentLaunch.RuntimeExecutable != first.AgentLaunch.RuntimeExecutable || peer.AgentLaunch.RuntimeSHA256 != first.AgentLaunch.RuntimeSHA256 {
-			return errors.New("mixed local fixture requires frozen Pi and DSH executions on the same helper")
-		}
-	} else if m.PeerExecution != nil {
-		return errors.New("peer execution requires the registered mixed local fixture")
 	}
 	if (m.LocalRuntimeID != "" || m.LocalRepositoryPath != "") && (m.Level != "L3" || m.Execution.Adapter != "orca-terminal" || m.Execution.Target.Kind != "local") {
 		return errors.New("local Orca identity requires a local Orca fixture")

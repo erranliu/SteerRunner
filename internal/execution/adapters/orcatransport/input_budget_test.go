@@ -114,14 +114,3 @@ func TestWireBudgetRejectsHeaderOverflowAndChangedBody(t *testing.T) {
 		t.Fatal("post-freeze append accepted")
 	}
 }
-func TestTerminalToolDescriptionsBudget(t *testing.T) {
-	parts, err := terminalDescriptionParts()
-	if err != nil {
-		t.Fatal(err)
-	}
-	_, b, err := m.FreezeInput(parts...)
-	if err != nil || b.RunnerBytes == 0 {
-		t.Fatal(b, err)
-	}
-	t.Logf("DSH tool descriptions Runner=%d", b.RunnerBytes)
-}

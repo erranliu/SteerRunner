@@ -108,6 +108,9 @@ func (l *Lifecycle) prepareWorkspace(ctx context.Context, r b.LifecycleRequest, 
 		return receipt, errors.New("Orca worktree differs from fixed name/base")
 	}
 	defer func() { receipt.Operation.Receipt, _ = json.Marshal(created) }()
+	if l.structured() {
+		return l.finishStructuredWorkspace(ctx, r, created)
+	}
 	wait, _ := time.ParseDuration(l.profile.WaitTimeout)
 	ctx, cancel := context.WithTimeout(ctx, wait)
 	defer cancel()
@@ -200,7 +203,7 @@ func (l *Lifecycle) creationTimeout() time.Duration {
 
 func (l *Lifecycle) workspaceCreationArgs(r b.LifecycleRequest, selector string) []string {
 	options := native.WorktreeCreate{Repository: selector, Name: workspaceName(r.Snapshot), BaseBranch: r.Input.Workspace.BaseCommit, NoParent: true, Setup: "skip"}
-	if l.setup.AgentLaunchCommand == "" {
+	if l.setup.AgentLaunchCommand == "" && !l.structured() {
 		options.Agent = &r.Snapshot.Ref.Agent.Name
 	}
 	return native.WorktreeCreateArgs(options)
@@ -270,9 +273,15 @@ func (l *Lifecycle) workspaceRepository(ctx context.Context) (selector, runtimeI
 		if err != nil || result.RuntimeID == "" {
 			return "", "", errors.Join(err, errors.New("local Orca runtime identity is unavailable"))
 		}
-		if l.nativeAccess {
+		if l.nativeAccess && !l.structured() {
 			if err := l.verifyLocalObservation(ctx, result.RuntimeID); err != nil {
 				return "", "", err
+			}
+		}
+		if l.nativeAccess && l.structured() {
+			runtime, bootstrapErr := native.LocalRuntimeID()
+			if bootstrapErr != nil || runtime != result.RuntimeID {
+				return "", "", errors.Join(bootstrapErr, errors.New("local Orca runtime binding changed"))
 			}
 		}
 		return "path:" + repository, result.RuntimeID, nil

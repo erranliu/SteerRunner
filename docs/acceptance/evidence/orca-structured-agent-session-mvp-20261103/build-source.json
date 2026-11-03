@@ -1,0 +1,194 @@
+{
+  "schema": "orca-structured-mvp-build/v1",
+  "base_commit": "457ffaea20b6227a0bdaec9e56f5b9e7f54da337",
+  "source_dirty": true,
+  "go_version": "go version go1.26.4 windows/amd64",
+  "build_command": "go build -o .tmp-mvp/steerrunner-final-rpc.exe ./cmd/steerrunner",
+  "executable_sha256": "e497382b170ea722d9983f2dc502c4aa047d303ec382b6c73ad074193b6bd6a3",
+  "resource_digest": "da9cbcbb7c72430a85f5c381d76198db20ba3b170cdf3296be9431529624b081",
+  "production_changes": [
+    {
+      "path": "internal/application/control.go",
+      "deleted": false,
+      "bytes": 15738,
+      "sha256": "605897bd458c3ab571963b59651727c163af5d43f18bd3aa23f27ae0875031b2"
+    },
+    {
+      "path": "internal/application/freeze.go",
+      "deleted": false,
+      "bytes": 32179,
+      "sha256": "3bc39945339cc33d759a6baa4961db39b736392211b1765b70282caad4a08e97"
+    },
+    {
+      "path": "internal/application/input_budget.go",
+      "deleted": false,
+      "bytes": 1279,
+      "sha256": "2192f7731fea5d86be875bb59ea048f29ac2150d63570be6c14359f30a728d05"
+    },
+    {
+      "path": "internal/application/worker.go",
+      "deleted": false,
+      "bytes": 17024,
+      "sha256": "0b3238c0550e019cc71ac0e8a8791b87fd0ab6de1ebe43ea083034d7eba0a5cd"
+    },
+    {
+      "path": "internal/contracts/run.go",
+      "deleted": false,
+      "bytes": 21144,
+      "sha256": "6eb4c5ca765c88b5dd814bc4ede666f8ee4f931b33a0dfdcd6001b40c0154adc"
+    },
+    {
+      "path": "internal/contracts/view.go",
+      "deleted": false,
+      "bytes": 8697,
+      "sha256": "c5f503239a53f03e3e33fb4445fb859dd360cb71466cbab475cd27dc32c0fe9f"
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/agent_session.go",
+      "deleted": false,
+      "bytes": 28325,
+      "sha256": "c371b6b27d9cfe931f89b60df3fa4686a94941b4e57896437b7f9bdd9a56cdaf"
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/dsh_profile.go",
+      "deleted": true
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/extensions/dsh-managed.mjs",
+      "deleted": true
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/input_contract.go",
+      "deleted": false,
+      "bytes": 499,
+      "sha256": "4f9aba3a0eb0ba5720a90e8fd1eef4ec73ff28db41e0b86dde96dedc1277f3a4"
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/lifecycle.go",
+      "deleted": false,
+      "bytes": 51895,
+      "sha256": "b2339410c88d167287639c932d5cb339645b9f7ceac983cdd71e249a15c9e010"
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/native_stop.go",
+      "deleted": false,
+      "bytes": 5054,
+      "sha256": "e74913c000d47d1a9ad717083eebf59bc8de0f82af453aa17503b9591942cea9"
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/profile_decode.go",
+      "deleted": false,
+      "bytes": 4193,
+      "sha256": "e4ff9dace83cc46da707cd0d8c8c09aa7b386975d0f7fc951f090cac87629a18"
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/progress.go",
+      "deleted": false,
+      "bytes": 2981,
+      "sha256": "f92d23215e7348f3750aed2f26148dc09eeda5fb40940261ddc6c02213aa4021"
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/terminal_receipt.go",
+      "deleted": false,
+      "bytes": 18497,
+      "sha256": "4f9e81c58cc995b2ad41a573842b0e920b86703fd5598f09c96300a00d9a3d1a"
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/terminal_runtime.go",
+      "deleted": false,
+      "bytes": 12426,
+      "sha256": "8e9702b99ec066196b9a865bc6e1a689cb5ca6a886d2168dd7172d52aec6df53"
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/usage_binding.go",
+      "deleted": false,
+      "bytes": 11560,
+      "sha256": "89a73ce2f28175630892e886f5ab008c5004043c9548af0732b3f76bff9728b8"
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/verify_stopped.go",
+      "deleted": false,
+      "bytes": 3722,
+      "sha256": "4c7a70413d1b39f2b725a67f5b9ab3bfb1f7cf33ffee28498a61c247f8228199"
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/workspace.go",
+      "deleted": false,
+      "bytes": 16213,
+      "sha256": "24378adf79348f588d127e39434bb028383b804ba01c1f22e08a50da5364ed9f"
+    },
+    {
+      "path": "internal/execution/adapters/protocol/orca/agent_session.go",
+      "deleted": false,
+      "bytes": 12614,
+      "sha256": "75aa80631760d99dcb66a44582bab27da4cd1c41f98703f95ccd8ad046e6f6ee"
+    },
+    {
+      "path": "internal/execution/adapters/protocol/orca/state_local.go",
+      "deleted": false,
+      "bytes": 4479,
+      "sha256": "0a0c9be06a7f30d2605810d0b28868ed18979a8653bc24c1633302824e3c9eed"
+    },
+    {
+      "path": "internal/execution/backend/backend.go",
+      "deleted": false,
+      "bytes": 3734,
+      "sha256": "396aeb8d20b03631f17698078323d94fe6c7f0d295dd36db1f4821155eae2bb4"
+    },
+    {
+      "path": "internal/resources/assets/settings.schema.json",
+      "deleted": false,
+      "bytes": 9979,
+      "sha256": "e2840a5bdd5cf68582a0563424918dc9ee1b4f77a9c0bbf1b70ca379b0910f98"
+    },
+    {
+      "path": "internal/resources/assets/stop-evidence.schema.json",
+      "deleted": false,
+      "bytes": 212,
+      "sha256": "7591b3cdc17d85918ceac9498af6f3630f79a68b288fd031e3b70a7659b955bf"
+    },
+    {
+      "path": "internal/resources/catalog.go",
+      "deleted": false,
+      "bytes": 6426,
+      "sha256": "77ebfee2e6ac7fa717951370b901146bf3644ef408197b0f2a803776a37aae75"
+    },
+    {
+      "path": "internal/resources/resources.go",
+      "deleted": false,
+      "bytes": 11800,
+      "sha256": "bbd19704f429fa17d32b2d2a7bce84d0160136d2d42ae588fda0a81f7441a325"
+    },
+    {
+      "path": "internal/resources/usage.go",
+      "deleted": false,
+      "bytes": 1352,
+      "sha256": "d5e3ba96aea30b1f9ea722f4b9ce8ea21ef3fcfeaef1f5a0f71cafa2667f4134"
+    },
+    {
+      "path": "internal/runstate/record.go",
+      "deleted": false,
+      "bytes": 11255,
+      "sha256": "03c04b4b11a30cd1f55a1e1ca9e58211991a7c0471b15336196c44631862135a"
+    },
+    {
+      "path": "internal/usage/api/policy.go",
+      "deleted": false,
+      "bytes": 2848,
+      "sha256": "7e7efa481732ceff5a713cc201266a1c365d13d0de35213289c33bc2912af7a6"
+    },
+    {
+      "path": "internal/usage/collect/collector.go",
+      "deleted": false,
+      "bytes": 25544,
+      "sha256": "861b3b0ba1813c17c6322519d461bd62e53a2eb30f019e951edeeb3e1d3e9d24"
+    },
+    {
+      "path": "internal/usage/parsers/parse.go",
+      "deleted": false,
+      "bytes": 11877,
+      "sha256": "cbd7a3f2195f2c622803f7faddcbcbd30e78b0672dc04fa6c72e9b54d9c7f34c"
+    }
+  ],
+  "note": "Test-only cache isolation and retired mixed-fixture cleanup were finalized after the runtime artifact; neither is linked into the production executable."
+}

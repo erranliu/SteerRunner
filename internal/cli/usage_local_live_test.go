@@ -30,7 +30,6 @@ import (
 // from the original Run; no path or response IDs are supplied to the collector.
 func TestRunUsageLocalCodexPublicLive(t *testing.T) { testRunUsageLocalPublicLive(t, "codex") }
 func TestRunUsageLocalPiPublicLive(t *testing.T)    { testRunUsageLocalPublicLive(t, "pi") }
-func TestRunUsageLocalDSHPublicLive(t *testing.T)   { testRunUsageLocalPublicLive(t, "dsh") }
 
 func testRunUsageLocalPublicLive(t *testing.T, agent string) {
 	if os.Getenv("SR_USAGE_LOCAL_LIVE") != "1" {
@@ -128,9 +127,6 @@ func testRunUsageLocalPublicLive(t *testing.T, agent string) {
 			t.Fatal("historical evidence requires an idle pr_ready Run with frozen terminal config")
 		}
 		pattern := filepath.Join(p.Terminal.StateDirectory, "sessions", "*"+binding.SessionID+".jsonl")
-		if agent == "dsh" {
-			pattern = filepath.Join(p.Terminal.StateDirectory, "home", ".dsh", "sessions", "*", binding.SessionID, "session.v4.jsonl.zstd")
-		}
 		files, e := filepath.Glob(pattern)
 		if e != nil || len(files) != 1 {
 			t.Fatal("original native source must be unique", len(files), e)

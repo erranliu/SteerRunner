@@ -1,0 +1,9 @@
+{
+  "envelope": {
+    "sessionId": "oas_p0_b3fa905bcd63466197ab8cf6231b1b9e",
+    "clientOperationId": "1793688884824-5fce07d4dadb4fd7a70abe18447bffcb",
+    "expectedRuntimeFence": 2,
+    "payloadFingerprint": "34db5f2859560aafcb04fefd1246d5ea4bc50baa2453474fb3e944113019be0b"
+  },
+  "turnId": "p:oas_p0_b3fa905bcd63466197ab8cf6231b1b9e:run%3Aa6d8e6cd-af56-4b3e-9bdc-3b66e5bf288b%3A1"
+}

@@ -15,7 +15,7 @@ import (
 )
 
 func TestUsageFinalReplyBelongsToCommand(t *testing.T) {
-	for _, agent := range []string{"pi", "dsh"} {
+	for _, agent := range []string{"pi"} {
 		t.Run(agent, func(t *testing.T) {
 			b, _ := fixture(t, agent)
 			b.Commands = []Command{
@@ -23,23 +23,13 @@ func TestUsageFinalReplyBelongsToCommand(t *testing.T) {
 				{ID: "second", WireSHA256: TextHash("second input"), InputID: "u2", ReplyID: "r2"},
 			}
 			var raw string
-			if agent == "pi" {
-				raw = `{"type":"session","version":3,"id":"fixture-session","cwd":"C:/fixture/work"}
+			raw = `{"type":"session","version":3,"id":"fixture-session","cwd":"C:/fixture/work"}
 {"type":"message","id":"u1","message":{"role":"user","content":"first input"}}
 {"type":"message","id":"r1","parentId":"u1","message":{"role":"assistant","usage":{"input":1,"cacheRead":0,"cacheWrite":0,"output":2,"totalTokens":3}}}
 {"type":"message","id":"u2","parentId":"r1","message":{"role":"user","content":"second input"}}
 {"type":"message","id":"r2","parentId":"u2","message":{"role":"assistant","usage":{"input":1,"cacheRead":0,"cacheWrite":0,"output":2,"totalTokens":3}}}
 `
-			} else {
-				b.Commands[0].InputSeq, b.Commands[0].EndSeq = 1, 2
-				b.Commands[1].InputSeq, b.Commands[1].EndSeq = 3, 4
-				raw = `{"type":"session","version":4,"id":"fixture-session","cwd":"C:/fixture/work"}
-{"type":"user/message","seq":1,"data":{"id":"u1","content":"first input"}}
-{"type":"assistant/message","seq":2,"data":{"message":{"id":"r1"},"usage":{"inputTokens":1,"cacheReadTokens":0,"cacheWriteTokens":0,"outputTokens":2,"totalTokens":3}}}
-{"type":"user/message","seq":3,"data":{"id":"u2","content":"second input"}}
-{"type":"assistant/message","seq":4,"data":{"message":{"id":"r2"},"usage":{"inputTokens":1,"cacheReadTokens":0,"cacheWriteTokens":0,"outputTokens":2,"totalTokens":3}}}
-`
-			}
+
 			baseline := Parse(context.Background(), b, []byte(raw), false)
 			if !baseline.Complete || len(baseline.Events) != 2 {
 				t.Fatal("valid command receipts rejected", baseline)
@@ -61,6 +51,15 @@ func TestUsageFinalReplyBelongsToCommand(t *testing.T) {
 				t.Fatal("receipt gap was hidden", snapshot)
 			}
 		})
+	}
+}
+
+func TestRetiredAgentUsageIsUnsupported(t *testing.T) {
+	b, raw := fixture(t, "pi")
+	b.Agent = "dsh"
+	result := Parse(context.Background(), b, raw, false)
+	if result.Complete || len(result.Events) != 0 || len(result.Issues) != 1 || result.Issues[0].Code != "FORMAT_UNSUPPORTED" {
+		t.Fatal("retired agent decoded as Pi", result)
 	}
 }
 
@@ -113,7 +112,7 @@ func TestUsageParserNativeFixtures(t *testing.T) {
 	for _, tc := range []struct {
 		agent        string
 		count, total int64
-	}{{"codex", 7, 130011}, {"pi", 1, 85}, {"dsh", 1, 6321}} {
+	}{{"codex", 7, 130011}, {"pi", 1, 85}} {
 		t.Run(tc.agent, func(t *testing.T) {
 			b, raw := fixture(t, tc.agent)
 			r := Parse(context.Background(), b, raw, false)
@@ -121,14 +120,11 @@ func TestUsageParserNativeFixtures(t *testing.T) {
 			if !r.Complete || s.Tokens == nil || s.Coverage.CountedResponses != tc.count || s.Tokens.Total == nil || *s.Tokens.Total != tc.total {
 				t.Fatalf("result=%+v snapshot=%+v", r, s)
 			}
-			if tc.agent == "dsh" && s.Tokens.Reasoning != nil {
-				t.Fatal("invented reasoning count")
-			}
 		})
 	}
 }
 func TestUsageParserConcatenatedFramesAndTail(t *testing.T) {
-	b, raw := fixture(t, "dsh")
+	b, raw := fixture(t, "pi")
 	cut := strings.Index(string(raw), "\n") + 1
 	encoder, err := zstd.NewWriter(nil, zstd.WithEncoderConcurrency(1))
 	if err != nil {
@@ -146,33 +142,6 @@ func TestUsageParserConcatenatedFramesAndTail(t *testing.T) {
 	}
 }
 
-func TestUsageOwnershipDSHRuntimeContext(t *testing.T) {
-	b, raw := fixture(t, "dsh")
-	needle := []byte(`{"type":"assistant/message"`)
-	contextRecord := []byte("{\"type\":\"user/message\",\"seq\":9,\"data\":{\"id\":\"context\",\"role\":\"user\",\"source\":{\"kind\":\"runtime-context\"},\"content\":[{\"type\":\"text\",\"text\":\"synthetic native context\"}]}}\n")
-	index := strings.Index(string(raw), string(needle))
-	if index < 0 {
-		t.Fatal("fixture missing assistant")
-	}
-	changed := append(append(append([]byte{}, raw[:index]...), contextRecord...), raw[index:]...)
-	result := Parse(context.Background(), b, changed, false)
-	if !result.Complete || len(result.Events) != 1 {
-		t.Fatal(result)
-	}
-}
-
-func TestUsageDSHNativeTimeAndSequence(t *testing.T) {
-	b, raw := fixture(t, "dsh")
-	r := Parse(context.Background(), b, raw, false)
-	if len(r.Events) != 1 || r.Events[0].CallTime == nil || r.Events[0].CallTime.UnixMilli() != 1792554364254 || r.Events[0].TimeBasis != "completion" {
-		t.Fatal(r)
-	}
-	b.Commands[2].InputSeq = 15
-	r = Parse(context.Background(), b, raw, false)
-	if r.Complete || len(r.Events) != 0 {
-		t.Fatal("pre-input response counted", r)
-	}
-}
 func TestUsageBindingAndLimits(t *testing.T) {
 	b, raw := fixture(t, "pi")
 	for _, mutate := range []func(*Binding){func(b *Binding) { b.SessionID = "other" }, func(b *Binding) { b.CWD = `C:\other` }, func(b *Binding) { b.Commands[0].WireSHA256 = "unknown" }} {

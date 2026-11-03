@@ -1,0 +1,17 @@
+{
+  "runtime": "remote",
+  "sessionId": "oas_p0_b3cb959c554d46a99f727fb8c661d987",
+  "params": {
+    "envelope": {
+      "sessionId": "oas_p0_b3cb959c554d46a99f727fb8c661d987",
+      "clientOperationId": "1793688658917-498e82fa327a4c95b05b9f54fd700f31",
+      "expectedRuntimeFence": null,
+      "payloadFingerprint": "44b159eb60de9cb6ece5dad7478dfb83b969b56655284447d4acae948adcdc08"
+    },
+    "worktree": "id:903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-oas-p0-20261103-remote",
+    "agent": "codex",
+    "options": {
+      "permissionMode": "full-access"
+    }
+  }
+}

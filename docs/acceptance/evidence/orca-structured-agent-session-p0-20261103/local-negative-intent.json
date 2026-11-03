@@ -1,0 +1,50 @@
+{
+  "requests": [
+    [
+      "bad-create-fingerprint",
+      "agentSession.create",
+      {
+        "envelope": {
+          "sessionId": "oas_p0_2aceac5197b54cf8a7f30bdb20ba7ab2",
+          "clientOperationId": "1793689052601-3d6d883475464626ad4fba506c26d444",
+          "expectedRuntimeFence": null,
+          "payloadFingerprint": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "worktree": "id:faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-oas-p0-20261103-local",
+        "agent": "codex"
+      }
+    ],
+    [
+      "stale-send-fence",
+      "agentSession.send",
+      {
+        "envelope": {
+          "sessionId": "oas_p0_23c02d0cefda4fa2bdc52b5c9b98d99b",
+          "clientOperationId": "1793689052601-4ccc367de2e94592ae0bd472c9ec1083",
+          "expectedRuntimeFence": 1,
+          "payloadFingerprint": "29b801f684c43bcb04c857cd43edd2a3395f8de7336333eaebde31eca2f598af"
+        },
+        "body": {
+          "kind": "message",
+          "role": "user",
+          "blocks": [
+            {
+              "type": "text",
+              "text": "P0 invalid request: this input must be rejected without dispatch."
+            }
+          ]
+        }
+      }
+    ],
+    [
+      "close-extra-envelope",
+      "agentSession.close",
+      {
+        "sessionId": "oas_p0_23c02d0cefda4fa2bdc52b5c9b98d99b",
+        "envelope": {
+          "expectedRuntimeFence": 1
+        }
+      }
+    ]
+  ]
+}

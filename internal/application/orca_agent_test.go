@@ -18,7 +18,7 @@ import (
 )
 
 func TestSRFreezeOrcaAgent(t *testing.T) {
-	for _, agent := range []string{"", "codex", "pi", "dsh"} {
+	for _, agent := range []string{"", "codex", "pi"} {
 		t.Run("agent="+agent, func(t *testing.T) {
 			f := newBaseRefreshFixture(t, "origin", "main")
 			executable, err := exec.LookPath("git")

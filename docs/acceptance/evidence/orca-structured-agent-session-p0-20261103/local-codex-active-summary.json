@@ -1,0 +1,68 @@
+{
+  "label": "local-codex-active",
+  "sessionId": "oas_p0_0a3ac009c57b46c49cf11a8e7d74d33f",
+  "before": {
+    "fence": 2,
+    "working": true,
+    "turn": {
+      "turnId": "01a1a030-5c78-7782-9bfb-cff55f86d324",
+      "state": "running",
+      "userItemId": "orca:1793688883878-107776c61b844268901c2f0c2a82bb1b",
+      "startedAt": 1793688886979,
+      "requestedAt": 1793688886345
+    }
+  },
+  "cancel": {
+    "id": "a9512c28-1a23-4c27-b7f9-0428bf88eb44",
+    "ok": true,
+    "result": {
+      "ok": true,
+      "replayed": false,
+      "fence": 2,
+      "cursor": {
+        "epoch": "f00c9771-33dd-4b25-a42d-ccfcf565dd74",
+        "sequence": 9
+      },
+      "value": {
+        "turnId": "01a1a030-5c78-7782-9bfb-cff55f86d324",
+        "cancelled": true
+      }
+    },
+    "_meta": {
+      "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+    }
+  },
+  "afterCancel": {
+    "fence": 2,
+    "working": false,
+    "turn": {
+      "itemId": "legacy:codex:oas_p0_0a3ac009c57b46c49cf11a8e7d74d33f:turn-lifecycle%3A01a1a030-5c78-7782-9bfb-cff55f86d324",
+      "observedAt": 1793688886979,
+      "turn": {
+        "turnId": "01a1a030-5c78-7782-9bfb-cff55f86d324",
+        "state": "interrupted",
+        "outcome": "cancellation",
+        "userItemId": "orca:1793688883878-107776c61b844268901c2f0c2a82bb1b",
+        "startedAt": 1793688886979,
+        "requestedAt": 1793688886345,
+        "completedAt": 1793688887845,
+        "durationMs": 1400
+      }
+    },
+    "backgroundTasks": null
+  },
+  "close": {
+    "id": "d947f3f0-3d40-4fd7-9321-22c7a95a9369",
+    "ok": true,
+    "result": {
+      "ok": true
+    },
+    "_meta": {
+      "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+    }
+  },
+  "afterClose": {
+    "fence": 3,
+    "working": false
+  }
+}

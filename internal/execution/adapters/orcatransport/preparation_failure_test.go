@@ -11,7 +11,7 @@ import (
 )
 
 func TestNativePreparationFailureIsBoundAndNeverReady(t *testing.T) {
-	for _, agent := range []string{"pi", "dsh"} {
+	for _, agent := range []string{"pi"} {
 		t.Run(agent, func(t *testing.T) {
 			l, _, _ := fixture(t)
 			c := &TerminalConfig{Agent: agent, StateDirectory: t.TempDir(), ExecutionID: strings.Repeat("a", 32), SessionID: "original", ConfigurationDigest: "config", AccessMode: "full_access", BundleSHA256: TerminalExtensionDigest()}

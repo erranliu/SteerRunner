@@ -1,0 +1,100 @@
+{
+  "sessionId": "oas_b4f45044c616d148a8614534d9612e32",
+  "epoch": "80bbf5a6-c24a-45cf-89f4-c6516c92f4fe",
+  "working": false,
+  "latestTurn": {
+    "itemId": "legacy:codex:oas_b4f45044c616d148a8614534d9612e32:turn-lifecycle%3A01a1a090-0349-7e83-87ca-745a49623ed6",
+    "observedAt": 1793695156122,
+    "turn": {
+      "contextUsage": {
+        "used": {
+          "kind": "report",
+          "model": "unknown",
+          "usedTokens": 20250,
+          "windowTokens": 475000,
+          "percentage": 4,
+          "categories": [],
+          "capturedAt": 1793695188252
+        }
+      },
+      "turnId": "01a1a090-0349-7e83-87ca-745a49623ed6",
+      "state": "completed",
+      "outcome": "success",
+      "userItemId": "orca:1793695145913-ccc44a62b013814847952dd930221096",
+      "startedAt": 1793695156122,
+      "requestedAt": 1793695154977,
+      "completedAt": 1793695188874,
+      "durationMs": 33665
+    }
+  },
+  "userCount": 1,
+  "userBodySHA256": [
+    "6423917517d2ed23db356772c98433f03c013fd99d353d17c7b05a4a463f3987"
+  ],
+  "submissions": [
+    {
+      "clientMessageId": "1793695145913-ccc44a62b013814847952dd930221096",
+      "fence": 2,
+      "payloadFingerprint": "a2493493dea46849e3e774ccdb149062f3b3037ffff8e78dacf39f83e1351037",
+      "dispatchState": "accepted",
+      "providerItemId": "codex:01a1a090-0168-7bd0-9749-95f34b674515:01a1a090-0349-7e83-87ca-745a49623ed6:0",
+      "reason": null,
+      "submittedAt": 1793695153221,
+      "resolvedAt": 1793695160327,
+      "submittedSequence": 2,
+      "handoverRecorded": true,
+      "acceptedSequence": 2,
+      "origin": "client",
+      "source": {
+        "kind": "user"
+      },
+      "options": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium"
+      },
+      "handedOverAt": 1793695154984
+    }
+  ],
+  "assistantItems": [
+    {
+      "itemId": "codex:01a1a090-0168-7bd0-9749-95f34b674515:01a1a090-0349-7e83-87ca-745a49623ed6:1",
+      "sequence": 7,
+      "turnScope": {
+        "kind": "turn",
+        "turnItemId": "legacy:codex:oas_b4f45044c616d148a8614534d9612e32:turn-lifecycle%3A01a1a090-0349-7e83-87ca-745a49623ed6"
+      },
+      "characters": 17
+    },
+    {
+      "itemId": "codex:01a1a090-0168-7bd0-9749-95f34b674515:01a1a090-0349-7e83-87ca-745a49623ed6:2",
+      "sequence": 13,
+      "turnScope": {
+        "kind": "turn",
+        "turnItemId": "legacy:codex:oas_b4f45044c616d148a8614534d9612e32:turn-lifecycle%3A01a1a090-0349-7e83-87ca-745a49623ed6"
+      },
+      "characters": 17
+    },
+    {
+      "itemId": "codex:01a1a090-0168-7bd0-9749-95f34b674515:01a1a090-0349-7e83-87ca-745a49623ed6:3",
+      "sequence": 19,
+      "turnScope": {
+        "kind": "turn",
+        "turnItemId": "legacy:codex:oas_b4f45044c616d148a8614534d9612e32:turn-lifecycle%3A01a1a090-0349-7e83-87ca-745a49623ed6"
+      },
+      "characters": 6983
+    }
+  ],
+  "toolItems": 2,
+  "options": {
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "serviceTier": "priority",
+    "defaulted": [],
+    "acceptedInputSources": {
+      "model": "saved",
+      "effort": "saved",
+      "serviceTier": "saved"
+    },
+    "permissionMode": "full-access"
+  }
+}

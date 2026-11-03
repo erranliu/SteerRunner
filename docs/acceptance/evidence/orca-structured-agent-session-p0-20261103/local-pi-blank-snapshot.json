@@ -1,0 +1,11 @@
+{
+  "id": "6dd08821-32b4-4eee-9967-5dcde47dd210",
+  "ok": false,
+  "error": {
+    "code": "method_not_supported",
+    "message": "Method agentSession.subscribe requires a streaming transport"
+  },
+  "_meta": {
+    "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+  }
+}

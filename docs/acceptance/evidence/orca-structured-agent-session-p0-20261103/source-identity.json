@@ -1,0 +1,27 @@
+{
+  "schema": "orca-structured-p0-source/v1",
+  "runner_commit": "457ffaea20b6227a0bdaec9e56f5b9e7f54da337",
+  "recorded_at": "2026-11-03T14:47:06.6312613+08:00",
+  "files": [
+    {
+      "sha256": "6de1a5e85651185428de1ae20bdc6e352ff2c8bae90051ac77c48e83cd130125",
+      "path": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe"
+    },
+    {
+      "sha256": "39915f5d1acd910657d7597004fa595704e9672b37a4a0cddc836a812dbda01a",
+      "path": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\app.asar"
+    },
+    {
+      "sha256": "b4ad4443c92e700b115a29e3a8669487db7e493732f556e257cc7511ff5aa9d9",
+      "path": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\app.asar.unpacked\\out\\shared\\rpc-contract\\structured-agent-session-params.js"
+    },
+    {
+      "sha256": "b480a985078b949f6fdaa5197b2d2e9d6df51b8bddcaf27374cdb0e034107eab",
+      "path": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\app.asar.unpacked\\out\\shared\\agent-session\\lifecycle\\structured-agent-session-mutation.js"
+    },
+    {
+      "sha256": "6382c62a30dc3e9e6d98634c677c6ef415dc2acbf7bb1faaed858a7c62188fb4",
+      "path": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\app.asar.unpacked\\out\\main\\chunks\\structured-agent-session-host-assembly-CMXzHER5.js"
+    }
+  ]
+}

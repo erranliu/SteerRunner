@@ -1,0 +1,24 @@
+{
+  "schema": "orca-blocker-review-manifest/v1",
+  "algorithm": "SHA-256",
+  "excludes": [
+    "manifest.json"
+  ],
+  "files": [
+    {
+      "path": "orca-source-findings.json",
+      "bytes": 27317,
+      "sha256": "fb85ab3d84ef98d7c312aece96340db57b1412a291b85ab7999f48212708d5d7"
+    },
+    {
+      "path": "runner-source-map.json",
+      "bytes": 3338,
+      "sha256": "e2d1d7315fda3c5a9deecfd474c74b1f398c15e84c8a102f30cbfe2afe712556"
+    },
+    {
+      "path": "validation-results.json",
+      "bytes": 26594,
+      "sha256": "bcecd7d3b5975bee2c259c6d0a7e90f96021e2de9e8bd2eea955febdbfc4fd31"
+    }
+  ]
+}

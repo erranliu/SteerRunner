@@ -62,7 +62,7 @@ func localStopEvidence(m livetest.Manifest, view contracts.RunView) (any, error)
 			return nil, errors.New("frozen cleanup settings invalid")
 		}
 		var evidence any
-		if settings.AgentName() == "pi" || settings.AgentName() == "dsh" {
+		if settings.AgentName() == "pi" {
 			var fact orcatransport.TerminalExit
 			raw, readErr := os.ReadFile(filepath.Join(m.Root, "s", "terminal-agents", view.RunID, view.Execution.AttemptID, "exit.json"))
 			if readErr != nil || contracts.DecodeStrict(raw, &fact) != nil || state.TerminalOwner == nil || !reflect.DeepEqual(fact.Owner, *state.TerminalOwner) || fact.Owner.RuntimeSHA256 != settings.AgentLaunch.RuntimeSHA256 || fact.Version != 2 || !fact.WritersAbsent || fact.ClosedAt.IsZero() || process.Probe(&fact.Owner.Job.Owner).State != "absent" {

@@ -1,0 +1,12 @@
+--- FAIL: TestSRFreezeOrcaStructuredExecuteOnly (8.99s)
+    orca_structured_test.go:71: explicit executor was probed or silently ignored {"runtime_executable":""} Execution settings do not satisfy the embedded contract.
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/application	9.385s
+--- FAIL: TestSRCapabilityCatalogIsStaticAndResolvable (0.13s)
+    validation_test.go:91: unsupported agent was admitted
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/resources	1.237s
+ok  	github.com/erranliu/SteerRunner/internal/contracts	0.912s
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport	0.464s
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca	1.642s
+FAIL

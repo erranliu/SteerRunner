@@ -1,0 +1,31 @@
+{
+  "id": "c3d68c82-4492-4aef-91ed-ec9198be2416",
+  "ok": true,
+  "result": {
+    "models": [],
+    "current": {
+      "defaulted": [],
+      "acceptedInputSources": {},
+      "permissionMode": "full-access"
+    },
+    "modelsKnown": false,
+    "canSwitchAccount": false,
+    "rewind": {
+      "supported": true
+    },
+    "conversationCommands": [
+      "clear",
+      "compact"
+    ],
+    "acceptsImages": true,
+    "threadGoal": {
+      "current": null
+    },
+    "contextUsage": {
+      "current": {}
+    }
+  },
+  "_meta": {
+    "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+  }
+}

@@ -178,6 +178,11 @@ func (r *Record) View() contracts.RunView {
 	}
 	if r.Request.Workflow.ID == workflow.SingleExecution {
 		v.Closed = r.Closed
+		if s.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 {
+			v.ContentResult = r.ContentResult
+			settled := false
+			v.ResourcesSettled = &settled
+		}
 		v.Controls.CanReply = false
 		v.Controls.CanResume = false
 		v.Controls.CanMessage = false

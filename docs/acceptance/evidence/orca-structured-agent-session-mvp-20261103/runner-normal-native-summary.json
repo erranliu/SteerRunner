@@ -1,0 +1,100 @@
+{
+  "sessionId": "oas_3ac23d8ecb5ed79a6a04f91419fa2b00",
+  "epoch": "9137f6b7-077c-4882-813f-2aa38f87d38c",
+  "working": false,
+  "latestTurn": {
+    "itemId": "legacy:codex:oas_3ac23d8ecb5ed79a6a04f91419fa2b00:turn-lifecycle%3A01a1a07d-0243-7eb2-b0ea-2cab1ff5ebd9",
+    "observedAt": 1793693910288,
+    "turn": {
+      "contextUsage": {
+        "used": {
+          "kind": "report",
+          "model": "unknown",
+          "usedTokens": 21173,
+          "windowTokens": 475000,
+          "percentage": 4,
+          "categories": [],
+          "capturedAt": 1793693942386
+        }
+      },
+      "turnId": "01a1a07d-0243-7eb2-b0ea-2cab1ff5ebd9",
+      "state": "completed",
+      "outcome": "success",
+      "userItemId": "orca:1793693901773-2654d46a9b64cf30be886c99f819849a",
+      "startedAt": 1793693910288,
+      "requestedAt": 1793693909499,
+      "completedAt": 1793693942808,
+      "durationMs": 33127
+    }
+  },
+  "userCount": 1,
+  "userBodySHA256": [
+    "6423917517d2ed23db356772c98433f03c013fd99d353d17c7b05a4a463f3987"
+  ],
+  "submissions": [
+    {
+      "clientMessageId": "1793693901773-2654d46a9b64cf30be886c99f819849a",
+      "fence": 2,
+      "payloadFingerprint": "a2ea2303f604b9cb6f9c65a0e189d3bfc73b467fbeab3ba1247602cc1708791d",
+      "dispatchState": "accepted",
+      "providerItemId": "codex:01a1a07c-f6ee-7d01-81ed-0efb50dca4b9:01a1a07d-0243-7eb2-b0ea-2cab1ff5ebd9:0",
+      "reason": null,
+      "submittedAt": 1793693905336,
+      "resolvedAt": 1793693914517,
+      "submittedSequence": 2,
+      "handoverRecorded": true,
+      "acceptedSequence": 2,
+      "origin": "client",
+      "source": {
+        "kind": "user"
+      },
+      "options": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium"
+      },
+      "handedOverAt": 1793693909508
+    }
+  ],
+  "assistantItems": [
+    {
+      "itemId": "codex:01a1a07c-f6ee-7d01-81ed-0efb50dca4b9:01a1a07d-0243-7eb2-b0ea-2cab1ff5ebd9:1",
+      "sequence": 7,
+      "turnScope": {
+        "kind": "turn",
+        "turnItemId": "legacy:codex:oas_3ac23d8ecb5ed79a6a04f91419fa2b00:turn-lifecycle%3A01a1a07d-0243-7eb2-b0ea-2cab1ff5ebd9"
+      },
+      "characters": 17
+    },
+    {
+      "itemId": "codex:01a1a07c-f6ee-7d01-81ed-0efb50dca4b9:01a1a07d-0243-7eb2-b0ea-2cab1ff5ebd9:2",
+      "sequence": 13,
+      "turnScope": {
+        "kind": "turn",
+        "turnItemId": "legacy:codex:oas_3ac23d8ecb5ed79a6a04f91419fa2b00:turn-lifecycle%3A01a1a07d-0243-7eb2-b0ea-2cab1ff5ebd9"
+      },
+      "characters": 17
+    },
+    {
+      "itemId": "codex:01a1a07c-f6ee-7d01-81ed-0efb50dca4b9:01a1a07d-0243-7eb2-b0ea-2cab1ff5ebd9:3",
+      "sequence": 19,
+      "turnScope": {
+        "kind": "turn",
+        "turnItemId": "legacy:codex:oas_3ac23d8ecb5ed79a6a04f91419fa2b00:turn-lifecycle%3A01a1a07d-0243-7eb2-b0ea-2cab1ff5ebd9"
+      },
+      "characters": 6983
+    }
+  ],
+  "toolItems": 2,
+  "options": {
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "serviceTier": "priority",
+    "defaulted": [],
+    "acceptedInputSources": {
+      "model": "saved",
+      "effort": "saved",
+      "serviceTier": "saved"
+    },
+    "permissionMode": "full-access"
+  }
+}

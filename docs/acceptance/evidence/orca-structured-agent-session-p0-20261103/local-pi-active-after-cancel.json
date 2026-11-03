@@ -1,0 +1,168 @@
+[
+  {
+    "id": "22eb7190-a173-4427-9704-f23ac4d49171",
+    "ok": true,
+    "result": {
+      "ok": true,
+      "page": {
+        "sessionId": "oas_p0_b3fa905bcd63466197ab8cf6231b1b9e",
+        "epoch": "48c0ebb3-fa7f-4d83-ad59-77df61aea849",
+        "direction": "tail",
+        "items": [
+          {
+            "itemId": "orca:1793688882893-8b73c36f89084e6b969a52c06995e401",
+            "revision": 0,
+            "body": {
+              "kind": "message",
+              "role": "user",
+              "blocks": [
+                {
+                  "type": "text",
+                  "text": "Cancellation API probe. Do not use tools, read files, or change anything. Generate 3000 numbered lines of short original arithmetic examples. Keep producing lines until the list is complete."
+                }
+              ]
+            },
+            "sequence": 3,
+            "observedAt": 1793688884437,
+            "turnScope": {
+              "kind": "thread"
+            }
+          },
+          {
+            "itemId": "legacy:pi:oas_p0_b3fa905bcd63466197ab8cf6231b1b9e:turn-lifecycle%3Ap%3Aoas_p0_b3fa905bcd63466197ab8cf6231b1b9e%3Arun%253Aa6d8e6cd-af56-4b3e-9bdc-3b66e5bf288b%253A1",
+            "revision": 5,
+            "body": {
+              "kind": "turn",
+              "contextUsage": {
+                "window": {
+                  "tokens": 1048576,
+                  "capturedAt": 1793688884863
+                },
+                "used": {
+                  "kind": "report",
+                  "model": "openrouter/deepseek/deepseek-v4.1-flash",
+                  "usedTokens": 2858,
+                  "windowTokens": 1048576,
+                  "percentage": 0.27256011962890625,
+                  "categories": [],
+                  "capturedAt": 1793688884858
+                }
+              },
+              "turnId": "p:oas_p0_b3fa905bcd63466197ab8cf6231b1b9e:run%3Aa6d8e6cd-af56-4b3e-9bdc-3b66e5bf288b%3A1",
+              "state": "interrupted",
+              "outcome": "cancellation",
+              "userItemId": "orca:1793688882893-8b73c36f89084e6b969a52c06995e401",
+              "startedAt": 1793688884453,
+              "requestedAt": 1793688884437,
+              "completedAt": 1793688884868
+            },
+            "sequence": 4,
+            "observedAt": 1793688884453,
+            "turnScope": {
+              "kind": "thread"
+            }
+          },
+          {
+            "itemId": "orca:stop%3Ap%3Aoas_p0_b3fa905bcd63466197ab8cf6231b1b9e%3Arun%253Aa6d8e6cd-af56-4b3e-9bdc-3b66e5bf288b%253A1",
+            "revision": 1,
+            "body": {
+              "kind": "status",
+              "text": "Cancellation requested."
+            },
+            "sequence": 8,
+            "observedAt": 1793688884844,
+            "turnScope": {
+              "kind": "turn",
+              "turnItemId": "legacy:pi:oas_p0_b3fa905bcd63466197ab8cf6231b1b9e:turn-lifecycle%3Ap%3Aoas_p0_b3fa905bcd63466197ab8cf6231b1b9e%3Arun%253Aa6d8e6cd-af56-4b3e-9bdc-3b66e5bf288b%253A1"
+            }
+          }
+        ],
+        "removedItemIds": [],
+        "submissions": [
+          {
+            "clientMessageId": "1793688882893-8b73c36f89084e6b969a52c06995e401",
+            "fence": 2,
+            "payloadFingerprint": "eca9791f5238d797d55d7d314cb84945b2ff991ef5d4cbc8bcdd8e9de0be9c1d",
+            "dispatchState": "accepted",
+            "providerItemId": "orca:1793688882893-8b73c36f89084e6b969a52c06995e401",
+            "reason": null,
+            "submittedAt": 1793688883428,
+            "resolvedAt": 1793688884463,
+            "submittedSequence": 2,
+            "handoverRecorded": true,
+            "acceptedSequence": 2,
+            "origin": "client",
+            "source": {
+              "kind": "user"
+            },
+            "options": {},
+            "handedOverAt": 1793688884437
+          }
+        ],
+        "window": {
+          "oldest": {
+            "epoch": "48c0ebb3-fa7f-4d83-ad59-77df61aea849",
+            "sequence": 3
+          },
+          "newest": {
+            "epoch": "48c0ebb3-fa7f-4d83-ad59-77df61aea849",
+            "sequence": 8
+          },
+          "nextCursor": {
+            "epoch": "48c0ebb3-fa7f-4d83-ad59-77df61aea849",
+            "sequence": 3
+          }
+        },
+        "liveCursor": {
+          "epoch": "48c0ebb3-fa7f-4d83-ad59-77df61aea849",
+          "sequence": 11
+        },
+        "hasOlder": false,
+        "hasNewer": false,
+        "latestTurn": {
+          "itemId": "legacy:pi:oas_p0_b3fa905bcd63466197ab8cf6231b1b9e:turn-lifecycle%3Ap%3Aoas_p0_b3fa905bcd63466197ab8cf6231b1b9e%3Arun%253Aa6d8e6cd-af56-4b3e-9bdc-3b66e5bf288b%253A1",
+          "observedAt": 1793688884453,
+          "turn": {
+            "contextUsage": {
+              "window": {
+                "tokens": 1048576,
+                "capturedAt": 1793688884863
+              },
+              "used": {
+                "kind": "report",
+                "model": "openrouter/deepseek/deepseek-v4.1-flash",
+                "usedTokens": 2858,
+                "windowTokens": 1048576,
+                "percentage": 0.27256011962890625,
+                "categories": [],
+                "capturedAt": 1793688884858
+              }
+            },
+            "turnId": "p:oas_p0_b3fa905bcd63466197ab8cf6231b1b9e:run%3Aa6d8e6cd-af56-4b3e-9bdc-3b66e5bf288b%3A1",
+            "state": "interrupted",
+            "outcome": "cancellation",
+            "userItemId": "orca:1793688882893-8b73c36f89084e6b969a52c06995e401",
+            "startedAt": 1793688884453,
+            "requestedAt": 1793688884437,
+            "completedAt": 1793688884868
+          }
+        },
+        "actionablePromptIds": [],
+        "working": false,
+        "fence": 2,
+        "hostNow": 1793688884885,
+        "queuedMessages": [],
+        "queuePause": null,
+        "nextQueuedMessageId": null,
+        "backgroundTasks": null
+      },
+      "providerSession": {
+        "key": "session_id",
+        "id": "C:\\Users\\lmas1\\.pi\\agent\\sessions\\--C--Users-lmas1-orca-workspaces-SteerlineTest-sr-oas-p0-20261103-local--\\2026-11-03T06-54-44-232Z_01a1a030-5407-71e3-82d4-11d2597a4c4e.jsonl"
+      }
+    },
+    "_meta": {
+      "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+    }
+  }
+]

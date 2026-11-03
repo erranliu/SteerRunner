@@ -1,0 +1,17 @@
+{
+  "id": "25e49337-0498-45ff-bc06-b007b07ce47c",
+  "ok": true,
+  "result": {
+    "ok": false,
+    "refusal": {
+      "code": "agent_session_operation_conflict",
+      "message": "The payload does not match the fingerprint the client declared for this operation.",
+      "details": {
+        "reason": "fingerprintMismatch"
+      }
+    }
+  },
+  "_meta": {
+    "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+  }
+}

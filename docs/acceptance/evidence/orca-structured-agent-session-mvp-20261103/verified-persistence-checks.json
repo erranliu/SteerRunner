@@ -1,0 +1,166 @@
+{
+  "schema": "orca-structured-mvp-verification/v1",
+  "executable_sha256": "e497382b170ea722d9983f2dc502c4aa047d303ec382b6c73ad074193b6bd6a3",
+  "state_directory": "C:\\Users\\lmas1\\.codex\\worktrees\\d634\\SteerRunner\\.evidence\\orca-structured-agent-session-mvp-verified-state",
+  "runs": [
+    {
+      "run_id": "3d5f07fc32e344cc444bea61b0ff7f46",
+      "mode": "normal",
+      "session_id": "oas_b4f45044c616d148a8614534d9612e32",
+      "command_id": "bb85b095b9bd7d2704c0dec3f66809be",
+      "message_id": "1793695145913-ccc44a62b013814847952dd930221096",
+      "native_turn_id": "01a1a090-0349-7e83-87ca-745a49623ed6",
+      "user_items": 1,
+      "frozen_body_bytes": 553,
+      "frozen_body_sha256": "6423917517d2ed23db356772c98433f03c013fd99d353d17c7b05a4a463f3987",
+      "native_body_equal_frozen": true,
+      "input_budget": {
+        "contract": "steerrunner-model-input/v1",
+        "sha256": "6423917517d2ed23db356772c98433f03c013fd99d353d17c7b05a4a463f3987",
+        "provenance_sha256": "e861a030c367304e13c00ce1a84f94603db7fb93b84439167f90d6b42cca33f3",
+        "caller_bytes": 553,
+        "runner_bytes": 0,
+        "total_bytes": 553,
+        "fragments": [
+          {
+            "source": "workflow.body",
+            "owner": "caller",
+            "bytes": 553
+          }
+        ]
+      },
+      "provider_item_id": "codex:01a1a090-0168-7bd0-9749-95f34b674515:01a1a090-0349-7e83-87ca-745a49623ed6:0",
+      "normalized_user_item_id": "orca:1793695145913-ccc44a62b013814847952dd930221096",
+      "durable_actions": [
+        "prepare_workspace",
+        "prepare_session",
+        "start_turn",
+        "stop_execution"
+      ],
+      "native_close_ack": {
+        "ok": true
+      },
+      "close_attempted": true,
+      "auxiliary_shells": 1,
+      "opaque_state_bytes": 1899,
+      "complete_result_equal_native_assistant_messages": true,
+      "result_utf8_bytes": 7027,
+      "content_status": "succeeded",
+      "stop_status": "unknown",
+      "public_native_outcome": "success",
+      "runtime_launch_command_empty": true,
+      "same_original_session_and_one_user_after_restart": true
+    },
+    {
+      "run_id": "6b937ec8a51e471bfd8942c702b56288",
+      "mode": "active",
+      "session_id": "oas_76cd08a53b1b15554fa49cc99386bb6d",
+      "command_id": "3f876eb90535fdec3e4dd62cb4dac28a",
+      "message_id": "1793695148907-ef143e256a7ae9d998a31fd6176d604e",
+      "native_turn_id": "01a1a090-0b8d-7e90-82a5-4e0cae3e8434",
+      "user_items": 1,
+      "frozen_body_bytes": 501,
+      "frozen_body_sha256": "9acc23e4ab93474420bc68a1cde16f7a20f53f438547cf5632379a120b091af7",
+      "native_body_equal_frozen": true,
+      "input_budget": {
+        "contract": "steerrunner-model-input/v1",
+        "sha256": "9acc23e4ab93474420bc68a1cde16f7a20f53f438547cf5632379a120b091af7",
+        "provenance_sha256": "259209ddff548bcae14af5cf1cfc35cb204e603cee8e9634b40167c8705c5982",
+        "caller_bytes": 501,
+        "runner_bytes": 0,
+        "total_bytes": 501,
+        "fragments": [
+          {
+            "source": "workflow.body",
+            "owner": "caller",
+            "bytes": 501
+          }
+        ]
+      },
+      "provider_item_id": "codex:01a1a090-0993-7823-b725-4eea1f324b30:01a1a090-0b8d-7e90-82a5-4e0cae3e8434:0",
+      "normalized_user_item_id": "orca:1793695148907-ef143e256a7ae9d998a31fd6176d604e",
+      "durable_actions": [
+        "prepare_workspace",
+        "prepare_session",
+        "start_turn",
+        "stop_execution"
+      ],
+      "native_close_ack": {
+        "ok": true
+      },
+      "close_attempted": true,
+      "auxiliary_shells": 1,
+      "opaque_state_bytes": 1899,
+      "complete_result_equal_native_assistant_messages": false,
+      "result_utf8_bytes": 20,
+      "content_status": null,
+      "stop_status": "unknown",
+      "public_native_outcome": "cancellation",
+      "runtime_launch_command_empty": true,
+      "same_original_session_and_one_user_after_restart": true
+    },
+    {
+      "run_id": "8e21a8ab7ac9ef87f296a6f892610ba7",
+      "mode": "large",
+      "session_id": "oas_5bd4b72845246ab2effad083ee89e505",
+      "command_id": "e625921a885ba3dfe6228634daad7697",
+      "message_id": "1793696253202-a0a998dc22c2827a8a389ba3b079bf0c",
+      "native_turn_id": "01a1a0a0-d9a9-7fc0-bdc0-53a69c21e724",
+      "user_items": 1,
+      "frozen_body_bytes": 553,
+      "frozen_body_sha256": "83fb1c351a67d8e5f02e7afa03fb092f631916aeb2b5012fdd29ac08ab5098ca",
+      "native_body_equal_frozen": true,
+      "input_budget": {
+        "contract": "steerrunner-model-input/v1",
+        "sha256": "83fb1c351a67d8e5f02e7afa03fb092f631916aeb2b5012fdd29ac08ab5098ca",
+        "provenance_sha256": "e861a030c367304e13c00ce1a84f94603db7fb93b84439167f90d6b42cca33f3",
+        "caller_bytes": 553,
+        "runner_bytes": 0,
+        "total_bytes": 553,
+        "fragments": [
+          {
+            "source": "workflow.body",
+            "owner": "caller",
+            "bytes": 553
+          }
+        ]
+      },
+      "provider_item_id": "codex:01a1a0a0-d7db-77e3-b9cc-da859bc6263c:01a1a0a0-d9a9-7fc0-bdc0-53a69c21e724:0",
+      "normalized_user_item_id": "orca:1793696253202-a0a998dc22c2827a8a389ba3b079bf0c",
+      "durable_actions": [
+        "prepare_workspace",
+        "prepare_session",
+        "start_turn",
+        "stop_execution"
+      ],
+      "native_close_ack": {
+        "ok": true
+      },
+      "close_attempted": true,
+      "auxiliary_shells": 1,
+      "opaque_state_bytes": 1899,
+      "complete_result_equal_native_assistant_messages": true,
+      "result_utf8_bytes": 13927,
+      "content_status": "succeeded",
+      "stop_status": "unknown",
+      "public_native_outcome": "success",
+      "runtime_launch_command_empty": true,
+      "same_original_session_and_one_user_after_restart": null
+    }
+  ],
+  "previous_evidence": [
+    {
+      "directory": "orca-structured-agent-session-p0-20261103",
+      "verified_files": 189,
+      "manifest_unchanged": true,
+      "source_map_note": "Historical source hashes describe the earlier investigation baseline, not the new implementation."
+    },
+    {
+      "directory": "orca-structured-agent-session-blockers-20261103",
+      "verified_files": 3,
+      "manifest_unchanged": true,
+      "source_map_note": "Historical source hashes describe the earlier investigation baseline, not the new implementation."
+    }
+  ],
+  "qualification": "Local Codex execute/1 input and complete public-turn assistant text verified; complete resource settlement remains unverified. Durable intent counts are not independent packet capture."
+}

@@ -203,7 +203,6 @@ func assessCase(config TestConfig, scenario Scenario, test Case, catalog resourc
 		add("/harness/admin_host", "missing_test_facility", "The case requires an explicitly configured isolated network fault host.")
 	}
 	roles := make([]string, 0, len(requirements.Roles))
-	var sharedLocalRuntime *contracts.AgentSettings
 	for role := range requirements.Roles {
 		roles = append(roles, role)
 	}
@@ -265,13 +264,6 @@ func assessCase(config TestConfig, scenario Scenario, test Case, catalog resourc
 			}
 			if fixtureOK && !filepath.IsAbs(fixture.Repository.LocalPath) {
 				add("/fixture/repository/local_path", "missing_fixture", "Orca tests require the configured registered project entry.")
-			}
-			if scenario.ID == "orca-local.mixed" {
-				if sharedLocalRuntime != nil && (orca.AgentLaunch.RuntimeExecutable != sharedLocalRuntime.RuntimeExecutable || orca.AgentLaunch.RuntimeSHA256 != sharedLocalRuntime.RuntimeSHA256) {
-					add(path+"/execution/settings/agent_launch", "invalid_configuration", "The mixed local case requires both roles on the same configured native helper.")
-				}
-				launch := orca.AgentLaunch
-				sharedLocalRuntime = &launch
 			}
 		}
 		if required.Adapter == "codex-app-server" {

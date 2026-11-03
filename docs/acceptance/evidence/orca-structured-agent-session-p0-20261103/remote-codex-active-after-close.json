@@ -1,0 +1,149 @@
+{
+  "id": "5e076148-c3e2-40d2-8804-13f2429e1fed",
+  "ok": true,
+  "result": {
+    "ok": true,
+    "page": {
+      "sessionId": "oas_p0_5fbb9fcf02c74dc29b515fdb0a438194",
+      "epoch": "bce3e2f5-df14-4f87-a204-dfaec2dfc972",
+      "direction": "tail",
+      "items": [
+        {
+          "itemId": "legacy:codex:oas_p0_5fbb9fcf02c74dc29b515fdb0a438194:turn-lifecycle%3A01a1a030-447c-7d61-988a-87f0fd189001",
+          "revision": 2,
+          "body": {
+            "kind": "turn",
+            "turnId": "01a1a030-447c-7d61-988a-87f0fd189001",
+            "state": "interrupted",
+            "outcome": "cancellation",
+            "userItemId": "orca:1793688881277-aa546596b067426d815263cf7c9eee01",
+            "startedAt": 1793688880553,
+            "requestedAt": 1793688880239,
+            "completedAt": 1793688881023,
+            "durationMs": 752
+          },
+          "sequence": 5,
+          "observedAt": 1793688880553,
+          "turnScope": {
+            "kind": "thread"
+          }
+        },
+        {
+          "itemId": "orca:1793688881277-aa546596b067426d815263cf7c9eee01",
+          "revision": 0,
+          "body": {
+            "kind": "message",
+            "role": "user",
+            "blocks": [
+              {
+                "type": "text",
+                "text": "Cancellation API probe. Do not use tools, read files, or change anything. Generate 3000 numbered lines of short original arithmetic examples. Keep producing lines until the list is complete."
+              }
+            ]
+          },
+          "sequence": 9,
+          "observedAt": 1793688881029,
+          "turnScope": {
+            "kind": "thread"
+          }
+        },
+        {
+          "itemId": "orca:stop%3Achild%3A2%3A848acded-3bbf-4366-8251-e2649a2348af",
+          "revision": 1,
+          "body": {
+            "kind": "status",
+            "tone": "warning",
+            "text": "Codex could not confirm Stop. Check the chat before continuing.",
+            "failure": {
+              "kind": "cancelUnconfirmed"
+            }
+          },
+          "sequence": 10,
+          "sequenceIndex": 1,
+          "observedAt": 1793688881098,
+          "turnScope": {
+            "kind": "thread"
+          }
+        }
+      ],
+      "removedItemIds": [],
+      "submissions": [
+        {
+          "clientMessageId": "1793688881277-aa546596b067426d815263cf7c9eee01",
+          "fence": 2,
+          "payloadFingerprint": "30af961a29722f8449854ca5390187be19eb096b4cacd1d899aac8a7107dee5b",
+          "dispatchState": "rejected",
+          "providerItemId": null,
+          "reason": "provider_cancelled_before_start",
+          "submittedAt": 1793688879689,
+          "resolvedAt": 1793688881029,
+          "submittedSequence": 2,
+          "handoverRecorded": true,
+          "acceptedSequence": 2,
+          "origin": "client",
+          "source": {
+            "kind": "user"
+          },
+          "options": {},
+          "handedOverAt": 1793688880243,
+          "rejection": {
+            "kind": "cancelled"
+          },
+          "answeredInTurn": {
+            "turnItemId": "legacy:codex:oas_p0_5fbb9fcf02c74dc29b515fdb0a438194:turn-lifecycle%3A01a1a030-447c-7d61-988a-87f0fd189001",
+            "via": "start"
+          }
+        }
+      ],
+      "window": {
+        "oldest": {
+          "epoch": "bce3e2f5-df14-4f87-a204-dfaec2dfc972",
+          "sequence": 5
+        },
+        "newest": {
+          "epoch": "bce3e2f5-df14-4f87-a204-dfaec2dfc972",
+          "sequence": 10
+        },
+        "nextCursor": {
+          "epoch": "bce3e2f5-df14-4f87-a204-dfaec2dfc972",
+          "sequence": 5
+        }
+      },
+      "liveCursor": {
+        "epoch": "bce3e2f5-df14-4f87-a204-dfaec2dfc972",
+        "sequence": 10
+      },
+      "hasOlder": false,
+      "hasNewer": false,
+      "latestTurn": {
+        "itemId": "legacy:codex:oas_p0_5fbb9fcf02c74dc29b515fdb0a438194:turn-lifecycle%3A01a1a030-447c-7d61-988a-87f0fd189001",
+        "observedAt": 1793688880553,
+        "turn": {
+          "turnId": "01a1a030-447c-7d61-988a-87f0fd189001",
+          "state": "interrupted",
+          "outcome": "cancellation",
+          "userItemId": "orca:1793688881277-aa546596b067426d815263cf7c9eee01",
+          "startedAt": 1793688880553,
+          "requestedAt": 1793688880239,
+          "completedAt": 1793688881023,
+          "durationMs": 752
+        }
+      },
+      "actionablePromptIds": [],
+      "working": false,
+      "fence": 3,
+      "hostNow": 1793688881121,
+      "queuedMessages": [],
+      "queuePause": null,
+      "nextQueuedMessageId": null,
+      "backgroundTasks": null
+    },
+    "providerSession": {
+      "key": "session_id",
+      "id": "01a1a030-4368-72c0-b9b5-a45804e2cfa5"
+    }
+  },
+  "_meta": {
+    "runtimeId": "21d98aa2-d284-41f3-a6cc-42fb22d728a2"
+  }
+}

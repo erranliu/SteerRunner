@@ -24,7 +24,17 @@ func fileSource(ctx context.Context, setup b.LifecycleSetup, host, instance stri
 	}
 	s := setup.Snapshot
 	p := s.Ref.External
-	if p.Kind != "orca_terminal" || p.RuntimeID == "" || p.WorktreeID == "" || p.ExecutionHost != profile.Target().ExecutionHost || p.Executable != profile.Executable || s.Ref.Target.ExecutionHost != p.ExecutionHost || s.Ref.WorkspacePath != s.Workspace.Path || s.Session.WorkflowRunID != s.Ref.RunID {
+	kind := "orca_terminal"
+	if s.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 {
+		kind = "orca_agent_session"
+		l := &Lifecycle{setup: setup, profile: profile}
+		state, stateErr := l.agentState(s)
+		if stateErr != nil || state.Worktree.Path != s.Workspace.Path || instance != "" && instance != state.Worktree.InstanceID {
+			return nil, errors.New("binding_invalid")
+		}
+		instance = state.Worktree.InstanceID
+	}
+	if p.Kind != kind || p.RuntimeID == "" || p.WorktreeID == "" || p.ExecutionHost != profile.Target().ExecutionHost || p.Executable != profile.Executable || s.Ref.Target.ExecutionHost != p.ExecutionHost || s.Ref.WorkspacePath != s.Workspace.Path || s.Session.WorkflowRunID != s.Ref.RunID {
 		return nil, errors.New("binding_invalid")
 	}
 	return openRunFile(ctx, profile.Environment, p.RuntimeID, host, p.WorktreeID, s.Workspace.Path, instance, s.Session.WorkflowRunID, result)

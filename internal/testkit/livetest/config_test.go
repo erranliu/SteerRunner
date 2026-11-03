@@ -192,21 +192,6 @@ func TestSRNativePreparationReferencesAreStaticConstraints(t *testing.T) {
 			}
 		})
 	}
-	for _, shared := range []bool{true, false} {
-		for _, agent := range []string{"pi", "dsh"} {
-			helper := filepath.Join(dir, "helper.exe")
-			if !shared && agent == "dsh" {
-				helper = filepath.Join(dir, "other-helper.exe")
-			}
-			execution := contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "local"}, Settings: marshalConfig(contracts.OrcaSettings{Agent: agent, AccessMode: "full_access", Transport: contracts.TransportSettings{Executable: filepath.Join(dir, "orca.cmd")}, AgentLaunch: contracts.AgentSettings{RuntimeExecutable: helper, RuntimeSHA256: strings.Repeat("a", 64)}})}
-			config.Configurations["orca-local-"+agent] = marshalConfig(map[string]any{"execution": execution, "workflow": contracts.Workflow{ID: "development", Version: 2}})
-		}
-		scenario, c, _ := Lookup("orca-local.mixed", "default")
-		result := assessCase(config, scenario, c, resources.Catalog())
-		if (result.Availability == "available") != shared {
-			t.Fatal("mixed helper constraint was deferred to runtime", result)
-		}
-	}
 }
 
 func TestSRTestConfigOuterSchemaMatchesParser(t *testing.T) {

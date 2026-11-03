@@ -36,7 +36,7 @@ func TestSRPublishedRunConfiguration(t *testing.T) {
 		{"orca_legacy_empty_mode", `{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"access_mode":""}}`, `{"id":"development","version":2}`, false},
 		{"orca_legacy", `{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"access_mode":"full_access"}}`, `{"id":"development","version":2}`, true},
 		{"orca_pi", `{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"agent":"pi","access_mode":"full_access"}}`, `{"id":"development","version":2}`, true},
-		{"orca_dsh", `{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"agent":"dsh","access_mode":"full_access"}}`, `{"id":"development","version":2}`, true},
+		{"orca_dsh", `{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"agent":"dsh","access_mode":"full_access"}}`, `{"id":"development","version":2}`, false},
 		{"orca_empty_agent", `{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"agent":"","access_mode":"full_access"}}`, `{"id":"development","version":2}`, false},
 		{"orca_null_agent", `{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"agent":null,"access_mode":"full_access"}}`, `{"id":"development","version":2}`, false},
 		{"orca_agent_shell", `{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"agent":"pi --unsafe","access_mode":"full_access"}}`, `{"id":"development","version":2}`, false},

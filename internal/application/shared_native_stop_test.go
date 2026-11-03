@@ -171,6 +171,9 @@ func (h *sharedNativeWire) OutputCommand(_ context.Context, command b.LaunchComm
 
 func sharedNativeEngine(t *testing.T, environment string) (*Engine, *worker, *sharedNativeWire, *sql.DB, string) {
 	t.Helper()
+	// This fixture owns no real Orca resource. Give its production CLI mutex a
+	// private cache so a real user CLI or another package cannot spend its budget.
+	t.Setenv("LOCALAPPDATA", filepath.Join(t.TempDir(), "cache"))
 	f := newBaseRefreshFixture(t, "origin", "main")
 	exe, err := exec.LookPath("git")
 	if err != nil {
@@ -265,7 +268,7 @@ func TestSharedNativeEngineStopReconciliation(t *testing.T) {
 				e.stopRun(id, w, w.port)
 				cancel()
 				if wire.closes != 1 || wire.sends != 0 {
-					t.Fatal("first stop invoked wrong effects", wire.closes, wire.sends)
+					t.Fatal("first stop invoked wrong effects", wire.closes, wire.sends, e.runs[id].Diagnostic)
 				}
 				if mode == "receipt-commit-failed" {
 					if e.runs[id].StopStatus == "stopped" {

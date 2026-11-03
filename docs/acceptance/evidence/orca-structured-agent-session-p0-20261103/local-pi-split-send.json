@@ -1,0 +1,40 @@
+{
+  "id": "e394ee8c-f5c8-4bd1-b062-47164a571d49",
+  "ok": true,
+  "result": {
+    "ok": true,
+    "replayed": false,
+    "fence": 1,
+    "cursor": {
+      "epoch": "c1961061-17ef-4308-9505-fcc20c8f957a",
+      "sequence": 2
+    },
+    "value": {
+      "clientMessageId": "1793688973202-5d9af8918e86432d8c07cf9a1876d426",
+      "submission": {
+        "clientMessageId": "1793688973202-5d9af8918e86432d8c07cf9a1876d426",
+        "fence": 1,
+        "payloadFingerprint": "93fe98bbf1d4f042b72e9fbf0e780c6ea1d39b4b996ea9f03ed390836be1f339",
+        "dispatchState": "pending",
+        "providerItemId": null,
+        "reason": null,
+        "submittedAt": 1793688974404,
+        "resolvedAt": null,
+        "submittedSequence": 2,
+        "handoverRecorded": true,
+        "acceptedSequence": 2,
+        "origin": "client",
+        "source": {
+          "kind": "user"
+        },
+        "options": {
+          "model": "openrouter/deepseek/deepseek-v4.1-flash",
+          "effort": "high"
+        }
+      }
+    }
+  },
+  "_meta": {
+    "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+  }
+}

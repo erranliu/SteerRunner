@@ -1,0 +1,1 @@
+{"protocol":"steerrunner-cli/v1","ok":true,"request_id":"orca-mvp-verified-service-stop-v2","data":{"action_status":"pending","command_id":"325a95c4304881e635413b27afd733b8","instance_id":"f3b80a8997e6646c746627031d81454a","receipt_status":"accepted","run_id":null},"error":null}

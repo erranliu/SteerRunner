@@ -39,7 +39,7 @@ func DefaultPolicy() Policy {
 	return Policy{Enabled: true, RemoteLogAccess: RemoteLogAccess{Mode: "disabled", Grants: []Grant{}}}
 }
 
-var leafRoot = regexp.MustCompile(`(?i)(/sessions/[0-9]{4}/[0-9]{2}/[0-9]{2}|/terminal-agents/[a-z0-9-]+/[a-z0-9-]+/sessions|/\.dsh/sessions/[^/]+/[a-z0-9-]+)$`)
+var leafRoot = regexp.MustCompile(`(?i)(/sessions/[0-9]{4}/[0-9]{2}/[0-9]{2}|/terminal-agents/[a-z0-9-]+/[a-z0-9-]+/sessions)$`)
 
 func SafeRoot(root string) bool {
 	s := strings.ReplaceAll(root, `\`, "/")

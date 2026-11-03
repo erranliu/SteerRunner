@@ -60,6 +60,7 @@ type State struct {
 	LaunchConfirmed    bool                   `json:"launch_confirmed,omitempty"`
 }
 type Lifecycle struct {
+	agentSessions      func(string) agentSessionPort
 	stopping           atomic.Bool
 	probeProcess       func(*b.ProcessIdentity) b.ProcessProbeFacts
 	uploadStopArtifact func(context.Context, string, string, string, string, io.Reader) error
@@ -102,6 +103,9 @@ func NewLifecycle(setup b.LifecycleSetup) (b.LifecyclePort, error) {
 // The explicit port supplies isolated native-response fixtures without adding
 // simulation flags to profiles or the shared business workflow.
 func NewLifecycleWithStateFactory(setup b.LifecycleSetup, factory stateFeedFactory) (b.LifecyclePort, error) {
+	if setup.Snapshot.Ref.Agent.Name != "codex" && setup.Snapshot.Ref.Agent.Name != "pi" {
+		return nil, &b.BackendError{Code: b.BackendUnsupported, Diagnostic: "Orca agent execution/history is unsupported; only Codex and Pi are supported."}
+	}
 	if factory == nil {
 		return nil, errors.New("missing Orca native state source")
 	}
@@ -141,6 +145,9 @@ func NewLifecycleWithStateFactory(setup b.LifecycleSetup, factory stateFeedFacto
 }
 
 func (l *Lifecycle) PolicyCapabilities() b.LifecyclePolicyCapabilities {
+	if l.structured() {
+		return l.structuredPolicy()
+	}
 	resource := b.MechanismNotApplicable
 	if l.setup.AgentLaunchCommand != "" {
 		resource = b.MechanismApplicable
@@ -340,7 +347,7 @@ func (l *Lifecycle) original(ctx context.Context, s b.LifecycleSnapshot) (native
 	// A connected native background terminal can be unadopted by the UI
 	// (orphaned=true). Its original runtime/incarnation/worktree and agent must
 	// still match; adoption into a visible tab is not execution identity.
-	// This label is a display heuristic: the native DSH TUI can be labeled Gemini.
+	// Agent labels are display heuristics, not execution ownership evidence.
 	// Managed agents instead require their original OS owner and native receipt
 	// before every business input/observation. PTY/runtime/incarnation still bind.
 	unknownNativeAgent := l.profile.Terminal != nil
@@ -369,14 +376,17 @@ func (l *Lifecycle) verifyLocalObservation(ctx context.Context, runtime string) 
 
 func (l *Lifecycle) agentExecutionSupport(agent string) error {
 
-	if agent != "codex" && !((agent == "pi" || agent == "dsh") && l.profile.Terminal != nil && l.profile.Terminal.Agent == agent && l.profile.Environment == "" && len(l.profile.RuntimeSHA256) == 64) {
+	if agent != "codex" && !(agent == "pi" && l.profile.Terminal != nil && l.profile.Terminal.Agent == agent && l.profile.Environment == "" && len(l.profile.RuntimeSHA256) == 64) {
 		// Orca 1.4.224 lacks the start, root outcome and permission preparation contract.
 		return &b.BackendError{Code: b.BackendUnsupported, Diagnostic: "terminal_agent_evidence_unsupported: selected agent lacks verified native turn and permission preparation; zero business input"}
 	}
 	return nil
 }
 
-func (l *Lifecycle) PreparationFacts(_ context.Context, s b.LifecycleSnapshot) (b.PreparationFacts, error) {
+func (l *Lifecycle) PreparationFacts(ctx context.Context, s b.LifecycleSnapshot) (b.PreparationFacts, error) {
+	if l.structured() {
+		return l.structuredPreparation(ctx, s)
+	}
 	if err := l.validate(s); err != nil {
 		return b.PreparationFacts{}, err
 	}
@@ -415,6 +425,9 @@ func (l *Lifecycle) PreparationFacts(_ context.Context, s b.LifecycleSnapshot) (
 }
 
 func (l *Lifecycle) Execute(ctx context.Context, r b.LifecycleRequest) (b.LifecycleReceipt, b.LifecycleObserver, error) {
+	if l.structured() {
+		return l.executeStructured(ctx, r, false)
+	}
 
 	receipt := b.LifecycleReceipt{Operation: r.Operation, Disposition: b.OperationUnknown}
 	if err := r.Validate(); err != nil {
@@ -715,13 +728,6 @@ func (l *Lifecycle) submit(ctx context.Context, r b.LifecycleRequest) (b.Lifecyc
 		// keep the frozen logical input/digest and other agents unchanged.
 		text = nativePromptText(text)
 	}
-	if l.profile.Terminal != nil && l.profile.Terminal.Agent == "dsh" {
-		// ConPTY's paste ingress uses CR for line breaks. DSH normalizes these
-		// back to LF in the original composer; raw LF is lost by its Windows
-		// input path. Keep logical framing/digests unchanged and verify the
-		// exact committed native text, as for every other input.
-		text = "\x1b[200~" + strings.ReplaceAll(text, "\n", "\r") + "\x1b[201~"
-	}
 	// Preserve the removed multiline ingress's control-character rejection.
 	// Other agents and existing wire formats retain their own input contract.
 	if l.profile.nativeTerminalContract() && l.profile.Terminal == nil && s.Ref.Agent.Name == "codex" && turn.WireFormat == "" && strings.Contains(text, "\n") && strings.ContainsAny(text, "\x00\x1b") {
@@ -870,6 +876,9 @@ observed:
 
 // Recovery resumes observation of the same resource and saved input/baseline only.
 func (l *Lifecycle) ObserveLifecycle(ctx context.Context, s b.LifecycleSnapshot) (b.LifecycleReceipt, b.LifecycleObserver, error) {
+	if l.structured() {
+		return l.structuredObserveLifecycle(ctx, s)
+	}
 	if err := l.agentExecutionSupport(s.Ref.Agent.Name); err != nil {
 		return b.LifecycleReceipt{}, nil, err
 	}
@@ -887,6 +896,9 @@ func (l *Lifecycle) ObserveLifecycle(ctx context.Context, s b.LifecycleSnapshot)
 }
 
 func (l *Lifecycle) Reconcile(ctx context.Context, r b.LifecycleRequest) (b.LifecycleReceipt, b.LifecycleObserver, error) {
+	if l.structured() {
+		return l.executeStructured(ctx, r, true)
+	}
 
 	defer l.closeStateFeed()
 	if r.Operation.Action != string(b.LifecycleStopExecution) {
@@ -938,6 +950,9 @@ func (l *Lifecycle) Reconcile(ctx context.Context, r b.LifecycleRequest) (b.Life
 }
 
 func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, owned b.StopHandle) (receipt b.LifecycleReceipt, err error) {
+	if l.structured() {
+		return l.structuredStop(ctx, r, false)
+	}
 	receipt = b.LifecycleReceipt{Operation: r.Operation, Disposition: b.OperationUnknown}
 	receipt.Operation.Receipt = nil
 	if err := r.Validate(); err != nil {
@@ -1065,6 +1080,9 @@ func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, own
 }
 
 func (l *Lifecycle) ShutdownLifecycle(ctx context.Context, s b.LifecycleSnapshot, owned b.StopHandle) (b.LifecycleStateFacts, error) {
+	if l.structured() {
+		return b.LifecycleStateFacts{}, errors.New(AgentSessionStopDiagnostic)
+	}
 	if err := l.validate(s); err != nil {
 		return b.LifecycleStateFacts{}, err
 	}
@@ -1095,6 +1113,10 @@ func (l *Lifecycle) ShutdownLifecycle(ctx context.Context, s b.LifecycleSnapshot
 	return b.LifecycleStateFacts{Stopped: true, WorkerAbsent: true}, nil
 }
 func (l *Lifecycle) VerifyManualRecovery(ctx context.Context, s b.LifecycleSnapshot) (b.LifecycleRecoveryEvidence, error) {
+	if l.structured() {
+		receipt, err := l.readStructured(ctx, s)
+		return b.LifecycleRecoveryEvidence{SessionAvailable: receipt.State.SessionAvailable, ResourceAvailable: receipt.State.SessionAvailable, Diagnostic: "Structured execute/1 does not support additional input or resume."}, err
+	}
 	if err := l.agentExecutionSupport(s.Ref.Agent.Name); err != nil {
 		return b.LifecycleRecoveryEvidence{}, err
 	}

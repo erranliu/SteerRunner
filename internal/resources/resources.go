@@ -96,8 +96,14 @@ func Capabilities() any {
 	}
 	return map[string]any{
 		"model_input_contract": ModelInputContract(),
-		"stop_evidence":        map[string]any{"run_property": "stop_evidence_scope", "frozen": true, "schema": json.RawMessage(Read("stop-evidence.schema.json")), "orca_terminal": "original runtime/worktree/local-host terminal identity verified exited or absent in a complete inventory; native local and environment contracts; not all descendants or host credentials", "orca_local_codex_resources": "original Orca business/control terminals and registered local helper/app-server roots; explicit managed local Codex contract; not all descendants or host credentials"},
+		"stop_evidence":        map[string]any{"run_property": "stop_evidence_scope", "frozen": true, "schema": json.RawMessage(Read("stop-evidence.schema.json")), "orca_terminal": "original runtime/worktree/local-host terminal identity verified exited or absent in a complete inventory; native local and environment contracts; not all descendants or host credentials", "orca_local_codex_resources": "original Orca business/control terminals and registered local helper/app-server roots; explicit managed local Codex contract; not all descendants or host credentials", "orca_agent_session": "original native session close acknowledged at most once; complete exit unverified; resources_settled=false"},
 		"orca_execution_contracts": map[string]any{
+			"structured_execute": map[string]any{
+				"agent": "codex", "workflow": contracts.Workflow{ID: "execute", Version: 1}, "target_kind": "local", "access_mode": "full_access",
+				"input":               "atomic create.firstMessage; one exact text block; explicit model/effort selection; no terminal input or helper",
+				"result":              "all complete assistant messages in the original turn, in journal order; public API does not identify provider final phase",
+				"stop_evidence_scope": orca.AgentSessionStopScope, "resources_settled": false, "stop": "original close at most once; complete resource exit unverified", "usage": "unreported; no private transcript reader",
+			},
 			"native": map[string]any{
 				"agent": "codex", "workflow": contracts.Workflow{ID: "development", Version: 2}, "access_mode": "full_access",
 				"target_kinds": []string{"local", "orca_environment"}, "selection": "no configured agent_launch.runtime_executable",
@@ -106,7 +112,7 @@ func Capabilities() any {
 			},
 			"retained_managed_local": map[string]any{
 				"selection":                 "explicit nonempty agent_launch.runtime_executable; existing agent/workflow gates still apply",
-				"consumers":                 []string{"Codex managed model/workspace audit and recorded roots", "Pi/DSH managed tools and evidence"},
+				"consumers":                 []string{"Codex managed model/workspace audit and recorded roots", "Pi managed tools and evidence"},
 				"codex_stop_evidence_scope": orca.LocalCodexStopScope, "qualification": "existing managed contract; does not inherit native qualification",
 			},
 			"historical_records": "original profile/state read, reconciliation and drain; no reinterpretation or automatic migration",

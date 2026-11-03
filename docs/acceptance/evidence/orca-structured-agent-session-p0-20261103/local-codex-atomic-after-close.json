@@ -1,0 +1,190 @@
+{
+  "id": "9afb05cf-9bbd-4985-aa0d-120a80c558ce",
+  "ok": true,
+  "result": {
+    "ok": true,
+    "page": {
+      "sessionId": "oas_p0_23c02d0cefda4fa2bdc52b5c9b98d99b",
+      "epoch": "3ac7057f-e597-4760-9a27-041badfc1ea1",
+      "direction": "tail",
+      "items": [
+        {
+          "itemId": "orca:1793688775002-c2db0a59022043b3a2b94b3a9f1cbaae",
+          "revision": 0,
+          "body": {
+            "kind": "message",
+            "role": "user",
+            "blocks": [
+              {
+                "type": "text",
+                "text": "This is an API input fidelity check. Do not use tools or read/write files. Reply exactly P0_OAS_LOCAL_CODEX_OK.\r\nLiteral path: docs\\spec\\example.md\r\n\r\nChinese: 中文; Unicode: 😀; quotes: \"x\"\r\n```text\r\na\\b\r\n```\r\n  "
+              }
+            ]
+          },
+          "sequence": 4,
+          "observedAt": 1793688778422,
+          "turnScope": {
+            "kind": "thread"
+          }
+        },
+        {
+          "itemId": "legacy:codex:oas_p0_23c02d0cefda4fa2bdc52b5c9b98d99b:turn-lifecycle%3A01a1a02e-b6ef-7d31-b79e-5ce2ac277f9d",
+          "revision": 3,
+          "body": {
+            "kind": "turn",
+            "contextUsage": {
+              "used": {
+                "kind": "report",
+                "model": "unknown",
+                "usedTokens": 18322,
+                "windowTokens": 475000,
+                "percentage": 4,
+                "categories": [],
+                "capturedAt": 1793688785416
+              }
+            },
+            "turnId": "01a1a02e-b6ef-7d31-b79e-5ce2ac277f9d",
+            "state": "completed",
+            "outcome": "success",
+            "userItemId": "orca:1793688775002-c2db0a59022043b3a2b94b3a9f1cbaae",
+            "startedAt": 1793688779265,
+            "requestedAt": 1793688778414,
+            "completedAt": 1793688785843,
+            "durationMs": 7269
+          },
+          "sequence": 5,
+          "observedAt": 1793688779265,
+          "turnScope": {
+            "kind": "thread"
+          }
+        },
+        {
+          "itemId": "codex:01a1a02e-ac1f-7bb1-818a-4c8db52a384d:01a1a02e-b6ef-7d31-b79e-5ce2ac277f9d:1",
+          "revision": 3,
+          "body": {
+            "kind": "message",
+            "role": "assistant",
+            "blocks": [
+              {
+                "type": "text",
+                "text": "P0_OAS_LOCAL_CODEX_OK"
+              }
+            ]
+          },
+          "sequence": 7,
+          "observedAt": 1793688785254,
+          "turnScope": {
+            "kind": "turn",
+            "turnItemId": "legacy:codex:oas_p0_23c02d0cefda4fa2bdc52b5c9b98d99b:turn-lifecycle%3A01a1a02e-b6ef-7d31-b79e-5ce2ac277f9d"
+          }
+        },
+        {
+          "itemId": "orca:provider-frame%3Acodex%3A808250ec-2802-438a-aadc-dee451416ff4%3A1",
+          "revision": 1,
+          "body": {
+            "kind": "status",
+            "text": "codex · notification:thread/readState/changed",
+            "providerFrame": {
+              "provider": "codex",
+              "kind": "notification:thread/readState/changed",
+              "payload": {
+                "head": "{\"threadId\":\"01a1a02e-ac1f-7bb1-818a-4c8db52a384d\",\"readState\":{\"firstUnread\":{\"type\":\"turn\",\"turnId\":\"01a1a02e-b6ef-7d31-b79e-5ce2ac277f9d\"},\"revision\":\"e8253785-076a-47ea-8bed-fa30463f8502\"}}",
+                "byteLength": 193,
+                "digest": "778cfd36c800b5162bd5467c14ebee093b61ab4dd827f8f92d4512b22ff113ea",
+                "truncated": false
+              }
+            }
+          },
+          "sequence": 11,
+          "observedAt": 1793688785834,
+          "turnScope": {
+            "kind": "turn",
+            "turnItemId": "legacy:codex:oas_p0_23c02d0cefda4fa2bdc52b5c9b98d99b:turn-lifecycle%3A01a1a02e-b6ef-7d31-b79e-5ce2ac277f9d"
+          }
+        }
+      ],
+      "removedItemIds": [],
+      "submissions": [
+        {
+          "clientMessageId": "1793688775002-c2db0a59022043b3a2b94b3a9f1cbaae",
+          "fence": 2,
+          "payloadFingerprint": "79e4e820795afe610a6e74ad2148f30f63e9384a1640e7205521ff88dc956f81",
+          "dispatchState": "accepted",
+          "providerItemId": "codex:01a1a02e-ac1f-7bb1-818a-4c8db52a384d:01a1a02e-b6ef-7d31-b79e-5ce2ac277f9d:0",
+          "reason": null,
+          "submittedAt": 1793688775052,
+          "resolvedAt": 1793688782289,
+          "submittedSequence": 2,
+          "handoverRecorded": true,
+          "acceptedSequence": 2,
+          "origin": "client",
+          "source": {
+            "kind": "user"
+          },
+          "options": {},
+          "handedOverAt": 1793688778422
+        }
+      ],
+      "window": {
+        "oldest": {
+          "epoch": "3ac7057f-e597-4760-9a27-041badfc1ea1",
+          "sequence": 4
+        },
+        "newest": {
+          "epoch": "3ac7057f-e597-4760-9a27-041badfc1ea1",
+          "sequence": 11
+        },
+        "nextCursor": {
+          "epoch": "3ac7057f-e597-4760-9a27-041badfc1ea1",
+          "sequence": 4
+        }
+      },
+      "liveCursor": {
+        "epoch": "3ac7057f-e597-4760-9a27-041badfc1ea1",
+        "sequence": 12
+      },
+      "hasOlder": false,
+      "hasNewer": false,
+      "latestTurn": {
+        "itemId": "legacy:codex:oas_p0_23c02d0cefda4fa2bdc52b5c9b98d99b:turn-lifecycle%3A01a1a02e-b6ef-7d31-b79e-5ce2ac277f9d",
+        "observedAt": 1793688779265,
+        "turn": {
+          "contextUsage": {
+            "used": {
+              "kind": "report",
+              "model": "unknown",
+              "usedTokens": 18322,
+              "windowTokens": 475000,
+              "percentage": 4,
+              "categories": [],
+              "capturedAt": 1793688785416
+            }
+          },
+          "turnId": "01a1a02e-b6ef-7d31-b79e-5ce2ac277f9d",
+          "state": "completed",
+          "outcome": "success",
+          "userItemId": "orca:1793688775002-c2db0a59022043b3a2b94b3a9f1cbaae",
+          "startedAt": 1793688779265,
+          "requestedAt": 1793688778414,
+          "completedAt": 1793688785843,
+          "durationMs": 7269
+        }
+      },
+      "actionablePromptIds": [],
+      "working": false,
+      "fence": 3,
+      "hostNow": 1793688786374,
+      "queuedMessages": [],
+      "queuePause": null,
+      "nextQueuedMessageId": null,
+      "backgroundTasks": null
+    },
+    "providerSession": {
+      "key": "session_id",
+      "id": "01a1a02e-ac1f-7bb1-818a-4c8db52a384d"
+    }
+  },
+  "_meta": {
+    "runtimeId": "acbe88cf-6a61-4eeb-8178-6d4886af40c8"
+  }
+}

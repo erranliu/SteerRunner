@@ -154,6 +154,9 @@ func UsageInputDigest(s b.LifecycleSnapshot) string {
 func UsageBinding(profile []b.ImplementationDataEnvelope, s b.LifecycleSnapshot, initialization ...UsageInitialization) (parsers.Binding, Profile, State, error) {
 	binding := parsers.Binding{RunID: s.Ref.RunID, AttemptID: s.Ref.AttemptID, Generation: s.ResourceGeneration, Agent: s.Ref.Agent.Name, CWD: s.Ref.WorkspacePath}
 	var p Profile
+	if binding.Agent != "codex" && binding.Agent != "pi" || s.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 {
+		return binding, p, State{}, errors.New("PRODUCTION_BINDING_UNSUPPORTED")
+	}
 	if binding.RunID == "" || binding.RunID != s.Session.ExecutionID || binding.AttemptID != s.Session.AttemptID {
 		return binding, p, State{}, errors.New("IDENTITY_UNVERIFIED")
 	}
@@ -204,9 +207,6 @@ func UsageBinding(profile []b.ImplementationDataEnvelope, s b.LifecycleSnapshot,
 			return binding, p, state, errors.New("IDENTITY_CHANGED")
 		}
 		binding.SessionID = p.Terminal.SessionID
-		if binding.Agent == "dsh" && state.TerminalReadiness != nil {
-			binding.SessionID = state.TerminalReadiness.NativeSessionID
-		}
 	} else if state.RemoteReadiness != nil {
 		binding.SessionID = state.RemoteReadiness.SessionID
 		if state.RemoteReadiness.Workspace != "" && parsers.NormalizePath(state.RemoteReadiness.Workspace) != parsers.NormalizePath(binding.CWD) {

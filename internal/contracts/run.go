@@ -278,6 +278,15 @@ type RunConfiguration struct {
 	Workflow  Workflow  `json:"workflow"`
 }
 
+// New admission only. Existing Runs always use their frozen protocol.
+func OrcaStructuredExecute(execution Execution, selected Workflow) bool {
+	if execution.Adapter != "orca-terminal" || execution.Target.Kind != "local" || execution.Target.Environment != "" || selected.ID != workflow.SingleExecution || selected.Version != 1 {
+		return false
+	}
+	var settings OrcaSettings
+	return json.Unmarshal(execution.Settings, &settings) == nil && settings.AgentName() == "codex"
+}
+
 // ValidateRunConfiguration is pure admission; it performs no environment I/O.
 func ValidateRunConfiguration(data []byte) *Fault {
 	invalid := Fail(2, "invalid_input", "Run configuration does not satisfy the published contract.")
@@ -289,8 +298,11 @@ func ValidateRunConfiguration(data []byte) *Fault {
 	if !supported {
 		return Fail(3, "unsupported_schema", "The selected workflow is not defined by this executable.")
 	}
-	if profile.ID == workflow.SingleExecution && (len(value.Workflow.PromptOverrides) != 1 || !plain(value.Workflow.PromptOverrides["execute"])) {
-		return invalid
+	if profile.ID == workflow.SingleExecution {
+		body := value.Workflow.PromptOverrides["execute"]
+		if len(value.Workflow.PromptOverrides) != 1 || strings.TrimSpace(body) == "" || strings.ContainsRune(body, '\x00') || !OrcaStructuredExecute(value.Execution, value.Workflow) && strings.ContainsAny(body, "\r\n") {
+			return invalid
+		}
 	}
 	if workflow.Content(profile.ID) {
 		if value.Execution.Adapter != "codex-app-server" || value.Execution.Target.Kind != "local" {
@@ -326,6 +338,24 @@ func ValidateRunConfiguration(data []byte) *Fault {
 	if raw, present := workflowFields["audit_model"]; present {
 		if !profile.AuditModelRequired || value.Workflow.AuditModel == nil || !optionalStrings(raw, "model", "reasoning_effort") {
 			return invalid
+		}
+	}
+	if OrcaStructuredExecute(value.Execution, value.Workflow) {
+		var settings OrcaSettings
+		_ = json.Unmarshal(value.Execution.Settings, &settings)
+		if settings.AgentName() == "codex" {
+			var fields map[string]json.RawMessage
+			_ = json.Unmarshal(value.Execution.Settings, &fields)
+			var launch map[string]json.RawMessage
+			_ = json.Unmarshal(fields["agent_launch"], &launch)
+			for _, name := range []string{"runtime_executable", "runtime_sha256", "executable"} {
+				if _, present := launch[name]; present {
+					return Fail(3, "unsupported_capability", "Local Orca Codex execute/1 uses Orca's native executor; remove explicit agent_launch executable/runtime settings.")
+				}
+			}
+			if len(settings.AgentLaunch.Args) != 0 {
+				return Fail(3, "unsupported_capability", "Local Orca Codex execute/1 uses Orca's native executor; remove agent_launch.args.")
+			}
 		}
 	}
 	if failure := ValidateExecution(value.Execution); failure != nil {
@@ -402,17 +432,14 @@ func ValidateExecution(value Execution) *Fault {
 		if !regexp.MustCompile(`^[A-Za-z][A-Za-z0-9_-]{0,63}$`).MatchString(settings.AgentName()) {
 			return invalid
 		}
+		if settings.AgentName() != "codex" && settings.AgentName() != "pi" {
+			return Fail(3, "unsupported_capability", "Orca execution supports only Codex and Pi; the requested agent is unsupported.")
+		}
 		if settings.AgentName() == "codex" && !effort(settings.AgentLaunch.ReasoningEffort) {
 			return invalid
 		}
 		if settings.AgentName() == "pi" && (value.Target.Kind != "local" || len(settings.AgentLaunch.Args) != 0 || !slices.Contains([]string{"", "minimal", "low", "medium", "high", "xhigh"}, settings.AgentLaunch.ReasoningEffort)) {
 			return Fail(3, "unsupported_capability", "Pi requires the local managed TUI, fixed tools and a supported thinking level.")
-		}
-		if settings.AgentName() == "dsh" && (value.Target.Kind != "local" || len(settings.AgentLaunch.Args) != 0 || !slices.Contains([]string{"", "low", "medium", "high", "max"}, settings.AgentLaunch.ReasoningEffort)) {
-			return Fail(3, "unsupported_capability", "DSH requires the local managed TUI and fixed native tools.")
-		}
-		if settings.AgentName() != "codex" && settings.AgentName() != "pi" && settings.AgentName() != "dsh" && (settings.AgentLaunch.Model != "" || settings.AgentLaunch.ReasoningEffort != "" || settings.AgentLaunch.RuntimeExecutable != "" || len(settings.AgentLaunch.Args) != 0) {
-			return Fail(3, "unsupported_capability", "This agent has no verified model, argument or execution-host preparation mapping; no Codex settings were applied.")
 		}
 		if raw, ok := fields["transport"]; ok && !optionalStrings(raw, "executable", "wait_timeout") {
 			return invalid

@@ -245,7 +245,7 @@ function Invoke-SRL1Core([string]$Root, [string]$Output, $Catalog, [bool]$Defaul
     # The two formal native extensions are part of L1, including on machines
     # without model credentials or a running Orca instance.
     $taskExtensionLog = Join-Path $taskOut 'terminal-extensions.tap'
-    & node --test --test-reporter=tap internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs internal/execution/adapters/orcatransport/extensions/dsh-managed.test.mjs 1> $taskExtensionLog 2> (Join-Path $taskOut 'terminal-extensions-stderr.log')
+    & node --test --test-reporter=tap internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs 1> $taskExtensionLog 2> (Join-Path $taskOut 'terminal-extensions-stderr.log')
     $taskExtensionCode = $LASTEXITCODE
     $taskExtensionResult = Get-Content -LiteralPath $taskExtensionLog -Raw
     $taskExtensionCount = if ($taskExtensionResult -match '(?m)^# tests (\d+)\s*$') { [int]$Matches[1] } else { 0 }

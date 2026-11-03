@@ -1,0 +1,87 @@
+{
+  "schema": "runner-blocker-source-review/v1",
+  "commit": "457ffaea20b6227a0bdaec9e56f5b9e7f54da337",
+  "kind": "existing production code only; no code changed",
+  "files": [
+    {
+      "path": "internal/application/engine.go",
+      "sha256": "2b5cab7018eb3d606d1084f3a45369521622a93748fdb07000dc4ce751763ade"
+    },
+    {
+      "path": "internal/application/worker.go",
+      "sha256": "d08899a6da5acf2d2cc157eacabfab6f0294db642414e99e2f067f57084ead6c"
+    },
+    {
+      "path": "internal/application/preparation_query.go",
+      "sha256": "bdc9b05240d81ddeba7c855223e4d20f8ea87bbd0e8106527f5c4887f4d47365"
+    },
+    {
+      "path": "internal/execution/adapters/protocol/orca/dispatch.go",
+      "sha256": "a012bdeced428b5e2e484f171cf8837eca65b0a4e6316187d19114864b44ba64"
+    },
+    {
+      "path": "internal/execution/reliable/operation/effect.go",
+      "sha256": "c16c88292dc7fd4258797e0941753d5f8fc44724a2892c3dccdc20371efe5e04"
+    },
+    {
+      "path": "internal/execution/reliable/intent.go",
+      "sha256": "ccbbcda46a5c65fadc78feb84fd7e42346e3d9e37bd5ac19ccc5805d9800648d"
+    },
+    {
+      "path": "internal/execution/reliable/binding.go",
+      "sha256": "1fa343d365f5ffe926a581d382103051751d666b03d6847aafc2dc5c4b18d6b6"
+    },
+    {
+      "path": "internal/application/workspace_source.go",
+      "sha256": "0553fd48d3207910057df446cab76e84239e7ab9594a5429e1dd5d76301d6f79"
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/workspace_audit.go",
+      "sha256": "1ae6f130c43b0df0e61a3aa66fbd80949f3fbd66505494e93bf15a8cf58fdb91"
+    },
+    {
+      "path": "internal/execution/adapters/codex/remote_workspace.go",
+      "sha256": "d0162a2590da208cd0f221809d90a930fad0cd1aba8646f3caf74db1055d4b16"
+    },
+    {
+      "path": "internal/execution/workspace/audit.go",
+      "sha256": "20b6a4fcad01a02f6f0e0d5b6747b8205f48a8a7a3c559ab7975c423ed3661e8"
+    },
+    {
+      "path": "internal/execution/workspace/inspect.go",
+      "sha256": "c3f832d4b3ac9f1f93eb9e7a4d497a951457dfa000e4b8b1d3a12ec4aff253b2"
+    },
+    {
+      "path": "internal/execution/workspace/git.go",
+      "sha256": "12108a035caec2fb47c23b7bf8fde45d929120c802cb7b5c5fa69ae4dfbfb5e9"
+    },
+    {
+      "path": "internal/execution/process/host.go",
+      "sha256": "c0ae10e54a648b6224cc0ee3b996566dd7965b33f14c9978fb2804f03c392e6b"
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/local_codex_history.go",
+      "sha256": "7d763ab13191fc5f1a905f17a53c217f8a1304e5858ff6557eb14c324bbedcd1"
+    },
+    {
+      "path": "internal/execution/adapters/codex/remote_turn.go",
+      "sha256": "ca1bdaa52b566ff63d031e6624b0662ab8bb595b92f779ae64785e3b618aaa5d"
+    },
+    {
+      "path": "internal/execution/workflow/remote_models.go",
+      "sha256": "853123a6505f4b2d6507d224b9b08688aeaccf16e88c22491ebbb783fc6ed35d"
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/lifecycle.go",
+      "sha256": "8d0d65c8f35675efcd257db61c64f102d1ab6150807da3c6ee77a3e620dae970"
+    },
+    {
+      "path": "internal/execution/adapters/codex/owner_checkpoint.go",
+      "sha256": "0abc28abacd3a79a9c77cca054ecb117ada13ad9f8a11a2c046b99349a16f2bc"
+    },
+    {
+      "path": "internal/application/verify_stopped.go",
+      "sha256": "4506e121f0d0dcd488815f0316145ef91977ce437959c31c1c1ee9cdbcd0f206"
+    }
+  ]
+}
