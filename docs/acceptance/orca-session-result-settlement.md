@@ -24,7 +24,7 @@ Orca file bindings are worktree-relative. Before invoking a script that reads th
 
 持续证据根：`C:/SteerlineDebug/runner-native-result-session-20261103/`。初次文件绑定测试发现新增 provenance 来源未声明；保留失败日志，声明封闭来源后重测。此前测试不当作最终通过。
 
-当前状态：真实检测、会话范围结算、SteerLine verify-stop 及同构建重启均通过；正式 L1 与受控回归仍在执行，全部必要检查完成后才提 PR。不声明所有后代退出或完整发布资格。
+当前状态：真实检测、会话范围结算、SteerLine verify-stop、同构建重启、正式完整 L1 和所选受控回归均通过；独立复审通过，完成这些验证后才提 PR。不声明所有后代退出、完整 Controlled 或全组合原生发布资格。
 
 ### 实际通道正文差异
 
@@ -87,4 +87,5 @@ Runner file bindings: {"STEERLINE_RESULT_FILE":".steerrunner/result/0123456789ab
 - `application-regression.jsonl`：28 根通过；最终 `review-fixes.jsonl`：29 根通过，包含原回执、替换 runtime/worktree 拒绝、文件环境绑定、一次执行和停止。
 - 独立只读复审发现三项并修复：原资源 Ref 围栏不足、成功诊断误称 terminal、当前合同正文残留旧规则。修复后复审通过；提示原文、实际 LF 字节与接线独立复核通过。
 - `controlled-content-stop/summary.json`：content-flow 与 execute-stop 两组合的 10 个顶层场景通过（401.33 秒顶层测试耗时）；覆盖 result-file final-seal 四变体及 graceful/kill/creation_receipt/pending_stop 重启。该报告明确为 controlled-selection，不冒称完整 Controlled 或 L2/L3 资格。
-- 正式完整 L1 结果待完成后补齐。
+- 正式入口 `scripts/test-prerequisites.ps1 -Stage L1 -OutDir <evidence>/L1`：`stages.json.status=passed`，完整 L1 core 与 native preflight 均成功；Go JSONL 801 个顶层通过、16 个已登记 opt-in/helper skip，0 fail。框架守卫和 Windows PowerShell 检查通过，native driver 编译及零匹配保护通过。16 个 skip 不计为真实模型资格。代码与资产在受测期间保持固定，随后仅补文档。
+- 最终候选源码摘要复核通过：`candidate-source-recheck.json`；所改 Markdown 本地文件链接与 git diff --check 通过。
