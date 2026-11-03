@@ -9,7 +9,6 @@ import (
 	"errors"
 	"io"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -588,7 +587,7 @@ func currentRuntime(ctx context.Context, p orca.Profile) (string, error) {
 		args = append(args, "--environment", p.Environment)
 	}
 	raw, err := native.SerializeCLI(ctx, func(ctx context.Context) ([]byte, error) {
-		return exec.CommandContext(ctx, p.Executable, args...).Output()
+		return outputCLI(ctx, p.Executable, args...)
 	})
 	if err != nil {
 		return "", err
@@ -609,7 +608,7 @@ func safeFolder(ctx context.Context, p orca.Profile, l access.Lease) bool {
 		args = append(args, "--environment", p.Environment)
 	}
 	raw, err := native.SerializeCLI(ctx, func(ctx context.Context) ([]byte, error) {
-		return exec.CommandContext(ctx, p.Executable, args...).Output()
+		return outputCLI(ctx, p.Executable, args...)
 	})
 	if err != nil {
 		return false

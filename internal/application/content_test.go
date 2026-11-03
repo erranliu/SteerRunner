@@ -265,7 +265,7 @@ func contentEvidence(e *Engine, text, outcome string, verified bool) b.TurnEvide
 	r.Snapshot.Session.PendingCommandID = ""
 	r.Snapshot.Session.PendingTurnID = ""
 	e.runs["run"] = r
-	return b.TurnEvidence{CommandID: input.CommandID, SessionID: r.Snapshot.Session.SessionID, TurnID: r.Snapshot.Session.CurrentTurnID, Started: true, Completed: true, Succeeded: outcome == "succeeded", NativeOutcome: outcome, LastMessage: text, FinalVerified: verified, FinalSource: "native.final", FinalItemID: "item", FinalNativeSessionID: r.Snapshot.Session.SessionID, FinalNativeTurnID: r.Snapshot.Session.CurrentTurnID}
+	return b.TurnEvidence{CommandID: input.CommandID, SessionID: r.Snapshot.Session.SessionID, TurnID: r.Snapshot.Session.CurrentTurnID, Started: true, Completed: true, Succeeded: outcome == "succeeded", NativeOutcome: outcome, LastMessage: text, FinalVerified: verified, FinalSource: "native.final", FinalItemID: "item", FinalSessionID: r.Snapshot.Session.SessionID, FinalTurnID: r.Snapshot.Session.CurrentTurnID, FinalNativeSessionID: r.Snapshot.Session.SessionID, FinalNativeTurnID: r.Snapshot.Session.CurrentTurnID}
 }
 func contentControl(e *Engine, command, id string, body any) contracts.Response {
 	raw, _ := json.Marshal(body)
@@ -388,7 +388,7 @@ func TestContentDirectoryAndUnknownResult(t *testing.T) {
 	}
 	e, _ := contentEngine(t, "conversation")
 	value := contentEvidence(e, "final", "succeeded", true)
-	value.FinalNativeTurnID = "foreign"
+	value.FinalTurnID = "foreign"
 	if e.finish("run", value) || e.runs["run"].ContentResult != nil || e.runs["run"].Status != "reconciling" {
 		t.Fatal("foreign final accepted")
 	}

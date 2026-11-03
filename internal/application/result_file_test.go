@@ -535,3 +535,53 @@ func TestSingleExecutionLateFinalPreservesOriginalStop(t *testing.T) {
 		t.Fatal("original stop receipt did not settle", command, err)
 	}
 }
+
+func TestSingleExecutionOrcaFinalUsesNormalizedIdentityAndRetainsNativeSource(t *testing.T) {
+	for _, mode := range []string{"original", "foreign-session", "foreign-turn", "missing-binding", "missing-native-session", "missing-native-turn"} {
+		t.Run(mode, func(t *testing.T) {
+			e := singleExecutionFixture(t)
+			value := contentEvidence(e, "entry returned", "succeeded", true)
+			session := "orca-terminal:runtime:terminal:incarnation"
+			turn := value.CommandID
+			e.runs["run"].Snapshot.Session.SessionID = session
+			e.runs["run"].Snapshot.Session.CurrentTurnID = turn
+			value.SessionID, value.FinalSessionID = session, session
+			value.TurnID, value.FinalTurnID = turn, turn
+			value.FinalNativeSessionID, value.FinalNativeTurnID = "native-codex-session", "native-codex-turn"
+			switch mode {
+			case "foreign-session":
+				value.FinalSessionID = "another-terminal"
+			case "foreign-turn":
+				value.FinalTurnID = "another-command"
+			case "missing-binding":
+				value.FinalSessionID, value.FinalTurnID = "", ""
+			case "missing-native-session":
+				value.FinalNativeSessionID = ""
+			case "missing-native-turn":
+				value.FinalNativeTurnID = ""
+			}
+			advanced := e.finish("run", value)
+			r := e.runs["run"]
+			if mode != "original" {
+				if advanced || r.Closed || r.PendingStop != "" || r.Phase != "final_source_unverified" {
+					t.Fatal("foreign or incomplete final advanced", r.View())
+				}
+				return
+			}
+			if !advanced || !r.Closed || r.PendingStop == "" || r.LastFinal == nil || !r.LastFinal.Verified || len(r.Workflow.StageInputs) != 1 {
+				t.Fatal("original Orca final did not close exactly once", r.View())
+			}
+			if r.Result.FinalNativeSessionID != "native-codex-session" || r.Result.FinalNativeTurnID != "native-codex-turn" {
+				t.Fatal("native provenance overwritten", r.Result)
+			}
+			if resultView(e).CollectionStatus != "pending" {
+				t.Fatal("result sealed before producers stopped")
+			}
+			resultStopped(t, e)
+			e.sealResult(context.Background(), "run")
+			if v := resultView(e); v.CollectionStatus != "closed" || v.Version != 1 || string(snapshotBytes(t, v)) != "seed" {
+				t.Fatal("original result not sealed", v)
+			}
+		})
+	}
+}

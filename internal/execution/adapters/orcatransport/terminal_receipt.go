@@ -424,7 +424,7 @@ func (l *Lifecycle) terminalEvidence(state State, turn Turn) *b.TurnEvidence {
 	if f.NativeSessionID != "" {
 		nativeSession = f.NativeSessionID
 	}
-	return &b.TurnEvidence{NativeOutcome: "succeeded", FinalOrigin: "native_history", FinalSource: f.Source, FinalItemID: f.NativeReplyID, FinalVerified: true, TurnID: turn.Command, CommandID: turn.Command, SessionID: SessionID(state.Process), Started: true, Completed: true, Succeeded: true, LastMessage: turn.Reply, FinalNativeSessionID: nativeSession, FinalNativeTurnID: f.NativeInputID}
+	return &b.TurnEvidence{NativeOutcome: "succeeded", FinalOrigin: "native_history", FinalSource: f.Source, FinalItemID: f.NativeReplyID, FinalVerified: true, TurnID: turn.Command, CommandID: turn.Command, SessionID: SessionID(state.Process), Started: true, Completed: true, Succeeded: true, LastMessage: turn.Reply, FinalSessionID: SessionID(state.Process), FinalTurnID: turn.Command, FinalNativeSessionID: nativeSession, FinalNativeTurnID: f.NativeInputID}
 }
 
 func validTerminalPreparation(p TerminalPreparation, version int) bool {

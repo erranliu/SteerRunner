@@ -125,6 +125,9 @@ func TestStructuredAtomicCreateAndReadOnlyRecovery(t *testing.T) {
 		t.Fatal("native start did not bind before result", merged.Session, err)
 	}
 	evidence := receipt.TurnEvidence
+	if evidence == nil || evidence.FinalSessionID != evidence.SessionID || evidence.FinalTurnID != evidence.TurnID || evidence.FinalNativeSessionID != evidence.SessionID || evidence.FinalNativeTurnID != evidence.TurnID {
+		t.Fatal("atomic session final lost its execution binding or native provenance", evidence)
+	}
 	if evidence == nil || !evidence.FinalVerified || !evidence.Succeeded || evidence.LastMessage != "tool preamble\n\n"+strings.Repeat("complete result 中文😀\n", 300) {
 		t.Fatal("incomplete original turn result", evidence)
 	}

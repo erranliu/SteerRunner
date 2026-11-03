@@ -868,6 +868,8 @@ observed:
 		receipt.TurnEvidence.FinalSource = codex.RemoteTurnSource
 		receipt.TurnEvidence.FinalItemID = turn.Recorded.FinalItemID
 		receipt.TurnEvidence.NativeOutcome = "succeeded"
+		receipt.TurnEvidence.FinalSessionID = SessionID(state.Process)
+		receipt.TurnEvidence.FinalTurnID = turn.Command
 		receipt.TurnEvidence.FinalNativeSessionID = state.RemoteReadiness.SessionID
 		receipt.TurnEvidence.FinalNativeTurnID = turn.Recorded.NativeTurnID
 	}
