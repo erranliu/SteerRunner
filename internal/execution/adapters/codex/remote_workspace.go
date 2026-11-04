@@ -66,30 +66,40 @@ func InspectRemoteWorkspaceAudit(ctx context.Context, setup RemoteControlSetup, 
 	if err != nil || b.DecodeStrictJSON(raw, &config, "trailing workspace configuration") != nil || RemoteConfigurationDigest(config) != out.Readiness.ConfigurationDigest || config.RepositoryURL != out.Readiness.Repository {
 		return out, errors.New("original_workspace_configuration_mismatch")
 	}
-	host := process.New(30 * time.Second)
+	out.Inspection, out.WritersAbsent, err = InspectOwnedWorkspaceAudit(ctx, process.New(30*time.Second), setup.Workspace, config.RepositoryURL, "origin", q)
+	return out, err
+}
+
+// InspectOwnedWorkspaceAudit runs the fixed Git reads after the adapter has
+// authenticated the original workspace. Only its own reader processes settle here.
+func InspectOwnedWorkspaceAudit(ctx context.Context, host b.ManagedProcessHost, original, repositoryURL, remoteName string, q RemoteWorkspaceAuditQuery) (fact b.WorkspaceInspection, writersAbsent bool, result error) {
+	if host == nil || repositoryURL == "" || remoteName == "" || q.Validate(original) != nil {
+		return fact, false, errors.New("original_workspace_query_invalid")
+	}
+	writersAbsent = true
 	git := workspace.Git{Command: b.LaunchCommand{Executable: "git", Args: []string{"--no-optional-locks", "-c", "core.fsmonitor=false", "-c", "core.untrackedCache=false"}}, Timeout: 30 * time.Second, Start: func(cmd *exec.Cmd) (b.StopHandle, error) {
 		h, err := host.StartManaged(cmd)
 		if err != nil {
 			return nil, err
 		}
-		return &auditGitHandle{StopHandle: h, settled: &out.WritersAbsent}, nil
+		return &auditGitHandle{StopHandle: h, settled: &writersAbsent}, nil
 	}}
 	defer func() {
-		if !out.WritersAbsent {
-			out.Inspection.Qualified = false
+		if !writersAbsent {
+			fact.Qualified = false
 			result = errors.Join(result, errors.New("original_workspace_reader_tree_unverified"))
 		}
 	}()
-	repo, err := workspace.ResolveRepository(ctx, git, setup.Workspace)
+	repo, err := workspace.ResolveRepository(ctx, git, original)
 	if err != nil {
-		return out, err
+		return fact, writersAbsent, err
 	}
-	remote, err := git.Output(ctx, setup.Workspace, "config", "--get", "remote.origin.url")
-	if err != nil || strings.TrimSpace(string(remote)) != config.RepositoryURL {
-		return out, errors.New("original_workspace_repository_mismatch")
+	remote, err := git.Output(ctx, original, "config", "--get", "remote."+remoteName+".url")
+	if err != nil || strings.TrimSpace(string(remote)) != repositoryURL {
+		return fact, writersAbsent, errors.New("original_workspace_repository_mismatch")
 	}
-	out.Inspection, err = workspace.InspectAudit(ctx, git, repo, &q.Intent, q.PreHead)
-	return out, err
+	fact, err = workspace.InspectAudit(ctx, git, repo, &q.Intent, q.PreHead)
+	return fact, writersAbsent, err
 }
 
 func ValidateRemoteWorkspaceAudit(ready RemoteReadiness, q RemoteWorkspaceAuditQuery, proof RemoteWorkspaceAudit) error {
