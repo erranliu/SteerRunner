@@ -208,6 +208,11 @@ func (e *Engine) sampleRuntimeFile(ctx context.Context, r *runstate.Record, resu
 			if err = ctx.Err(); err == nil {
 				err = c.initialize(ctx, data)
 			}
+			if result && err == nil {
+				c.state.Initialized = true
+				done <- runtimeFileSample{state: c.state}
+				return
+			}
 		}
 		// A lost write reply or changed seed is not a business gate. Actual stable
 		// bytes from the original path can establish availability independently.
