@@ -31,7 +31,7 @@ version=0 的 size_bytes=0 不表示读到了空文件。真实空快照 version
 
 首次成功或失败封存均永久保留；查询、重启、resume 都不刷新，需要另一份结果须新 Run。仅承诺最多发布一份快照，不保证跨崩溃只物理读取一次。保留 state-dir 后可继续查询。
 
-首次业务输入前与 progress 共用最多 4 秒的尽力准备窗口；首次写入前记录尝试，记录失败不发文件写 RPC。每通道初始化最多一次，失败或超时均不阻止业务、不重复准备；未知只读原文件对账，不覆盖已有文件；恢复只从原绑定主机/runtime/worktree 读取，不从本机同路径代取。初始化未确认也可在结束资格成立后接受原绑定的实际稳定字节，无需等于种子，不创建缺失文件或目录。已封存直接保留；未封存只有原结束资格和绑定仍有效时才补采，资源丢失登记失败，不创建替代工作区。
+首次业务输入前，result 和 progress 各有最多 4 秒的尽力准备窗口；首次写入前记录尝试，记录失败不发文件写 RPC。每通道初始化最多一次，失败或超时均不阻止业务、不重复准备；未知只读原文件对账，不覆盖已有文件；恢复只从原绑定主机/runtime/worktree 读取，不从本机同路径代取。初始化未确认也可在结束资格成立后接受原绑定的实际稳定字节，无需等于种子，不创建缺失文件或目录。已封存直接保留；未封存只有原结束资格和绑定仍有效时才补采，资源丢失登记失败，不创建替代工作区。
 
 result 保存与 progress、业务记录互不覆盖，文件保存不增加 Run revision。支持范围沿 progress 现有可写开发组合，不扩展 conversation/generate 或 Agent 矩阵。详见 [Spec](spec/runtime-result-file.spec.md)、[Plan](spec/runtime-result-file.plan.md) 和[验收记录](acceptance/runtime-result-file.md)。2026-11-01 的 P2 实施及各路径结果见[独立验收](acceptance/personal-executor-p2.md)；未部署。
 

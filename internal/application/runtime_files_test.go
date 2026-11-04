@@ -118,32 +118,42 @@ func TestRuntimeFilesFailureDoesNotGateBusiness(t *testing.T) {
 	}
 }
 
-func TestRuntimeFilesSharedDeadlineAndNoRetry(t *testing.T) {
+func TestRuntimeFilesIndependentDeadlineAndNoRetry(t *testing.T) {
 	e, w, _ := operationEngine(t)
 	enableTestFiles(t, e, 3)
 	p := &fileBusinessPort{}
 	w.port = p
 	release := make(chan struct{})
 	defer close(release)
-	var writes atomic.Int32
+	var progressWrites, resultWrites atomic.Int32
 	e.openRuntimeFile = func(_ context.Context, r *runstate.Record, result, prepare bool) (*runtimeFileChannel, error) {
-		return &runtimeFileChannel{state: fileState(r, result), initialize: func(context.Context, []byte) error { writes.Add(1); <-release; return nil }, read: func(context.Context) ([]byte, error) { return []byte("late"), nil }, close: func() error { return nil }}, nil
+		return &runtimeFileChannel{state: fileState(r, result), initialize: func(context.Context, []byte) error {
+			if result {
+				resultWrites.Add(1)
+				return nil
+			}
+			progressWrites.Add(1)
+			<-release
+			return nil
+		}, read: func(context.Context) ([]byte, error) { return []byte("fixture"), nil }, close: func() error { return nil }}, nil
 	}
 	start := time.Now()
 	e.advance("run", w)
 	elapsed := time.Since(start)
-	if elapsed < 3900*time.Millisecond || elapsed > 4500*time.Millisecond {
-		t.Fatalf("shared window=%v", elapsed)
+	if elapsed < 3900*time.Millisecond || elapsed > 8*time.Second {
+		t.Fatalf("first input wait=%v", elapsed)
 	}
 	start = time.Now()
 	e.advance("run", w)
-	if time.Since(start) > 500*time.Millisecond || writes.Load() != 1 {
-		t.Fatal("repeat wait or second initialization after shared deadline")
+	if time.Since(start) > time.Second || progressWrites.Load() != 1 || resultWrites.Load() != 1 {
+		t.Fatal("slow progress prevented the result attempt or caused a retry")
 	}
 	if len(p.requests) == 0 {
 		t.Fatal("timeout blocked business")
 	}
-	t.Logf("initial window=%v; later advance=%v; writes=%d", elapsed, time.Since(start), writes.Load())
+	if r := e.runs["run"]; r.Progress.Initialized || !r.ResultFile.Initialized {
+		t.Fatal("the result channel did not initialize independently")
+	}
 }
 
 func TestRuntimeFilesStopDuringIO(t *testing.T) {

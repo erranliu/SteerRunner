@@ -66,6 +66,12 @@ Orca 远端 Codex 的 SessionStart 可能清空输入预览并改变显示回合
 
 开发流程的 Spec、Plan 和参考材料只需提供仓库相对路径，例如 `"spec":{"path":"docs/spec/task.spec.md"}`。本地 Codex 与 Orca 均直接读取固定 commit 创建的 worktree 内文档；Runner 不检查文档提交、推送、存在性或正文，不复制/传输/内嵌材料。调用方负责文档可用性；缺失由代理按实际执行情况反馈。旧 kind/content/commit 字段可按原形状提交，但不再决定开发材料来源。Orca 的 12000 UTF-16 单元限制仅适用于实际提示词。`conversation`、`generate` 仍支持独立 inline 材料。Orca 的 local_path 指向已注册项目，environment 必须预先配置；执行主机的仓库须已获取固定 base commit，创建工作区时核验实际 base/head。Runner 不复制调用方的认证或安装配置。
 
+### SteerLine Git 型新 Run 的启动边界
+
+调用方负责选定固定 commit 及准备项目材料。Runner 从该 commit 新建专属 worktree，保留创建操作、回执及原资源身份绑定。创建成功后进入 Workflow，省去单独的 HEAD、diff、工作区洁净度及材料交付核验。运行期文件走既有传输渠道，由 Agent 在使用时读取。Runner 自主推进所选 Workflow，旧 Run 恢复继续使用原资源和原恢复流程。
+
+开发请求使用 `workflow.project_policy_slots` 显式提供固定槽位，空数组表示调用方已完成预检且没有适用槽位。跨仓交付与验收由 SteerLine 的 `SteerlineFlow/spec/fresh-worktree-startup.spec.md` 定义。
+
 ## 选择 workflow 与审计模型
 
 当前持久格式为 state/v8、资源版本 3；开发流程使用 development/2 或 development-audited/2，内容流程使用 conversation/1 或 generate/1。旧格式整体拒绝，不迁移、不兼容读取。先由原版本结算全部旧资源并保留证据，再使用新独立状态目录；v8 保留同构建原资源重启重连；不重建丢失资源，不支持混合构建活动所有权。删除后的契约与客户端配套要求见[退役记录](acceptance/check-retirement.md)。

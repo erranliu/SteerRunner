@@ -22,7 +22,7 @@
 | 两种开发流程的所有 report、parse、input、verify、milestone 步骤 | 无 |
 | conversation/1、generate/1、execute/1 的所有步骤 | 无 |
 
-Runner 接受开发 Run 时，从本次固定的 `repository.base_revision` Git 对象读取这三个精确路径，在原 Run 的 `workflow.project_policies` 中一起固定 commit、各槽位路径、`exists` 和存在文件的 SHA-256（原始 blob 字节）。不读取调用方工作区或当前 HEAD，不搜索其他目录，也不自动生成策略文档。空文件算存在；缺失文件保存 `exists=false` 并沿用原规则；已存在但不能读取的 blob、目录或符号链接明确以 `project_policy_unreadable` 拒绝。读取失败不会把槽位降级为缺失或接受部分观察。后续输入与恢复复用原记录，文件后来增删或修改不重新决定本 Run 的槽位。
+未提供 `workflow.project_policy_slots` 时，Runner 从本次固定的 `repository.base_revision` Git 对象读取这三个精确路径，在原 Run 的 `workflow.project_policies` 中一起固定 commit、各槽位路径、`exists` 和存在文件的 SHA-256（原始 blob 字节）。不读取调用方工作区或当前 HEAD，不搜索其他目录，也不自动生成策略文档。空文件算存在；缺失文件保存 `exists=false` 并沿用原规则；已存在但不能读取的 blob、目录或符号链接明确以 `project_policy_unreadable` 拒绝。读取失败不会把槽位降级为缺失或接受部分观察。后续输入与恢复复用原记录，文件后来增删或修改不重新决定本 Run 的槽位。
 
 存在且由当前步骤选中的每个槽位，只追加以下公开模板（`%s` 替换为完整固定相对路径，开头有一个换行）：
 
@@ -34,7 +34,11 @@ Runner 接受开发 Run 时，从本次固定的 `repository.base_revision` Git 
 
 预算示例：Orca Codex 模型桥的原生包装也计入 1000B。默认审计正文加三个策略引用，或默认审计开发实施正文加三个引用及 progress/result 两份首次写入说明，在该包装下会超限；最终输入检查返回 `input_budget_exceeded` 且不发送。codex-app-server 直接正文仍单独按原输入检查。这些组合不会自动省略引用、指南或改走额外轮次。
 
-文档存在只表示槽位已配置，不证明环境就绪。项目端负责声明并检测策略依赖的环境能力，SteerLine 负责准入，且不额外向 Runner 传槽位或路径。Runner 不新增环境准备、检测或能力依赖引擎；策略不能扩大原生权限、发布授权或改变 workflow 通过标准。`SteerlineFlow/environment.md` 是独立环境要求文档，不属于这三个槽位，也不会因此追加阅读提示。
+文档存在只表示槽位已配置，不证明环境就绪。项目端负责声明并检测策略依赖的环境能力，SteerLine 负责环境准入。Runner 不新增环境准备、检测或能力依赖引擎；策略不能扩大原生权限、发布授权或改变 workflow 通过标准。`SteerlineFlow/environment.md` 是独立环境要求文档，不属于这三个槽位，也不会因此追加阅读提示。
+
+**SteerLine 新开发 Run**
+
+项目策略槽位由 SteerLine 在固定 commit 上预检，经 `workflow.project_policy_slots` 提供适用槽位。空数组表示无适用槽位。Runner 沿原 Workflow 阶段映射追加引用，Agent 在对应步骤读取。项目材料准入归 SteerLine，Workflow 的实施、审核、修复、发布和原有阶段推进归 Runner。旧 Run 继续沿原记录恢复。
 
 2026-10-28 输入契约：每次现有投递操作的最终 UTF-8 文字仅限制 Runner ≤1000B；调用方和总量无正文预算，仍记录全部字节、归属和摘要。正文覆盖、inline 材料/schema、回答/反馈属于调用方；默认正文、事实/引用、标签/换行、结果要求和原生包装属于 Runner。完成原有换行与包装后检查，冻结后不得追加；超限明确拒绝，不截断、摘要或拆分。原工具/文件结果不受正文预算限制，复制进新正文时重新归属计量。实际 JSON 封装与 Windows 命令行另行保护。
 

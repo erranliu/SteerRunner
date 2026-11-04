@@ -165,7 +165,7 @@ func RunTerminalAgent(ctx context.Context, c TerminalConfig, input io.Reader, ou
 	if err != nil {
 		return err
 	}
-	roots, err := workspace.ResolveLinkedResourcesAt(ctx, git, repo, working)
+	roots, err := workspace.ResolveFreshLinkedResourcesAt(ctx, git, repo, working)
 	if err != nil {
 		return err
 	}

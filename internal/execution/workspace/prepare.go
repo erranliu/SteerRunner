@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	executionbackend "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
@@ -60,21 +61,17 @@ func Prepare(ctx context.Context, git Git, repository Repository, root string, i
 		return result, err
 	}
 	result.PathCreated = true
-	if _, err = git.Output(ctx, repository.Path, "worktree", "add", "--no-track", "-b", intent.Branch, "--", intent.Path, intent.BaseCommit); err != nil {
-		result = observePreparation(ctx, git, repository, intent, result)
-		return result, err
-	}
-	if err := Verify(ctx, git, repository, intent, true); err != nil {
-		result = observePreparation(ctx, git, repository, intent, result)
-		return result, err
-	}
-	inspection, err := Inspect(ctx, git, repository, intent)
-	if err != nil {
+	if _, err = git.Output(ctx, repository.Path, "--no-replace-objects", "-c", "core.hooksPath=/dev/null", "worktree", "add", "--no-track", "-b", intent.Branch, "--", intent.Path, intent.BaseCommit); err != nil {
 		result = observePreparation(ctx, git, repository, intent, result)
 		return result, err
 	}
 	result.Status, result.WorktreeRegistered, result.BranchPresent = executionbackend.OperationConfirmed, true, true
-	result.Inspection = &inspection
+	// A successful creation binds the requested revision. No worktree scan
+	// took place, so this receipt only reports revision provenance.
+	result.Inspection = &executionbackend.WorkspaceInspection{
+		InspectionScope: "revision", Repository: repository.Path, Worktree: intent.Path,
+		Branch: intent.Branch, Base: intent.BaseCommit, Head: intent.BaseCommit, CheckedAt: time.Now().UTC(),
+	}
 	return result, nil
 }
 

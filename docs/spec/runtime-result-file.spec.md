@@ -1,5 +1,7 @@
 # result-file 最终快照 Spec
 
+2026-11-04：首次输入前，result 与 progress 各有最多 4 秒的尽力准备窗口。原 P2 的共享窗口是历史基线。初始化仍只尝试一次，失败按原诊断处理，业务输入继续派发。
+
 2026-11-01：初始化行为由[个人执行器 P2](personal-executor-simplification.spec.md#32-一次有界准备)修订：两通道首次业务输入前共用最多 4 秒、尽力一次且不阻塞业务；尝试先持久化，失败不发写 RPC，重启不补写种子。结束资格和一次封存契约保持；当前 v7 的版本边界见[个人执行器 P3](personal-executor-simplification.spec.md#41-升级约定及状态目录)，P2 的 v6 证据只证明当时构建。当前结果见[P2 验收](../acceptance/personal-executor-p2.md)，下文原验收状态属于历史。
 
 

@@ -51,6 +51,11 @@
           }
         }
       },
+      "project_policy_slots": {
+        "type": "array",
+        "uniqueItems": true,
+        "items": {"enum": ["git", "command", "testing"]}
+      },
       "prompt_overrides": {
         "type": "object",
         "additionalProperties": {
@@ -61,6 +66,10 @@
       }
     },
     "allOf": [
+      {
+        "if": {"required": ["project_policy_slots"]},
+        "then": {"properties": {"id": {"enum": ["development", "development-audited"]}}}
+      },
       {
         "if": {
           "properties": {

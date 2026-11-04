@@ -23,8 +23,30 @@ func ResolveLinkedResources(ctx context.Context, git Git, repository Repository,
 	if err := Verify(ctx, git, repository, intent, false); err != nil {
 		return Resources{}, err
 	}
+	return linkedResources(ctx, git, repository, intent.Path)
+}
+
+// ResolveFreshLinkedResources binds write roots to the creation receipt without
+// querying the new worktree's branch or revision a second time.
+func ResolveFreshLinkedResources(ctx context.Context, git Git, repository Repository, intent *executionbackend.WorkspaceIntent) (Resources, error) {
+	if err := VerifyFileSource(ctx, git, repository, intent, false); err != nil {
+		return Resources{}, err
+	}
+	return linkedResources(ctx, git, repository, intent.Path)
+}
+
+// ResolveFreshLinkedResourcesAt uses only the checkout identity supplied by the
+// owner that launched into the newly created worktree.
+func ResolveFreshLinkedResourcesAt(ctx context.Context, git Git, repository Repository, path string) (Resources, error) {
+	if err := verifyFileWorkspaceIdentity(ctx, git, repository, path, ""); err != nil {
+		return Resources{}, err
+	}
+	return linkedResources(ctx, git, repository, path)
+}
+
+func linkedResources(ctx context.Context, git Git, repository Repository, worktree string) (Resources, error) {
 	readPath := func(args ...string) (string, error) {
-		out, err := git.Output(ctx, intent.Path, args...)
+		out, err := git.Output(ctx, worktree, args...)
 		if err != nil {
 			return "", err
 		}

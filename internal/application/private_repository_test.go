@@ -2,11 +2,58 @@ package application
 
 import (
 	"context"
+	"os"
 	"path/filepath"
 	"testing"
 
 	"github.com/erranliu/SteerRunner/internal/execution/workspace"
+	"github.com/erranliu/SteerRunner/internal/storage"
 )
+
+func TestRecoveredWorkspaceChecksOriginalGitBeforeFirstInput(t *testing.T) {
+	f := newBaseRefreshFixture(t, "origin", "main")
+	r := f.freeze()
+	ctx := context.Background()
+	r.Snapshot.Workspace = r.Snapshot.WorkspacePlan
+	intent := &r.Snapshot.Workspace
+	repo := workspace.Repository{Path: r.RepositoryPath, CommonDir: r.RepositoryCommon}
+	prepared, err := workspace.Prepare(ctx, gitHost(), repo, filepath.Dir(intent.Path), intent)
+	if err != nil || prepared.Inspection == nil {
+		t.Fatal("fixture worktree creation failed", err)
+	}
+	r.WorkspaceFact = prepared.Inspection
+	r.Allowed = true
+	store, err := storage.Open(f.state)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = store.Close() })
+	first, err := New(ctx, f.state, store, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer first.cancel()
+	if err := first.commitLocked(r, nil, "workspace_prepared"); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(intent.Path, "untracked-before-restart"), []byte("changed"), 0600); err != nil {
+		t.Fatal(err)
+	}
+	restarted, err := New(ctx, f.state, store, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer restarted.cancel()
+	w := restarted.workers[r.ID]
+	port := &operationCommitPort{}
+	w.port = port
+	if restarted.advance(r.ID, w) || port.executes != 0 {
+		t.Fatal("recovery dispatched from an existing changed worktree")
+	}
+	if got := restarted.runs[r.ID]; got.Phase != "workspace_unverified" || got.Diagnostic != "original worktree changed before first input" {
+		t.Fatalf("recovery did not check the original Git state: %s / %s", got.Phase, got.Diagnostic)
+	}
+}
 
 func TestPrivateRunGitGrantDoesNotExpandLegacyCache(t *testing.T) {
 	f := newBaseRefreshFixture(t, "origin", "main")
@@ -19,7 +66,7 @@ func TestPrivateRunGitGrantDoesNotExpandLegacyCache(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		if err = e.attachWriteRoots(r); err != nil {
+		if err = e.attachWriteRoots(r, false); err != nil {
 			t.Fatal(err)
 		}
 	}

@@ -50,7 +50,7 @@ func (e *Engine) prepareRun(id string, w *worker, p b.LifecyclePort, r *runstate
 			e.block(id, "input_failed", err, false)
 			return false
 		}
-		if err := e.attachWriteRoots(r); err != nil {
+		if err := e.attachWriteRoots(r, w.freshWorkspace); err != nil {
 			e.block(id, "workspace_unverified", err, false)
 			return false
 		}
