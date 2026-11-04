@@ -601,6 +601,9 @@ func queueInput(r *runstate.Record, input workflow.StageInput, feedback string) 
 					text = workflow.ContinueResultInstruction
 				} else if resultContract(r) == contracts.ResultFileSnapshotContract {
 					text = workflow.ResultFileSnapshotInstruction
+					if r.Request.Workflow.ID == "development" {
+						text = workflow.DevelopmentResultFileSnapshotInstruction
+					}
 				}
 				parts = append(parts, m.InputPart{Source: "result_file", Owner: m.RunnerInput, Text: "\n" + text})
 			}

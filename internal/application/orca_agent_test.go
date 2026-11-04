@@ -13,6 +13,7 @@ import (
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable"
+	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/runstate"
 	"github.com/erranliu/SteerRunner/internal/storage"
 )
@@ -44,6 +45,21 @@ func TestSRFreezeOrcaAgent(t *testing.T) {
 				t.Fatal("frozen request digest is inconsistent")
 			}
 			if agent == "" {
+				for _, test := range []struct{ contract, instruction string }{
+					{"", workflow.ResultFileInstruction},
+					{contracts.ResultFileSnapshotContract, workflow.DevelopmentResultFileSnapshotInstruction},
+				} {
+					next := r.Clone()
+					next.Request.ResultFile = &contracts.ResultFileInput{}
+					next.ResultFileContract = test.contract
+					if err := queueInput(next, workflow.StageInput{StepID: next.Workflow.StepID}, ""); err != nil {
+						t.Fatal(err)
+					}
+					prompt := next.Snapshot.PendingTurn.Prompt
+					if !strings.Contains(prompt, test.instruction) || strings.Contains(prompt, workflow.ResultFileSnapshotInstruction) {
+						t.Fatal("incorrect development result file window", test.contract)
+					}
+				}
 				settings.Transport.WaitTimeout = "30s"
 				if !bytes.Equal(r.Request.Execution.Settings, canonical(settings)) {
 					t.Fatal("default settings gained an explicit launch override", string(r.Request.Execution.Settings))

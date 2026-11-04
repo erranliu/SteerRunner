@@ -30,3 +30,13 @@
 同一 EXE 的 P1 交叉回归完成。本机和配对远端分别跑多行 `execute/1` 正常结果和活动停止，四场均 `stopped`、v1 封存，同构建重启后原状态与字节一致，离线会话范围证明通过。SteerLine `3996bf20` 使用独立应用 home 和既有登记的隔离仓库执行本机正式 `environment_start`。Run `a1d6a49c556bbcd346680a1446719acb` 取得原生 `succeeded`、报告 completed/ready、原 v1 封存和应用 ready，正式停服及双 EXE 原目录升级预检通过。新仓库登记尝试在执行前被自动审批拒绝，复验使用已有登记，未改变 Orca 设置或登记。
 
 原始证据在调用 worktree 的 `.evidence/p2-fixed-live/`，包括固定 EXE 构建记录、`gate-upgrade.log`、`formal-upgrade.log`、原 Run 回执、公开历史和 P1 交叉结果。报告通过范围仅对应此次合入前固定构建。
+
+## 合入前审计补验
+
+核对原报告来源和公开 turn。两端正式报告均绑定原 `Violet pebble Q7.` 的 command、turn 和结果 ID，独立的报告 turn 均无工具调用，随后由原 Workflow 核验真实 PR。原正式开发与报告证据仍对应上文固定构建。
+
+修正旧结构化 development 的文件提示及公开说明，使快照仅由显式停止触发。保留旧 M2 离线未结算诊断，将恢复授权收尾明确限定于新 `development/2`。新 Run 的 v1 提示、发布判定和原目录排空条件保持。
+
+用审计构建新跑双端活动续轮停止。两端均先取得原 needs_input，再各派发一次结构化反馈。停止前确认活动的第二个 turn 不同于第一轮，公开历史回读确认第二轮为 interrupted/cancellation。每条仅一个原 stop 意图和成功 close，v1 封存，拒绝新的 resume 和重复 stop。原 writer 退出后，未改动的 SteerLine `VerifyUpgradeDrained` 通过。最终冷读取器也对原门禁、原正式及新增活动续轮三个目录通过双 EXE 原排空核验。最终读取器与活动续轮构建的运行源码差异限于旧 M2 的离线诊断。
+
+使用原 EXE 和最终冷读取器逐条核对旧 M2 四条及旧远端 P1 两条 Run。冷查视图、未结算 scope 和输入身份相同，六份原快照摘要与字节一致。原数据库文件摘要一致。受影响 Go 用例通过，验证范围仍为专项与定向。见 [审计摘要](evidence/orca-structured-development-p2-20261104/merge-audit-summary.json)。

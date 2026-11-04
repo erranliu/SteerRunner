@@ -1,0 +1,66 @@
+{
+  "active_follow_up_build_sha256": "99e495c6acfc78db269be4e73a97cb597881c31e8e2587918bfcfd091cf2956a",
+  "active_follow_up_source_digest": "e3fdce6ee14fcb0d4bf74b5712a1c0417bfec843fe9f816399f9e5ae62b7987d",
+  "final_cold_reader_sha256": "f35f7e04234aef5247dc9f2c050fb5074ed8efc3a056bb10daafb0f6b5aa939c",
+  "final_source_digest": "5b1b47796497b82328c79bf1634b4beff5a9ca7afa4c1b243adaf4e991b06c46",
+  "runs": {
+    "local": {
+      "active_follow_up_run": "1f52cbd8b524d123b9e0b3b7dae4fcea",
+      "original_session": "oas_ff9bf7d4b073213a2f9961a627b49d68",
+      "interrupted_original_turn": "01a1a5f5-c79d-7ce2-8cf8-161e50492ac5",
+      "original_stop_operation": "081cd715eabb53cc72441a7062a0852d",
+      "seal_sha256": "19b25856e1c150ca834cffc8b59b23adbd0ec0389e58eb22b3b64768098d002b",
+      "previous_formal_report_turn": "01a1a5e7-e907-7b11-beb7-c5fce05eb7ee",
+      "previous_formal_report_tool_calls": 0
+    },
+    "remote": {
+      "active_follow_up_run": "97b21d54557e897b4be84a222d5fad5d",
+      "original_session": "oas_ff5893f89f3c886b5ef1a5069f984085",
+      "interrupted_original_turn": "01a1a5f5-e3d8-7f01-96fc-1ee93166d23e",
+      "original_stop_operation": "2e340303d9c0770b7025d6a010e99f1e",
+      "seal_sha256": "19b25856e1c150ca834cffc8b59b23adbd0ec0389e58eb22b3b64768098d002b",
+      "previous_formal_report_turn": "01a1a5e7-80a7-7631-a444-4b1b511b04a4",
+      "previous_formal_report_tool_calls": 0
+    }
+  },
+  "legacy_m2": [
+    {
+      "run_id": "39bd737233beda557b49aa42c128ca26",
+      "stop_status": "unknown",
+      "snapshot_contract": "steerrunner-result-file-snapshot/v1",
+      "snapshot_sha256": "ff2d7415d9fc5ccd3e128d8f1eca101cc56485f63fb0f25a5fb017822b224e49"
+    },
+    {
+      "run_id": "7a189be62acf399f4485f99162d7a1cd",
+      "stop_status": "unknown",
+      "snapshot_contract": "steerrunner-result-file-snapshot/v1",
+      "snapshot_sha256": "2c35919b0ffb03798af91ff0bceab01c713b6441fed8a41fd218bf7881ef0ccd"
+    },
+    {
+      "run_id": "bf0c40eda8ef55754b4116e44addd486",
+      "stop_status": "unknown",
+      "snapshot_contract": "steerrunner-result-file-snapshot/v1",
+      "snapshot_sha256": "19b25856e1c150ca834cffc8b59b23adbd0ec0389e58eb22b3b64768098d002b"
+    },
+    {
+      "run_id": "f7ddefd9b81aa5399a3b900ae378c2cc",
+      "stop_status": "unknown",
+      "snapshot_contract": "steerrunner-result-file-snapshot/v1",
+      "snapshot_sha256": "19b25856e1c150ca834cffc8b59b23adbd0ec0389e58eb22b3b64768098d002b"
+    }
+  ],
+  "legacy_p1": [
+    {
+      "run_id": "19e844a72c399a41268a4ac8539bd30c",
+      "stop_status": "unknown",
+      "snapshot_contract": "steerrunner-result-file-snapshot/v1",
+      "snapshot_sha256": "ba11dd6c2d2fba7ad6eefac07ecbaf97a8f4c600a9752b2e35da4a0c0162556a"
+    },
+    {
+      "run_id": "5fa871fe80f62ff1a6339464951b532c",
+      "stop_status": "unknown",
+      "snapshot_contract": "steerrunner-result-file-snapshot/v1",
+      "snapshot_sha256": "19b25856e1c150ca834cffc8b59b23adbd0ec0389e58eb22b3b64768098d002b"
+    }
+  ]
+}

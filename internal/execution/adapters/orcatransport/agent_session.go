@@ -701,6 +701,9 @@ func (l *Lifecycle) closeSettlesAgentSession() bool {
 
 func (l *Lifecycle) verifyAgentSessionStopped(s b.LifecycleSnapshot) error {
 	if !l.closeSettlesAgentSession() {
+		if l.agentDevelopment {
+			return errors.New("Orca 原会话 close 不提供完整退出证据；资源结算未核实 (resources_settled=false).")
+		}
 		return errors.New(AgentSessionStopDiagnostic)
 	}
 	state, err := l.agentState(s)
