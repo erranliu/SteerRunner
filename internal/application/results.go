@@ -11,6 +11,7 @@ import (
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/runstate"
 	"reflect"
+	"strings"
 	"sync"
 	"time"
 )
@@ -110,7 +111,9 @@ func (e *Engine) finishWithGate(id string, value b.TurnEvidence, gate *sync.Mute
 		return false
 	}
 	if state.Contract == "final" {
-		if (r.Request.Conversation != nil || r.Request.Workflow.ID == workflow.SingleExecution) && (result.NativeOutcome == "unknown" || result.NativeOutcome == "unreported") {
+		singleExecution := r.Request.Workflow.ID == workflow.SingleExecution
+		if (r.Request.Conversation != nil || singleExecution) && (result.NativeOutcome == "unknown" ||
+			result.NativeOutcome == "unreported" && (!singleExecution || !result.ContentVerified || strings.TrimSpace(result.Content) == "")) {
 			r.Result = &value
 			r.Status, r.Phase, r.Diagnostic = "reconciling", "native_outcome_unverified", "Original native turn outcome remains unverified"
 			_ = e.commitLocked(r, nil, "final_unavailable")

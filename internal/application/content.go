@@ -182,6 +182,9 @@ func finishContent(r *runstate.Record, input workflow.StageInput, value b.TurnEv
 				content.Text, content.JSON = "", data
 			}
 		}
+	} else if r.Request.Workflow.ID == workflow.SingleExecution && result.NativeOutcome == "unreported" {
+		// The original turn and final are verified. The provider left its outcome unclassified.
+		content.Status, content.Text = "closed", result.Content
 	} else if result.NativeOutcome == "cancelled" {
 		content.Status = "cancelled"
 	} else if !result.ContentVerified && result.Succeeded {
