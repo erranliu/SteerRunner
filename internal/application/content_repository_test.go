@@ -144,6 +144,81 @@ func TestContentGenerateDocumentLimits(t *testing.T) {
 	}
 }
 
+func TestContentRepositoryCheckpointsRejectEqualSizeRewrite(t *testing.T) {
+	path, commit := repositoryFixture(t)
+	repository := &contracts.GenerateRepository{LocalPath: path, Commit: commit, Paths: []string{"code.txt"}}
+	newRun := func(t *testing.T) (*Engine, *worker) {
+		t.Helper()
+		return contentEngineWithRepository(t, "generate", repository)
+	}
+	rewrite := func(t *testing.T, r *runstate.Record) {
+		t.Helper()
+		path := filepath.Join(r.Snapshot.Ref.WorkspacePath, "code.txt")
+		original, err := os.ReadFile(path)
+		changed := []byte("wrong-version\n")
+		if err != nil || string(original) != "fixed-version\n" || len(changed) != len(original) {
+			t.Fatalf("invalid equal-size rewrite fixture: %q, %v", original, err)
+		}
+		if err := os.WriteFile(path, changed, 0600); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	t.Run("dispatch_after_input_freeze", func(t *testing.T) {
+		e, w := newRun(t)
+		r := e.runs["run"].Clone()
+		rewrite(t, r)
+		p := &fileBusinessPort{}
+		w.gate.Lock()
+		advanced := e.prepareRun("run", w, p, r)
+		w.gate.Unlock()
+		got := e.runs["run"]
+		if advanced || got.Phase != "source_unverified" || !strings.Contains(got.Diagnostic, "repository snapshot digest changed") || len(got.Intents) != 0 || p.executes != 0 {
+			t.Fatalf("rewritten snapshot reached dispatch: advanced=%t phase=%q diagnostic=%q intents=%d sends=%d", advanced, got.Phase, got.Diagnostic, len(got.Intents), p.executes)
+		}
+	})
+
+	t.Run("resume_after_authorization_revoked", func(t *testing.T) {
+		e, w := newRun(t)
+		r := e.runs["run"].Clone()
+		r.Allowed, r.ResumeRequired = false, true
+		if err := e.commitLocked(r, nil, "authorization_revoked"); err != nil {
+			t.Fatal(err)
+		}
+		rewrite(t, r)
+		if response := contentControl(e, "resume", "resume-1", contracts.RevisionInput{ExpectedRevision: r.Revision}); !response.OK {
+			t.Fatal(response)
+		}
+		command := e.runs["run"].PendingResume
+		advanced := e.advance("run", w)
+		got := e.runs["run"]
+		if advanced || got.Allowed || !got.ResumeRequired || got.CommandStates[command] != "failed" || !strings.Contains(got.Diagnostic, "repository snapshot digest changed") {
+			t.Fatalf("rewritten snapshot passed resume: advanced=%t allowed=%t resume_required=%t phase=%q diagnostic=%q", advanced, got.Allowed, got.ResumeRequired, got.Phase, got.Diagnostic)
+		}
+	})
+
+	t.Run("result_after_dispatch", func(t *testing.T) {
+		e, w := newRun(t)
+		r := e.runs["run"].Clone()
+		p := &fileBusinessPort{}
+		w.gate.Lock()
+		e.prepareRun("run", w, p, r)
+		w.gate.Unlock()
+		if p.executes != 1 || len(e.runs["run"].Intents) != 1 {
+			t.Fatalf("original input did not dispatch: sends=%d diagnostic=%q", p.executes, e.runs["run"].Diagnostic)
+		}
+		value := contentEvidence(e, "valid result", "succeeded", true)
+		rewrite(t, e.runs["run"])
+		if !e.finish("run", value) {
+			t.Fatal("verified final not consumed")
+		}
+		got := e.runs["run"].ContentResult
+		if got == nil || got.Status != "failed" || got.Diagnostic != "repository_snapshot_changed" || got.Text != "" {
+			t.Fatalf("rewritten snapshot passed result acceptance: %+v", got)
+		}
+	})
+}
+
 func TestContentRepositoryResultRejectsDrift(t *testing.T) {
 	e, _ := contentEngine(t, "generate")
 	r := e.runs["run"]

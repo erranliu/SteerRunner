@@ -22,6 +22,11 @@ import (
 
 func contentEngine(t *testing.T, id string) (*Engine, *worker) {
 	t.Helper()
+	return contentEngineWithRepository(t, id, nil)
+}
+
+func contentEngineWithRepository(t *testing.T, id string, repository *contracts.GenerateRepository) (*Engine, *worker) {
+	t.Helper()
 	dir := t.TempDir()
 	store, err := storage.Open(dir)
 	if err != nil {
@@ -32,7 +37,7 @@ func contentEngine(t *testing.T, id string) (*Engine, *worker) {
 	e := &Engine{dir: dir, ctx: context.Background(), epoch: "epoch", logger: log.New(io.Discard, "", 0), store: store, runs: map[string]*runstate.Record{}, workers: map[string]*worker{"run": w}}
 	request := contracts.RunRequest{Title: "test", Workflow: contracts.Workflow{ID: id, Version: 1}, Execution: contracts.Execution{Adapter: "codex-app-server", Target: contracts.Target{Kind: "local"}, Settings: json.RawMessage(`{"access_mode":"read_only"}`)}}
 	if id == "generate" {
-		request.Generate = &contracts.GenerateInput{Instruction: "Reply", Materials: []contracts.Document{}}
+		request.Generate = &contracts.GenerateInput{Instruction: "Reply", Materials: []contracts.Document{}, Repository: repository}
 	} else {
 		request.Conversation = &contracts.ConversationInput{Instruction: "Discuss", Materials: []contracts.Document{}, Directory: contracts.DirectoryAccess{Path: t.TempDir(), Access: "read_only"}}
 	}

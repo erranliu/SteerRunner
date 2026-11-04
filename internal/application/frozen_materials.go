@@ -20,10 +20,20 @@ func verifyFrozenMaterials(r *runstate.Record) error {
 		return nil
 	}
 	if r.Request.Generate != nil && r.Request.Generate.Repository != nil {
-		if err := verifyContentDirectory(r); err != nil {
-			return err
-		}
+		return verifyContentInputs(r)
 	}
+	return verifyFrozenDocuments(r)
+}
+
+// verifyContentInputs is used when the original directory is also required.
+func verifyContentInputs(r *runstate.Record) error {
+	if err := verifyContentDirectory(r); err != nil {
+		return err
+	}
+	return verifyFrozenDocuments(r)
+}
+
+func verifyFrozenDocuments(r *runstate.Record) error {
 	for _, material := range r.Materials {
 		if material.Kind == "file" {
 			if !filepath.IsAbs(material.SnapshotPath) || material.ExecutionLocation != material.SnapshotPath {
