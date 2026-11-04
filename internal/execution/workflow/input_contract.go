@@ -25,6 +25,6 @@ func InputContract() any {
 		"commit":                CommitInstruction, "success": SuccessLabel, "feedback": FeedbackLabel,
 		"publication": map[string]any{"label": PublicationLabel, "slots": "execute only: provider/repository/base_url/remote/base; no provider query or authentication configuration"},
 		"progress":    map[string]any{"text": ProgressInstruction, "continue": ContinueProgressInstruction, "when": "enabled implementation/audit execute only; reuse rule only if already supplied in this original session"},
-		"result_file": map[string]any{"text": ResultFileInstruction, "remote_orca_execute_snapshot": ResultFileSnapshotInstruction, "continue": ContinueResultInstruction, "when": "enabled development implementation/audit execute or execute/1; reuse rule only if already supplied in this original session"},
+		"result_file": map[string]any{"text": ResultFileInstruction, "remote_orca_execute_snapshot": ResultFileSnapshotInstruction, "continue": ContinueResultInstruction, "when": "enabled development implementation/audit execute or execute/1; remote_orca_execute_snapshot applies only to existing Runs frozen with the legacy remote Orca session profile; reuse rule only if already supplied in this original session"},
 	}
 }

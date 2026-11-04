@@ -1,4 +1,4 @@
-# Orca 提示词迁移 P0 与 P1 候选验收
+# Orca 提示词迁移 P0 与首轮 P1 候选验收
 
 2026-11-04。P1 候选位于 `codex/orca-structured-execute-integration`，基线 `1df8e26d` 含 #97/#98，从 rebase 后的 M1 `dc8090da` 取运行代码和定向回归。修正远端快照提示和两端停止能力声明，保留脚本环境绑定。M2 生产切换、Pi、audited、显式启动覆盖和非 Orca Codex 未纳入候选。
 
@@ -21,7 +21,7 @@ SteerLine 源码及隔离包基线 `a589f618`。本机及明确配对远端 Orca
 | 排空与升级 | 同一远端 profile 在候选 Run 的 writer 已退出，离线 `resources_settled=false`，Run 停止保持 unknown。SteerLine 的 `TestUpgradeDrainedUsesCandidateProofAndBothBusinessReaders` 与 `TestStoppedVerificationKeepsRunDiagnosticsAndGate` 通过，明确拒绝原资源未结算和未知控制。与主线样本的正向排空相比，候选失去已证明的排空行为。 |
 | 普通开发输入边 | P1 继续选旧普通开发路由。P2 只可复用现有 M2 的原 session 首轮及业务续轮；普通开发的反馈、报告来源与发布仍由现有 Workflow 处理。原生活动问答按原控制合同检查，不能作为下一轮反馈派发。P2 的真实报告回退及实际配置资格待该阶段验收。 |
 
-**发布阻断。** 两个环境检测合同门禁均存在，原环境检测可用性基线仍未获完整证明；同一配置的排空退化已经实测。历史 M1 的停止与快照授权只用于对应 Runner 合同，未批准取消 SteerLine 的环境检测或升级门禁。P1 不发起 PR 或发布，P2 等待 P1 门禁解决并合入。独立目录只用于隔离验收。
+**首轮发布阻断。** 两个环境检测合同门禁均存在，原环境检测可用性基线仍未获完整证明；同一配置的排空退化已经实测。历史 M1 的停止与快照授权只用于对应 Runner 合同，未批准取消 SteerLine 的环境检测或升级门禁。该首轮候选未发起 PR 或发布。后续通过的固定构建及正式检测见 [P1 解阻验收](orca-structured-prompt-input-p1-unblock.md)。P2 等待 P1 合入。独立目录只用于隔离验收。
 
 ## P1 双端 Runner 专项
 
