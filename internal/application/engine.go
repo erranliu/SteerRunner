@@ -435,6 +435,8 @@ func (e *Engine) setup(r *runstate.Record, w *worker) b.LifecycleSetup {
 	}
 	return b.LifecycleSetup{ProgressFile: progressPath(r), ResultFile: resultPath(r), LaunchExecutionOwner: e.launchOwner, Logf: e.logger.Printf, ReadOnlyPreparation: func(ctx context.Context, query func(context.Context) error) error {
 		return e.preparationQuery(r.ID, w, ctx, query)
+	}, SelectAuditedResult: func(input b.TurnInput, messages []string) (int, error) {
+		return selectAuditedResult(r.Workflow, input, messages)
 	}, Snapshot: r.Snapshot.Clone(), ProfileData: r.Profile, ProfileID: r.ID, AcceptedConfigVersion: r.InputDigest, AgentLaunchCommand: r.LaunchCommand, ProcessHost: process.New(60 * time.Second), OwnedProcess: w.handle, RepositoryPath: repository, RepositoryURL: r.Request.Repository.URL, RunDirectory: e.dir, CommandTimeout: 60 * time.Second, AttemptNumber: r.Snapshot.Session.AttemptNumber, GitExecutable: "git", RemoteName: r.Request.Repository.Remote, TargetBranch: r.Request.Repository.BaseBranch, WorkerTreeAbsent: func(identity b.ProcessIdentity) bool {
 		e.mu.Lock()
 		current := e.runs[r.ID].Clone()

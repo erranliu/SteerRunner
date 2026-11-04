@@ -75,7 +75,8 @@ func Catalog() CapabilityCatalog {
 							selection.AuditModel = &workflow.ModelSettings{Model: "audit-model"}
 							values := map[string]any{"access_mode": mode, "model": "execution-model"}
 							if adapter == "orca-terminal" {
-								values = map[string]any{"agent": agent, "access_mode": mode, "agent_launch": map[string]any{"runtime_executable": "configured-helper.exe", "model": "execution-model"}}
+								values = map[string]any{"agent": agent, "access_mode": mode, "agent_launch": map[string]any{"model": "execution-model"}}
+								needed = append(needed, "native_orca_structured_audit", "original_turn_model_evidence", "original_workspace_checkpoint")
 							}
 							candidate.Settings = marshal(values)
 							needed = append(needed, "explicit_execution_and_audit_models")

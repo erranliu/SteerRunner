@@ -5,24 +5,24 @@ import (
 	"testing"
 )
 
-func TestLocalOrcaAuditedModelsRequireManagedRuntime(t *testing.T) {
+func TestLocalOrcaAuditedModelsUseStructuredRuntime(t *testing.T) {
 	var request map[string]any
 	_ = json.Unmarshal(validRun(), &request)
 	request["workflow"] = map[string]any{"id": "development-audited", "version": 2, "audit_model": map[string]any{"model": "reviewer", "reasoning_effort": "high"}}
-	request["execution"] = map[string]any{"adapter": "orca-terminal", "target": map[string]any{"kind": "local"}, "settings": map[string]any{"access_mode": "full_access", "agent_launch": map[string]any{"executable": "codex.exe", "runtime_executable": "C:/trusted/helper.exe", "model": "writer", "reasoning_effort": "high"}}}
+	request["execution"] = map[string]any{"adapter": "orca-terminal", "target": map[string]any{"kind": "local"}, "settings": map[string]any{"access_mode": "full_access", "agent_launch": map[string]any{"model": "writer", "reasoning_effort": "high"}}}
 	wire, _ := json.Marshal(request)
 	if fault := ValidateRun(wire); fault != nil {
-		t.Fatal("valid remote configuration rejected", fault)
+		t.Fatal("valid local audited configuration rejected", fault)
 	}
-	for _, mode := range []string{"no-helper", "implicit-writer", "same-model"} {
+	for _, mode := range []string{"explicit-helper", "implicit-writer", "same-model"} {
 		t.Run(mode, func(t *testing.T) {
 			var copy map[string]any
 			_ = json.Unmarshal(wire, &copy)
 			s := copy["execution"].(map[string]any)["settings"].(map[string]any)
 			launch := s["agent_launch"].(map[string]any)
 			switch mode {
-			case "no-helper":
-				delete(launch, "runtime_executable")
+			case "explicit-helper":
+				launch["runtime_executable"] = "C:/old/helper.exe"
 			case "implicit-writer":
 				delete(launch, "model")
 			case "same-model":

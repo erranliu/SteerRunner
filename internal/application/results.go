@@ -1,6 +1,7 @@
 package application
 
 import (
+	"context"
 	"errors"
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
@@ -10,6 +11,7 @@ import (
 	ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/runstate"
+	"github.com/erranliu/SteerRunner/internal/usage/collect"
 	"reflect"
 	"strings"
 	"sync"
@@ -18,6 +20,38 @@ import (
 
 func (e *Engine) finish(id string, value b.TurnEvidence) bool {
 	return e.finishWithGate(id, value, nil)
+}
+
+func selectAuditedResult(flow workflow.Snapshot, input b.TurnInput, messages []string) (int, error) {
+	stage, ok := flow.State(input.StepID)
+	if !ok {
+		return -1, errors.New("original audited result stage is unavailable")
+	}
+	selected, single, count := -1, -1, 0
+	for i, message := range messages {
+		if strings.TrimSpace(message) == "" {
+			continue
+		}
+		single, count = i, count+1
+		_, err := ra.DecodeReport(message, stage.Contract)
+		if errors.Is(err, ra.ErrConflict) {
+			return -1, err
+		}
+		publication := stage.Contract == "publication" && stage.Kind == "execute" && len(ra.PublicationClues(message, nil)) == 1
+		if err == nil || publication || stage.SuccessOutput != "" && ra.RecognizeSuccessOutput(message, stage.SuccessOutput, input.Prompt) {
+			if selected >= 0 {
+				return -1, errors.New("multiple assistant messages qualify for the original audited turn")
+			}
+			selected = i
+		}
+	}
+	if selected >= 0 {
+		return selected, nil
+	}
+	if count == 1 {
+		return single, nil // One original material for the existing acquisition policy.
+	}
+	return -1, errors.New("original audited result has no unique complete assistant message")
 }
 
 // Stopping revokes stage authority before an original native cancellation can
@@ -128,6 +162,29 @@ func (e *Engine) finishWithGate(id string, value b.TurnEvidence, gate *sync.Mute
 			return false
 		}
 	}
+	var modelEvidence *workflow.ModelEvidence
+	if structuredAudited(r) && result.Succeeded && result.ContentVerified {
+		if !r.Allowed || r.ResumeRequired || r.PendingStop != "" || r.Closed {
+			return false
+		}
+		if gate != nil {
+			gate.Unlock()
+		}
+		ctx, cancel := context.WithTimeout(e.ctx, 25*time.Second)
+		proof, modelErr := collect.ReadAuditedModel(ctx, e.store, r, value)
+		cancel()
+		if gate != nil {
+			gate.Lock()
+		}
+		if modelErr == nil && (inputCopy.Model == "" || inputCopy.ReasoningEffort == "" || proof.Choice.Model != inputCopy.Model || proof.Choice.ReasoningEffort != inputCopy.ReasoningEffort) {
+			modelErr = errors.New("original turn model or reasoning effort differs from the frozen role")
+		}
+		if modelErr != nil {
+			e.blockRevision(id, r.Revision, "audited_model_unverified", modelErr, false)
+			return false
+		}
+		modelEvidence = &workflow.ModelEvidence{Model: proof.Choice.Model, ReasoningEffort: proof.Choice.ReasoningEffort, ProviderSession: proof.ProviderSession, Turn: proof.Turn, SourceDigest: proof.SourceDigest}
+	}
 	e.mu.Lock()
 	defer e.mu.Unlock()
 	current := e.runs[id]
@@ -172,7 +229,7 @@ func (e *Engine) finishWithGate(id string, value b.TurnEvidence, gate *sync.Mute
 		_ = e.commitLocked(r, nil, "final_unavailable")
 		return false
 	}
-	raw := workflow.StageResult{SessionID: value.SessionID, PRCandidates: append([]string(nil), value.PRCandidates...), UnexpectedWork: r.ReportWork[inputCopy.CommandID] != "", CommandID: value.CommandID, AttemptID: inputCopy.AttemptID, StepID: inputCopy.StepID, InputVersion: inputCopy.Version, TurnID: value.TurnID, Succeeded: result.Succeeded, FinalVerified: result.ContentVerified, Final: result.Content, Failure: result.Failure, FinalDiagnostic: result.Diagnostic, Outcome: result.NativeOutcome, Workspace: checkpoint}
+	raw := workflow.StageResult{SessionID: value.SessionID, PRCandidates: append([]string(nil), value.PRCandidates...), UnexpectedWork: r.ReportWork[inputCopy.CommandID] != "", CommandID: value.CommandID, AttemptID: inputCopy.AttemptID, StepID: inputCopy.StepID, InputVersion: inputCopy.Version, TurnID: value.TurnID, Succeeded: result.Succeeded, FinalVerified: result.ContentVerified, Final: result.Content, Failure: result.Failure, FinalDiagnostic: result.Diagnostic, Outcome: result.NativeOutcome, Workspace: checkpoint, ActualModel: modelEvidence}
 	if state.Contract == "publication" && result.ContentVerified {
 		if provider, err := providerFor(r); err == nil {
 			seen := map[string]bool{}
@@ -429,6 +486,9 @@ func (e *Engine) verifyPublication(id string) bool {
 	state, _ := next.Workflow.CurrentState()
 	next.Workflow.StepID = state.Next
 	next.Status, next.Phase, next.Diagnostic = "pr_ready", "pr_ready", ""
+	if structuredAudited(next) {
+		markResultSnapshotEnd(next, "publication:"+next.Workflow.PublicationResultID)
+	}
 	return e.commitLocked(next, nil, "pr_ready") == nil
 }
 

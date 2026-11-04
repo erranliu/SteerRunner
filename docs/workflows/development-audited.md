@@ -17,7 +17,7 @@
 
 实施和发布按 development 的思路：可信 final 命中阶段成功输出且核验通过即完成，无法判断时原 agent 最多 report 一次，不使用独立解析或格式修正。独立解析仅用于整理实际代码审计结果；不能替代真正审计或生成原审计没有作出的结论。
 
-本流程支持本机 codex-app-server，以及配置并核验可信 helper 的 Orca local Codex。原生远端 orca_environment 不提供实际双模型来源证明，在接受前返回 unsupported_capability，不创建执行资源。Orca 在同一原生会话按冻结角色选择执行/审计模型；固定控制通道只读取原生回执和执行认证撤销，实际 model/effort 必须与该业务 Command 对应的冻结选择一致。Pi/DSH 不声明审计能力。执行模型用于实施/其补报和发布；审计模型用于正式审计修复及其补报，均在原执行会话通过提示词调用并冻结。独立 parser 使用隔离会话和 Runner 自身配置；切回实施/发布时恢复执行模型。共同 worktree 初始化及统一生命周期不在本定义重写。
+本流程支持本机 `codex-app-server` 和本机 Orca 结构化 Codex。远端 Orca 在受理前返回 `unsupported_capability`。Orca 在同一会话按冻结角色选择执行和审计模型，使用绑定原 turn 的受限来源核验实际 model/effort 并确认撤权。执行模型用于实施、实施补报和发布，审计模型用于审计修复和审计补报。独立 parser 使用隔离会话和 Runner 自身配置。发布时切回执行模型，继续验证原工作区检查点和真实 PR。Orca 结果、停止和文件合同见 [M5 Spec](../spec/orca-structured-audited.spec.md)。
 
 ## 2. Workflow 整体状态图
 

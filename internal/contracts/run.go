@@ -305,6 +305,14 @@ func OrcaStructuredDevelopment(execution Execution, selected Workflow) bool {
 	return launch.Executable == "" && len(launch.Args) == 0 && launch.RuntimeExecutable == "" && launch.RuntimeSHA256 == ""
 }
 
+func OrcaStructuredAudited(execution Execution, selected Workflow) bool {
+	if execution.Adapter != "orca-terminal" || execution.Target.Kind != "local" || execution.Target.Environment != "" || selected.ID != workflow.AuditedDevelopment || selected.Version != 2 {
+		return false
+	}
+	var settings OrcaSettings
+	return json.Unmarshal(execution.Settings, &settings) == nil && settings.AgentName() == "codex"
+}
+
 // ValidateRunConfiguration is pure admission; it performs no environment I/O.
 func ValidateRunConfiguration(data []byte) *Fault {
 	invalid := Fail(2, "invalid_input", "Run configuration does not satisfy the published contract.")
@@ -393,6 +401,20 @@ func ValidateRunConfiguration(data []byte) *Fault {
 	}
 	if failure := ValidateExecution(value.Execution); failure != nil {
 		return failure
+	}
+	if OrcaStructuredAudited(value.Execution, value.Workflow) {
+		var settings OrcaSettings
+		_ = json.Unmarshal(value.Execution.Settings, &settings)
+		var fields map[string]json.RawMessage
+		_ = json.Unmarshal(value.Execution.Settings, &fields)
+		var launch map[string]json.RawMessage
+		_ = json.Unmarshal(fields["agent_launch"], &launch)
+		_, executable := launch["executable"]
+		_, helper := launch["runtime_executable"]
+		_, digest := launch["runtime_sha256"]
+		if executable || helper || digest || len(settings.AgentLaunch.Args) != 0 {
+			return Fail(3, "unsupported_capability", "Local Orca audited development uses Orca's structured Codex executor. Remove explicit agent_launch executable, args and helper settings before submitting.")
+		}
 	}
 	if profile.AuditModelRequired && value.Execution.Adapter == "orca-terminal" && value.Execution.Target.Kind == "orca_environment" {
 		return Fail(3, "unsupported_capability", "Native remote Orca does not provide verified audit model or workspace provenance; use development/2.")

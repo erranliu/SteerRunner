@@ -18,6 +18,25 @@ import (
 	"github.com/erranliu/SteerRunner/internal/storage"
 )
 
+func TestSRFreezeOrcaStructuredAudited(t *testing.T) {
+	f := newBaseRefreshFixture(t, "origin", "main")
+	cli, err := exec.LookPath("git")
+	if err != nil {
+		t.Fatal(err)
+	}
+	f.request.Execution = contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "local"}, Settings: canonical(contracts.OrcaSettings{AccessMode: "full_access", Transport: contracts.TransportSettings{Executable: cli}, AgentLaunch: contracts.AgentSettings{Model: "execution-model", ReasoningEffort: "high"}})}
+	f.request.Workflow = contracts.Workflow{ID: workflow.AuditedDevelopment, Version: 2, AuditModel: &workflow.ModelSettings{Model: "audit-model"}}
+	f.input.Input = canonical(f.request)
+	r := f.freeze()
+	var profile orca.AgentSessionProfile
+	if err := json.Unmarshal(r.Profile[0].Payload, &profile); err != nil {
+		t.Fatal(err)
+	}
+	if !profile.Audited || !profile.Development || profile.Model != "execution-model" || r.Workflow.AuditModel.ReasoningEffort != "high" || !structuredDevelopmentClose(r) || resultContract(r) != contracts.ResultFileSnapshotContract || r.StopEvidenceScope != orca.AgentSessionStopScope || r.LaunchCommand != "" {
+		t.Fatal("audited did not freeze the original structured model/stop/file contract", profile, r.Workflow.AuditModel, r.StopEvidenceScope)
+	}
+}
+
 func TestSRFreezeOrcaStructuredExecuteOnly(t *testing.T) {
 	f := newBaseRefreshFixture(t, "origin", "main")
 	cli, err := exec.LookPath("git")
@@ -178,5 +197,24 @@ func TestSRFreezeRemoteStructuredExecutePinsHostAndSealContract(t *testing.T) {
 	old.Snapshot.Ref.Protocol = b.ProtocolOrcaTerminalV3
 	if resultContract(old) != contracts.ResultFileContract {
 		t.Fatal("old remote record reinterpreted")
+	}
+}
+
+func TestStructuredAuditedRequiresUniqueResult(t *testing.T) {
+	profile, _ := workflow.Lookup(workflow.AuditedDevelopment, 2)
+	flow := workflow.Snapshot{Config: &profile}
+	input := b.TurnInput{StepID: workflow.StepImplement}
+	const result = `{"outcome":"done","summary":"Implemented"}`
+	if index, err := selectAuditedResult(flow, input, []string{"commentary", result, "another commentary"}); err != nil || index != 1 {
+		t.Fatal(index, err)
+	}
+	if _, err := selectAuditedResult(flow, input, []string{result, result}); err == nil {
+		t.Fatal("duplicate results qualified")
+	}
+	if index, err := selectAuditedResult(flow, input, []string{"unique material for existing acquisition"}); err != nil || index != 0 {
+		t.Fatal(index, err)
+	}
+	if _, err := selectAuditedResult(flow, input, []string{"one incomplete report", "another incomplete report"}); err == nil {
+		t.Fatal("ambiguous fallback material qualified")
 	}
 }

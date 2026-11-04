@@ -63,6 +63,7 @@ type Lifecycle struct {
 	agentSessions      func(string) agentSessionPort
 	agentHostID        string
 	agentDevelopment   bool
+	agentAudited       bool
 	stopping           atomic.Bool
 	probeProcess       func(*b.ProcessIdentity) b.ProcessProbeFacts
 	uploadStopArtifact func(context.Context, string, string, string, string, io.Reader) error
@@ -127,6 +128,7 @@ func NewLifecycleWithStateFactory(setup b.LifecycleSetup, factory stateFeedFacto
 		}
 		l.agentHostID = profile.PairingHostID
 		l.agentDevelopment = profile.Development
+		l.agentAudited = profile.Audited
 	}
 	l.probeProcess, l.uploadStopArtifact = process.NewServiceFacts().Probe, UploadWorkspaceArtifact
 	call := func(ctx context.Context, timeout time.Duration, args ...string) ([]byte, error) {

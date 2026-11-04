@@ -176,7 +176,8 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		var settings contracts.OrcaSettings
 		_ = json.Unmarshal(request.Execution.Settings, &settings)
 		agent = settings.AgentName()
-		development := contracts.OrcaStructuredDevelopment(request.Execution, request.Workflow)
+		audited := contracts.OrcaStructuredAudited(request.Execution, request.Workflow)
+		development := audited || contracts.OrcaStructuredDevelopment(request.Execution, request.Workflow)
 		structured = development || contracts.OrcaStructuredExecute(request.Execution, request.Workflow)
 		if settings.Transport.Executable == "" {
 			settings.Transport.Executable = "orca.exe"
@@ -219,7 +220,15 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 			settings.AccessMode = "full_access"
 			r.Request.Execution.Settings = canonical(settings)
 			protocol = b.ProtocolOrcaAgentSessionV1
-			structuredProfile := orca.AgentSessionProfile{Transport: profile, Model: settings.AgentLaunch.Model, ReasoningEffort: settings.AgentLaunch.ReasoningEffort, AccessMode: settings.AccessMode, Development: development}
+			structuredProfile := orca.AgentSessionProfile{Transport: profile, Model: settings.AgentLaunch.Model, ReasoningEffort: settings.AgentLaunch.ReasoningEffort, AccessMode: settings.AccessMode, Development: development, Audited: audited}
+			if audited {
+				model := *request.Workflow.AuditModel
+				if model.ReasoningEffort == "" {
+					model.ReasoningEffort = settings.AgentLaunch.ReasoningEffort
+				}
+				r.Request.Workflow.AuditModel = &model
+				r.ResultFileContract = contracts.ResultFileSnapshotContract
+			}
 			codec = orca.AgentSessionVersion
 			if profile.Environment != "" {
 				host, err := native.UsageHostID(profile.Environment)

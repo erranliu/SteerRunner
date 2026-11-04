@@ -37,7 +37,24 @@ type AgentSessionProfile struct {
 	ReasoningEffort string  `json:"reasoning_effort,omitempty"`
 	AccessMode      string  `json:"access_mode"`
 	Development     bool    `json:"development,omitempty"`
+	Audited         bool    `json:"audited,omitempty"`
 	version         int
+}
+
+func (p AgentSessionProfile) selection(input, pending *b.TurnInput) (*native.AgentSelection, error) {
+	model, effort := p.Model, p.ReasoningEffort
+	if input.Model != "" || input.ReasoningEffort != "" {
+		if pending == nil || pending.CommandID != input.CommandID || input.Model == "" || input.ReasoningEffort == "" || input.Model != pending.Model || input.ReasoningEffort != pending.ReasoningEffort {
+			return nil, errors.New("structured model selection differs from the frozen turn")
+		}
+		model, effort = input.Model, input.ReasoningEffort
+	} else if pending != nil && pending.CommandID == input.CommandID && (pending.Model != "" || pending.ReasoningEffort != "") {
+		return nil, errors.New("structured model selection is missing from the frozen turn")
+	}
+	if model == "" && effort == "" {
+		return nil, nil
+	}
+	return &native.AgentSelection{Model: model, Effort: effort}, nil
 }
 
 type agentSessionPort interface {
@@ -94,6 +111,9 @@ func decodeAgentSessionProfile(setup b.LifecycleSetup) (AgentSessionProfile, err
 	}
 	if p.version == AgentSessionCloseProfileVersion && p.Transport.Environment == "" && !p.Development {
 		return p, errors.New("paired close profile requires an original environment")
+	}
+	if p.Audited && (!p.Development || p.Transport.Environment != "" || p.version != AgentSessionCloseProfileVersion || p.Model == "" || p.ReasoningEffort == "") {
+		return p, errors.New("audited structured Orca requires its original local close profile and execution model")
 	}
 	wire, _ := json.Marshal(p.Transport)
 	_, err := DecodeProfile(wire)
@@ -322,9 +342,9 @@ func (l *Lifecycle) executeStructured(ctx context.Context, r b.LifecycleRequest,
 			if e != nil {
 				return receipt, nil, e
 			}
-			selection := &native.AgentSelection{Model: profile.Model, Effort: profile.ReasoningEffort}
-			if selection.Model == "" && selection.Effort == "" {
-				selection = nil
+			selection, e := profile.selection(r.Input.Turn, r.Snapshot.PendingTurn)
+			if e != nil {
+				return receipt, nil, e
 			}
 			create := native.AgentCreate{Worktree: "id:" + state.Worktree.ID, Agent: "codex", Options: map[string]string{"permissionMode": "full-access"}, FirstMessage: native.AgentFirstMessage{ClientMessageID: state.MessageID, Body: agentBody(r.Input.Turn.Prompt), Selection: selection}, Envelope: native.AgentMutationEnvelope{SessionID: state.SessionID, ClientOperationID: state.CreateID}}
 			create.Envelope.PayloadFingerprint, e = native.AgentFingerprint("agentSession.create", state.SessionID, map[string]any{"worktree": create.Worktree, "agent": create.Agent, "options": create.Options, "firstMessage": create.FirstMessage})
@@ -591,12 +611,29 @@ func (l *Lifecycle) verifyAgentActivity(s b.LifecycleSnapshot, state agentSessio
 	}
 	result := strings.Join(messages, "\n\n")
 	origin := "native_turn_assistant_messages"
-	if l.agentDevelopment && len(messages) != 0 {
+	if l.agentAudited && outcome == "succeeded" {
+		input := originalAuditedInput(s, state)
+		if input == nil {
+			return receipt, nil, errors.New("original audited result input is unavailable")
+		}
+		if l.setup.SelectAuditedResult == nil {
+			return receipt, nil, errors.New("original audited result selector is unavailable")
+		}
+		index, err := l.setup.SelectAuditedResult(*input, messages)
+		if err != nil {
+			return receipt, nil, err
+		}
+		if index < 0 || index >= len(messages) {
+			return receipt, nil, errors.New("original audited result selector returned an invalid item")
+		}
+		result, ids, origin = messages[index], ids[index:index+1], "original_audited_structured_message"
+	} else if l.agentDevelopment && len(messages) != 0 {
 		result, ids, origin = messages[len(messages)-1], ids[len(ids)-1:], "native_turn_last_assistant_message"
 	}
 	receipt.TurnEvidence = &b.TurnEvidence{CommandID: state.CommandID, SessionID: state.SessionID, TurnID: turn.TurnID, Started: true, Completed: true, Succeeded: outcome == "succeeded", NativeOutcome: outcome, LastMessage: result, FinalVerified: true, FinalSource: agentResultSource, FinalItemID: turnItem + ":" + digest([]byte(strings.Join(ids, "\n")+"\x00"+result)), FinalSessionID: state.SessionID, FinalTurnID: turn.TurnID, FinalNativeSessionID: state.SessionID, FinalNativeTurnID: turn.TurnID, FinalOrigin: origin}
 	return receipt, message, nil
 }
+
 func (l *Lifecycle) structuredObserveLifecycle(ctx context.Context, s b.LifecycleSnapshot) (b.LifecycleReceipt, b.LifecycleObserver, error) {
 	receipt, err := l.readStructured(ctx, s)
 	if err != nil || receipt.TurnEvidence != nil {

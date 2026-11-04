@@ -71,12 +71,16 @@ func (e *Engine) HandleResultFile(id string) contracts.Response {
 	return contracts.Success("", v)
 }
 
+func structuredAudited(r *runstate.Record) bool {
+	return contracts.OrcaStructuredAudited(r.Request.Execution, r.Request.Workflow) && r.Snapshot.Ref.Protocol == b.ProtocolOrcaAgentSessionV1
+}
+
 func resultContract(r *runstate.Record) string {
 	if r.ResultFileContract != contracts.ResultFileSnapshotContract || r.Request.Execution.Adapter != "orca-terminal" || r.Snapshot.Ref.Backend != b.BackendOrca || r.Snapshot.Ref.Protocol != b.ProtocolOrcaAgentSessionV1 || r.Snapshot.Ref.Agent.Name != "codex" {
 		return contracts.ResultFileContract
 	}
 	selected, target := r.Request.Workflow, r.Request.Execution.Target
-	if selected.ID == "development" && selected.Version == 2 || selected.ID == "execute" && selected.Version == 1 && target.Kind == "orca_environment" && target.Environment != "" {
+	if structuredAudited(r) || selected.ID == "development" && selected.Version == 2 || selected.ID == "execute" && selected.Version == 1 && target.Kind == "orca_environment" && target.Environment != "" {
 		return contracts.ResultFileSnapshotContract
 	}
 	return contracts.ResultFileContract
