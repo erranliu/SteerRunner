@@ -117,7 +117,7 @@ func (c *Collector) observe(ctx context.Context, r *runstate.Record) {
 		var err error
 		development := (r.Request.Workflow.ID == "development" || r.Request.Workflow.ID == "development-audited") && r.Request.Workflow.Version == 2
 		if snap.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 && snap.Ref.Agent.Name == "pi" {
-			err = errors.New("NATIVE_ATTRIBUTION_UNAVAILABLE")
+			err = errors.New("PRODUCTION_BINDING_UNSUPPORTED")
 		} else if snap.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 && (snap.Ref.Target.ExternalRuntime != "" || development) {
 			inputs := make([]b.TurnInput, 0, len(r.Workflow.StageInputs))
 			for _, input := range r.Workflow.StageInputs {

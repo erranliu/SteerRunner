@@ -6,13 +6,13 @@ import (
 )
 
 func TestTerminalAgentCapabilitiesDoNotRequireCodex(t *testing.T) {
-	count := 0
+	workflows := map[string]bool{}
 	for _, c := range Catalog().Combinations {
 		if c.Agent != "pi" {
 			continue
 		}
-		count++
-		if c.AccessMode != "full_access" {
+		workflows[c.Workflow.ID] = true
+		if c.TargetKind != "local" || c.AccessMode != "full_access" {
 			t.Fatal("retired terminal mode advertised", c)
 		}
 		for _, r := range c.Requirements {
@@ -21,7 +21,7 @@ func TestTerminalAgentCapabilitiesDoNotRequireCodex(t *testing.T) {
 			}
 		}
 	}
-	if count != 1 {
-		t.Fatal("terminal capabilities missing", count)
+	if len(workflows) != 2 || !workflows["execute"] || !workflows["development"] {
+		t.Fatal("local Pi workflows missing or unexpected", workflows)
 	}
 }

@@ -406,8 +406,17 @@ func ValidateRunConfiguration(data []byte) *Fault {
 			return Fail(3, "unsupported_capability", "The audited workflow requires a managed Codex execution adapter.")
 		}
 		settings, err := ExecutionModel(value.Execution)
-		if err != nil || !plain(settings.Model) || strings.ContainsFunc(settings.Model, unicode.IsControl) || settings.Model == model.Model {
+		if err != nil || !plain(settings.Model) || strings.ContainsFunc(settings.Model, unicode.IsControl) {
 			return invalid
+		}
+		if settings.Model == model.Model {
+			executionEffort := settings.ReasoningEffort
+			if executionEffort == "" {
+				executionEffort = "medium"
+			}
+			if !OrcaStructuredAudited(value.Execution, value.Workflow) || model.ReasoningEffort == "" || executionEffort == model.ReasoningEffort {
+				return invalid
+			}
 		}
 	}
 	for step, body := range value.Workflow.PromptOverrides {

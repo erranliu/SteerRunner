@@ -14,7 +14,7 @@ func TestLocalOrcaAuditedModelsUseStructuredRuntime(t *testing.T) {
 	if fault := ValidateRun(wire); fault != nil {
 		t.Fatal("valid local audited configuration rejected", fault)
 	}
-	for _, mode := range []string{"explicit-helper", "implicit-writer", "same-model"} {
+	for _, mode := range []string{"explicit-helper", "implicit-writer", "same-role", "same-model-different-effort", "same-model-implicit-audit-effort"} {
 		t.Run(mode, func(t *testing.T) {
 			var copy map[string]any
 			_ = json.Unmarshal(wire, &copy)
@@ -25,12 +25,17 @@ func TestLocalOrcaAuditedModelsUseStructuredRuntime(t *testing.T) {
 				launch["runtime_executable"] = "C:/old/helper.exe"
 			case "implicit-writer":
 				delete(launch, "model")
-			case "same-model":
+			case "same-role":
 				launch["model"] = "reviewer"
+			case "same-model-different-effort":
+				launch["model"], launch["reasoning_effort"] = "reviewer", "medium"
+			case "same-model-implicit-audit-effort":
+				launch["model"] = "reviewer"
+				delete(copy["workflow"].(map[string]any)["audit_model"].(map[string]any), "reasoning_effort")
 			}
 			raw, _ := json.Marshal(copy)
-			if ValidateRun(raw) == nil {
-				t.Fatal("invalid remote audit/authentication accepted", mode)
+			if fault := ValidateRun(raw); (fault == nil) != (mode == "same-model-different-effort") {
+				t.Fatal("incorrect local audit role admission", mode, fault)
 			}
 		})
 	}

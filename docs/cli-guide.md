@@ -81,7 +81,7 @@ Orca 远端 Codex 的 SessionStart 可能清空输入预览并改变显示回合
 服务启动后，`capabilities` 的 `workflows` 返回可选流程、允许覆盖的提示词步骤及模型要求。submit 继续通过 RunRequest 的 `workflow.id/version` 选择：
 
 - `development/2`：实施→发布→pr_ready；可信成功行或完整机器结果可跳过补报，每个原源最多补报一次。未完成的实施等待输入。
-- `development-audited/2`：实施→一次代码审计及 P0–P2 修复→发布。支持本机 `codex-app-server` 和本机 Orca 结构化 Codex，均核实实际模型及执行主机 Git 来源。本机 Orca 使用 `orca_agent_session` 停止范围，`result_file` 在业务结束时采集一次快照。升级前由旧构建排空原状态目录，删除 audited 配置中的 `agent_launch` 可执行文件、参数和 helper 绑定，再由新构建使用独立目录。远端 audited 在受理前返回 `unsupported_capability`。
+- `development-audited/2`：实施→一次代码审计及 P0–P2 修复→发布。支持本机 `codex-app-server` 和本机 Orca 结构化 Codex，均核实实际模型及执行主机 Git 来源。本机 Orca 可以为两角色选择同一模型和不同 effort，此时必须显式填写审计 effort。停止使用 `orca_agent_session` 范围，`result_file` 在业务结束时采集一次快照。升级前由旧构建排空原状态目录，删除 audited 配置中的 `agent_launch` 可执行文件、参数和 helper 绑定，再由新构建使用独立目录。远端 audited 在受理前返回 `unsupported_capability`。
 
 带审计请求的相关字段如下，其余 RunRequest 字段仍必填。模型标识请替换为账号实际可用型号：
 
