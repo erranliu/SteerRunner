@@ -38,7 +38,7 @@ func StructuredUsageBinding(profile []b.ImplementationDataEnvelope, snapshot b.L
 	if err != nil || binding.RunID == "" || binding.RunID != snapshot.Session.ExecutionID || binding.AttemptID != snapshot.Session.AttemptID || binding.CWD == "" || binding.CWD != snapshot.Workspace.Path {
 		return binding, p.Transport, original, errors.New("IDENTITY_UNVERIFIED")
 	}
-	l := Lifecycle{setup: setup, profile: p.Transport}
+	l := Lifecycle{setup: setup, profile: p.Transport, agentDevelopment: p.Development}
 	state, err := l.agentState(snapshot)
 	if err != nil {
 		return binding, p.Transport, original, errors.New("IDENTITY_CHANGED")
@@ -46,31 +46,41 @@ func StructuredUsageBinding(profile []b.ImplementationDataEnvelope, snapshot b.L
 	if state.TurnID == "" || state.TurnItemID == "" || state.ProviderItemID == "" || state.Epoch == "" {
 		return binding, p.Transport, original, errors.New("SESSION_UNBOUND")
 	}
-	matched := 0
-	for _, input := range inputs {
-		if input.CommandID == state.CommandID {
-			if digest([]byte(input.Prompt)) != state.InputDigest {
-				return binding, p.Transport, original, errors.New("IDENTITY_CHANGED")
-			}
-			matched++
-			binding.Commands = append(binding.Commands, parsers.Command{ID: input.CommandID, WireSHA256: state.InputDigest, NativeTurnID: state.TurnID})
+	states := []agentSessionState{state}
+	if p.Development {
+		states, err = developmentAgentInputs(snapshot, state)
+		if err != nil || len(states) == 0 || states[len(states)-1].CommandID != state.CommandID || states[len(states)-1].TurnID != state.TurnID {
+			return binding, p.Transport, original, errors.New("SESSION_UNBOUND")
 		}
 	}
-	if matched != 1 {
-		return binding, p.Transport, original, errors.New("SESSION_UNBOUND")
+	seenCommands, seenTurns := map[string]bool{}, map[string]bool{}
+	for _, accepted := range states {
+		matched := 0
+		for _, input := range inputs {
+			if input.CommandID == accepted.CommandID {
+				if digest([]byte(input.Prompt)) != accepted.InputDigest {
+					return binding, p.Transport, original, errors.New("IDENTITY_CHANGED")
+				}
+				matched++
+			}
+		}
+		if matched != 1 || seenCommands[accepted.CommandID] || seenTurns[accepted.TurnID] {
+			return binding, p.Transport, original, errors.New("SESSION_UNBOUND")
+		}
+		seenCommands[accepted.CommandID], seenTurns[accepted.TurnID] = true, true
+		// Cross-check the public Codex item identity alongside the direct link.
+		parts := strings.Split(accepted.ProviderItemID, ":")
+		if len(parts) != 4 || parts[0] != "codex" || parts[3] != "0" {
+			return binding, p.Transport, original, errors.New("IDENTITY_UNVERIFIED")
+		}
+		provider, providerErr := url.PathUnescape(parts[1])
+		turn, turnErr := url.PathUnescape(parts[2])
+		if providerErr != nil || turnErr != nil || !usageSessionID.MatchString(provider) || turn != accepted.TurnID || binding.SessionID != "" && binding.SessionID != provider {
+			return binding, p.Transport, original, errors.New("IDENTITY_CHANGED")
+		}
+		binding.SessionID = provider
+		binding.Commands = append(binding.Commands, parsers.Command{ID: accepted.CommandID, WireSHA256: accepted.InputDigest, NativeTurnID: accepted.TurnID})
 	}
-	// Cross-check only the known public Codex item identity shape. Do not guess
-	// unknown opaque formats or treat this as a replacement for the direct link.
-	parts := strings.Split(state.ProviderItemID, ":")
-	if len(parts) != 4 || parts[0] != "codex" || parts[3] != "0" {
-		return binding, p.Transport, original, errors.New("IDENTITY_UNVERIFIED")
-	}
-	provider, providerErr := url.PathUnescape(parts[1])
-	turn, turnErr := url.PathUnescape(parts[2])
-	if providerErr != nil || turnErr != nil || !usageSessionID.MatchString(provider) || turn != state.TurnID {
-		return binding, p.Transport, original, errors.New("IDENTITY_CHANGED")
-	}
-	binding.SessionID = provider
 	original = StructuredUsageIdentity{RuntimeID: state.RuntimeID, HostID: p.PairingHostID, SessionID: state.SessionID, WorktreeID: state.Worktree.ID}
 	if p.Transport.Environment == "" {
 		original.HostID = "local"

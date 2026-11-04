@@ -96,6 +96,9 @@ func remoteAgentFixture(t *testing.T, scenario string, business *atomic.Int32, a
 				if scenario == "missing-capability" {
 					caps = slices.DeleteFunc(caps, func(c string) bool { return c == "agentSession.create.message.v1" })
 				}
+				if scenario == "missing-send-capability" {
+					caps = slices.DeleteFunc(caps, func(c string) bool { return c == "agent-session.send-selection.v1" })
+				}
 				result = map[string]any{"runtimeId": runtime, "capabilities": caps}
 				if scenario == "wrong-runtime" {
 					runtime = "replacement"
@@ -111,6 +114,18 @@ func remoteAgentFixture(t *testing.T, scenario string, business *atomic.Int32, a
 					return
 				}
 				switch request.Method {
+				case "agentSession.send":
+					var send AgentSend
+					var shape map[string]json.RawMessage
+					want := originalAgentSend()
+					if json.Unmarshal(request.Params, &send) != nil || json.Unmarshal(request.Params, &shape) != nil || len(shape) != 3 || send.Envelope.ExpectedRuntimeFence == nil || *send.Envelope.ExpectedRuntimeFence != 3 || send.Envelope.SessionID != want.Envelope.SessionID || send.Envelope.ClientOperationID != want.Envelope.ClientOperationID || send.Envelope.PayloadFingerprint != want.Envelope.PayloadFingerprint || len(send.Body.Blocks) != 1 || send.Body.Blocks[0].Text != want.Body.Blocks[0].Text || send.Selection == nil || *send.Selection != *want.Selection {
+						t.Error("send identity/body/selection changed or implicit delivery/retry added")
+						return
+					}
+					if scenario == "lost-response" {
+						return
+					}
+					result = map[string]bool{"ok": true}
 				case "agentSession.createSupport":
 					result = map[string]bool{"supported": true}
 				case "aiVault.listSessions":
@@ -156,6 +171,54 @@ func remoteAgentFixture(t *testing.T, scenario string, business *atomic.Int32, a
 		t.Fatal(err)
 	}
 	return host
+}
+
+func TestRemoteAgentSendWireAndDispatch(t *testing.T) {
+	for _, scenario := range []string{"accepted", "missing-capability", "commit-failed", "revoked", "lost-response", "missing-send-capability", "auth-refused", "wrong-runtime", "wrong-request", "wrong-host"} {
+		t.Run(scenario, func(t *testing.T) {
+			var business, checks atomic.Int32
+			var authenticated atomic.Bool
+			host := remoteAgentFixture(t, scenario, &business, &authenticated)
+			if scenario == "wrong-host" {
+				host = "sha256:foreign"
+			}
+			client := NewRemoteAgentSessionClient("fixture-env", "original-runtime", host)
+			denied := errors.New("durable send commit failed")
+			ctx, cancel := context.WithTimeout(WithDispatchCheckpoint(context.Background(), func() error {
+				checks.Add(1)
+				if !authenticated.Load() {
+					t.Error("handshake consumed send checkpoint")
+				}
+				if scenario == "commit-failed" {
+					return denied
+				}
+				return nil
+			}), 3*time.Second)
+			defer cancel()
+			if scenario == "revoked" {
+				cancel()
+			}
+			_, err := client.Send(ctx, originalAgentSend())
+			switch scenario {
+			case "accepted", "missing-capability", "lost-response":
+				// A follow-up only requires send capabilities, not create-first-message.
+				if (err != nil) != (scenario == "lost-response") || business.Load() != 1 || checks.Load() != 1 {
+					t.Fatal(err, business.Load(), checks.Load())
+				}
+				if _, err := client.Send(ctx, originalAgentSend()); err == nil || business.Load() != 1 || checks.Load() != 1 {
+					t.Fatal("original send replayed", err, business.Load(), checks.Load())
+				}
+			case "commit-failed":
+				if !errors.Is(err, denied) || business.Load() != 0 || checks.Load() != 1 {
+					t.Fatal(err, business.Load(), checks.Load())
+				}
+			default:
+				if err == nil || business.Load() != 0 || checks.Load() != 0 {
+					t.Fatal("unverified send escaped", err, business.Load(), checks.Load())
+				}
+			}
+		})
+	}
 }
 
 func TestStructuredUsageChannelDeclaresAuthAndRequestCapabilities(t *testing.T) {

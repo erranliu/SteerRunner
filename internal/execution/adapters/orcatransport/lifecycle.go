@@ -62,6 +62,7 @@ type State struct {
 type Lifecycle struct {
 	agentSessions      func(string) agentSessionPort
 	agentHostID        string
+	agentDevelopment   bool
 	stopping           atomic.Bool
 	probeProcess       func(*b.ProcessIdentity) b.ProcessProbeFacts
 	uploadStopArtifact func(context.Context, string, string, string, string, io.Reader) error
@@ -125,6 +126,7 @@ func NewLifecycleWithStateFactory(setup b.LifecycleSetup, factory stateFeedFacto
 			return nil, err
 		}
 		l.agentHostID = profile.PairingHostID
+		l.agentDevelopment = profile.Development
 	}
 	l.probeProcess, l.uploadStopArtifact = process.NewServiceFacts().Probe, UploadWorkspaceArtifact
 	call := func(ctx context.Context, timeout time.Duration, args ...string) ([]byte, error) {
@@ -1134,6 +1136,9 @@ func (l *Lifecycle) ShutdownLifecycle(ctx context.Context, s b.LifecycleSnapshot
 func (l *Lifecycle) VerifyManualRecovery(ctx context.Context, s b.LifecycleSnapshot) (b.LifecycleRecoveryEvidence, error) {
 	if l.structured() {
 		receipt, err := l.readStructured(ctx, s)
+		if l.agentDevelopment {
+			return b.LifecycleRecoveryEvidence{SessionAvailable: receipt.State.SessionAvailable, ResourceAvailable: receipt.State.SessionAvailable, SessionIdle: receipt.State.TurnCompleted && !receipt.State.WorkerLive && !receipt.State.QuestionPending}, err
+		}
 		return b.LifecycleRecoveryEvidence{SessionAvailable: receipt.State.SessionAvailable, ResourceAvailable: receipt.State.SessionAvailable, Diagnostic: "Structured execute/1 does not support additional input or resume."}, err
 	}
 	if err := l.agentExecutionSupport(s.Ref.Agent.Name); err != nil {

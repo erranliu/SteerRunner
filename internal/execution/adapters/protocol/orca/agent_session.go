@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"regexp"
 	"slices"
 	"sort"
 	"strconv"
@@ -48,6 +49,11 @@ func NewLocalAgentSessionClient(runtime string) AgentSessionClient {
 		defer connection.close()
 		if method == "agentSession.createSupport" || method == "agentSession.create" {
 			if err := agentCreationCapabilities(connection.capabilities); err != nil {
+				return nil, err
+			}
+		}
+		if method == "agentSession.send" {
+			if err := agentSendCapabilities(connection.capabilities); err != nil {
 				return nil, err
 			}
 		}
@@ -92,6 +98,11 @@ func NewRemoteAgentSessionClient(environment, runtime, expectedHost string) Agen
 				return nil, err
 			}
 		}
+		if method == "agentSession.send" {
+			if err := agentSendCapabilities(connection.capabilities); err != nil {
+				return nil, err
+			}
+		}
 		id, err := connection.requestWithCapabilities(ctx, method, params, capabilities, mutation)
 		if err != nil {
 			return nil, err
@@ -104,6 +115,15 @@ func agentCreationCapabilities(advertised []string) error {
 	for _, required := range []string{"agent-session.structured.v1", "agent-session.host-authority.v1", "agent-session.session-boundary.v1", "agentSession.create.message.v1", "agentSession.create.options-mode.v1", "agent-session.send-selection.v1", "agent-session.permission-modes.v1", "agent-session.permission-own.v1", "agent-session.turn-item.v1", "agent-session.item-detail.v1"} {
 		if !slices.Contains(advertised, required) {
 			return fmt.Errorf("original Orca runtime lacks required structured capability %s; no input sent", required)
+		}
+	}
+	return nil
+}
+
+func agentSendCapabilities(advertised []string) error {
+	for _, required := range []string{"agent-session.structured.v1", "agent-session.host-authority.v1", "agent-session.session-boundary.v1", "agent-session.send-selection.v1"} {
+		if !slices.Contains(advertised, required) {
+			return fmt.Errorf("original Orca runtime lacks required send capability %s; no input sent", required)
 		}
 	}
 	return nil
@@ -139,6 +159,15 @@ type AgentCreate struct {
 	Agent        string                `json:"agent"`
 	Options      map[string]string     `json:"options"`
 	FirstMessage AgentFirstMessage     `json:"firstMessage"`
+}
+
+// Send has no separate message ID: the public host uses ClientOperationID for
+// both the operation and its user message. No queue/steer or unknown retry is
+// requested; the lifecycle must first qualify the original session as idle.
+type AgentSend struct {
+	Envelope  AgentMutationEnvelope `json:"envelope"`
+	Body      AgentMessage          `json:"body"`
+	Selection *AgentSelection       `json:"selection,omitempty"`
 }
 type AgentCursor struct {
 	Epoch    string `json:"epoch"`
@@ -240,9 +269,39 @@ func (c AgentSessionClient) Create(ctx context.Context, request AgentCreate) (js
 	return raw, agentDomain(raw)
 }
 
+func (c AgentSessionClient) Send(ctx context.Context, request AgentSend) (json.RawMessage, error) {
+	if request.Envelope.SessionID == "" || request.Envelope.ClientOperationID == "" || request.Envelope.ExpectedRuntimeFence == nil || *request.Envelope.ExpectedRuntimeFence <= 0 {
+		return nil, errors.New("structured send requires the original session, operation and positive runtime fence")
+	}
+	if !agentSendOperationID.MatchString(request.Envelope.ClientOperationID) {
+		return nil, errors.New("structured send requires an Orca operation ID with a 13-digit timestamp and 32 lowercase hexadecimal digits")
+	}
+	if err := request.Body.ValidateInput(); err != nil {
+		return nil, err
+	}
+	fields := map[string]any{"body": request.Body}
+	if request.Selection != nil {
+		fields["selection"] = request.Selection
+	}
+	fingerprint, err := AgentFingerprint("agentSession.send", request.Envelope.SessionID, fields)
+	if err != nil || fingerprint != request.Envelope.PayloadFingerprint {
+		return nil, errors.New("structured send fingerprint mismatch")
+	}
+	raw, err := c.call(ctx, "agentSession.send", request, true)
+	if err != nil {
+		return raw, err
+	}
+	// Acceptance is not a started/completed turn. Its original user/turn
+	// binding must still be established through the public history reader.
+	return raw, agentDomain(raw)
+}
+
+// Orca's mutation handler applies this check after parsing the public schema.
+var agentSendOperationID = regexp.MustCompile(`^[0-9]{13}-[0-9a-f]{32}$`)
+
 func (message AgentMessage) ValidateInput() error {
 	if message.Kind != "message" || message.Role != "user" || len(message.Blocks) != 1 || message.Blocks[0].Type != "text" {
-		return errors.New("structured creation requires one user text block")
+		return errors.New("structured input requires one user text block")
 	}
 	blocks, err := agentCanonical(message.Blocks)
 	if err != nil || len(blocks) > 256<<10 {

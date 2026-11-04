@@ -233,6 +233,9 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 		if (command == "message" || command == "interrupt" || command == "close" || command == "history") && r.Request.Workflow.ID != "conversation" {
 			return reject(contracts.Fail(3, "unsupported_capability", "This operation requires conversation/1."))
 		}
+		if structuredDevelopmentClose(r) && r.StopStatus == "stopped" && (command == "stop" || command == "resume") {
+			return reject(contracts.Fail(5, "invalid_state", "The original structured development session is already stopped."))
+		}
 		if (isContent || single) && r.Closed && command != "stop" {
 			return reject(contracts.Fail(5, "session_closed", "The Run is permanently closed to new input."))
 		}

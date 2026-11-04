@@ -14,7 +14,7 @@ func TestInputContractDiscoveryMatchesOwners(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, text := range []string{m.InputContract, workflow.ProgressInstruction, workflow.ResultFileInstruction, workflow.ContentRepositoryInstruction, workflow.PolicyReadTemplate} {
+	for _, text := range []string{m.InputContract, workflow.ProgressInstruction, workflow.ResultFileInstruction, workflow.ResultFileSnapshotInstruction, workflow.DevelopmentResultFileSnapshotInstruction, workflow.ContentRepositoryInstruction, workflow.PolicyReadTemplate} {
 		quoted, _ := json.Marshal(text)
 		if !strings.Contains(string(raw), string(quoted)) {
 			t.Fatal("discovery omits execution definition", text)

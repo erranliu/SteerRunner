@@ -3,6 +3,10 @@ package application
 import (
 	"context"
 	"errors"
+	"reflect"
+	"slices"
+	"time"
+
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
@@ -11,8 +15,6 @@ import (
 	"github.com/erranliu/SteerRunner/internal/execution/reliable"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable/operation"
 	"github.com/erranliu/SteerRunner/internal/runstate"
-	"reflect"
-	"time"
 )
 
 func controlScope(r *runstate.Record, question string) string {
@@ -204,8 +206,7 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 	if r.Snapshot.Ref.External.Kind == "" && !unknown(r) && codex.ExecutionOwner(r.Snapshot) == nil {
 		e.mu.Lock()
 		next := e.runs[id].Clone()
-		next.StopStatus, next.Status, next.Phase = "stopped", "stopped", "stopped"
-		settleContentStatus(next)
+		settleRunStop(next)
 		next.PendingStop = ""
 		next.CommandStates[command] = "completed"
 		_ = e.commitLocked(next, nil, "run_stopped")
@@ -311,8 +312,7 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 	}
 	markResultSnapshotEnd(next, "stop:"+request.Operation.ID)
 	if stopped {
-		next.StopStatus, next.Status, next.Phase = "stopped", "stopped", "stopped"
-		settleContentStatus(next)
+		settleRunStop(next)
 		next.PendingStop = ""
 		next.CommandStates[command] = "completed"
 	} else {
@@ -345,6 +345,21 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 	}
 	_ = e.commitLocked(next, nil, "stop_"+next.StopStatus)
 	return false
+}
+
+func structuredDevelopmentClose(r *runstate.Record) bool {
+	return r.Snapshot.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 && r.Request.Workflow.ID == "development" && r.Request.Workflow.Version == 2 && slices.ContainsFunc(r.Profile, func(p b.ImplementationDataEnvelope) bool {
+		return p.ImplementationKey == orca.AgentSessionProfileKey && p.CodecVersion == orca.AgentSessionCloseProfileVersion
+	})
+}
+
+func settleRunStop(r *runstate.Record) {
+	r.StopStatus, r.Status, r.Phase = "stopped", "stopped", "stopped"
+	if structuredDevelopmentClose(r) {
+		// A confirmed close ends the original session; there is no resource to resume.
+		r.ResumeRequired = false
+	}
+	settleContentStatus(r)
 }
 
 func (e *Engine) failControl(id, command string, err error) {

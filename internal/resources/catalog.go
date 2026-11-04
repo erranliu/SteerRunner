@@ -68,6 +68,9 @@ func Catalog() CapabilityCatalog {
 							needed = []string{"execution_host_authentication", "native_orca_atomic_first_message", "session_scoped_close_acknowledgement"}
 							selection.PromptOverrides = map[string]string{"execute": "caller operation"}
 						}
+						if contracts.OrcaStructuredDevelopment(candidate, selection) {
+							needed = append(needed, "default_codex_launch_uses_structured_messages", "session_scoped_close_acknowledgement")
+						}
 						if profile.AuditModelRequired {
 							selection.AuditModel = &workflow.ModelSettings{Model: "audit-model"}
 							values := map[string]any{"access_mode": mode, "model": "execution-model"}

@@ -23,6 +23,7 @@ type agentFixture struct {
 	creates, closes, reads, details int
 	lost                            bool
 	closeRaw                        json.RawMessage
+	send                            func(native.AgentSend) error
 }
 
 func (f *agentFixture) SupportsCreate(context.Context, string) error { return nil }
@@ -43,6 +44,12 @@ func (f *agentFixture) Close(context.Context, string) (json.RawMessage, error) {
 		return f.closeRaw, nil
 	}
 	return json.RawMessage(`{"ok":true}`), nil
+}
+func (f *agentFixture) Send(_ context.Context, request native.AgentSend) (json.RawMessage, error) {
+	if f.send == nil {
+		return nil, errors.New("unexpected structured follow-up")
+	}
+	return nil, f.send(request)
 }
 func (f *agentFixture) History(_ context.Context, session string, before *native.AgentCursor, _ int) (native.AgentPage, error) {
 	f.reads++
@@ -201,11 +208,11 @@ func TestStructuredAtomicCreateAndReadOnlyRecovery(t *testing.T) {
 }
 
 func TestStructuredRemoteStopRetainsOriginalTurnAndReusesReceipt(t *testing.T) {
-	for _, version := range []int{AgentSessionVersion, AgentSessionPairedCloseProfileVersion} {
+	for _, version := range []int{AgentSessionVersion, AgentSessionCloseProfileVersion} {
 		t.Run(fmt.Sprint(version), func(t *testing.T) {
 			l, s, f := structuredFixture(t)
 			l.profileVersion = version
-			settled := version == AgentSessionPairedCloseProfileVersion
+			settled := version == AgentSessionCloseProfileVersion
 			l.profile.Environment = "original-remote"
 			s.Ref.Target = l.profile.Target()
 			s.Ref.External.ExecutionHost = s.Ref.Target.ExecutionHost

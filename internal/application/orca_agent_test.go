@@ -13,6 +13,7 @@ import (
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable"
+	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/runstate"
 	"github.com/erranliu/SteerRunner/internal/storage"
 )
@@ -34,20 +35,45 @@ func TestSRFreezeOrcaAgent(t *testing.T) {
 			if r.Snapshot.Ref.Agent.Name != want || r.Snapshot.Session.Agent.Name != want || r.View().Execution.Agent != want {
 				t.Fatal("frozen agent or public projection was lost")
 			}
-			if (want == "codex") != (r.LaunchCommand != "") {
-				t.Fatal("Codex launch defaults leaked into another agent", r.LaunchCommand)
+			if r.LaunchCommand != "" {
+				t.Fatal("default launch should not inject a terminal command", r.LaunchCommand)
 			}
-			if want == "codex" && !strings.Contains(r.LaunchCommand, "SetEnvironmentVariable('STEERLINE_PROGRESS_FILE',$null)") {
-				t.Fatal("disabled progress channel inherited another Run's environment")
+			if want == "codex" && (r.Snapshot.Ref.Protocol != b.ProtocolOrcaAgentSessionV1 || r.StopEvidenceScope != orca.AgentSessionStopScope || r.Profile[0].CodecVersion != orca.AgentSessionCloseProfileVersion || resultContract(r) != contracts.ResultFileContract) {
+				t.Fatal("default Codex development did not freeze the structured owner and contracts")
 			}
 			if r.InputDigest != reliable.Digest(canonical(r.Request)) {
 				t.Fatal("frozen request digest is inconsistent")
 			}
 			if agent == "" {
+				for _, test := range []struct{ contract, instruction string }{
+					{"", workflow.ResultFileInstruction},
+					{contracts.ResultFileSnapshotContract, workflow.DevelopmentResultFileSnapshotInstruction},
+				} {
+					next := r.Clone()
+					next.Request.ResultFile = &contracts.ResultFileInput{}
+					next.ResultFileContract = test.contract
+					if err := queueInput(next, workflow.StageInput{StepID: next.Workflow.StepID}, ""); err != nil {
+						t.Fatal(err)
+					}
+					prompt := next.Snapshot.PendingTurn.Prompt
+					if !strings.Contains(prompt, test.instruction) || strings.Contains(prompt, workflow.ResultFileSnapshotInstruction) {
+						t.Fatal("incorrect development result file window", test.contract)
+					}
+				}
 				settings.Transport.WaitTimeout = "30s"
-				settings.AgentLaunch.Executable = "codex"
 				if !bytes.Equal(r.Request.Execution.Settings, canonical(settings)) {
-					t.Fatal("legacy frozen settings bytes changed", string(r.Request.Execution.Settings))
+					t.Fatal("default settings gained an explicit launch override", string(r.Request.Execution.Settings))
+				}
+			}
+			if want == "codex" {
+				for _, override := range []contracts.AgentSettings{{Executable: "codex"}, {Args: []string{"--no-alt-screen"}}} {
+					settings.AgentLaunch = override
+					f.request.Execution.Settings = canonical(settings)
+					f.input.Input = canonical(f.request)
+					explicit := f.freeze()
+					if explicit.Snapshot.Ref.Protocol != b.ProtocolOrcaTerminalV3 || !strings.Contains(explicit.LaunchCommand, "SetEnvironmentVariable('STEERLINE_PROGRESS_FILE',$null)") {
+						t.Fatal("explicit launch override did not keep the original terminal path", override, explicit.LaunchCommand)
+					}
 				}
 			}
 			if want != "codex" {

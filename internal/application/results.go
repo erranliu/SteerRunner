@@ -24,7 +24,7 @@ func (e *Engine) finish(id string, value b.TurnEvidence) bool {
 // arrive. Keep its complete result readable and available to usage, independently
 // of an unresolved resource stop, without running workflow acquisition/routing.
 func (e *Engine) retainStructuredStopResult(r *runstate.Record, receipt b.LifecycleReceipt) {
-	if r.Snapshot.Ref.Protocol != b.ProtocolOrcaAgentSessionV1 || r.Request.Execution.Target.Kind != "orca_environment" || r.Result != nil || receipt.TurnEvidence == nil {
+	if r.Snapshot.Ref.Protocol != b.ProtocolOrcaAgentSessionV1 || r.Request.Execution.Target.Kind != "orca_environment" && r.Request.Workflow.ID != "development" || r.Result != nil || receipt.TurnEvidence == nil {
 		return
 	}
 	value := *receipt.TurnEvidence

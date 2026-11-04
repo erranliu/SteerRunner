@@ -227,15 +227,27 @@ func Parse(ctx context.Context, b Binding, raw []byte, compressed bool) Result {
 	}
 	hraw, _ := json.Marshal(h)
 	r.HeaderHash = TextHash(string(hraw))
-	commands := map[string]Command{}
+	commands := map[string]map[string]Command{}
+	seenCommands := map[[2]string]bool{}
 	for _, c := range b.Commands {
-		if c.WireSHA256 != "" {
-			if _, ok := commands[c.WireSHA256]; ok {
-				issue("SESSION_AMBIGUOUS")
-				return r
-			}
-			commands[c.WireSHA256] = c
+		if c.WireSHA256 == "" {
+			continue
 		}
+		byTurn := commands[c.WireSHA256]
+		key := [2]string{c.WireSHA256, c.ID}
+		_, sameTurn := byTurn[c.NativeTurnID]
+		_, missingPriorTurn := byTurn[""]
+		// Repeated bodies require distinct Codex turn identities on every command.
+		if sameTurn || seenCommands[key] || len(byTurn) > 0 && (b.Agent != "codex" || c.NativeTurnID == "" || missingPriorTurn) {
+			issue("SESSION_AMBIGUOUS")
+			return r
+		}
+		if byTurn == nil {
+			byTurn = map[string]Command{}
+			commands[c.WireSHA256] = byTurn
+		}
+		byTurn[c.NativeTurnID] = c
+		seenCommands[key] = true
 	}
 	matched := map[string]bool{}
 	responseOwners := map[string]string{}
@@ -282,9 +294,13 @@ func Parse(ctx context.Context, b Binding, raw []byte, compressed bool) Result {
 			}
 		}
 		if uid != "" || user != "" {
-			c, ok := commands[TextHash(user)]
+			byTurn := commands[TextHash(user)]
+			c, ok := byTurn[turnID]
+			if !ok {
+				c, ok = byTurn[""]
+			}
 			current = Command{}
-			if ok && commandTimeMatches(c, timestamp(v["timestamp"])) && (c.InputID == "" || c.InputID == uid) && (c.InputSeq == 0 || c.InputSeq == seq) && (c.NativeTurnID == "" || c.NativeTurnID == turnID) {
+			if ok && commandTimeMatches(c, timestamp(v["timestamp"])) && (c.InputID == "" || c.InputID == uid) && (c.InputSeq == 0 || c.InputSeq == seq) {
 				current = c
 				matched[c.ID] = true
 			}

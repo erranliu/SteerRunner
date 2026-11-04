@@ -184,3 +184,47 @@ func TestResultSnapshotDetachDoesNotStartAndRecoveryKeepsOriginalWindow(t *testi
 		t.Fatal("restart opened a fresh snapshot window", v, reads.Load())
 	}
 }
+
+type confirmedStructuredDevelopmentStop struct {
+	operationCommitPort
+}
+
+func (p *confirmedStructuredDevelopmentStop) StopLifecycle(_ context.Context, request b.LifecycleRequest, _ b.StopHandle) (b.LifecycleReceipt, error) {
+	return b.LifecycleReceipt{Operation: request.Operation, Disposition: b.OperationConfirmed, State: b.LifecycleStateFacts{Stopped: true, WorkerAbsent: true}}, nil
+}
+
+func TestStructuredDevelopmentConfirmedStopRevokesResume(t *testing.T) {
+	e, _ := snapshotExecutionFixture(t)
+	r := e.runs["run"].Clone()
+	r.Request.Workflow = contracts.Workflow{ID: "development", Version: 2}
+	r.ResultFileContract = ""
+	r.Request.ResultFile, r.ResultFile = nil, nil
+	profile, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{CodecVersion: orca.AgentSessionCloseProfileVersion, Purpose: b.ImplementationConfigPurpose, ImplementationKey: orca.AgentSessionProfileKey, ProjectID: r.Snapshot.Session.ProjectID, ProfileID: r.ID, AcceptedConfigVersion: "fixture-config"}, []byte(`{}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	r.Profile = []b.ImplementationDataEnvelope{profile}
+	r.Snapshot.Ref.External = b.ProcessIdentity{Kind: "orca_agent_session", RuntimeID: "original-runtime", WorktreeID: "original-worktree", ExecutionHost: "id:original-remote"}
+	if err := e.commitLocked(r, nil); err != nil {
+		t.Fatal(err)
+	}
+	if reply := contentControl(e, "stop", "original-stop", contracts.RevisionInput{ExpectedRevision: r.Revision}); !reply.OK {
+		t.Fatal(reply.Error)
+	}
+	w := e.workers["run"]
+	p := &confirmedStructuredDevelopmentStop{}
+	w.port = p
+	e.stopRun("run", w, p)
+	stopped := e.runs["run"]
+	if stopped.StopStatus != "stopped" || stopped.Allowed || stopped.ResumeRequired || stopped.View().Controls.CanResume {
+		t.Fatal(stopped.View())
+	}
+	for _, command := range []string{"resume", "stop"} {
+		if reply := contentControl(e, command, "after-stopped-"+command, contracts.RevisionInput{ExpectedRevision: stopped.Revision}); reply.OK || reply.Error.Code != "invalid_state" {
+			t.Fatal(command, reply)
+		}
+	}
+	if e.runs["run"].Revision != stopped.Revision {
+		t.Fatal("rejected command changed the durable stop")
+	}
+}

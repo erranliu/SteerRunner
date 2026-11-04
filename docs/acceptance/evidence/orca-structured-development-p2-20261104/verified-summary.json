@@ -1,0 +1,320 @@
+{
+  "build_sha256": "cf82b330ed702b580b63870b0781322c452e08256d8bd8cf1686f94da0ff91e9",
+  "service_instances": [
+    "30563a23b78b08afd0881aebf6aa4cf0",
+    "24a8a7c8229147abf9f5b507c1434a64"
+  ],
+  "offline_resources_settled": true,
+  "runs": {
+    "local": {
+      "run_id": "4a9a886fe6228116762016a0668c424a",
+      "attempt_id": "5fe0f21f268aca4b571eecd66ff5340b",
+      "session_id": "oas_d175319053c490b51247c0c2d0d31463",
+      "runtime_id": "acbe88cf-6a61-4eeb-8178-6d4886af40c8",
+      "epoch": "6a37193c-d60a-41fd-bb4f-f09dd2eafd21",
+      "inputs": [
+        {
+          "action": "start_turn",
+          "operation_id": "ee932834320bde14510a5fb894c88fa8",
+          "command_id": "fe9b1263166ea44804e29e5eb6e6cba0",
+          "message_id": "1793784724269-8527d87cc3c0b466cc46388abc18a44d",
+          "turn_id": "01a1a5e6-d70c-77b1-bd61-0e5973fcadae",
+          "step": "implement.execute",
+          "body_bytes": 1877,
+          "body_sha256": "89439c676d256d064872be06fde9de1f857be1e787e42bade4b866463022cc05",
+          "line_feeds": 10,
+          "assistant_items": 1,
+          "last_assistant_sha256": "7734df77c5f11b4bf0cda03a83da6fd0ee15fa471b45ea04df7a499e371f26ec"
+        },
+        {
+          "action": "start_turn",
+          "operation_id": "10391444036ea4f35bacbbddd0d51047",
+          "command_id": "fdd39d5e2ceb34dc49f680fbc3140db9",
+          "message_id": "1793784744383-10391444036ea4f35bacbbddd0d51047",
+          "turn_id": "01a1a5e7-0f48-7681-be8e-6dd7ea8e3c28",
+          "step": "implement.execute",
+          "body_bytes": 1746,
+          "body_sha256": "6d1debeddcea4fa0e45c1842e77542d0447e7bb8176398822026b2c2ef9d86ea",
+          "line_feeds": 15,
+          "assistant_items": 2,
+          "last_assistant_sha256": "5a15b67ab88f7ad2cb343022b7890c25ad825ffc1d14c014736db14fc3017bab"
+        },
+        {
+          "action": "start_turn",
+          "operation_id": "0831d0d97216cc22dafe24ef579bac3b",
+          "command_id": "ddbb6ec7e14dff1acdf95ae6ec98774b",
+          "message_id": "1793784800807-0831d0d97216cc22dafe24ef579bac3b",
+          "turn_id": "01a1a5e7-e907-7b11-beb7-c5fce05eb7ee",
+          "step": "implement.report",
+          "body_bytes": 992,
+          "body_sha256": "bee0fa652d77d55982d3377563f5d72b8d766d8f8e961b67c0fbde103c94ffb9",
+          "line_feeds": 6,
+          "assistant_items": 1,
+          "last_assistant_sha256": "612c136d329c9c4faecae5c7915ee8dfa98d3ffe3001eb252dbedac194f2b50a"
+        },
+        {
+          "action": "start_turn",
+          "operation_id": "1823c28d8307178aa1b84f5383d1f44b",
+          "command_id": "d5398502acdb7fa2929ccf92c7165487",
+          "message_id": "1793784806375-1823c28d8307178aa1b84f5383d1f44b",
+          "turn_id": "01a1a5e7-ff1d-7123-a5cc-b56462cf5a50",
+          "step": "publish.execute",
+          "body_bytes": 1115,
+          "body_sha256": "57519e2206b8c1e7c01b67de2110da74e1c4e24cf41dad57331e8b5a692cd5bd",
+          "line_feeds": 5,
+          "assistant_items": 2,
+          "last_assistant_sha256": "ca8e2ba2591bd3e1158e2073cedc8d77b79897184aaddba2d817a18249917263"
+        }
+      ],
+      "stop": {
+        "status": "stopped",
+        "offline_resources_settled": true,
+        "scope": "orca_agent_session",
+        "original_stop_operation": "0e4599afc0d30b9ce5f0e6330d1e74c2",
+        "close_attempted": true,
+        "public_close_acknowledged": true,
+        "run_input_count_after_restart": 4
+      },
+      "snapshot": {
+        "version": 1,
+        "bytes": 31,
+        "sha256": "2c19f31b4a2c7e68c6e59a16a32482ec6244871c1a888241b4c7ae91d628b562",
+        "status": "closed",
+        "stable_after_restart": true
+      },
+      "report_fallback": {
+        "source_command_id": "fdd39d5e2ceb34dc49f680fbc3140db9",
+        "source_turn_id": "01a1a5e7-0f48-7681-be8e-6dd7ea8e3c28",
+        "source_result_id": "8ab87e5fce6dcf66783e3cc8b21ac6d6ffdfe38ed6d11c387d3f075b8cbe6045",
+        "source_version": 2,
+        "report_command_id": "ddbb6ec7e14dff1acdf95ae6ec98774b",
+        "report_turn_id": "01a1a5e7-e907-7b11-beb7-c5fce05eb7ee",
+        "report_tool_policy": "configured_native_launch_parameters; execution_host_existing_authentication; business_read_only_is_prompt_policy",
+        "source_unstructured_sha256": "5a15b67ab88f7ad2cb343022b7890c25ad825ffc1d14c014736db14fc3017bab"
+      },
+      "pr": {
+        "base": {
+          "ref": "codex/srtest/m2-8dd3ae5a31-local/base",
+          "repo": "erranliu/SteerlineTest",
+          "sha": "9d81d9c2652177faf6354d4e9f9f3aec79535d11"
+        },
+        "head": {
+          "ref": "erranliu/m2-local-4a9a886fe6228116762016a0668c424a",
+          "repo": "erranliu/SteerlineTest",
+          "sha": "bb21834070e60ef6f1e4efc115898670da06c30d"
+        },
+        "html_url": "https://github.com/erranliu/SteerlineTest/pull/763",
+        "merged": false,
+        "state": "open"
+      },
+      "progress": "aca3a024073aa5e9bf4afa664e578f8b6d8e8b6135797929d72b1a719f572fed",
+      "late_feedback_rejected": true,
+      "usage": {
+        "responses_per_original_command": {
+          "fdd39d5e2ceb34dc49f680fbc3140db9": 5,
+          "d5398502acdb7fa2929ccf92c7165487": 4,
+          "ddbb6ec7e14dff1acdf95ae6ec98774b": 1,
+          "fe9b1263166ea44804e29e5eb6e6cba0": 1
+        },
+        "missing_responses": 0,
+        "cleanup": "not_required",
+        "cost_amount": "0.32182100",
+        "currency": "USD"
+      }
+    },
+    "remote": {
+      "run_id": "c73d29144e71e34e49165b93be2a6100",
+      "attempt_id": "ca40f1dbf6f8e981039c9c17fa4cb86a",
+      "session_id": "oas_f3b4b05f1079a087837159256493209b",
+      "runtime_id": "21d98aa2-d284-41f3-a6cc-42fb22d728a2",
+      "epoch": "cce499e0-8ff7-4c39-b776-7ee5897fe4ca",
+      "inputs": [
+        {
+          "action": "start_turn",
+          "operation_id": "ea9295bbee2bc9ddfb5d0ebf8c42cee6",
+          "command_id": "94f803dba639bacee9932a6b8aca1086",
+          "message_id": "1793784727690-ae7f5ee23b057bd1b0a535d0532a98e3",
+          "turn_id": "01a1a5e6-dd96-7bf0-b714-3d5ab691bd73",
+          "step": "implement.execute",
+          "body_bytes": 1881,
+          "body_sha256": "d1ec7d784be2b57bfb21742081ffe5e5e008c158fc5924c6aaf1cb99aa5a63ee",
+          "line_feeds": 10,
+          "assistant_items": 1,
+          "last_assistant_sha256": "7734df77c5f11b4bf0cda03a83da6fd0ee15fa471b45ea04df7a499e371f26ec"
+        },
+        {
+          "action": "start_turn",
+          "operation_id": "b2003fa1619b9b67e0f5ff7590474e11",
+          "command_id": "26222b8ec681c29e4d3f7a91b63e5fab",
+          "message_id": "1793784745110-b2003fa1619b9b67e0f5ff7590474e11",
+          "turn_id": "01a1a5e7-1193-76e3-8c4f-9db30246414f",
+          "step": "implement.execute",
+          "body_bytes": 1751,
+          "body_sha256": "c6dfdb9963d8d79b23d8d2b6b41a0be334d4c0765f3d0a4166a3c808c0ecb079",
+          "line_feeds": 15,
+          "assistant_items": 2,
+          "last_assistant_sha256": "5a15b67ab88f7ad2cb343022b7890c25ad825ffc1d14c014736db14fc3017bab"
+        },
+        {
+          "action": "start_turn",
+          "operation_id": "376d39275fd7da6ddcd72873f4bce4cd",
+          "command_id": "e6eaa9c353be27047d6fc7d1b31cc2e6",
+          "message_id": "1793784773107-376d39275fd7da6ddcd72873f4bce4cd",
+          "turn_id": "01a1a5e7-80a7-7631-a444-4b1b511b04a4",
+          "step": "implement.report",
+          "body_bytes": 992,
+          "body_sha256": "5cbfe03e3e06a2d67c7fa71e87228fd5bdb0966509986c0f8621579306df905c",
+          "line_feeds": 6,
+          "assistant_items": 1,
+          "last_assistant_sha256": "612c136d329c9c4faecae5c7915ee8dfa98d3ffe3001eb252dbedac194f2b50a"
+        },
+        {
+          "action": "start_turn",
+          "operation_id": "689eea3ed784005de109dac3dddd2814",
+          "command_id": "738f5fd59ed284f5d0444d1070223070",
+          "message_id": "1793784779494-689eea3ed784005de109dac3dddd2814",
+          "turn_id": "01a1a5e7-953a-79c1-a913-f7139dfbdad7",
+          "step": "publish.execute",
+          "body_bytes": 1118,
+          "body_sha256": "c377a0ea39479eaae24b7416675d0d83c1df65507b9a17acfcc23d3f67cf1538",
+          "line_feeds": 5,
+          "assistant_items": 2,
+          "last_assistant_sha256": "4d3fbb676f07c849b687d055828de78c205518cec7dc71b2d738204c01fe4a74"
+        }
+      ],
+      "stop": {
+        "status": "stopped",
+        "offline_resources_settled": true,
+        "scope": "orca_agent_session",
+        "original_stop_operation": "b8098686c9b3cf3a1f17f0a3b05ae9a1",
+        "close_attempted": true,
+        "public_close_acknowledged": true,
+        "run_input_count_after_restart": 4
+      },
+      "snapshot": {
+        "version": 1,
+        "bytes": 32,
+        "sha256": "a6e34097b15fc9e0c1f595017f6337e34149ff63b66efbc43e7bcc423429c759",
+        "status": "closed",
+        "stable_after_restart": true
+      },
+      "report_fallback": {
+        "source_command_id": "26222b8ec681c29e4d3f7a91b63e5fab",
+        "source_turn_id": "01a1a5e7-1193-76e3-8c4f-9db30246414f",
+        "source_result_id": "a82fad21f0fe463d110f1beb2679b065a2c6d5097c8425af19434ffd4992b0d8",
+        "source_version": 2,
+        "report_command_id": "e6eaa9c353be27047d6fc7d1b31cc2e6",
+        "report_turn_id": "01a1a5e7-80a7-7631-a444-4b1b511b04a4",
+        "report_tool_policy": "configured_native_launch_parameters; execution_host_existing_authentication; business_read_only_is_prompt_policy",
+        "source_unstructured_sha256": "5a15b67ab88f7ad2cb343022b7890c25ad825ffc1d14c014736db14fc3017bab"
+      },
+      "pr": {
+        "base": {
+          "ref": "codex/srtest/m2-8dd3ae5a31-remote/base",
+          "repo": "erranliu/SteerlineTest",
+          "sha": "9d81d9c2652177faf6354d4e9f9f3aec79535d11"
+        },
+        "head": {
+          "ref": "erranliu/m2-remote-c73d29144e71e34e49165b93be2a6100",
+          "repo": "erranliu/SteerlineTest",
+          "sha": "0c2e88b7d92ce51ec606a64a5d67765dcac52dbd"
+        },
+        "html_url": "https://github.com/erranliu/SteerlineTest/pull/762",
+        "merged": false,
+        "state": "open"
+      },
+      "progress": "4896a92ca212b20b46f9f8c66d6a525a0ae139c8d47e072b3359e22426ae8272",
+      "late_feedback_rejected": true,
+      "usage": {
+        "responses_per_original_command": {
+          "e6eaa9c353be27047d6fc7d1b31cc2e6": 1,
+          "94f803dba639bacee9932a6b8aca1086": 1,
+          "738f5fd59ed284f5d0444d1070223070": 5,
+          "26222b8ec681c29e4d3f7a91b63e5fab": 3
+        },
+        "missing_responses": 0,
+        "cleanup": "revoked",
+        "cost_amount": "0.20710400",
+        "currency": "USD"
+      }
+    },
+    "local-active": {
+      "run_id": "b748a973e461f1f938fb25ae60380cbf",
+      "attempt_id": "0f0deb505e65e615fd6232386000bb95",
+      "session_id": "oas_a3bcd967053936fb556bdd0a84dc639a",
+      "runtime_id": "acbe88cf-6a61-4eeb-8178-6d4886af40c8",
+      "epoch": "9ac50a36-28ca-4213-8605-394314802e19",
+      "inputs": [
+        {
+          "action": "start_turn",
+          "operation_id": "426b324531061800fa11454214dbe146",
+          "command_id": "5ce008828994db3583e2be3e474a61f7",
+          "message_id": "1793784876173-a8a35f3ffc2ccce8121fe7d4aafb7fe7",
+          "turn_id": "01a1a5e9-31e9-7c82-87c4-b2334e1bb8b3",
+          "step": "implement.execute",
+          "body_bytes": 1237,
+          "body_sha256": "7e615d73c0e08c7ca900c67d23dc603af1556c538e1ec403023ab37dbcfda61b",
+          "line_feeds": 8,
+          "assistant_items": 1,
+          "last_assistant_sha256": null
+        }
+      ],
+      "stop": {
+        "status": "stopped",
+        "offline_resources_settled": true,
+        "scope": "orca_agent_session",
+        "original_stop_operation": "db629e62f32265e2b81e846a969858a7",
+        "close_attempted": true,
+        "public_close_acknowledged": true,
+        "run_input_count_after_restart": 1
+      },
+      "snapshot": {
+        "version": 1,
+        "bytes": 4,
+        "sha256": "19b25856e1c150ca834cffc8b59b23adbd0ec0389e58eb22b3b64768098d002b",
+        "status": "closed",
+        "stable_after_restart": true
+      },
+      "active_original_turn_before_stop": true
+    },
+    "remote-active": {
+      "run_id": "be195950cf70b68bc3a40c7e4f2c35a2",
+      "attempt_id": "467bf3764de987bab75b8a64a05aa5f6",
+      "session_id": "oas_c1121aebe0f0191f351c55600d86bfa0",
+      "runtime_id": "21d98aa2-d284-41f3-a6cc-42fb22d728a2",
+      "epoch": "b9bc2bd0-d64b-4bfb-a1d6-40489fd4714f",
+      "inputs": [
+        {
+          "action": "start_turn",
+          "operation_id": "95d13f00bb538de8aa7aa2647d6e3321",
+          "command_id": "dd62b829632aaf41b2157c42683d2800",
+          "message_id": "1793784879259-f505e7e4a636daa0af28642a506e5141",
+          "turn_id": "01a1a5e9-39f8-7643-a7cc-70a4f3e5a36e",
+          "step": "implement.execute",
+          "body_bytes": 1237,
+          "body_sha256": "f36605ada2b17b33b33b992d2ab69592485a8efef5f30eeea9aaca88dffc2520",
+          "line_feeds": 8,
+          "assistant_items": 1,
+          "last_assistant_sha256": null
+        }
+      ],
+      "stop": {
+        "status": "stopped",
+        "offline_resources_settled": true,
+        "scope": "orca_agent_session",
+        "original_stop_operation": "71d51ae748b995dad65d1d14a6b65453",
+        "close_attempted": true,
+        "public_close_acknowledged": true,
+        "run_input_count_after_restart": 1
+      },
+      "snapshot": {
+        "version": 1,
+        "bytes": 4,
+        "sha256": "19b25856e1c150ca834cffc8b59b23adbd0ec0389e58eb22b3b64768098d002b",
+        "status": "closed",
+        "stable_after_restart": true
+      },
+      "active_original_turn_before_stop": true
+    }
+  }
+}

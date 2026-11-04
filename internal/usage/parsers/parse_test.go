@@ -123,6 +123,51 @@ func TestUsageParserNativeFixtures(t *testing.T) {
 		})
 	}
 }
+
+func TestCodexUsageBindsRepeatedBodyToOriginalTurn(t *testing.T) {
+	b, _ := fixture(t, "codex")
+	digest := TextHash("same original input")
+	b.Commands = []Command{
+		{ID: "first", WireSHA256: digest, NativeTurnID: "turn-one"},
+		{ID: "second", WireSHA256: digest, NativeTurnID: "turn-two"},
+	}
+	raw := []byte(`{"type":"session_meta","payload":{"id":"fixture-session","cwd":"C:/fixture/work","model_provider":"openai"}}
+{"type":"event_msg","payload":{"type":"task_started","turn_id":"turn-one"}}
+{"type":"response_item","payload":{"role":"user","content":"same original input"}}
+{"type":"token_usage_record","payload":{"turn_id":"turn-one","response_id":"response-one","usage":{"input_tokens":1,"output_tokens":2,"total_tokens":3}}}
+{"type":"event_msg","payload":{"type":"task_started","turn_id":"turn-two"}}
+{"type":"response_item","payload":{"role":"user","content":"same original input"}}
+{"type":"token_usage_record","payload":{"turn_id":"turn-two","response_id":"response-two","usage":{"input_tokens":2,"output_tokens":3,"total_tokens":5}}}
+`)
+	r := Parse(context.Background(), b, raw, false)
+	if !r.Complete || len(r.Events) != 2 || r.Events[0].CommandID != "first" || r.Events[0].TurnID != "turn-one" || r.Events[1].CommandID != "second" || r.Events[1].TurnID != "turn-two" {
+		t.Fatalf("repeated input lost its original command attribution: %+v", r)
+	}
+	for _, tc := range []struct {
+		name   string
+		second Command
+	}{
+		{"missing turn", Command{ID: "second", WireSHA256: digest}},
+		{"same turn", Command{ID: "second", WireSHA256: digest, NativeTurnID: "turn-one"}},
+		{"same command", Command{ID: "first", WireSHA256: digest, NativeTurnID: "turn-two"}},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			ambiguous := b
+			ambiguous.Commands = []Command{b.Commands[0], tc.second}
+			r := Parse(context.Background(), ambiguous, raw, false)
+			if r.Complete || len(r.Events) != 0 || len(r.Issues) != 1 || r.Issues[0].Code != "SESSION_AMBIGUOUS" {
+				t.Fatalf("unverified duplicate counted: %+v", r)
+			}
+		})
+	}
+	foreign := b
+	foreign.Commands = []Command{b.Commands[0], {ID: "second", WireSHA256: digest, NativeTurnID: "foreign"}}
+	r = Parse(context.Background(), foreign, raw, false)
+	if r.Complete || len(r.Events) != 1 || r.Events[0].CommandID != "first" {
+		t.Fatalf("foreign turn claimed by text alone: %+v", r)
+	}
+}
+
 func TestUsageParserConcatenatedFramesAndTail(t *testing.T) {
 	b, raw := fixture(t, "pi")
 	cut := strings.Index(string(raw), "\n") + 1
