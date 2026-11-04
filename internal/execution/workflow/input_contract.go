@@ -1,7 +1,7 @@
 package workflow
 
 const ProgressInstruction = "STEERLINE_PROGRESS_FILE: raw<=65536B; lock/read-merge then same-dir temp+atomic replace. Runner preserves bytes, not semantics."
-const ResultFileInstruction = "STEERLINE_RESULT_FILE: independent raw<=65536B; coordinate writers, same-dir atomic replace. Sealed once after execution/producers stop, never turn end/pr_ready; not a success signal."
+const ResultFileInstruction = "STEERLINE_RESULT_FILE: raw<=65536B. When asked to write, coordinate writers and use same-dir atomic replace. Sealed once after execution/producers stop; not a success signal."
 const ContinueProgressInstruction = "progress: same session rules."
 const ContinueResultInstruction = "result: same session rules."
 const ContentRepositoryInstruction = "Investigate only fixed read-only snapshot; no writes/commits/PRs/Tasks/DAGs. Return document paths as logical JSON, use caller Roadmap codes; cite source paths and commit/tree: "

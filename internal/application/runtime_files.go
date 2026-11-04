@@ -280,7 +280,7 @@ func (e *Engine) runtimeFile(ctx context.Context, r *runstate.Record, result, pr
 		return nil, errors.New("binding_invalid")
 	}
 	if prepare || len(p.Directories) == 0 {
-		if err := verifyOriginalWorkspace(ctx, gitHost(), r, true); err != nil {
+		if err := verifyOriginalWorkspace(ctx, gitHost(), r, true, prepare); err != nil {
 			return nil, errors.New("binding_invalid")
 		}
 		directories := workspace.ProgressDirectories

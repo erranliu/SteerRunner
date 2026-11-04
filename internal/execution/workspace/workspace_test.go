@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"slices"
 	"strings"
 	"testing"
 	"time"
@@ -121,7 +122,7 @@ func prepareGitFixture(t *testing.T, git Git, path string) {
 	}
 }
 
-func TestPrepareRejectsHeadChangedByCheckoutHook(t *testing.T) {
+func TestPrepareDoesNotRunCheckoutHookOrRecheckGit(t *testing.T) {
 	ctx := context.Background()
 	git := Git{Command: executionbackend.LaunchCommand{Executable: "git"}, Timeout: 15 * time.Second, Start: func(cmd *exec.Cmd) (executionbackend.StopHandle, error) {
 		if err := cmd.Start(); err != nil {
@@ -146,11 +147,33 @@ func TestPrepareRejectsHeadChangedByCheckoutHook(t *testing.T) {
 	}
 	worktreeRoot := filepath.Join(root, "worktrees")
 	intent := &executionbackend.WorkspaceIntent{Path: filepath.Join(worktreeRoot, "hook-run"), Branch: "codex/hook", BaseCommit: strings.TrimSpace(string(head))}
-	result, err := Prepare(ctx, git, repository, worktreeRoot, intent)
-	if err == nil || result.Status == executionbackend.OperationConfirmed {
-		t.Fatalf("changed initial HEAD was accepted: result=%+v err=%v", result, err)
+	start := git.Start
+	created := false
+	git.Start = func(cmd *exec.Cmd) (executionbackend.StopHandle, error) {
+		if created {
+			t.Fatalf("creation followed by a Git check: %v", cmd.Args)
+		}
+		created = slices.Contains(cmd.Args, "worktree") && slices.Contains(cmd.Args, "add")
+		return start(cmd)
 	}
-	if !result.PathCreated || !result.WorktreeRegistered || !result.BranchPresent || result.Inspection == nil || result.Inspection.Head == intent.BaseCommit {
-		t.Fatalf("changed workspace evidence was lost: %+v", result)
+	result, err := Prepare(ctx, git, repository, worktreeRoot, intent)
+	if err != nil || !created || result.Status != executionbackend.OperationConfirmed || result.Inspection == nil || result.Inspection.InspectionScope != "revision" {
+		t.Fatalf("creation did not return revision-only evidence: result=%+v err=%v", result, err)
+	}
+	git.Start = func(cmd *exec.Cmd) (executionbackend.StopHandle, error) {
+		for _, arg := range []string{"HEAD", "symbolic-ref", "status", "diff", "merge-base"} {
+			if slices.Contains(cmd.Args, arg) {
+				t.Fatalf("fresh resource resolution probed Git state: %v", cmd.Args)
+			}
+		}
+		return start(cmd)
+	}
+	if _, err := ResolveFreshLinkedResources(ctx, git, repository, intent); err != nil {
+		t.Fatal(err)
+	}
+	git.Start = start
+	actual, err := git.Output(ctx, intent.Path, "rev-parse", "HEAD")
+	if err != nil || strings.TrimSpace(string(actual)) != intent.BaseCommit {
+		t.Fatalf("worktree HEAD changed after checkout: %s, %v", actual, err)
 	}
 }

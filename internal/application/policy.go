@@ -61,7 +61,11 @@ func (e *Engine) attachWriteRoots(r *runstate.Record) error {
 	if r.Request.Execution.Adapter != "codex-app-server" {
 		return nil
 	}
-	roots, err := workspace.ResolveLinkedResources(e.ctx, gitHost(), workspace.Repository{Path: r.RepositoryPath, CommonDir: r.RepositoryCommon}, &r.Snapshot.Workspace)
+	resolve := workspace.ResolveLinkedResources
+	if r.WorkspaceFact != nil && r.WorkspaceFact.InspectionScope == "revision" {
+		resolve = workspace.ResolveFreshLinkedResources
+	}
+	roots, err := resolve(e.ctx, gitHost(), workspace.Repository{Path: r.RepositoryPath, CommonDir: r.RepositoryCommon}, &r.Snapshot.Workspace)
 	if err != nil {
 		return err
 	}

@@ -13,7 +13,7 @@ import (
 // VerifyFileSource checks the same original repository/worktree facts as
 // Verify(initial=false), batching rev-parse outputs to fit the existing finite
 // file-preparation window. It neither prepares a workspace nor permits new roots.
-func VerifyFileSource(ctx context.Context, git Git, repository Repository, intent *b.WorkspaceIntent) error {
+func VerifyFileSource(ctx context.Context, git Git, repository Repository, intent *b.WorkspaceIntent, checkBranch bool) error {
 	if intent == nil || !filepath.IsAbs(intent.Path) || intent.Branch == "" || !commitPattern.MatchString(intent.BaseCommit) || !filepath.IsAbs(repository.Path) || !filepath.IsAbs(repository.CommonDir) {
 		return errors.New("incomplete workspace intent")
 	}
@@ -21,9 +21,13 @@ func VerifyFileSource(ctx context.Context, git Git, repository Repository, inten
 	if err != nil || canonical(real) != canonical(intent.Path) {
 		return errors.New("worktree path was redirected")
 	}
+	branch := ""
+	if checkBranch {
+		branch = "refs/heads/" + intent.Branch
+	}
 	for _, check := range []struct{ directory, root, branch string }{
 		{repository.Path, repository.Path, ""},
-		{intent.Path, intent.Path, "refs/heads/" + intent.Branch},
+		{intent.Path, intent.Path, branch},
 	} {
 		args := []string{"rev-parse", "--path-format=absolute", "--show-toplevel", "--git-common-dir"}
 		if check.branch != "" {

@@ -3,6 +3,7 @@ package application
 import (
 	"context"
 	"fmt"
+	"slices"
 	"strings"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
@@ -12,6 +13,16 @@ import (
 )
 
 func freezeProjectPolicies(ctx context.Context, r *runstate.Record) error {
+	if selected := r.Request.Workflow.ProjectPolicySlots; selected != nil {
+		policies := &workflow.ProjectPolicies{Commit: r.Request.Repository.BaseRevision}
+		for _, slot := range workflow.PolicySlots() {
+			if slices.Contains(selected, slot.Slot) {
+				policies.Files = append(policies.Files, workflow.PolicyFile{PolicySlot: slot, Exists: true})
+			}
+		}
+		r.Workflow.ProjectPolicies = policies
+		return nil
+	}
 	git := gitHost()
 	// Fixed paths must not inherit the host's pathspec parsing or case rules.
 	git.Command.BlockedEnvironment = append(git.Command.BlockedEnvironment,
