@@ -74,8 +74,7 @@ func TestStructuredExecuteCatalogMatchesNarrowAdmission(t *testing.T) {
 		}
 		for _, entry := range catalog.Combinations {
 			if entry.Adapter == "orca-terminal" && entry.TargetKind == target.Kind && entry.Agent == "codex" && entry.Workflow.ID == "execute" {
-				local := target.Kind == "local"
-				if slices.Contains(entry.Requirements, "session_scoped_close_acknowledgement") != local || slices.Contains(entry.Requirements, "resource_settlement_unverified") == local {
+				if !slices.Contains(entry.Requirements, "session_scoped_close_acknowledgement") || slices.Contains(entry.Requirements, "resource_settlement_unverified") {
 					t.Fatal(entry)
 				}
 			}

@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -200,41 +201,51 @@ func TestStructuredAtomicCreateAndReadOnlyRecovery(t *testing.T) {
 }
 
 func TestStructuredRemoteStopRetainsOriginalTurnAndReusesReceipt(t *testing.T) {
-	l, s, f := structuredFixture(t)
-	l.profile.Environment = "original-remote"
-	s.Ref.Target = l.profile.Target()
-	s.Ref.External.ExecutionHost = s.Ref.Target.ExecutionHost
-	l.setup.Snapshot = s
-	var turn map[string]any
-	_ = json.Unmarshal(f.pages[1].Items[1].Body, &turn)
-	turn["state"], turn["outcome"] = "interrupted", "cancellation"
-	f.pages[1].Items[1].Body = mustAgentJSON(turn)
-	// The original accepted turn binding was committed before the user stop.
-	observed, err := l.readStructured(context.Background(), s)
-	if err != nil {
-		t.Fatal(err)
-	}
-	s.Implementation = observed.Implementation
-	state, err := l.agentState(s)
-	if err != nil {
-		t.Fatal(err)
-	}
-	state.Attempted = true
-	s.Implementation, err = l.agentEnvelope(s, state)
-	if err != nil {
-		t.Fatal(err)
-	}
-	r := request(s, b.LifecycleStopExecution, b.LifecycleInput{Stop: &b.StopInput{TurnID: state.TurnID}})
-	receipt, err := l.StopLifecycle(context.Background(), r, nil)
-	if err == nil || receipt.State.Stopped || receipt.TurnEvidence == nil || receipt.TurnEvidence.NativeOutcome != "cancelled" || !receipt.TurnEvidence.FinalVerified || f.closes != 1 {
-		t.Fatal("stop conflated business result and exit proof", receipt, err)
-	}
-	reads := f.reads
-	raw, _ := json.Marshal(receipt)
-	r.Operation.Receipt = raw
-	receipt, _, err = l.Reconcile(context.Background(), r)
-	if err == nil || receipt.TurnEvidence == nil || receipt.TurnEvidence.NativeOutcome != "cancelled" || f.closes != 1 || f.reads != reads || receipt.State.Stopped {
-		t.Fatal("original stop result replayed or lost", receipt, err, f.reads, reads)
+	for _, version := range []int{AgentSessionVersion, AgentSessionPairedCloseProfileVersion} {
+		t.Run(fmt.Sprint(version), func(t *testing.T) {
+			l, s, f := structuredFixture(t)
+			l.profileVersion = version
+			settled := version == AgentSessionPairedCloseProfileVersion
+			l.profile.Environment = "original-remote"
+			s.Ref.Target = l.profile.Target()
+			s.Ref.External.ExecutionHost = s.Ref.Target.ExecutionHost
+			l.setup.Snapshot = s
+			var turn map[string]any
+			_ = json.Unmarshal(f.pages[1].Items[1].Body, &turn)
+			turn["state"], turn["outcome"] = "interrupted", "cancellation"
+			f.pages[1].Items[1].Body = mustAgentJSON(turn)
+			// The original accepted turn binding was committed before the user stop.
+			observed, err := l.readStructured(context.Background(), s)
+			if err != nil {
+				t.Fatal(err)
+			}
+			s.Implementation = observed.Implementation
+			state, err := l.agentState(s)
+			if err != nil {
+				t.Fatal(err)
+			}
+			state.Attempted = true
+			s.Implementation, err = l.agentEnvelope(s, state)
+			if err != nil {
+				t.Fatal(err)
+			}
+			r := request(s, b.LifecycleStopExecution, b.LifecycleInput{Stop: &b.StopInput{TurnID: state.TurnID}})
+			receipt, err := l.StopLifecycle(context.Background(), r, nil)
+			if (err == nil) != settled || receipt.State.Stopped != settled || receipt.State.WritersAbsent || receipt.TurnEvidence == nil || receipt.TurnEvidence.NativeOutcome != "cancelled" || !receipt.TurnEvidence.FinalVerified || f.closes != 1 {
+				t.Fatal("stop conflated business result and exit proof", receipt, err)
+			}
+			reads := f.reads
+			raw, _ := json.Marshal(receipt)
+			r.Operation.Receipt = raw
+			receipt, _, err = l.Reconcile(context.Background(), r)
+			if (err == nil) != settled || receipt.TurnEvidence == nil || receipt.TurnEvidence.NativeOutcome != "cancelled" || f.closes != 1 || f.reads != reads || receipt.State.Stopped != settled {
+				t.Fatal("original stop result replayed or lost", receipt, err, f.reads, reads)
+			}
+			r.Snapshot.Implementation = receipt.Implementation
+			if (l.verifyAgentSessionStopped(r.Snapshot) == nil) != settled {
+				t.Fatal("offline verification changed the frozen remote scope")
+			}
+		})
 	}
 }
 

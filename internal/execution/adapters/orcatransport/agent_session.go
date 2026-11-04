@@ -19,6 +19,10 @@ import (
 const AgentSessionProfileKey = "orca.agent-session-profile"
 const AgentSessionStateKey = "orca.agent-session-state"
 const AgentSessionVersion = 1
+
+// Paired execute profiles at this version settle the original session scope.
+// The earlier paired profile and the resource state keep their original codec.
+const AgentSessionPairedCloseProfileVersion = 2
 const AgentSessionStopScope = "orca_agent_session"
 const AgentSessionStopDiagnostic = "原 Orca 会话关闭结果未核实；额外资源清理不在停止核验范围。"
 const AgentSessionStopLimitation = "Closed the original Orca session; detached processes and additional resource cleanup are not verified."
@@ -32,6 +36,7 @@ type AgentSessionProfile struct {
 	Model           string  `json:"model,omitempty"`
 	ReasoningEffort string  `json:"reasoning_effort,omitempty"`
 	AccessMode      string  `json:"access_mode"`
+	version         int
 }
 
 type agentSessionPort interface {
@@ -73,7 +78,7 @@ func decodeAgentSessionProfile(setup b.LifecycleSetup) (AgentSessionProfile, err
 		if e.ImplementationKey != AgentSessionProfileKey {
 			continue
 		}
-		if found || e.CodecVersion != AgentSessionVersion {
+		if found || e.CodecVersion != AgentSessionVersion && e.CodecVersion != AgentSessionPairedCloseProfileVersion {
 			return p, errors.New("invalid structured Orca profile codec")
 		}
 		found = true
@@ -83,6 +88,10 @@ func decodeAgentSessionProfile(setup b.LifecycleSetup) (AgentSessionProfile, err
 		if err := b.DecodeStrictJSON(e.Payload, &p, "trailing structured Orca profile"); err != nil {
 			return p, err
 		}
+		p.version = e.CodecVersion
+	}
+	if p.version == AgentSessionPairedCloseProfileVersion && p.Transport.Environment == "" {
+		return p, errors.New("paired close profile requires an original environment")
 	}
 	wire, _ := json.Marshal(p.Transport)
 	_, err := DecodeProfile(wire)
@@ -657,8 +666,12 @@ func agentCloseSucceeded(raw json.RawMessage) bool {
 	return json.Unmarshal(raw, &reply) == nil && reply.OK != nil && *reply.OK
 }
 
+func (l *Lifecycle) closeSettlesAgentSession() bool {
+	return l.profile.Environment == "" || l.profileVersion == AgentSessionPairedCloseProfileVersion
+}
+
 func (l *Lifecycle) verifyAgentSessionStopped(s b.LifecycleSnapshot) error {
-	if l.profile.Environment != "" {
+	if !l.closeSettlesAgentSession() {
 		return errors.New(AgentSessionStopDiagnostic)
 	}
 	state, err := l.agentState(s)
@@ -723,8 +736,12 @@ func (l *Lifecycle) structuredStop(ctx context.Context, r b.LifecycleRequest, re
 		mayExist := agentSessionMayExist(r.Snapshot, state)
 		if mayExist {
 			receipt.Operation.Receipt, err = l.agentClient(state.RuntimeID).Close(ctx, state.SessionID)
-			if err == nil && agentCloseSucceeded(receipt.Operation.Receipt) {
-				state.CloseReceipt = append([]byte(nil), receipt.Operation.Receipt...)
+			if agentCloseSucceeded(receipt.Operation.Receipt) {
+				if err == nil {
+					state.CloseReceipt = append([]byte(nil), receipt.Operation.Receipt...)
+				} else {
+					receipt.Operation.Receipt = nil
+				}
 			}
 		} else {
 			// No create was dispatched, so this attempt has no native session.
@@ -737,22 +754,23 @@ func (l *Lifecycle) structuredStop(ctx context.Context, r b.LifecycleRequest, re
 			}
 		}
 	}
-	receipt.Implementation, _ = l.agentEnvelope(r.Snapshot, state)
-	if l.profile.Environment == "" && err == nil && (agentCloseSucceeded(state.CloseReceipt) || state.SessionNotCreated && !agentSessionMayExist(r.Snapshot, state)) {
-		receipt.Disposition = b.OperationConfirmed
-		receipt.State = b.LifecycleStateFacts{Stopped: true, WorkerAbsent: true}
-		receipt.Diagnostic = AgentSessionStopLimitation
-		return receipt, nil
+	envelope, envelopeErr := l.agentEnvelope(r.Snapshot, state)
+	if envelopeErr != nil {
+		return receipt, errors.Join(err, envelopeErr)
 	}
-	// A remote close does not prove resources settled, but its original turn
-	// can independently acquire a terminal business result. Retain that fact for
-	// result/usage consumers without authorizing another workflow stage. Reuse
-	// the original stop receipt on reconciliation; only a missing result permits
-	// another read, never another close or input.
+	receipt.Implementation = envelope
+	// Retain the original remote turn for result/usage independently of stop.
+	// A missing result permits another read, never another close or input.
 	if l.profile.Environment != "" && receipt.TurnEvidence == nil && state.Attempted && state.TurnID != "" {
 		if observed, readErr := l.readStructured(ctx, r.Snapshot); readErr == nil && observed.TurnEvidence != nil {
 			receipt.TurnEvidence = observed.TurnEvidence
 		}
+	}
+	if l.closeSettlesAgentSession() && err == nil && (agentCloseSucceeded(state.CloseReceipt) || state.SessionNotCreated && !agentSessionMayExist(r.Snapshot, state)) {
+		receipt.Disposition = b.OperationConfirmed
+		receipt.State = b.LifecycleStateFacts{Stopped: true, WorkerAbsent: true}
+		receipt.Diagnostic = AgentSessionStopLimitation
+		return receipt, nil
 	}
 	return receipt, errors.Join(err, errors.New(AgentSessionStopDiagnostic))
 }

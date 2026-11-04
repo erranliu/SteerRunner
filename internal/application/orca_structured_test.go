@@ -122,7 +122,7 @@ func TestStructuredFileEnvironmentBindings(t *testing.T) {
 	}
 }
 
-func TestSRFreezeRemoteStructuredExecutePinsHostAndSnapshotContract(t *testing.T) {
+func TestSRFreezeRemoteStructuredExecutePinsHostAndSealContract(t *testing.T) {
 	f := newBaseRefreshFixture(t, "origin", "main")
 	cli, err := exec.LookPath("git")
 	if err != nil {
@@ -144,23 +144,23 @@ func TestSRFreezeRemoteStructuredExecutePinsHostAndSnapshotContract(t *testing.T
 		t.Fatal(err)
 	}
 	prompt := r.Snapshot.PendingTurn.Prompt
-	for _, want := range []string{workflow.ResultFileSnapshotInstruction, workflow.OrcaFileEnvironmentInstruction, `"STEERLINE_RESULT_FILE":".steerrunner/result/` + r.ID + `/result.bin"`, f.request.Workflow.PromptOverrides["execute"]} {
+	for _, want := range []string{workflow.ResultFileInstruction, workflow.OrcaFileEnvironmentInstruction, `"STEERLINE_RESULT_FILE":".steerrunner/result/` + r.ID + `/result.bin"`, f.request.Workflow.PromptOverrides["execute"]} {
 		if !strings.Contains(prompt, want) {
 			t.Fatalf("missing remote file binding or original body %q in %s", want, prompt)
 		}
 	}
-	if strings.Contains(prompt, workflow.ResultFileInstruction) {
-		t.Fatal("remote snapshot was presented as producer-stop sealing")
+	if strings.Contains(prompt, workflow.ResultFileSnapshotInstruction) {
+		t.Fatal("new remote seal was presented as a business-end snapshot")
 	}
 	var profile orca.AgentSessionProfile
 	if err := json.Unmarshal(r.Profile[0].Payload, &profile); err != nil {
 		t.Fatal(err)
 	}
-	if profile.PairingHostID != "sha256:66687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925" || profile.Transport.Environment != "id:original-remote" || profile.Transport.NativeTerminal || r.ResultFileContract != contracts.ResultFileSnapshotContract || r.Snapshot.Ref.Protocol != b.ProtocolOrcaAgentSessionV1 || r.LaunchCommand != "" || r.LaunchInput != nil {
+	if profile.PairingHostID != "sha256:66687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925" || profile.Transport.Environment != "id:original-remote" || profile.Transport.NativeTerminal || r.Profile[0].CodecVersion != orca.AgentSessionPairedCloseProfileVersion || resultContract(r) != contracts.ResultFileContract || r.Snapshot.Ref.Protocol != b.ProtocolOrcaAgentSessionV1 || r.LaunchCommand != "" || r.LaunchInput != nil {
 		t.Fatal("remote native owner/host/contract not frozen", profile, r.Snapshot.Ref, r.ResultFileContract)
 	}
 	engine := &Engine{dir: f.state, runs: map[string]*runstate.Record{r.ID: r}}
-	if v := engine.HandleResultFile(r.ID).Data.(contracts.ResultFileView); v.Contract != contracts.ResultFileSnapshotContract || v.CollectionStatus != "pending" {
+	if v := engine.HandleResultFile(r.ID).Data.(contracts.ResultFileView); v.Contract != contracts.ResultFileContract || v.CollectionStatus != "pending" {
 		t.Fatal("pending query hid new contract", v)
 	}
 	port, err := orca.NewLifecycle(engine.setup(r, &worker{}))
@@ -170,6 +170,10 @@ func TestSRFreezeRemoteStructuredExecutePinsHostAndSnapshotContract(t *testing.T
 	// Construction and admission use only the pairing metadata, never this
 	// deliberately unavailable network endpoint. Old records keep their protocol.
 	old := r.Clone()
+	old.ResultFileContract = contracts.ResultFileSnapshotContract
+	if resultContract(old) != contracts.ResultFileSnapshotContract {
+		t.Fatal("frozen snapshot was reinterpreted")
+	}
 	old.ResultFileContract = ""
 	old.Snapshot.Ref.Protocol = b.ProtocolOrcaTerminalV3
 	if resultContract(old) != contracts.ResultFileContract {

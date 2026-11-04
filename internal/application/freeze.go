@@ -219,15 +219,16 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 			r.Request.Execution.Settings = canonical(settings)
 			protocol = b.ProtocolOrcaAgentSessionV1
 			structuredProfile := orca.AgentSessionProfile{Transport: profile, Model: settings.AgentLaunch.Model, ReasoningEffort: settings.AgentLaunch.ReasoningEffort, AccessMode: settings.AccessMode}
+			codec = orca.AgentSessionVersion
 			if profile.Environment != "" {
 				host, err := native.UsageHostID(profile.Environment)
 				if err != nil {
 					return nil, contracts.Fail(4, "environment_unavailable", "The selected paired Orca host identity is unavailable; no run was accepted.")
 				}
 				structuredProfile.PairingHostID = host
-				r.ResultFileContract = contracts.ResultFileSnapshotContract
+				codec = orca.AgentSessionPairedCloseProfileVersion
 			}
-			key, codec, payload = orca.AgentSessionProfileKey, orca.AgentSessionVersion, canonical(structuredProfile)
+			key, payload = orca.AgentSessionProfileKey, canonical(structuredProfile)
 		} else {
 			launch := agentlaunch.Config{AccessMode: settings.AccessMode, Executable: settings.AgentLaunch.Executable, Args: settings.AgentLaunch.Args, Model: settings.AgentLaunch.Model, ReasoningEffort: settings.AgentLaunch.ReasoningEffort}
 			if request.Execution.Target.Kind == "orca_environment" {
