@@ -43,7 +43,7 @@ func evidenceRepository(ctx context.Context, git workspace.Git, r *runstate.Reco
 func verifyEvidenceWorkspace(ctx context.Context, git workspace.Git, r *runstate.Record) error {
 	return verifyOriginalWorkspace(ctx, git, r, false, false)
 }
-func verifyOriginalWorkspace(ctx context.Context, git workspace.Git, r *runstate.Record, fileChannel, initialFileBinding bool) error {
+func verifyOriginalWorkspace(ctx context.Context, git workspace.Git, r *runstate.Record, fileChannel, fresh bool) error {
 	if workflow.Content(r.Request.Workflow.ID) || r.Request.Execution.Target.Kind != "local" || (r.Request.Execution.Adapter != "codex-app-server" && r.Request.Execution.Adapter != "orca-terminal") {
 		return contracts.Fail(3, "unsupported_capability", "R2 workspace evidence supports host-local development workspaces only; remote paths are never read locally.")
 	}
@@ -60,7 +60,7 @@ func verifyOriginalWorkspace(ctx context.Context, git workspace.Git, r *runstate
 	verify := func() error { return workspace.Verify(ctx, git, repo, &s.Workspace, false) }
 	if fileChannel {
 		verify = func() error {
-			return workspace.VerifyFileSource(ctx, git, repo, &s.Workspace, !initialFileBinding || f.InspectionScope != "revision")
+			return workspace.VerifyFileSource(ctx, git, repo, &s.Workspace, !fresh)
 		}
 	}
 	if err := verify(); err != nil {

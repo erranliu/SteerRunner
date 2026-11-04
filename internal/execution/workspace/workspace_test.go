@@ -171,6 +171,14 @@ func TestPrepareDoesNotRunCheckoutHookOrRecheckGit(t *testing.T) {
 	if _, err := ResolveFreshLinkedResources(ctx, git, repository, intent); err != nil {
 		t.Fatal(err)
 	}
+	// The Pi terminal helper resolves the repository from the linked checkout.
+	terminalRepo, err := ResolveRepository(ctx, git, intent.Path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := ResolveFreshLinkedResourcesAt(ctx, git, terminalRepo, intent.Path); err != nil {
+		t.Fatal(err)
+	}
 	git.Start = start
 	actual, err := git.Output(ctx, intent.Path, "rev-parse", "HEAD")
 	if err != nil || strings.TrimSpace(string(actual)) != intent.BaseCommit {

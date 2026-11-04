@@ -35,6 +35,15 @@ func ResolveFreshLinkedResources(ctx context.Context, git Git, repository Reposi
 	return linkedResources(ctx, git, repository, intent.Path)
 }
 
+// ResolveFreshLinkedResourcesAt uses only the checkout identity supplied by the
+// owner that launched into the newly created worktree.
+func ResolveFreshLinkedResourcesAt(ctx context.Context, git Git, repository Repository, path string) (Resources, error) {
+	if err := verifyFileWorkspaceIdentity(ctx, git, repository, path, ""); err != nil {
+		return Resources{}, err
+	}
+	return linkedResources(ctx, git, repository, path)
+}
+
 func linkedResources(ctx context.Context, git Git, repository Repository, worktree string) (Resources, error) {
 	readPath := func(args ...string) (string, error) {
 		out, err := git.Output(ctx, worktree, args...)

@@ -50,6 +50,8 @@ type worker struct {
 	progressWatching        bool // guarded by Engine.mu
 	progressReadActive      bool // guarded by Engine.mu; at most one physical read even after a timeout
 	resultCollectionStarted bool // one bounded attempt per live service; durable Sealed survives restart
+	freshWorkspace          bool // guarded by gate and mu; never restored from a receipt
+	startupWorkspaceChecked bool // guarded by gate; local recovery checked this workspace
 	filesPreparationStarted bool // guarded by Engine.mu; also consumes a failed metadata save
 	acquisition             *textTask
 	ownedInputs             map[string]bool

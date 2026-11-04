@@ -108,6 +108,21 @@ func Verify(ctx context.Context, git Git, repository Repository, intent *executi
 	return nil
 }
 
+// VerifyInitialClean is for a recovered workspace that has not started business input.
+func VerifyInitialClean(ctx context.Context, git Git, repository Repository, intent *executionbackend.WorkspaceIntent) error {
+	if err := Verify(ctx, git, repository, intent, true); err != nil {
+		return err
+	}
+	status, err := git.Output(ctx, intent.Path, "status", "--porcelain=v1", "-z", "--untracked-files=all")
+	if err != nil {
+		return err
+	}
+	if len(status) != 0 {
+		return errors.New("original worktree changed before first input")
+	}
+	return nil
+}
+
 func Inspect(ctx context.Context, git Git, repository Repository, intent *executionbackend.WorkspaceIntent) (executionbackend.WorkspaceInspection, error) {
 	if err := Verify(ctx, git, repository, intent, false); err != nil {
 		return executionbackend.WorkspaceInspection{}, err

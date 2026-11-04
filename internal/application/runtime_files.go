@@ -72,8 +72,6 @@ func fileInputDispatched(r *runstate.Record) bool {
 // Claim both optional preparations before I/O, under the same gate as stop.
 // A failed metadata save consumes this service's attempt but permits no write.
 func (e *Engine) prepareRuntimeFiles(original *runstate.Record) {
-	ctx, cancel := context.WithTimeout(e.ctx, 4*time.Second)
-	defer cancel()
 	e.mu.Lock()
 	w := e.workers[original.ID]
 	e.mu.Unlock()
@@ -128,7 +126,9 @@ func (e *Engine) prepareRuntimeFiles(original *runstate.Record) {
 		if !allowed {
 			break
 		}
+		ctx, cancel := context.WithTimeout(e.ctx, 4*time.Second)
 		sample := e.sampleRuntimeFile(ctx, next.Clone(), result, true)
+		cancel()
 		e.mu.Lock()
 		e.publishFilePreparationLocked(next, sample, result)
 		e.mu.Unlock()
@@ -169,7 +169,7 @@ func (e *Engine) publishFilePreparationLocked(original *runstate.Record, sample 
 	}
 }
 
-// A non-cooperating filesystem/transport cannot extend the shared deadline.
+// A non-cooperating filesystem/transport cannot extend the channel deadline.
 // The goroutine only owns private values and its channel; late results are ignored.
 func (e *Engine) sampleRuntimeFile(ctx context.Context, r *runstate.Record, result, prepare bool) runtimeFileSample {
 	if err := ctx.Err(); err != nil {
@@ -280,7 +280,11 @@ func (e *Engine) runtimeFile(ctx context.Context, r *runstate.Record, result, pr
 		return nil, errors.New("binding_invalid")
 	}
 	if prepare || len(p.Directories) == 0 {
-		if err := verifyOriginalWorkspace(ctx, gitHost(), r, true, prepare); err != nil {
+		e.mu.Lock()
+		w := e.workers[r.ID]
+		fresh := prepare && w != nil && w.freshWorkspace
+		e.mu.Unlock()
+		if err := verifyOriginalWorkspace(ctx, gitHost(), r, true, fresh); err != nil {
 			return nil, errors.New("binding_invalid")
 		}
 		directories := workspace.ProgressDirectories
