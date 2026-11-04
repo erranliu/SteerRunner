@@ -88,11 +88,7 @@ func (e *Engine) resumeRun(id string, w *worker, p b.LifecyclePort) bool {
 		e.mu.Unlock()
 	}
 	if r.Request.Conversation != nil || r.Request.Generate != nil {
-		if err := verifyContentDirectory(r); err != nil {
-			e.failControl(id, command, err)
-			return false
-		}
-		if err := verifyFrozenMaterials(r); err != nil {
+		if err := verifyContentInputs(r); err != nil {
 			e.failControl(id, command, err)
 			return false
 		}

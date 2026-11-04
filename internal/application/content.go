@@ -111,10 +111,7 @@ func contentPrompt(r *runstate.Record, message string) (string, error) {
 	return text, err
 }
 func contentParts(r *runstate.Record, message string) ([]m.InputPart, error) {
-	if err := verifyContentDirectory(r); err != nil {
-		return nil, err
-	}
-	if err := verifyFrozenMaterials(r); err != nil {
+	if err := verifyContentInputs(r); err != nil {
 		return nil, err
 	}
 	instruction, _, _ := r.Request.ContentInput()

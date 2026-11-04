@@ -114,9 +114,6 @@ func (e *Engine) checkDispatchSource(r *runstate.Record, input workflow.StageInp
 	if native := r.Snapshot.PendingTurn; native != nil && native.CommandID == input.CommandID && input.Budget != nil && native.Budget != nil && !reflect.DeepEqual(input.Budget, native.Budget) {
 		return errors.New("native input provenance differs from frozen stage")
 	}
-	if err := verifyFrozenMaterials(r); err != nil {
-		return err
-	}
 	state, ok := r.Workflow.State(input.StepID)
 	if !ok {
 		return errors.New("unknown state")
@@ -125,7 +122,13 @@ func (e *Engine) checkDispatchSource(r *runstate.Record, input workflow.StageInp
 		return err
 	}
 	if state.Contract == "final" && workflow.Content(r.Request.Workflow.ID) {
+		if err := verifyFrozenDocuments(r); err != nil {
+			return err
+		}
 		return verifyContentDirectory(r)
+	}
+	if err := verifyFrozenMaterials(r); err != nil {
+		return err
 	}
 	if state.Workspace == "" {
 		return nil
