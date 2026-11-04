@@ -17,11 +17,16 @@ type UsageFileChannel struct {
 	HostID string
 }
 type UsageSession struct {
-	Agent     string `json:"agent"`
-	SessionID string `json:"sessionId"`
-	CWD       string `json:"cwd"`
-	FilePath  string `json:"filePath"`
-	CodexHome string `json:"codexHome"`
+	Agent             string `json:"agent"`
+	SessionID         string `json:"sessionId"`
+	CWD               string `json:"cwd"`
+	FilePath          string `json:"filePath"`
+	CodexHome         string `json:"codexHome"`
+	ExecutionHostID   string `json:"executionHostId"`
+	StructuredSession *struct {
+		SessionID   string `json:"sessionId"`
+		WorkspaceID string `json:"workspaceId"`
+	} `json:"structuredSession,omitempty"`
 }
 type UsageGroup struct {
 	ID            string  `json:"id"`
@@ -109,6 +114,29 @@ func UsageHostID(environment string) (string, error) {
 	return "sha256:" + hex.EncodeToString(h[:]), nil
 }
 func OpenUsageFiles(ctx context.Context, environment, runtime, expectedHost string) (*UsageFileChannel, error) {
+	return openUsageFiles(ctx, environment, runtime, expectedHost, nil)
+}
+
+// The native vault hides structured sessions from legacy clients. Only the new
+// remote structured consumer declares this contract, in both auth and requests;
+// ordinary usage readers retain their original capabilities and wire behavior.
+func OpenStructuredUsageFiles(ctx context.Context, environment, runtime, expectedHost string) (*UsageFileChannel, error) {
+	if environment == "" {
+		return nil, errors.New("remote structured usage requires an explicit environment")
+	}
+	return openUsageFiles(ctx, environment, runtime, expectedHost, remoteAgentSessionCapabilities())
+}
+
+type structuredUsageState struct {
+	*stateSocket
+	clientCapabilities []string
+}
+
+func (s structuredUsageState) request(ctx context.Context, method string, params any) (string, error) {
+	return s.requestWithCapabilities(ctx, method, params, s.clientCapabilities, false)
+}
+
+func openUsageFiles(ctx context.Context, environment, runtime, expectedHost string, capabilities []string) (*UsageFileChannel, error) {
 	host := "local"
 	var err error
 	var socket stateConnection
@@ -129,7 +157,15 @@ func OpenUsageFiles(ctx context.Context, environment, runtime, expectedHost stri
 		if host != expectedHost {
 			return nil, errors.New("IDENTITY_CHANGED")
 		}
-		socket, err = openStateSocket(ctx, pairing, runtime)
+		if capabilities == nil {
+			socket, err = openStateSocket(ctx, pairing, runtime)
+		} else {
+			var remote *stateSocket
+			remote, err = openStateSocketWithCapabilities(ctx, pairing, runtime, capabilities)
+			if err == nil {
+				socket = structuredUsageState{stateSocket: remote, clientCapabilities: capabilities}
+			}
+		}
 	} else {
 		socket, err = openStateConnection(ctx, environment, runtime)
 	}

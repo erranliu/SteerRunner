@@ -13,7 +13,8 @@
   ],
   "properties": {
     "contract": {
-      "const": "steerrunner-result-file/v1"
+      "enum": ["steerrunner-result-file/v1", "steerrunner-result-file-snapshot/v1"],
+      "description": "v1 requires ended execution and stopped producers. snapshot/v1 applies only to newly admitted remote Orca Codex execute/1: one bounded business-end snapshot; no producer-stop or future-write guarantee."
     },
     "run_id": {
       "type": "string"

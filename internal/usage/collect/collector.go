@@ -110,7 +110,24 @@ func (c *Collector) observe(ctx context.Context, r *runstate.Record) {
 		var cp checkpoint
 		checkpointErr := c.Store.UsageJournal(ctx, cpkey, &cp)
 		checkpointInvalid := checkpointErr != nil && !errors.Is(checkpointErr, sql.ErrNoRows)
-		binding, p, state, err := orca.UsageBinding(r.Profile, snap, orca.UsageInitialization{LaunchCommand: r.LaunchCommand, CreatedAt: r.CreatedAt})
+		var binding parsers.Binding
+		var p orca.Profile
+		var state orca.State
+		var original *orca.StructuredUsageIdentity
+		var err error
+		if snap.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 && snap.Ref.Target.ExternalRuntime != "" {
+			inputs := make([]b.TurnInput, 0, len(r.Workflow.StageInputs))
+			for _, input := range r.Workflow.StageInputs {
+				if input.AttemptID == snap.Session.AttemptID {
+					inputs = append(inputs, b.TurnInput{CommandID: input.CommandID, Prompt: input.Prompt})
+				}
+			}
+			var identity orca.StructuredUsageIdentity
+			binding, p, identity, err = orca.StructuredUsageBinding(r.Profile, snap, inputs)
+			original = &identity
+		} else {
+			binding, p, state, err = orca.UsageBinding(r.Profile, snap, orca.UsageInitialization{LaunchCommand: r.LaunchCommand, CreatedAt: r.CreatedAt})
+		}
 		if err == nil && binding.RunID != r.ID {
 			err = errors.New("IDENTITY_CHANGED")
 		}
@@ -132,6 +149,12 @@ func (c *Collector) observe(ctx context.Context, r *runstate.Record) {
 		}
 		final = final || allSettled || r.Status == "pr_ready" || r.StopStatus == "stopped"
 		pending := pendingUsageInput(snap, state)
+		if original != nil {
+			// Resource cleanup remains unknown independently of the original
+			// business turn's terminal fact. Never synthesize legacy Turns.
+			final = structuredUsageEnded(r, binding)
+			pending = !final
+		}
 		final = final && !pending
 		completeHistory := cp.Summary.Status == "verified" && cp.Summary.Finalized && len(cp.Issues) == 0 && cp.Missing == 0
 		sameObservation := cp.Policy == c.Policy.Digest() && cp.Instance == c.Instance
@@ -160,7 +183,7 @@ func (c *Collector) observe(ctx context.Context, r *runstate.Record) {
 			observation, cancel := context.WithTimeout(ctx, 30*time.Second)
 			var result parsers.Result
 			var cleanup string
-			result, cleanup, err = c.read(observation, binding, p, state, source, cp)
+			result, cleanup, err = c.read(observation, binding, p, original, source, cp)
 			cancel()
 			if cleanup == "pending" {
 				s.AccessCleanupStatus = "pending"
@@ -284,6 +307,22 @@ func pendingUsageInput(s b.LifecycleSnapshot, state orca.State) bool {
 	}
 	return s.PendingTurn != nil && !settled[s.PendingTurn.CommandID] || s.Session.PendingCommandID != "" && !settled[s.Session.PendingCommandID]
 }
+
+func structuredUsageEnded(r *runstate.Record, binding parsers.Binding) bool {
+	if len(binding.Commands) != 1 {
+		return false
+	}
+	command := binding.Commands[0]
+	if result := r.Result; result != nil && result.Completed && result.CommandID == command.ID && result.SessionID == r.Snapshot.Session.SessionID && result.TurnID == command.NativeTurnID {
+		return true
+	}
+	for _, result := range r.Workflow.StageResults {
+		if result.CommandID == command.ID && result.AttemptID == binding.AttemptID && result.SessionID == r.Snapshot.Session.SessionID && result.TurnID == command.NativeTurnID {
+			return true
+		}
+	}
+	return false
+}
 func errorCode(err error) string {
 	var rpc *native.StateRPCError
 	if errors.As(err, &rpc) {
@@ -347,7 +386,7 @@ func localRead(file string) ([]byte, error) {
 	}
 	return raw, nil
 }
-func (c *Collector) read(ctx context.Context, binding parsers.Binding, p orca.Profile, state orca.State, source string, cp checkpoint) (parsers.Result, string, error) {
+func (c *Collector) read(ctx context.Context, binding parsers.Binding, p orca.Profile, original *orca.StructuredUsageIdentity, source string, cp checkpoint) (parsers.Result, string, error) {
 	var zero parsers.Result
 	cleanup := "not_required"
 	file, namespace := "", ""
@@ -379,15 +418,27 @@ func (c *Collector) read(ctx context.Context, binding parsers.Binding, p orca.Pr
 			if err != nil {
 				return zero, cleanup, errors.New("IDENTITY_UNVERIFIED")
 			}
+			if original != nil && host != original.HostID {
+				return zero, cleanup, errors.New("IDENTITY_CHANGED")
+			}
 			if c.Policy.RemoteLogAccess.Mode != "temporary" {
 				return zero, cleanup, errors.New("REMOTE_LOG_ACCESS_NOT_CONFIGURED")
 			}
 		}
-		runtime, err := currentRuntime(ctx, p)
-		if err != nil {
-			return zero, cleanup, errors.New("HOST_OFFLINE")
+		runtime := ""
+		if original != nil {
+			runtime = original.RuntimeID
+		} else {
+			runtime, err = currentRuntime(ctx, p)
+			if err != nil {
+				return zero, cleanup, errors.New("HOST_OFFLINE")
+			}
 		}
-		channel, err := native.OpenUsageFiles(ctx, p.Environment, runtime, host)
+		open := native.OpenUsageFiles
+		if original != nil {
+			open = native.OpenStructuredUsageFiles
+		}
+		channel, err := open(ctx, p.Environment, runtime, host)
 		if err != nil {
 			return zero, cleanup, errors.New("HOST_OFFLINE")
 		}
@@ -396,19 +447,10 @@ func (c *Collector) read(ctx context.Context, binding parsers.Binding, p orca.Pr
 		if err != nil {
 			return zero, cleanup, err
 		}
-		matches := []native.UsageSession{}
-		for _, s := range sessions {
-			if s.Agent == binding.Agent && s.SessionID == binding.SessionID && parsers.NormalizePath(s.CWD) == parsers.NormalizePath(binding.CWD) {
-				matches = append(matches, s)
-			}
+		candidate, err := selectUsageSession(sessions, binding, original)
+		if err != nil {
+			return zero, cleanup, err
 		}
-		if len(matches) == 0 {
-			return zero, cleanup, errors.New("LOG_NOT_FOUND")
-		}
-		if len(matches) != 1 {
-			return zero, cleanup, errors.New("SESSION_AMBIGUOUS")
-		}
-		candidate := matches[0]
 		file = candidate.FilePath
 		root := filepath.Dir(file)
 		if !api.SafeRoot(root) || !strings.HasSuffix(strings.ToLower(file), ".jsonl") || !strings.Contains(filepath.Base(file), binding.SessionID) {
@@ -513,6 +555,30 @@ func (c *Collector) read(ctx context.Context, binding parsers.Binding, p orca.Pr
 	}
 	returnResult, err := parseSnapshot(ctx, binding, raw, cp, strings.HasSuffix(file, ".zstd"))
 	return returnResult, cleanup, err
+}
+
+func selectUsageSession(sessions []native.UsageSession, binding parsers.Binding, original *orca.StructuredUsageIdentity) (native.UsageSession, error) {
+	matches := []native.UsageSession{}
+	for _, s := range sessions {
+		if original != nil {
+			if s.StructuredSession == nil || s.StructuredSession.SessionID != original.SessionID {
+				continue
+			}
+			if !original.Matches(s) || s.Agent != binding.Agent || s.SessionID != binding.SessionID || parsers.NormalizePath(s.CWD) != parsers.NormalizePath(binding.CWD) {
+				return native.UsageSession{}, errors.New("IDENTITY_CHANGED")
+			}
+		}
+		if s.Agent == binding.Agent && s.SessionID == binding.SessionID && parsers.NormalizePath(s.CWD) == parsers.NormalizePath(binding.CWD) {
+			matches = append(matches, s)
+		}
+	}
+	if len(matches) == 0 {
+		return native.UsageSession{}, errors.New("LOG_NOT_FOUND")
+	}
+	if len(matches) != 1 {
+		return native.UsageSession{}, errors.New("SESSION_AMBIGUOUS")
+	}
+	return matches[0], nil
 }
 
 // Local AI Vault entries can omit codexHome. Resolve only an explicit local

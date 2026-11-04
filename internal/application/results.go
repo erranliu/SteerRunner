@@ -19,6 +19,30 @@ import (
 func (e *Engine) finish(id string, value b.TurnEvidence) bool {
 	return e.finishWithGate(id, value, nil)
 }
+
+// Stopping revokes stage authority before an original native cancellation can
+// arrive. Keep its complete result readable and available to usage, independently
+// of an unresolved resource stop, without running workflow acquisition/routing.
+func (e *Engine) retainStructuredStopResult(r *runstate.Record, receipt b.LifecycleReceipt) {
+	if r.Snapshot.Ref.Protocol != b.ProtocolOrcaAgentSessionV1 || r.Request.Execution.Target.Kind != "orca_environment" || r.Result != nil || receipt.TurnEvidence == nil {
+		return
+	}
+	value := *receipt.TurnEvidence
+	input := workflow.Input(r.Workflow, value.CommandID)
+	if input == nil || input.AttemptID != r.Snapshot.Session.AttemptID {
+		return
+	}
+	result, err := reliable.NormalizeResult(r.Snapshot.Session, value)
+	if err != nil || !result.ContentVerified || value.FinalSessionID != value.SessionID || value.FinalTurnID != value.TurnID || value.FinalNativeSessionID != value.SessionID || value.FinalNativeTurnID != value.TurnID || result.NativeOutcome != "succeeded" && result.NativeOutcome != "failed" && result.NativeOutcome != "cancelled" {
+		return
+	}
+	r.Result = &value
+	r.LastFinal = r.View().Final
+	if r.LastFinal != nil {
+		r.LastFinal.Text = e.redact(r, r.LastFinal.Text)
+		r.LastFinal.Diagnostic = e.redact(r, r.LastFinal.Diagnostic)
+	}
+}
 func (e *Engine) finishWithGate(id string, value b.TurnEvidence, gate *sync.Mutex) bool {
 	e.mu.Lock()
 	r := e.runs[id].Clone()

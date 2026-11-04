@@ -34,6 +34,8 @@ type Record struct {
 	ObservationDeadline time.Time                      `json:"observation_deadline,omitempty"`
 	RepositorySource    *contracts.RepositorySource    `json:"repository_source,omitempty"`
 	ResultFile          *ResultFile                    `json:"result_file,omitempty"`
+	ResultFileContract  string                         `json:"result_file_contract,omitempty"`
+	ResultFileEnd       *ResultFileEnd                 `json:"result_file_end,omitempty"`
 	Progress            *Progress                      `json:"progress,omitempty"`
 	Artifacts           []Artifact                     `json:"artifacts,omitempty"`
 	Closed              bool                           `json:"closed,omitempty"`

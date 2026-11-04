@@ -192,6 +192,7 @@ func finishContent(r *runstate.Record, input workflow.StageInput, value b.TurnEv
 	}
 	r.Workflow.StageResults = append(r.Workflow.StageResults, workflow.StageResult{SessionID: value.SessionID, CommandID: input.CommandID, AttemptID: input.AttemptID, StepID: input.StepID, InputVersion: input.Version, TurnID: value.TurnID, Outcome: result.NativeOutcome, Succeeded: result.Succeeded, FinalVerified: result.ContentVerified, Final: result.Content, Failure: result.Failure, FinalDiagnostic: result.Diagnostic})
 	r.Result, r.LastFinal, r.ContentResult = &value, &final, content
+	markResultSnapshotEnd(r, "result:"+input.CommandID+":"+value.TurnID)
 	r.History = append(r.History, contracts.HistoryEntry{CommandID: input.CommandID, SessionID: value.SessionID, TurnID: value.TurnID, Role: "assistant", Text: result.Content, Result: content})
 	for i := range r.History {
 		if r.History[i].CommandID == input.CommandID {

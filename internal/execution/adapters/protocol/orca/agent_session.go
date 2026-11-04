@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"crypto/sha256"
+	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
@@ -17,9 +18,23 @@ import (
 )
 
 // AgentSessionClient contains only the public native conversation operations
-// currently consumed by the local structured execution adapter.
+// consumed by the structured execution adapter, independent of Runner state.
 type AgentSessionClient struct {
 	call func(context.Context, string, any, bool) (json.RawMessage, error)
+}
+
+func agentSessionCapabilities() []string {
+	return []string{
+		"agent-session.structured.v1", "agent-session.host-authority.v1",
+		"agent-session.session-boundary.v1", "agentSession.create.message.v1", "agentSession.create.options-mode.v1",
+		"agent-session.send-selection.v1", "agent-session.permission-modes.v1",
+		"agent-session.permission-own.v1", "agent-session.turn-item.v1",
+		"agent-session.item-detail.v1", "agent-session.current-requests.v1",
+	}
+}
+
+func remoteAgentSessionCapabilities() []string {
+	return append(agentSessionCapabilities(), "agent-session.structured.client-launch-mode.v1", "agent-session.structured.registered-agents.v1")
 }
 
 func NewLocalAgentSessionClient(runtime string) AgentSessionClient {
@@ -36,13 +51,48 @@ func NewLocalAgentSessionClient(runtime string) AgentSessionClient {
 				return nil, err
 			}
 		}
-		id, err := connection.requestWithCapabilities(ctx, method, params, []string{
-			"agent-session.structured.v1", "agent-session.host-authority.v1",
-			"agent-session.session-boundary.v1", "agentSession.create.message.v1", "agentSession.create.options-mode.v1",
-			"agent-session.send-selection.v1", "agent-session.permission-modes.v1",
-			"agent-session.permission-own.v1", "agent-session.turn-item.v1",
-			"agent-session.item-detail.v1", "agent-session.current-requests.v1",
-		}, mutation)
+		id, err := connection.requestWithCapabilities(ctx, method, params, agentSessionCapabilities(), mutation)
+		if err != nil {
+			return nil, err
+		}
+		return connection.next(ctx, id)
+	}}
+}
+
+// NewRemoteAgentSessionClient uses the existing explicit pairing and pins the
+// original host key and runtime on every unary connection. It never retries a
+// mutation, including when a write succeeded but the response was lost.
+func NewRemoteAgentSessionClient(environment, runtime, expectedHost string) AgentSessionClient {
+	return AgentSessionClient{call: func(ctx context.Context, method string, params any, mutation bool) (json.RawMessage, error) {
+		if environment == "" || runtime == "" || expectedHost == "" {
+			return nil, errors.New("incomplete original remote Orca identity")
+		}
+		pairing, err := resolveStatePairing(environment)
+		if err != nil {
+			return nil, err
+		}
+		key, err := base64.StdEncoding.DecodeString(pairing.PublicKey)
+		if err != nil {
+			return nil, err
+		}
+		digest := sha256.Sum256(key)
+		if "sha256:"+hex.EncodeToString(digest[:]) != expectedHost {
+			return nil, stateIdentityError("original paired Orca host changed")
+		}
+		capabilities := remoteAgentSessionCapabilities()
+		ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
+		defer cancel()
+		connection, err := openStateSocketWithCapabilities(ctx, pairing, runtime, capabilities)
+		if err != nil {
+			return nil, err
+		}
+		defer connection.close()
+		if method == "agentSession.createSupport" || method == "agentSession.create" {
+			if err := agentCreationCapabilities(connection.capabilities); err != nil {
+				return nil, err
+			}
+		}
+		id, err := connection.requestWithCapabilities(ctx, method, params, capabilities, mutation)
 		if err != nil {
 			return nil, err
 		}

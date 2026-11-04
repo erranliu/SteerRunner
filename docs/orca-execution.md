@@ -13,11 +13,12 @@ Orca 提供已有的会话、终端、工作区及执行主机能力。Runner �
 | 组合 | 输入与结果 | 停止范围 |
 | --- | --- | --- |
 | 本机 Codex execute/1 | 原子 create.firstMessage，一条完整 user 消息；从公开 history/item 取得原 turn 的完整 assistant 文本 | `orca_agent_session`：原 session 的关闭成功回执，或原创建尚未派发 |
+| 配对远端 Codex execute/1 | 原子首消息及原 turn 完整 assistant 文本，按原会话/回合绑定公开 usage | `orca_agent_session`：原 session 最多关闭一次，停止仍未核实 |
 | 本机/远端 Codex development/2，无显式 helper | 原生终端及原输入/回合查询；真实 Git/PR 身份继续核验 | `orca_terminal`：原 handle/incarnation 退出或完整清单缺席 |
 | 显式受管 Codex、audited | 既有 helper/control/history 及对应模型/工作区来源 | `orca_local_codex_resources`：既有登记终端与 helper/app-server 根范围 |
 | 本机 Pi | 保留其现有工具、终端和回执实现 | 使用该组合原有 scope，不继承其它组合资格 |
 
-DSH 已退役。当前仅本机 Codex execute/1 使用结构化会话；其它组合没有因此自动迁移。实际模型偏好不是独立模型证明；原生 development 不继承 audited 资格，workspace audit 可为 unreported。usage 未提供时如实保持 unreported，不读取 Orca 私有 transcript。
+DSH 已退役。此候选支持本机和配对远端 Codex execute/1 的结构化会话。远端 Runner 执行、SteerLine 环境检测和发布排空分别验收。实际模型偏好不是独立模型证明；原生 development 不继承 audited 资格，workspace audit 可为 unreported。usage 未提供时如实保持 unreported，不读取 Orca 私有 transcript。
 
 ## 输入身份与恢复
 
@@ -31,11 +32,11 @@ Runner 在原工作区准备独立、受限的 progress/result 文件，保存�
 
 Agent 在执行读取这些变量的脚本前，将绑定解析为现有文件的绝对路径，在该次命令进程设置 `STEERLINE_RESULT_FILE` / `STEERLINE_PROGRESS_FILE`，让子脚本继承；保持调用者原 executable/参数。Agent 不猜路径、不补造初始报告。固定行为指令来自 workflow 包资产，动态部分仅携带本次文件路径，并计入现有 Runner 输入预算。
 
-脚本负责结果内容；Runner 校验归属并保存原始字节。原会话关闭确认后，结果通道可沿原规则封存。脚本退出、模型成功、报告 completed/ready、Workflow 成功分别表达：关闭成功不会把退出码 1、缺报告或无效报告改成通过。结果文件写者须在命令返回前完成；不承诺管理脱离会话的任意后台写者。
+脚本负责结果内容；Runner 校验归属并保存原始字节。本机原会话关闭确认后，结果通道可沿原规则封存。远端 execute/1 在首次原业务结束或显式停止处置后开启唯一有界快照窗口，后续写入不会刷新已封存的快照。脚本退出、模型成功、报告 completed/ready、Workflow 成功分别表达：关闭成功不会把退出码 1、缺报告或无效报告改成通过。结果文件写者须在命令返回前完成；不承诺管理脱离会话的任意后台写者。
 
 ## 会话停止与已接受限制
 
-**Orca 链路不保证全部派生进程或额外主机资源正确清理。这个限制不成为正常业务链路的额外门禁。** 对结构化会话，停止资格是精确绑定原 session 的 close 成功回执，不是主机级资源清场。`working=false`、回合结束、观察断线或界面消失均不能替代该回执。
+**Orca 链路不保证全部派生进程或额外主机资源正确清理。这个限制不成为正常业务链路的额外门禁。** 对本机 Codex execute/1 的结构化会话，停止资格是精确绑定原 session 的 close 成功回执，不是主机级资源清场。`working=false`、回合结束、观察断线或界面消失均不能替代该回执。
 
 | 原事实 | Runner 行为 |
 | --- | --- |
@@ -51,7 +52,7 @@ Agent 在执行读取这些变量的脚本前，将绑定解析为现有文件�
 
 ## 对 SteerLine 各链路的影响
 
-环境检测消费原最终报告和原会话停止事实；会话关闭确认后可正常完成，不因额外清理缺少保证继续显示检测中。普通执行、结果发布和取消同样遵守各自业务条件，额外清理不决定业务成功或失败。
+环境检测消费原最终报告和原会话停止事实；会话关闭确认后可正常完成，不因额外清理缺少保证继续显示检测中。远端 execute/1 的停止保持 unknown，快照使用独立合同；SteerLine 仍要求 stopped 并只接收原封存合同。远端环境检测及排空发布条件见[集成验收](acceptance/orca-structured-prompt-input-p0-p1.md)。普通执行、结果发布和取消同样遵守各自业务条件。
 
 服务停止仅代表 Runner writer 退出，不代表活动 session 已关闭。重启核对原身份及原操作，不重发输入。换构建部署仍要求原 writer 已退出、业务与未完成控制已经收尾、各 Run 满足其冻结停止 scope；原 session 已确认关闭时，额外资源清理未知不单独阻断部署。close 自身未知仍按原停止边界处理，不用换目录或删库绕过。
 

@@ -304,6 +304,10 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 		}
 	}
 	next.Intents[index].SettleStop(next.Snapshot.Operations, receipt, b.OperationStatus(status))
+	if receipt.ValidateFor(request) == nil {
+		e.retainStructuredStopResult(next, receipt)
+	}
+	markResultSnapshotEnd(next, "stop:"+request.Operation.ID)
 	if err == nil && receipt.State.Stopped {
 		next.StopStatus, next.Status, next.Phase = "stopped", "stopped", "stopped"
 		settleContentStatus(next)

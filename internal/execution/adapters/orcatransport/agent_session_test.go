@@ -103,6 +103,61 @@ func structuredFixture(t *testing.T) (*Lifecycle, b.LifecycleSnapshot, *agentFix
 }
 func mustAgentJSON(v any) json.RawMessage { raw, _ := json.Marshal(v); return raw }
 
+func TestStructuredRunningActivityUsesOriginalTurn(t *testing.T) {
+	for _, foreign := range []bool{false, true} {
+		t.Run(map[bool]string{false: "original", true: "foreign"}[foreign], func(t *testing.T) {
+			l, s, f := structuredFixture(t)
+			s.Session.Generation = "before-native-create"
+			var turn map[string]any
+			_ = json.Unmarshal(f.pages[1].Items[1].Body, &turn)
+			turn["state"], turn["completedAt"] = "running", 0
+			f.pages[1].Items[1].Body = mustAgentJSON(turn)
+			if foreign {
+				f.pages[0].Items[0].TurnScope.TurnItemID = "foreign-turn"
+			}
+			receipt, message, err := l.readStructuredActivity(context.Background(), s)
+			if foreign {
+				if err == nil || message != nil {
+					t.Fatal("foreign native activity exposed", message, err)
+				}
+				return
+			}
+			if err != nil || receipt.TurnEvidence != nil || message == nil || message.SessionID != f.pages[0].SessionID || message.TurnID != "native-turn" || message.AttemptID != s.Session.AttemptID || message.Generation != receipt.State.SessionGeneration || message.Generation == s.Session.Generation || message.Kind != "assistant" || message.ObservedAt.IsZero() || message.Text != strings.Repeat("complete result 中文😀\n", 300) {
+				t.Fatal("running activity lost original identity or became completion", receipt, message, err)
+			}
+		})
+	}
+}
+
+func TestStructuredObserverProjectsAndDeduplicatesActivity(t *testing.T) {
+	l, s, f := structuredFixture(t)
+	var turn map[string]any
+	_ = json.Unmarshal(f.pages[1].Items[1].Body, &turn)
+	turn["state"], turn["completedAt"] = "running", 0
+	f.pages[1].Items[1].Body = mustAgentJSON(turn)
+	o := l.observeStructured(s)
+	defer o.Close(context.Background())
+	for _, kind := range []string{"started", "message"} {
+		select {
+		case event := <-o.Events():
+			if event.Persisted == nil {
+				t.Fatal("activity bypassed consumer acknowledgement")
+			}
+			if kind == "started" && event.Fact.Kind != b.EventStarted || kind == "message" && (event.PublicMessage == nil || len(event.Implementation) != 0 || event.Observation != nil || event.Fact.Completed) {
+				t.Fatal("activity confused with native fact", event)
+			}
+			event.Persisted <- nil
+		case <-time.After(3 * time.Second):
+			t.Fatal("native activity not observed")
+		}
+	}
+	select {
+	case event := <-o.Events():
+		t.Fatal("identical native activity repeated", event)
+	case <-time.After(1200 * time.Millisecond):
+	}
+}
+
 func TestStructuredAtomicCreateAndReadOnlyRecovery(t *testing.T) {
 	l, s, f := structuredFixture(t)
 	f.lost = true
@@ -141,6 +196,45 @@ func TestStructuredAtomicCreateAndReadOnlyRecovery(t *testing.T) {
 	}
 	if strings.Contains(string(merged.Implementation[0].Payload), "tool preamble") || strings.Contains(string(merged.Implementation[0].Payload), "complete result") {
 		t.Fatal("result duplicated in opaque state")
+	}
+}
+
+func TestStructuredRemoteStopRetainsOriginalTurnAndReusesReceipt(t *testing.T) {
+	l, s, f := structuredFixture(t)
+	l.profile.Environment = "original-remote"
+	s.Ref.Target = l.profile.Target()
+	s.Ref.External.ExecutionHost = s.Ref.Target.ExecutionHost
+	l.setup.Snapshot = s
+	var turn map[string]any
+	_ = json.Unmarshal(f.pages[1].Items[1].Body, &turn)
+	turn["state"], turn["outcome"] = "interrupted", "cancellation"
+	f.pages[1].Items[1].Body = mustAgentJSON(turn)
+	// The original accepted turn binding was committed before the user stop.
+	observed, err := l.readStructured(context.Background(), s)
+	if err != nil {
+		t.Fatal(err)
+	}
+	s.Implementation = observed.Implementation
+	state, err := l.agentState(s)
+	if err != nil {
+		t.Fatal(err)
+	}
+	state.Attempted = true
+	s.Implementation, err = l.agentEnvelope(s, state)
+	if err != nil {
+		t.Fatal(err)
+	}
+	r := request(s, b.LifecycleStopExecution, b.LifecycleInput{Stop: &b.StopInput{TurnID: state.TurnID}})
+	receipt, err := l.StopLifecycle(context.Background(), r, nil)
+	if err == nil || receipt.State.Stopped || receipt.TurnEvidence == nil || receipt.TurnEvidence.NativeOutcome != "cancelled" || !receipt.TurnEvidence.FinalVerified || f.closes != 1 {
+		t.Fatal("stop conflated business result and exit proof", receipt, err)
+	}
+	reads := f.reads
+	raw, _ := json.Marshal(receipt)
+	r.Operation.Receipt = raw
+	receipt, _, err = l.Reconcile(context.Background(), r)
+	if err == nil || receipt.TurnEvidence == nil || receipt.TurnEvidence.NativeOutcome != "cancelled" || f.closes != 1 || f.reads != reads || receipt.State.Stopped {
+		t.Fatal("original stop result replayed or lost", receipt, err, f.reads, reads)
 	}
 }
 
@@ -263,9 +357,16 @@ func TestStructuredObserverBindsDelayedNativeStart(t *testing.T) {
 	f.pages[0].ActionablePromptIDs = []string{"native-approval"}
 	o := l.observeStructured(s)
 	defer o.Close(context.Background())
-	for _, kind := range []b.EventKind{b.EventStarted, b.EventStatus, b.EventCompleted} {
+	for _, kind := range []b.EventKind{b.EventStarted, b.EventStatus, "", b.EventCompleted} {
 		select {
 		case event := <-o.Events():
+			if kind == "" {
+				if event.PublicMessage == nil || event.PublicMessage.TurnID != "native-turn" || event.PublicMessage.SessionID != agentSessionID(s) || event.Fact.Completed {
+					t.Fatal("public native message lost identity or became completion", event)
+				}
+				event.Persisted <- nil
+				continue
+			}
 			if event.Fact.Kind != kind || event.Fact.StartedTurnID != "native-turn" {
 				t.Fatal(event)
 			}
