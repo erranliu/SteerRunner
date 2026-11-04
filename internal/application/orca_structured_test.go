@@ -156,7 +156,7 @@ func TestSRFreezeRemoteStructuredExecutePinsHostAndSealContract(t *testing.T) {
 	if err := json.Unmarshal(r.Profile[0].Payload, &profile); err != nil {
 		t.Fatal(err)
 	}
-	if profile.PairingHostID != "sha256:66687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925" || profile.Transport.Environment != "id:original-remote" || profile.Transport.NativeTerminal || r.Profile[0].CodecVersion != orca.AgentSessionPairedCloseProfileVersion || resultContract(r) != contracts.ResultFileContract || r.Snapshot.Ref.Protocol != b.ProtocolOrcaAgentSessionV1 || r.LaunchCommand != "" || r.LaunchInput != nil {
+	if profile.PairingHostID != "sha256:66687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925" || profile.Transport.Environment != "id:original-remote" || profile.Transport.NativeTerminal || r.Profile[0].CodecVersion != orca.AgentSessionCloseProfileVersion || resultContract(r) != contracts.ResultFileContract || r.Snapshot.Ref.Protocol != b.ProtocolOrcaAgentSessionV1 || r.LaunchCommand != "" || r.LaunchInput != nil {
 		t.Fatal("remote native owner/host/contract not frozen", profile, r.Snapshot.Ref, r.ResultFileContract)
 	}
 	engine := &Engine{dir: f.state, runs: map[string]*runstate.Record{r.ID: r}}

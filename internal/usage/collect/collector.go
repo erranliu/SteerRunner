@@ -115,7 +115,8 @@ func (c *Collector) observe(ctx context.Context, r *runstate.Record) {
 		var state orca.State
 		var original *orca.StructuredUsageIdentity
 		var err error
-		if snap.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 && snap.Ref.Target.ExternalRuntime != "" {
+		development := r.Request.Workflow.ID == "development" && r.Request.Workflow.Version == 2
+		if snap.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 && (snap.Ref.Target.ExternalRuntime != "" || development) {
 			inputs := make([]b.TurnInput, 0, len(r.Workflow.StageInputs))
 			for _, input := range r.Workflow.StageInputs {
 				if input.AttemptID == snap.Session.AttemptID {
@@ -309,15 +310,23 @@ func pendingUsageInput(s b.LifecycleSnapshot, state orca.State) bool {
 }
 
 func structuredUsageEnded(r *runstate.Record, binding parsers.Binding) bool {
-	if len(binding.Commands) != 1 {
+	if len(binding.Commands) == 0 {
 		return false
 	}
-	command := binding.Commands[0]
+	for _, command := range binding.Commands {
+		if !structuredUsageCommandEnded(r, binding.AttemptID, command) {
+			return false
+		}
+	}
+	return true
+}
+
+func structuredUsageCommandEnded(r *runstate.Record, attempt string, command parsers.Command) bool {
 	if result := r.Result; result != nil && result.Completed && result.CommandID == command.ID && result.SessionID == r.Snapshot.Session.SessionID && result.TurnID == command.NativeTurnID {
 		return true
 	}
 	for _, result := range r.Workflow.StageResults {
-		if result.CommandID == command.ID && result.AttemptID == binding.AttemptID && result.SessionID == r.Snapshot.Session.SessionID && result.TurnID == command.NativeTurnID {
+		if result.CommandID == command.ID && result.AttemptID == attempt && result.SessionID == r.Snapshot.Session.SessionID && result.TurnID == command.NativeTurnID {
 			return true
 		}
 	}
@@ -435,7 +444,7 @@ func (c *Collector) read(ctx context.Context, binding parsers.Binding, p orca.Pr
 			}
 		}
 		open := native.OpenUsageFiles
-		if original != nil {
+		if original != nil && p.Environment != "" {
 			open = native.OpenStructuredUsageFiles
 		}
 		channel, err := open(ctx, p.Environment, runtime, host)

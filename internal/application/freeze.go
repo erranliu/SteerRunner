@@ -176,7 +176,8 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		var settings contracts.OrcaSettings
 		_ = json.Unmarshal(request.Execution.Settings, &settings)
 		agent = settings.AgentName()
-		structured = contracts.OrcaStructuredExecute(request.Execution, request.Workflow)
+		development := contracts.OrcaStructuredDevelopment(request.Execution, request.Workflow)
+		structured = development || contracts.OrcaStructuredExecute(request.Execution, request.Workflow)
 		if settings.Transport.Executable == "" {
 			settings.Transport.Executable = "orca.exe"
 		}
@@ -211,14 +212,14 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		if nativeTerminal && settings.AccessMode == "" {
 			settings.AccessMode = "full_access"
 		}
-		profile := orca.Profile{NativeTerminal: nativeTerminal, Executable: executable, Args: settings.Transport.Args, WaitTimeout: settings.Transport.WaitTimeout, Environment: request.Execution.Target.Environment}
+		profile := orca.Profile{NativeTerminal: nativeTerminal && !structured, Executable: executable, Args: settings.Transport.Args, WaitTimeout: settings.Transport.WaitTimeout, Environment: request.Execution.Target.Environment}
 		target = profile.Target()
 		kind, protocol = b.BackendOrca, b.ProtocolOrcaTerminalV3
 		if structured {
 			settings.AccessMode = "full_access"
 			r.Request.Execution.Settings = canonical(settings)
 			protocol = b.ProtocolOrcaAgentSessionV1
-			structuredProfile := orca.AgentSessionProfile{Transport: profile, Model: settings.AgentLaunch.Model, ReasoningEffort: settings.AgentLaunch.ReasoningEffort, AccessMode: settings.AccessMode}
+			structuredProfile := orca.AgentSessionProfile{Transport: profile, Model: settings.AgentLaunch.Model, ReasoningEffort: settings.AgentLaunch.ReasoningEffort, AccessMode: settings.AccessMode, Development: development}
 			codec = orca.AgentSessionVersion
 			if profile.Environment != "" {
 				host, err := native.UsageHostID(profile.Environment)
@@ -226,7 +227,9 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 					return nil, contracts.Fail(4, "environment_unavailable", "The selected paired Orca host identity is unavailable; no run was accepted.")
 				}
 				structuredProfile.PairingHostID = host
-				codec = orca.AgentSessionPairedCloseProfileVersion
+			}
+			if development || profile.Environment != "" {
+				codec = orca.AgentSessionCloseProfileVersion
 			}
 			key, payload = orca.AgentSessionProfileKey, canonical(structuredProfile)
 		} else {
@@ -599,7 +602,6 @@ func queueInput(r *runstate.Record, input workflow.StageInput, feedback string) 
 				} else if resultContract(r) == contracts.ResultFileSnapshotContract {
 					text = workflow.ResultFileSnapshotInstruction
 				}
-
 				parts = append(parts, m.InputPart{Source: "result_file", Owner: m.RunnerInput, Text: "\n" + text})
 			}
 		}

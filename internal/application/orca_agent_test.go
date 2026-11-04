@@ -34,20 +34,30 @@ func TestSRFreezeOrcaAgent(t *testing.T) {
 			if r.Snapshot.Ref.Agent.Name != want || r.Snapshot.Session.Agent.Name != want || r.View().Execution.Agent != want {
 				t.Fatal("frozen agent or public projection was lost")
 			}
-			if (want == "codex") != (r.LaunchCommand != "") {
-				t.Fatal("Codex launch defaults leaked into another agent", r.LaunchCommand)
+			if r.LaunchCommand != "" {
+				t.Fatal("default launch should not inject a terminal command", r.LaunchCommand)
 			}
-			if want == "codex" && !strings.Contains(r.LaunchCommand, "SetEnvironmentVariable('STEERLINE_PROGRESS_FILE',$null)") {
-				t.Fatal("disabled progress channel inherited another Run's environment")
+			if want == "codex" && (r.Snapshot.Ref.Protocol != b.ProtocolOrcaAgentSessionV1 || r.StopEvidenceScope != orca.AgentSessionStopScope || r.Profile[0].CodecVersion != orca.AgentSessionCloseProfileVersion || resultContract(r) != contracts.ResultFileContract) {
+				t.Fatal("default Codex development did not freeze the structured owner and contracts")
 			}
 			if r.InputDigest != reliable.Digest(canonical(r.Request)) {
 				t.Fatal("frozen request digest is inconsistent")
 			}
 			if agent == "" {
 				settings.Transport.WaitTimeout = "30s"
-				settings.AgentLaunch.Executable = "codex"
 				if !bytes.Equal(r.Request.Execution.Settings, canonical(settings)) {
-					t.Fatal("legacy frozen settings bytes changed", string(r.Request.Execution.Settings))
+					t.Fatal("default settings gained an explicit launch override", string(r.Request.Execution.Settings))
+				}
+			}
+			if want == "codex" {
+				for _, override := range []contracts.AgentSettings{{Executable: "codex"}, {Args: []string{"--no-alt-screen"}}} {
+					settings.AgentLaunch = override
+					f.request.Execution.Settings = canonical(settings)
+					f.input.Input = canonical(f.request)
+					explicit := f.freeze()
+					if explicit.Snapshot.Ref.Protocol != b.ProtocolOrcaTerminalV3 || !strings.Contains(explicit.LaunchCommand, "SetEnvironmentVariable('STEERLINE_PROGRESS_FILE',$null)") {
+						t.Fatal("explicit launch override did not keep the original terminal path", override, explicit.LaunchCommand)
+					}
 				}
 			}
 			if want != "codex" {

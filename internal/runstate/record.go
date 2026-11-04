@@ -178,12 +178,14 @@ func (r *Record) View() contracts.RunView {
 		v.Controls.CanInterrupt = r.Request.Workflow.ID == "conversation" && !r.Closed && r.Allowed && !r.ResumeRequired && !unresolved && r.PendingInterrupt == "" && s.Session.CurrentTurnID != "" && s.Session.CurrentTurnID != s.Session.LastStoppedTurnID
 		v.Controls.CanClose = r.Request.Workflow.ID == "conversation" && !r.Closed
 	}
+	if s.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 {
+		settled := false
+		v.ResourcesSettled = &settled
+	}
 	if r.Request.Workflow.ID == workflow.SingleExecution {
 		v.Closed = r.Closed
 		if s.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 {
 			v.ContentResult = r.ContentResult
-			settled := false
-			v.ResourcesSettled = &settled
 		}
 		v.Controls.CanReply = false
 		v.Controls.CanResume = false

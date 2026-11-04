@@ -7,12 +7,12 @@ func ResultFileCapabilities() any {
 	capabilities["contracts"] = map[string]any{
 		contracts.ResultFileContract: map[string]any{"delivery": capabilities["delivery"]},
 		contracts.ResultFileSnapshotContract: map[string]any{
-			"scope":       "previous remote Orca Codex execute/1 profiles only; frozen at admission",
-			"delivery":    "one bounded snapshot after durable original business result or first original stop processing, including stop unknown; no guarantee producers stopped or future writes cease",
+			"scope":       "previous remote Orca Codex execute/1 and pre-integration structured Codex development/2 profiles; frozen at admission",
+			"delivery":    "one bounded snapshot after first original stop processing, including stop unknown; previous remote execute/1 also allows durable original business end; no guarantee producers stopped or future writes cease",
 			"window":      "original first-end identity and 2-second deadline survive restart; a failed or expired attempt closes collection at version 0; query never reads files",
 			"observed_at": "actual collection time, not an atomic business-end instant",
 		},
 	}
-	capabilities["contract_selection"] = "response contract is frozen per Run; new local and paired remote Orca Codex execute/1 use producer-stop v1 within the original session scope"
+	capabilities["contract_selection"] = "response contract is frozen per Run; new local and paired remote structured Orca Codex execute/1 and development/2 use producer-stop v1 within the original session scope"
 	return capabilities
 }

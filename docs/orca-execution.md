@@ -14,15 +14,16 @@ Orca 提供已有的会话、终端、工作区及执行主机能力。Runner �
 | --- | --- | --- |
 | 本机 Codex execute/1 | 原子 create.firstMessage，一条完整 user 消息；从公开 history/item 取得原 turn 的完整 assistant 文本 | `orca_agent_session`：原 session 的关闭成功回执，或原创建尚未派发 |
 | 新配对远端 Codex execute/1 | 原子首消息及原 turn 完整 assistant 文本，按原会话/回合绑定公开 usage | `orca_agent_session`：按原会话关闭成功回执或原创建未派发结算 |
-| 本机/远端 Codex development/2，无显式 helper | 原生终端及原输入/回合查询；真实 Git/PR 身份继续核验 | `orca_terminal`：原 handle/incarnation 退出或完整清单缺席 |
+| 新本机/配对远端 Codex development/2，默认启动 | 原子首消息及同一会话的授权续轮；原 turn 最后一条完整 assistant 消息继续交给现有 Workflow | `orca_agent_session`：原 session 关闭确认后，结束该 Run 的恢复授权 |
+| 本机/远端 Codex development/2，显式 executable/args，或旧冻结终端配置 | 原生终端及原输入/回合查询；真实 Git/PR 身份继续核验 | `orca_terminal`：原 handle/incarnation 退出或完整清单缺席 |
 | 显式受管 Codex、audited | 既有 helper/control/history 及对应模型/工作区来源 | `orca_local_codex_resources`：既有登记终端与 helper/app-server 根范围 |
 | 本机 Pi | 保留其现有工具、终端和回执实现 | 使用该组合原有 scope，不继承其它组合资格 |
 
-DSH 已退役。此候选支持本机和配对远端 Codex execute/1 的结构化会话。远端 Runner 执行、SteerLine 环境检测和发布排空分别验收。实际模型偏好不是独立模型证明；原生 development 不继承 audited 资格，workspace audit 可为 unreported。usage 未提供时如实保持 unreported，不读取 Orca 私有 transcript。
+DSH 已退役。本机和配对远端 Codex execute/1、默认 development/2 使用结构化会话。远端 Runner 执行、SteerLine 环境检测和发布排空分别验收。实际模型偏好不是独立模型证明；原生 development 不继承 audited 资格，workspace audit 可为 unreported。usage 未提供时如实保持 unreported，不读取 Orca 私有 transcript。
 
 ## 输入身份与恢复
 
-受理时冻结执行配置、目标、仓库基线、原输入及停止范围。accepted 不等于 Started；Started 和完整结果必须属于原请求、原 session、原 turn。原子首消息包括用户正文与 Runner 固定指令，模型/effort 经 firstMessage.selection 传入。
+受理时冻结执行配置、目标、仓库基线、原输入及停止范围。accepted 不等于 Started；Started 和完整结果必须属于原请求、原 session、原 turn。原子首消息包括用户正文与 Runner 固定指令，模型/effort 经 firstMessage.selection 传入。普通开发续轮在原会话已核实空闲后使用结构化 send，由持久原操作派生消息身份。反馈、报告和发布仍使用原 Workflow。调用者继续使用 Runner 的 submit、reply、stop 和查询接口。
 
 输入可能已发出而结果未知时，只读对账原操作，不补发 create/send/Enter，不重建替代会话。额外用户输入、错误归属、缺页或缩短正文不能被当作完整原结果。持久化授权撤销后不再派发业务输入；迟到结果不能恢复授权。
 
@@ -32,11 +33,11 @@ Runner 在原工作区准备独立、受限的 progress/result 文件，保存�
 
 Agent 在执行读取这些变量的脚本前，将绑定解析为现有文件的绝对路径，在该次命令进程设置 `STEERLINE_RESULT_FILE` / `STEERLINE_PROGRESS_FILE`，让子脚本继承；保持调用者原 executable/参数。Agent 不猜路径、不补造初始报告。固定行为指令来自 workflow 包资产，动态部分仅携带本次文件路径，并计入现有 Runner 输入预算。
 
-脚本负责结果内容；Runner 校验归属并保存原始字节。本机及新配对远端 execute/1 的原会话关闭确认后，结果通道沿原规则封存。早期远端结构化 profile 保留原停止未知和既有有界快照窗口。脚本退出、模型成功、报告 completed/ready、Workflow 成功分别表达：关闭成功不会把退出码 1、缺报告或无效报告改成通过。结果文件写者须在命令返回前完成；不承诺管理脱离会话的任意后台写者。
+脚本负责结果内容；Runner 校验归属并保存原始字节。本机及配对远端新结构化 Run 的原会话关闭确认后，结果通道沿 v1 封存。普通开发的单轮结束、等待反馈和 pr_ready 不触发封存。早期远端 execute 与预集成 development profile 保留原停止未知和既有有界快照窗口。脚本退出、模型成功、报告 completed/ready、Workflow 成功分别表达：关闭成功不会把退出码 1、缺报告或无效报告改成通过。结果文件写者须在命令返回前完成；不承诺管理脱离会话的任意后台写者。
 
 ## 会话停止与已接受限制
 
-**Orca 链路不保证全部派生进程或额外主机资源正确清理。这个限制不成为正常业务链路的额外门禁。** 对本机及新配对远端 Codex execute/1 的结构化会话，停止资格是精确绑定原 session 的 close 成功回执，不是主机级资源清场。`working=false`、回合结束、观察断线或界面消失均不能替代该回执。
+**Orca 链路不保证全部派生进程或额外主机资源正确清理。这个限制不成为正常业务链路的额外门禁。** 对本机及配对远端已启用原会话结算的结构化会话，停止资格是精确绑定原 session 的 close 成功回执，不是主机级资源清场。`working=false`、回合结束、观察断线或界面消失均不能替代该回执。
 
 | 原事实 | Runner 行为 |
 | --- | --- |
@@ -52,7 +53,7 @@ Agent 在执行读取这些变量的脚本前，将绑定解析为现有文件�
 
 ## 对 SteerLine 各链路的影响
 
-环境检测消费原最终报告和原会话停止事实；会话关闭确认后可正常完成，不因额外清理缺少保证继续显示检测中。SteerLine 继续要求 stopped、原封存合同、原生成功和匹配报告。新远端停止与 v1 封存的复验及远端环境检测的发布条件见[解阻验收](acceptance/orca-structured-prompt-input-p1-unblock.md)。普通执行、结果发布和取消同样遵守各自业务条件。
+环境检测消费原最终报告和原会话停止事实；会话关闭确认后可正常完成，不因额外清理缺少保证继续显示检测中。SteerLine 继续要求 stopped、原封存合同、原生成功和匹配报告。新远端停止与 v1 封存的复验及远端环境检测的发布条件见[解阻验收](acceptance/orca-structured-prompt-input-p1-unblock.md)。普通执行、结果发布和取消同样遵守各自业务条件。默认普通开发的多轮停止和排空见 [P2 验收](acceptance/orca-structured-development-p2.md)。
 
 服务停止仅代表 Runner writer 退出，不代表活动 session 已关闭。重启核对原身份及原操作，不重发输入。换构建部署仍要求原 writer 已退出、业务与未完成控制已经收尾、各 Run 满足其冻结停止 scope；原 session 已确认关闭时，额外资源清理未知不单独阻断部署。close 自身未知仍按原停止边界处理，不用换目录或删库绕过。
 

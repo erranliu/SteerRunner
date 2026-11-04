@@ -72,7 +72,11 @@ func (e *Engine) HandleResultFile(id string) contracts.Response {
 }
 
 func resultContract(r *runstate.Record) string {
-	if r.ResultFileContract == contracts.ResultFileSnapshotContract && r.Request.Execution.Adapter == "orca-terminal" && r.Snapshot.Ref.Backend == b.BackendOrca && r.Snapshot.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 && r.Snapshot.Ref.Agent.Name == "codex" && r.Request.Execution.Target.Kind == "orca_environment" && r.Request.Execution.Target.Environment != "" && r.Request.Workflow.ID == "execute" && r.Request.Workflow.Version == 1 {
+	if r.ResultFileContract != contracts.ResultFileSnapshotContract || r.Request.Execution.Adapter != "orca-terminal" || r.Snapshot.Ref.Backend != b.BackendOrca || r.Snapshot.Ref.Protocol != b.ProtocolOrcaAgentSessionV1 || r.Snapshot.Ref.Agent.Name != "codex" {
+		return contracts.ResultFileContract
+	}
+	selected, target := r.Request.Workflow, r.Request.Execution.Target
+	if selected.ID == "development" && selected.Version == 2 || selected.ID == "execute" && selected.Version == 1 && target.Kind == "orca_environment" && target.Environment != "" {
 		return contracts.ResultFileSnapshotContract
 	}
 	return contracts.ResultFileContract

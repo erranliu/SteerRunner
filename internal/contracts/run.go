@@ -290,6 +290,21 @@ func OrcaStructuredExecute(execution Execution, selected Workflow) bool {
 	return json.Unmarshal(execution.Settings, &settings) == nil && settings.AgentName() == "codex"
 }
 
+// OrcaStructuredDevelopment selects new default-launch development Runs.
+func OrcaStructuredDevelopment(execution Execution, selected Workflow) bool {
+	local := execution.Target.Kind == "local" && execution.Target.Environment == ""
+	remote := execution.Target.Kind == "orca_environment" && execution.Target.Environment != ""
+	if execution.Adapter != "orca-terminal" || !local && !remote || selected.ID != "development" || selected.Version != 2 {
+		return false
+	}
+	var settings OrcaSettings
+	if json.Unmarshal(execution.Settings, &settings) != nil || settings.AgentName() != "codex" {
+		return false
+	}
+	launch := settings.AgentLaunch
+	return launch.Executable == "" && len(launch.Args) == 0 && launch.RuntimeExecutable == "" && launch.RuntimeSHA256 == ""
+}
+
 // ValidateRunConfiguration is pure admission; it performs no environment I/O.
 func ValidateRunConfiguration(data []byte) *Fault {
 	invalid := Fail(2, "invalid_input", "Run configuration does not satisfy the published contract.")

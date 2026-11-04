@@ -63,6 +63,12 @@ func (s *Store) UsageRuns(ctx context.Context) ([]*runstate.Record, error) {
 			// or giving this projection any scheduling/control authority. Legacy
 			// records retain their existing projection, including unknown config.
 			var facts struct {
+				Request struct {
+					Workflow struct {
+						ID      string `json:"id"`
+						Version int    `json:"version"`
+					} `json:"workflow"`
+				} `json:"request"`
 				Workflow struct {
 					StageInputs []struct {
 						CommandID string `json:"command_id"`
@@ -80,6 +86,7 @@ func (s *Store) UsageRuns(ctx context.Context) ([]*runstate.Record, error) {
 				}
 			}
 			if json.Unmarshal(raw, &facts) == nil {
+				r.Request.Workflow.ID, r.Request.Workflow.Version = facts.Request.Workflow.ID, facts.Request.Workflow.Version
 				for _, input := range facts.Workflow.StageInputs {
 					r.Workflow.StageInputs = append(r.Workflow.StageInputs, workflow.StageInput{CommandID: input.CommandID, AttemptID: input.AttemptID, Prompt: input.Prompt})
 				}
