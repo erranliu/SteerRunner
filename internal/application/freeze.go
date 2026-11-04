@@ -327,19 +327,27 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		return nil, contracts.Fail(2, "invalid_input", "Invalid base branch.")
 	}
 	baseRef := "refs/remotes/" + request.Repository.Remote + "/" + request.Repository.BaseBranch
-	// A local clone copies the caller's branch heads, which can lag its fetched
-	// remote refs. Warm caches also retain old heads. Refresh the exact target
-	// before checking ancestry without changing the caller's pinned revision.
-	if _, err := git.Output(ctx, cache, "fetch", "--no-tags", "--no-write-fetch-head", "--", request.Repository.Remote, "+refs/heads/"+request.Repository.BaseBranch+":"+baseRef); err != nil {
-		return nil, contracts.Fail(4, "environment_unavailable", "Cannot refresh the configured base branch; no run was accepted. "+redactDiagnostic(r, err.Error()))
+	base := request.Repository.BaseRevision
+	callerPrepared := request.Workflow.ProjectPolicySlots != nil || request.Workflow.ID == workflow.SingleExecution
+	hasCommit := func(dir string) bool {
+		kind, err := git.Output(ctx, dir, "--no-replace-objects", "cat-file", "-t", base)
+		return err == nil && strings.TrimSpace(string(kind)) == "commit"
 	}
-	if _, err := git.Output(ctx, cache, "cat-file", "-e", request.Repository.BaseRevision+"^{commit}"); err != nil {
-		if _, err := git.Output(ctx, cache, "fetch", "--no-tags", request.Repository.Remote, request.Repository.BaseRevision); err != nil {
+	if !callerPrepared || !hasCommit(cache) {
+		_, err := git.Output(ctx, cache, "fetch", "--no-tags", "--no-write-fetch-head", "--", request.Repository.Remote, "+refs/heads/"+request.Repository.BaseBranch+":"+baseRef)
+		if err != nil && !callerPrepared {
+			return nil, contracts.Fail(4, "environment_unavailable", "Cannot refresh the configured base branch; no run was accepted. "+redactDiagnostic(r, err.Error()))
+		}
+	}
+	if !hasCommit(cache) {
+		if _, err := git.Output(ctx, cache, "fetch", "--no-tags", "--no-write-fetch-head", "--", request.Repository.Remote, base); err != nil || !hasCommit(cache) {
 			return nil, contracts.Fail(2, "invalid_input", "The pinned base commit is unavailable.")
 		}
 	}
-	if _, err := git.Output(ctx, cache, "merge-base", "--is-ancestor", request.Repository.BaseRevision, baseRef); err != nil {
-		return nil, contracts.Fail(2, "invalid_input", "Pinned base is not in the configured base branch.")
+	if !callerPrepared {
+		if _, err := git.Output(ctx, cache, "merge-base", "--is-ancestor", base, baseRef); err != nil {
+			return nil, contracts.Fail(2, "invalid_input", "Pinned base is not in the configured base branch.")
+		}
 	}
 	if request.Execution.Adapter == "codex-app-server" {
 		private := privateRunRepository(dir, request.Repository, id)
@@ -354,10 +362,17 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		if _, err = git.Output(ctx, staging, "remote", "set-url", request.Repository.Remote, request.Repository.URL); err != nil {
 			return nil, err
 		}
-		// Local clone copies branch heads, not the refreshed tracking ref. Keep
-		// the exact validated base visible in the worker's independent clone.
-		if _, err = git.Output(ctx, staging, "fetch", "--no-tags", "--no-write-fetch-head", "--", cache, "+"+baseRef+":"+baseRef); err != nil {
-			return nil, err
+		// A local clone copies branch heads. The fixed object may only be in
+		// the cache, independently of the tracking ref used for publication.
+		if _, refErr := git.Output(ctx, cache, "show-ref", "--verify", "--quiet", baseRef); refErr == nil {
+			if _, err = git.Output(ctx, staging, "fetch", "--no-tags", "--no-write-fetch-head", "--", cache, "+"+baseRef+":"+baseRef); err != nil {
+				return nil, err
+			}
+		}
+		if !hasCommit(staging) {
+			if _, err = git.Output(ctx, staging, "fetch", "--no-tags", "--no-write-fetch-head", "--", cache, base); err != nil || !hasCommit(staging) {
+				return nil, contracts.Fail(4, "environment_unavailable", "Cannot copy the pinned base commit to the private Run repository.")
+			}
 		}
 		if err = os.Rename(staging, private); err != nil {
 			return nil, err

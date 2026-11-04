@@ -74,6 +74,9 @@ func (e *Engine) advance(id string, w *worker) bool {
 	}
 	e.mu.Lock()
 	r := e.runs[id].Clone()
+	if r.PendingStop != "" || r.PendingResume != "" || r.ResumeRequired {
+		w.freshWorkspace, w.startupWorkspaceChecked = false, false
+	}
 	e.mu.Unlock()
 
 	// Recovery only samples an already-ended original execution. No port or
@@ -162,7 +165,14 @@ func (e *Engine) advance(id string, w *worker) bool {
 		return false
 	}
 	if r.Request.Execution.Adapter == "codex-app-server" && r.Snapshot.Workspace.Path != "" {
-		if err := e.verifyPolicyResources(r); err != nil {
+		if !w.freshWorkspace && !w.startupWorkspaceChecked && r.WorkspaceFact != nil && !fileInputDispatched(r) {
+			if err := e.verifyRecoveredStartup(r); err != nil {
+				e.block(id, "workspace_unverified", err, false)
+				return false
+			}
+			w.startupWorkspaceChecked = true
+		}
+		if err := e.verifyPolicyResources(r, w.freshWorkspace); err != nil {
 			e.block(id, "permission_resources_unverified", err, false)
 			return false
 		}
@@ -371,6 +381,11 @@ func (e *Engine) invoke(id string, w *worker, p b.LifecyclePort, index int, reco
 		}
 	}
 	err := e.commitLocked(next, nil, "operation_"+status)
+	if err == nil && !reconcile && status == string(b.OperationConfirmed) &&
+		op.Action == string(b.LifecyclePrepareWorkspace) && savedReceipt.Workspace != nil &&
+		savedReceipt.Workspace.InspectionScope == "revision" && next.Allowed && next.PendingStop == "" {
+		w.freshWorkspace = true
+	}
 	e.mu.Unlock()
 	if err != nil {
 		if result.Observer != nil {

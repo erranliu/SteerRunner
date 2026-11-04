@@ -108,6 +108,33 @@ func (f *baseRefreshFixture) freeze() *runstate.Record {
 	return r
 }
 
+func TestSRCallerPreparedBaseSurvivesTargetRewrite(t *testing.T) {
+	f := newBaseRefreshFixture(t, "origin", "main")
+	f.request.Workflow.ProjectPolicySlots = []string{"git"}
+	f.input.Input = canonical(f.request)
+	f.freeze()
+	f.git(f.writer, "push", "--force", f.remoteName, f.initial+":refs/heads/main")
+	r := f.freeze()
+	if got := f.git(r.RepositoryPath, "cat-file", "-t", f.pinned); got != "commit" {
+		t.Fatalf("private clone lacks fixed base: %s", got)
+	}
+	policies := r.Workflow.ProjectPolicies
+	if policies == nil || len(policies.Files) != 1 || policies.Files[0].Slot != "git" || !policies.Files[0].Exists || policies.Files[0].SHA256 != "" {
+		t.Fatalf("caller slots were not used directly: %+v", policies)
+	}
+	f.request.Workflow.ProjectPolicySlots = []string{}
+	f.input.Input = canonical(f.request)
+	r = f.freeze()
+	if r.Workflow.ProjectPolicies == nil || len(r.Workflow.ProjectPolicies.Files) != 0 {
+		t.Fatal("explicit empty selection was lost")
+	}
+	f.request.Repository.BaseRevision = strings.Repeat("a", 40)
+	f.input.Input = canonical(f.request)
+	if r, err := freeze(context.Background(), f.state, f.input); err == nil || r != nil {
+		t.Fatal("unavailable commit was accepted", err)
+	}
+}
+
 func TestSRFreezeBaseBranchRefresh(t *testing.T) {
 	t.Run("local-branch-behind", func(t *testing.T) {
 		f := newBaseRefreshFixture(t, "origin", "main")

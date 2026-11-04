@@ -22,7 +22,7 @@ func (e *Engine) runsPolicyMissing(id string) bool {
 
 // Qualification is committed before session creation. Reconciliation of an
 // existing native effect never fabricates resources for an unqualified session.
-func (e *Engine) verifyPolicyResources(r *runstate.Record) error {
+func (e *Engine) verifyPolicyResources(r *runstate.Record, fresh bool) error {
 	s := &r.Snapshot
 	identity := codex.PolicyResourceIdentity{ProjectID: s.Session.ProjectID, ExecutionID: s.Session.ExecutionID, AttemptID: s.Session.AttemptID, Generation: s.ResourceGeneration, ConfigDigest: s.ConfigurationDigest}
 	if s.PolicyResources != nil {
@@ -31,7 +31,7 @@ func (e *Engine) verifyPolicyResources(r *runstate.Record) error {
 	if s.Ref.External.Kind != "" || s.Session.SessionID != "" && s.Session.AttemptNumber <= 1 {
 		return errors.New("original session has no verified permission resources; preserve it without new input")
 	}
-	if err := e.attachWriteRoots(r); err != nil {
+	if err := e.attachWriteRoots(r, fresh); err != nil {
 		return err
 	}
 	ctx, cancel := context.WithTimeout(e.ctx, 30*time.Second)
@@ -54,14 +54,23 @@ func (e *Engine) verifyPolicyResources(r *runstate.Record) error {
 	return nil
 }
 
-func (e *Engine) attachWriteRoots(r *runstate.Record) error {
+func (e *Engine) verifyRecoveredStartup(r *runstate.Record) error {
+	repo := workspace.Repository{Path: r.RepositoryPath, CommonDir: r.RepositoryCommon}
+	return workspace.VerifyInitialClean(e.ctx, gitHost(), repo, &r.Snapshot.Workspace)
+}
+
+func (e *Engine) attachWriteRoots(r *runstate.Record, fresh bool) error {
 	if r.Request.Conversation != nil || r.Request.Generate != nil {
 		return verifyContentDirectory(r)
 	}
 	if r.Request.Execution.Adapter != "codex-app-server" {
 		return nil
 	}
-	roots, err := workspace.ResolveLinkedResources(e.ctx, gitHost(), workspace.Repository{Path: r.RepositoryPath, CommonDir: r.RepositoryCommon}, &r.Snapshot.Workspace)
+	resolve := workspace.ResolveLinkedResources
+	if fresh {
+		resolve = workspace.ResolveFreshLinkedResources
+	}
+	roots, err := resolve(e.ctx, gitHost(), workspace.Repository{Path: r.RepositoryPath, CommonDir: r.RepositoryCommon}, &r.Snapshot.Workspace)
 	if err != nil {
 		return err
 	}

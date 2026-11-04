@@ -36,10 +36,11 @@ type Documents struct {
 }
 
 type Workflow struct {
-	ID              string                  `json:"id"`
-	Version         int                     `json:"version"`
-	PromptOverrides map[string]string       `json:"prompt_overrides,omitempty"`
-	AuditModel      *workflow.ModelSettings `json:"audit_model,omitempty"`
+	ID                 string                  `json:"id"`
+	Version            int                     `json:"version"`
+	PromptOverrides    map[string]string       `json:"prompt_overrides,omitempty"`
+	ProjectPolicySlots []string                `json:"project_policy_slots,omitzero"`
+	AuditModel         *workflow.ModelSettings `json:"audit_model,omitempty"`
 }
 
 type Target struct {
@@ -335,6 +336,21 @@ func ValidateRunConfiguration(data []byte) *Fault {
 		_ = json.Unmarshal(value.Execution.Settings, &settingsFields)
 		if _, present := settingsFields["github_auth"]; present {
 			return invalid
+		}
+	}
+	if _, present := workflowFields["project_policy_slots"]; present {
+		if profile.ID != "development" && profile.ID != "development-audited" || value.Workflow.ProjectPolicySlots == nil {
+			return invalid
+		}
+		allowed := map[string]bool{}
+		for _, slot := range workflow.PolicySlots() {
+			allowed[slot.Slot] = true
+		}
+		for _, slot := range value.Workflow.ProjectPolicySlots {
+			if !allowed[slot] {
+				return invalid
+			}
+			delete(allowed, slot)
 		}
 	}
 	if raw, present := workflowFields["audit_model"]; present {

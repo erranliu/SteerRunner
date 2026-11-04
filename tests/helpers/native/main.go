@@ -317,6 +317,15 @@ func (s *server) call(request rpc) (map[string]any, []map[string]any) {
 		if err := appendCall(map[string]any{"method": "turn/start", "thread": s.thread.ID, "cwd": s.thread.Cwd, "prompt": prompt, "model": str("model"), "effort": str("effort")}); err != nil {
 			return fail(err)
 		}
+		if expected := os.Getenv("STEERRUNNER_EXPECT_ARRANGEMENT_SHA256"); expected != "" {
+			path := os.Getenv("STEERLINE_RESULT_FILE")
+			body, readErr := os.ReadFile(path)
+			sum := sha256.Sum256(body)
+			digest := hex.EncodeToString(sum[:])
+			if err := appendCall(map[string]any{"method": "arrangement/read", "path": path, "sha256": digest, "readable": readErr == nil, "blocked": readErr != nil || digest != expected}); err != nil {
+				return fail(err)
+			}
+		}
 		audit := (strings.HasPrefix(prompt, "Audit the current") || strings.HasPrefix(prompt, "审计当前代码") || strings.HasPrefix(prompt, "根据已有上下文整理指定审计") || strings.HasPrefix(prompt, "审计修复 P0–P2；") || strings.HasPrefix(prompt, "仅报告原审计；"))
 		if os.Getenv("STEERRUNNER_AUDIT_EXPECT_MODELS") == "1" {
 			expectedModel, expectedEffort := "executor", "medium"

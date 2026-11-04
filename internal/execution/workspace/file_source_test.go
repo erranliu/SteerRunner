@@ -38,7 +38,7 @@ func TestResultFileWorkspaceProofRetainsOriginalChecksWithBoundedCalls(t *testin
 	}
 	intent := b.WorkspaceIntent{Path: repository.Path, Branch: strings.TrimSpace(string(branch)), BaseCommit: strings.TrimSpace(string(head))}
 	calls = 0
-	if err := VerifyFileSource(ctx, git, repository, &intent); err != nil || calls > 2 {
+	if err := VerifyFileSource(ctx, git, repository, &intent, true); err != nil || calls > 2 {
 		t.Fatal("original proof exceeded bounded Git calls", err, calls)
 	}
 	for _, name := range []string{"valid", "wrong-branch", "foreign-worktree", "wrong-common-directory"} {
@@ -52,7 +52,7 @@ func TestResultFileWorkspaceProofRetainsOriginalChecksWithBoundedCalls(t *testin
 			repo.CommonDir = filepath.Join(foreign, ".git")
 		}
 		oldErr := Verify(ctx, git, repo, &candidate, false)
-		newErr := VerifyFileSource(ctx, git, repo, &candidate)
+		newErr := VerifyFileSource(ctx, git, repo, &candidate, true)
 		if (oldErr == nil) != (newErr == nil) || (newErr == nil) != (name == "valid") {
 			t.Fatal("workspace boundary changed", name, oldErr, newErr)
 		}
@@ -60,7 +60,7 @@ func TestResultFileWorkspaceProofRetainsOriginalChecksWithBoundedCalls(t *testin
 	if _, err := git.Output(ctx, original, "checkout", "--detach", "--quiet", intent.BaseCommit); err != nil {
 		t.Fatal(err)
 	}
-	if VerifyFileSource(ctx, git, repository, &intent) == nil || Verify(ctx, git, repository, &intent, false) == nil {
+	if VerifyFileSource(ctx, git, repository, &intent, true) == nil || Verify(ctx, git, repository, &intent, false) == nil {
 		t.Fatal("detached worktree accepted")
 	}
 }

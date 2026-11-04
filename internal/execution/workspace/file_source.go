@@ -13,17 +13,28 @@ import (
 // VerifyFileSource checks the same original repository/worktree facts as
 // Verify(initial=false), batching rev-parse outputs to fit the existing finite
 // file-preparation window. It neither prepares a workspace nor permits new roots.
-func VerifyFileSource(ctx context.Context, git Git, repository Repository, intent *b.WorkspaceIntent) error {
+func VerifyFileSource(ctx context.Context, git Git, repository Repository, intent *b.WorkspaceIntent, checkBranch bool) error {
 	if intent == nil || !filepath.IsAbs(intent.Path) || intent.Branch == "" || !commitPattern.MatchString(intent.BaseCommit) || !filepath.IsAbs(repository.Path) || !filepath.IsAbs(repository.CommonDir) {
 		return errors.New("incomplete workspace intent")
 	}
-	real, err := filepath.EvalSymlinks(intent.Path)
-	if err != nil || canonical(real) != canonical(intent.Path) {
+	branch := ""
+	if checkBranch {
+		branch = "refs/heads/" + intent.Branch
+	}
+	return verifyFileWorkspaceIdentity(ctx, git, repository, intent.Path, branch)
+}
+
+func verifyFileWorkspaceIdentity(ctx context.Context, git Git, repository Repository, path, branch string) error {
+	if !filepath.IsAbs(path) || !filepath.IsAbs(repository.Path) || !filepath.IsAbs(repository.CommonDir) {
+		return errors.New("incomplete workspace identity")
+	}
+	real, err := filepath.EvalSymlinks(path)
+	if err != nil || canonical(real) != canonical(path) {
 		return errors.New("worktree path was redirected")
 	}
 	for _, check := range []struct{ directory, root, branch string }{
 		{repository.Path, repository.Path, ""},
-		{intent.Path, intent.Path, "refs/heads/" + intent.Branch},
+		{path, path, branch},
 	} {
 		args := []string{"rev-parse", "--path-format=absolute", "--show-toplevel", "--git-common-dir"}
 		if check.branch != "" {
@@ -55,7 +66,7 @@ func VerifyFileSource(ctx context.Context, git Git, repository Repository, inten
 		}
 	}
 	// Match Verify's directory redirection check even if it changed during Git IO.
-	if info, err := os.Stat(intent.Path); err != nil || !info.IsDir() {
+	if info, err := os.Stat(path); err != nil || !info.IsDir() {
 		return errors.New("original worktree unavailable")
 	}
 	return nil
