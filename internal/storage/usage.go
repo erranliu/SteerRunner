@@ -14,6 +14,7 @@ import (
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/runstate"
 	"github.com/erranliu/SteerRunner/internal/usage"
 	"github.com/erranliu/SteerRunner/internal/usage/api"
@@ -55,7 +56,42 @@ func (s *Store) UsageRuns(ctx context.Context) ([]*runstate.Record, error) {
 		if err = json.Unmarshal(raw, &evidence); err != nil {
 			return nil, err
 		}
-		runs = append(runs, &runstate.Record{ID: evidence.ID, Revision: evidence.Revision, Status: evidence.Status, StopStatus: evidence.StopStatus, CreatedAt: evidence.CreatedAt, LaunchCommand: evidence.LaunchCommand, Snapshot: evidence.Snapshot, Profile: evidence.Profile})
+		r := &runstate.Record{ID: evidence.ID, Revision: evidence.Revision, Status: evidence.Status, StopStatus: evidence.StopStatus, CreatedAt: evidence.CreatedAt, LaunchCommand: evidence.LaunchCommand, Snapshot: evidence.Snapshot, Profile: evidence.Profile}
+		if evidence.Snapshot.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 {
+			// The structured owner stores no prompt bodies in opaque state. Read
+			// only original input/result facts, without decoding workflow config
+			// or giving this projection any scheduling/control authority. Legacy
+			// records retain their existing projection, including unknown config.
+			var facts struct {
+				Workflow struct {
+					StageInputs []struct {
+						CommandID string `json:"command_id"`
+						AttemptID string `json:"attempt_id"`
+						Prompt    string `json:"prompt"`
+					}
+					StageResults []struct {
+						CommandID, AttemptID, TurnID string
+						SessionID                    string `json:"session_id"`
+					}
+				}
+				Result *struct {
+					CommandID, SessionID, TurnID string
+					Completed                    bool
+				}
+			}
+			if json.Unmarshal(raw, &facts) == nil {
+				for _, input := range facts.Workflow.StageInputs {
+					r.Workflow.StageInputs = append(r.Workflow.StageInputs, workflow.StageInput{CommandID: input.CommandID, AttemptID: input.AttemptID, Prompt: input.Prompt})
+				}
+				for _, result := range facts.Workflow.StageResults {
+					r.Workflow.StageResults = append(r.Workflow.StageResults, workflow.StageResult{CommandID: result.CommandID, AttemptID: result.AttemptID, SessionID: result.SessionID, TurnID: result.TurnID})
+				}
+				if result := facts.Result; result != nil && result.Completed {
+					r.Result = &b.TurnEvidence{CommandID: result.CommandID, SessionID: result.SessionID, TurnID: result.TurnID, Completed: true}
+				}
+			}
+		}
+		runs = append(runs, r)
 	}
 	return runs, rows.Err()
 }

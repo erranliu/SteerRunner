@@ -112,6 +112,17 @@ func usagePreparedInitialization(state State, proof UsageInitialization, p Profi
 // UsageInputDigest is independent of the current launch profile. Completed old
 // generations retain their history after a later generation changes that profile.
 func UsageInputDigest(s b.LifecycleSnapshot) string {
+	if s.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 {
+		// This original resource already stores digests and native identities,
+		// never prompt bodies. Include it so newly bound turns invalidate usage
+		// checkpoints independently of the legacy terminal state representation.
+		raw, _ := json.Marshal(struct {
+			Ref            b.ExecutionRef
+			Session        b.SessionContext
+			Implementation []b.ImplementationDataEnvelope
+		}{s.Ref, s.Session, s.Implementation})
+		return digest(raw)
+	}
 	type input struct {
 		Command, Wire, Session      string
 		Accepted, Settled, Rejected bool

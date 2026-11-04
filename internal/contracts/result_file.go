@@ -4,6 +4,7 @@ import "encoding/base64"
 
 const MaxResultBytes = MaxProgressBytes
 const ResultFileContract = "steerrunner-result-file/v1"
+const ResultFileSnapshotContract = "steerrunner-result-file-snapshot/v1"
 const ResultFileEnvironment = "STEERLINE_RESULT_FILE"
 
 type ResultFileInput = ProgressFileInput

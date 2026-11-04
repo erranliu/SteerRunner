@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable"
 	"github.com/erranliu/SteerRunner/internal/execution/workspace"
 	"github.com/erranliu/SteerRunner/internal/runstate"
@@ -39,7 +40,7 @@ func (e *Engine) saveResultPreparationLocked(original *runstate.Record, p *runst
 	current := e.runs[original.ID]
 	if current == nil || progressBinding(current) != progressBinding(original) ||
 		current.PendingStop != "" || progressTerminal(current) || e.ctx.Err() != nil ||
-		current.ResultFile != nil && current.ResultFile.Sealed {
+		current.ResultFileEnd != nil || current.ResultFile != nil && current.ResultFile.Sealed {
 		return errors.New("binding_invalid")
 	}
 	return e.saveResultLocked(original.ID, p)
@@ -61,7 +62,7 @@ func (e *Engine) HandleResultFile(id string) contracts.Response {
 	if r == nil {
 		return contracts.Rejected("", contracts.Fail(5, "run_not_found", "Run was not found."))
 	}
-	v := contracts.ResultFileView{Contract: contracts.ResultFileContract, RunID: id, Encoding: "base64", CollectionStatus: "pending"}
+	v := contracts.ResultFileView{Contract: resultContract(r), RunID: id, Encoding: "base64", CollectionStatus: "pending"}
 	if r.Request.ResultFile == nil {
 		v.CollectionStatus = "disabled"
 	} else if r.ResultFile != nil {
@@ -70,15 +71,39 @@ func (e *Engine) HandleResultFile(id string) contracts.Response {
 	return contracts.Success("", v)
 }
 
+func resultContract(r *runstate.Record) string {
+	if r.ResultFileContract == contracts.ResultFileSnapshotContract && r.Request.Execution.Adapter == "orca-terminal" && r.Snapshot.Ref.Backend == b.BackendOrca && r.Snapshot.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 && r.Snapshot.Ref.Agent.Name == "codex" && r.Request.Execution.Target.Kind == "orca_environment" && r.Request.Execution.Target.Environment != "" && r.Request.Workflow.ID == "execute" && r.Request.Workflow.Version == 1 {
+		return contracts.ResultFileSnapshotContract
+	}
+	return contracts.ResultFileContract
+}
+
+// Called inside the original business-result or stop-receipt transaction.
+// The first end owns the only collection window; later facts cannot refresh it.
+func markResultSnapshotEnd(r *runstate.Record, identity string) {
+	if r.Request.ResultFile == nil || resultContract(r) != contracts.ResultFileSnapshotContract || identity == "" {
+		return
+	}
+	if r.ResultFileEnd == nil && (r.ResultFile == nil || !r.ResultFile.Sealed) {
+		r.ResultFileEnd = &runstate.ResultFileEnd{ID: identity, Deadline: time.Now().UTC().Add(2 * time.Second)}
+	}
+}
+
 // StopStatus alone can be set by a service shutdown that leaves Run authority
 // intact. Require the original whole-execution end as well. pr_ready, one turn,
 // observation loss and an accepted resume are not final-result eligibility.
 func resultEndEligible(r *runstate.Record) bool {
+	if resultContract(r) == contracts.ResultFileSnapshotContract {
+		return r.ResultFileEnd != nil && r.ResultFileEnd.ID != "" && !r.ResultFileEnd.Deadline.IsZero()
+	}
 	return r.StopStatus == "stopped" && r.PendingResume == "" &&
 		(r.Status == "stopped" || r.Status == "completed" || r.Closed)
 }
 
 func resultEndIdentity(r *runstate.Record) string {
+	if resultContract(r) == contracts.ResultFileSnapshotContract && r.ResultFileEnd != nil {
+		return reliable.Digest(canonical([]any{progressBinding(r), r.ResultFileEnd}))
+	}
 	stopID := ""
 	for _, intent := range r.Intents {
 		if intent.Request.Operation.Action == "stop_execution" {
@@ -107,6 +132,11 @@ func (e *Engine) sealResult(parent context.Context, id string) {
 	e.mu.Unlock()
 	ctx, cancel := context.WithTimeout(parent, 2*time.Second)
 	defer cancel()
+	if resultContract(r) == contracts.ResultFileSnapshotContract {
+		var endCancel context.CancelFunc
+		ctx, endCancel = context.WithDeadline(ctx, r.ResultFileEnd.Deadline)
+		defer endCancel()
+	}
 	var data []byte
 	var err error
 	data, err = boundedResultRead(ctx, func() ([]byte, error) { return e.readResult(ctx, r) })
@@ -153,7 +183,7 @@ func (e *Engine) publishResultLocked(original *runstate.Record, data []byte, rea
 		p = &runstate.ResultFile{Progress: runstate.Progress{Workspace: original.Snapshot.Workspace.Path, Binding: progressBinding(original)}}
 	}
 	p.Sealed = true
-	p.View = contracts.ResultFileView{Contract: contracts.ResultFileContract, RunID: original.ID, Encoding: "base64", CollectionStatus: "closed"}
+	p.View = contracts.ResultFileView{Contract: resultContract(original), RunID: original.ID, Encoding: "base64", CollectionStatus: "closed"}
 	if readErr != nil {
 		p.View.Diagnostic = progressDiagnostic(readErr)
 	} else {

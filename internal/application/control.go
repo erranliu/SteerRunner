@@ -294,13 +294,23 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 	prior := e.runs[id]
 	next := prior.Clone()
 	status, diagnostic := operation.Outcome(receipt, err)
-	if next.Snapshot.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 && len(receipt.Implementation) > 0 {
-		if mergeErr := merge(next, receipt); mergeErr != nil {
-			status, diagnostic = string(b.OperationUnknown), mergeErr.Error()
+	stopped := err == nil && receipt.State.Stopped
+	if next.Snapshot.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 {
+		if receiptErr := receipt.ValidateFor(request); receiptErr != nil {
+			status, diagnostic = string(b.OperationUnknown), receiptErr.Error()
+		} else if len(receipt.Implementation) > 0 {
+			if mergeErr := merge(next, receipt); mergeErr != nil {
+				status, diagnostic = string(b.OperationUnknown), mergeErr.Error()
+			}
 		}
+		stopped = stopped && status == string(b.OperationConfirmed)
 	}
 	next.Intents[index].SettleStop(next.Snapshot.Operations, receipt, b.OperationStatus(status))
-	if err == nil && receipt.State.Stopped {
+	if receipt.ValidateFor(request) == nil {
+		e.retainStructuredStopResult(next, receipt)
+	}
+	markResultSnapshotEnd(next, "stop:"+request.Operation.ID)
+	if stopped {
 		next.StopStatus, next.Status, next.Phase = "stopped", "stopped", "stopped"
 		settleContentStatus(next)
 		next.PendingStop = ""
@@ -317,7 +327,7 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 		}
 	}
 	next.Diagnostic = e.redact(next, diagnostic)
-	if err == nil && receipt.State.Stopped {
+	if stopped {
 		if terminal, ok := p.(*orca.Lifecycle); ok && terminal.StopEvidenceScope() != "" {
 			next.Diagnostic = orca.NativeStopDiagnostic
 			if next.StopEvidenceScope == orca.LocalCodexStopScope {

@@ -99,10 +99,12 @@ func Capabilities() any {
 		"stop_evidence":        map[string]any{"run_property": "stop_evidence_scope", "frozen": true, "schema": json.RawMessage(Read("stop-evidence.schema.json")), "orca_terminal": "original runtime/worktree/local-host terminal identity verified exited or absent in a complete inventory; native local and environment contracts; not all descendants or host credentials", "orca_local_codex_resources": "original Orca business/control terminals and registered local helper/app-server roots; explicit managed local Codex contract; not all descendants or host credentials", "orca_agent_session": "original native session close acknowledged at most once; settlement is session-scoped, not detached processes or host cleanup"},
 		"orca_execution_contracts": map[string]any{
 			"structured_execute": map[string]any{
-				"agent": "codex", "workflow": contracts.Workflow{ID: "execute", Version: 1}, "target_kind": "local", "access_mode": "full_access",
+				"agent": "codex", "workflow": contracts.Workflow{ID: "execute", Version: 1}, "target_kind": "local", "target_kinds": []string{"local", "orca_environment"}, "access_mode": "full_access",
 				"input":               "atomic create.firstMessage; one exact text block; explicit model/effort selection; no terminal input or helper",
 				"result":              "all complete assistant messages in the original turn, in journal order; public API does not identify provider final phase",
-				"stop_evidence_scope": orca.AgentSessionStopScope, "session_close_settles_scope": true, "additional_resource_cleanup": "unverified; not a workflow gate", "stop": "original close at most once; successful acknowledgement settles the original session scope", "usage": "unreported; no private transcript reader",
+				"stop_evidence_scope": orca.AgentSessionStopScope, "session_close_settles_scope": true, "additional_resource_cleanup": "unverified; not a workflow gate", "stop": "original close at most once; successful acknowledgement settles the original session scope for new runs; previous paired profiles retain unverified stop",
+				"usage":       "local retains its existing unreported contract; remote uses original StageInput/native turn and public structuredSession source with existing scoped log policy/reader/parser/journal; conflicts remain unverified",
+				"result_file": map[string]string{"local": contracts.ResultFileContract, "orca_environment": contracts.ResultFileContract},
 			},
 			"native": map[string]any{
 				"agent": "codex", "workflow": contracts.Workflow{ID: "development", Version: 2}, "access_mode": "full_access",

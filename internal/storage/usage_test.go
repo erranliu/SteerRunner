@@ -9,6 +9,8 @@ import (
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	"github.com/erranliu/SteerRunner/internal/cost"
+	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/runstate"
 	"github.com/erranliu/SteerRunner/internal/usage"
 	"github.com/erranliu/SteerRunner/internal/usage/api"
@@ -324,6 +326,53 @@ func TestUsageReadOnlyLifecycleProjection(t *testing.T) {
 	for _, r := range runs {
 		if r.ID == "r" && (r.StopStatus != "stopped" || !r.CreatedAt.Equal(now) || r.LaunchCommand != "literal original launch") {
 			t.Fatalf("lifecycle projection dropped facts: %+v", r)
+		}
+	}
+}
+
+func TestUsageStructuredProjectionRetainsOnlyOriginalInputAndEndFacts(t *testing.T) {
+	s := usageStore(t)
+	r := &runstate.Record{ID: "structured", Revision: 1, Status: "reconciling", StopStatus: "unknown", Allowed: true, PendingStop: "must-not-project", Snapshot: b.LifecycleSnapshot{Ref: b.ExecutionRef{Protocol: b.ProtocolOrcaAgentSessionV1}}, Result: &b.TurnEvidence{CommandID: "command", SessionID: "native-session", TurnID: "native-turn", Completed: true, LastMessage: "must-not-project-full-result"}}
+	r.Workflow.StageInputs = []workflow.StageInput{{CommandID: "command", AttemptID: "attempt", Prompt: "one\r\n\r\n中文😀  \n", Model: "must-not-project-model-policy"}}
+	r.Workflow.StageResults = []workflow.StageResult{{CommandID: "command", AttemptID: "attempt", SessionID: "native-session", TurnID: "native-turn", Final: "must-not-project-result-body"}}
+	if err := s.Commit(r, 0, nil); err != nil {
+		t.Fatal(err)
+	}
+	rows, err := s.UsageRuns(context.Background())
+	if err != nil {
+		t.Fatal(err)
+	}
+	var projected *runstate.Record
+	for _, row := range rows {
+		if row.ID == r.ID {
+			projected = row
+		}
+	}
+	if projected == nil || len(projected.Workflow.StageInputs) != 1 || projected.Workflow.StageInputs[0].CommandID != "command" || projected.Workflow.StageInputs[0].AttemptID != "attempt" || projected.Workflow.StageInputs[0].Prompt != r.Workflow.StageInputs[0].Prompt || len(projected.Workflow.StageResults) != 1 || projected.Workflow.StageResults[0].SessionID != "native-session" || projected.Result == nil || !projected.Result.Completed || projected.Result.TurnID != "native-turn" {
+		t.Fatal("structured usage lost frozen input or completed native turn", projected)
+	}
+	if projected.Allowed || projected.PendingStop != "" || projected.Workflow.Config != nil || projected.Workflow.StageInputs[0].Model != "" || projected.Workflow.StageResults[0].Final != "" || projected.Result.LastMessage != "" {
+		t.Fatal("read projection gained authority/config/result body", projected)
+	}
+	// Unknown historical workflow formats remain entirely uninterpreted.
+	var raw map[string]any
+	body, _ := json.Marshal(r)
+	_ = json.Unmarshal(body, &raw)
+	raw["id"] = "legacy-unknown"
+	raw["snapshot"].(map[string]any)["Ref"].(map[string]any)["protocol"] = string(b.ProtocolOrcaTerminalV3)
+	raw["workflow"] = "unknown-historical-format"
+	raw["result"] = "unknown-historical-result"
+	body, _ = json.Marshal(raw)
+	if _, err := s.db.Exec(`INSERT INTO runs(id,revision,body) VALUES(?,?,?)`, "legacy-unknown", 1, body); err != nil {
+		t.Fatal(err)
+	}
+	rows, err = s.UsageRuns(context.Background())
+	if err != nil {
+		t.Fatal("structured projection interpreted legacy business bytes", err)
+	}
+	for _, row := range rows {
+		if row.ID == "legacy-unknown" && (len(row.Workflow.StageInputs) != 0 || row.Result != nil) {
+			t.Fatal("legacy projection changed")
 		}
 	}
 }

@@ -2,8 +2,11 @@ package application
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
+	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -11,6 +14,7 @@ import (
 	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
+	"github.com/erranliu/SteerRunner/internal/runstate"
 	"github.com/erranliu/SteerRunner/internal/storage"
 )
 
@@ -115,5 +119,64 @@ func TestStructuredFileEnvironmentBindings(t *testing.T) {
 		if !strings.Contains(prompt, want) {
 			t.Fatalf("missing original file binding %q in %s", want, prompt)
 		}
+	}
+}
+
+func TestSRFreezeRemoteStructuredExecutePinsHostAndSealContract(t *testing.T) {
+	f := newBaseRefreshFixture(t, "origin", "main")
+	cli, err := exec.LookPath("git")
+	if err != nil {
+		t.Fatal(err)
+	}
+	dir := t.TempDir()
+	t.Setenv("ORCA_USER_DATA_PATH", dir)
+	store := map[string]any{"environments": []any{map[string]any{"id": "original-remote", "preferredEndpointId": "endpoint", "endpoints": []any{map[string]string{"id": "endpoint", "endpoint": "ws://127.0.0.1:1", "deviceToken": "fixture-token", "publicKeyB64": base64.StdEncoding.EncodeToString(make([]byte, 32))}}}}}
+	if err := os.WriteFile(filepath.Join(dir, "orca-environments.json"), canonical(store), 0600); err != nil {
+		t.Fatal(err)
+	}
+	f.request.Execution = contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "orca_environment", Environment: "id:original-remote"}, Settings: canonical(contracts.OrcaSettings{AccessMode: "full_access", Transport: contracts.TransportSettings{Executable: cli}, AgentLaunch: contracts.AgentSettings{Model: "requested-model", ReasoningEffort: "high"}})}
+	f.request.Workflow = contracts.Workflow{ID: workflow.SingleExecution, Version: 1, PromptOverrides: map[string]string{"execute": "one\r\n\r\n中文😀  \n"}}
+	f.request.Publication = contracts.Publication{}
+	f.request.ResultFile = &contracts.ResultFileInput{InitialContentBase64: ""}
+	f.input.Input = canonical(f.request)
+	r := f.freeze()
+	if err := queueInput(r, workflow.StageInput{StepID: r.Workflow.StepID}, ""); err != nil {
+		t.Fatal(err)
+	}
+	prompt := r.Snapshot.PendingTurn.Prompt
+	for _, want := range []string{workflow.ResultFileInstruction, workflow.OrcaFileEnvironmentInstruction, `"STEERLINE_RESULT_FILE":".steerrunner/result/` + r.ID + `/result.bin"`, f.request.Workflow.PromptOverrides["execute"]} {
+		if !strings.Contains(prompt, want) {
+			t.Fatalf("missing remote file binding or original body %q in %s", want, prompt)
+		}
+	}
+	if strings.Contains(prompt, workflow.ResultFileSnapshotInstruction) {
+		t.Fatal("new remote seal was presented as a business-end snapshot")
+	}
+	var profile orca.AgentSessionProfile
+	if err := json.Unmarshal(r.Profile[0].Payload, &profile); err != nil {
+		t.Fatal(err)
+	}
+	if profile.PairingHostID != "sha256:66687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925" || profile.Transport.Environment != "id:original-remote" || profile.Transport.NativeTerminal || r.Profile[0].CodecVersion != orca.AgentSessionPairedCloseProfileVersion || resultContract(r) != contracts.ResultFileContract || r.Snapshot.Ref.Protocol != b.ProtocolOrcaAgentSessionV1 || r.LaunchCommand != "" || r.LaunchInput != nil {
+		t.Fatal("remote native owner/host/contract not frozen", profile, r.Snapshot.Ref, r.ResultFileContract)
+	}
+	engine := &Engine{dir: f.state, runs: map[string]*runstate.Record{r.ID: r}}
+	if v := engine.HandleResultFile(r.ID).Data.(contracts.ResultFileView); v.Contract != contracts.ResultFileContract || v.CollectionStatus != "pending" {
+		t.Fatal("pending query hid new contract", v)
+	}
+	port, err := orca.NewLifecycle(engine.setup(r, &worker{}))
+	if err != nil || port.PolicyCapabilities().Preparation.Resource != b.MechanismNotApplicable {
+		t.Fatal("frozen remote factory required a helper or connected on construction", err)
+	}
+	// Construction and admission use only the pairing metadata, never this
+	// deliberately unavailable network endpoint. Old records keep their protocol.
+	old := r.Clone()
+	old.ResultFileContract = contracts.ResultFileSnapshotContract
+	if resultContract(old) != contracts.ResultFileSnapshotContract {
+		t.Fatal("frozen snapshot was reinterpreted")
+	}
+	old.ResultFileContract = ""
+	old.Snapshot.Ref.Protocol = b.ProtocolOrcaTerminalV3
+	if resultContract(old) != contracts.ResultFileContract {
+		t.Fatal("old remote record reinterpreted")
 	}
 }

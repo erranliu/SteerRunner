@@ -2,6 +2,7 @@ package orcatransport
 
 import (
 	"context"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -18,18 +19,24 @@ import (
 const AgentSessionProfileKey = "orca.agent-session-profile"
 const AgentSessionStateKey = "orca.agent-session-state"
 const AgentSessionVersion = 1
+
+// Paired execute profiles at this version settle the original session scope.
+// The earlier paired profile and the resource state keep their original codec.
+const AgentSessionPairedCloseProfileVersion = 2
 const AgentSessionStopScope = "orca_agent_session"
 const AgentSessionStopDiagnostic = "原 Orca 会话关闭结果未核实；额外资源清理不在停止核验范围。"
 const AgentSessionStopLimitation = "Closed the original Orca session; detached processes and additional resource cleanup are not verified."
 const agentResultSource = "orca.agent-session.turn-result.v1"
 
 // Only this frozen protocol uses Orca's native Codex owner. Transport remains
-// the existing local IPC/CLI routing configuration, not another backend.
+// the existing IPC/paired CLI routing configuration, not another backend.
 type AgentSessionProfile struct {
 	Transport       Profile `json:"transport"`
+	PairingHostID   string  `json:"pairing_host_id,omitempty"`
 	Model           string  `json:"model,omitempty"`
 	ReasoningEffort string  `json:"reasoning_effort,omitempty"`
 	AccessMode      string  `json:"access_mode"`
+	version         int
 }
 
 type agentSessionPort interface {
@@ -71,7 +78,7 @@ func decodeAgentSessionProfile(setup b.LifecycleSetup) (AgentSessionProfile, err
 		if e.ImplementationKey != AgentSessionProfileKey {
 			continue
 		}
-		if found || e.CodecVersion != AgentSessionVersion {
+		if found || e.CodecVersion != AgentSessionVersion && e.CodecVersion != AgentSessionPairedCloseProfileVersion {
 			return p, errors.New("invalid structured Orca profile codec")
 		}
 		found = true
@@ -81,11 +88,17 @@ func decodeAgentSessionProfile(setup b.LifecycleSetup) (AgentSessionProfile, err
 		if err := b.DecodeStrictJSON(e.Payload, &p, "trailing structured Orca profile"); err != nil {
 			return p, err
 		}
+		p.version = e.CodecVersion
+	}
+	if p.version == AgentSessionPairedCloseProfileVersion && p.Transport.Environment == "" {
+		return p, errors.New("paired close profile requires an original environment")
 	}
 	wire, _ := json.Marshal(p.Transport)
 	_, err := DecodeProfile(wire)
-	if !found || err != nil || setup.Snapshot.Ref.Backend != b.BackendOrca || setup.Snapshot.Ref.Agent.Name != "codex" || p.AccessMode != "full_access" || p.Transport.Environment != "" || p.Transport.NativeTerminal || p.Transport.Terminal != nil || p.Transport.RuntimeExecutable != "" || p.Transport.RuntimeSHA256 != "" || p.Transport.RuntimeConfigurationDigest != "" || setup.AgentLaunchCommand != "" || setup.Snapshot.Ref.Target.ID != p.Transport.Target().ID {
-		return p, errors.New("structured Orca requires its frozen local native Codex profile")
+	hostDigest, hostErr := hex.DecodeString(strings.TrimPrefix(p.PairingHostID, "sha256:"))
+	validHost := p.Transport.Environment == "" && p.PairingHostID == "" || p.Transport.Environment != "" && strings.HasPrefix(p.PairingHostID, "sha256:") && hostErr == nil && len(hostDigest) == 32 && p.PairingHostID == "sha256:"+hex.EncodeToString(hostDigest)
+	if !found || err != nil || !validHost || setup.Snapshot.Ref.Backend != b.BackendOrca || setup.Snapshot.Ref.Agent.Name != "codex" || p.AccessMode != "full_access" || p.Transport.NativeTerminal || p.Transport.Terminal != nil || p.Transport.RuntimeExecutable != "" || p.Transport.RuntimeSHA256 != "" || p.Transport.RuntimeConfigurationDigest != "" || setup.AgentLaunchCommand != "" || setup.Snapshot.Ref.Target.ID != p.Transport.Target().ID || setup.Snapshot.Ref.Target.ExecutionHost != p.Transport.Target().ExecutionHost {
+		return p, errors.New("structured Orca requires its frozen native Codex profile and original host")
 	}
 	return p, nil
 }
@@ -101,6 +114,9 @@ func (l *Lifecycle) validateStructured(s b.LifecycleSnapshot) error {
 func (l *Lifecycle) agentClient(runtime string) agentSessionPort {
 	if l.agentSessions != nil {
 		return l.agentSessions(runtime)
+	}
+	if l.profile.Environment != "" {
+		return native.NewRemoteAgentSessionClient(l.profile.Environment, runtime, l.agentHostID)
 	}
 	return native.NewLocalAgentSessionClient(runtime)
 }
@@ -128,7 +144,7 @@ func (l *Lifecycle) agentState(s b.LifecycleSnapshot) (agentSessionState, error)
 			return state, err
 		}
 	}
-	if found && (state.RuntimeID == "" || state.Worktree.ID == "" || state.Worktree.InstanceID == "" || state.SessionID != agentSessionID(s) || state.Worktree.ID != s.Ref.External.WorktreeID || state.RuntimeID != s.Ref.External.RuntimeID || s.Ref.External.Kind != "orca_agent_session" || s.Ref.External.Executable != l.profile.Executable || s.Ref.External.ExecutionHost != "local" || s.Ref.External.Terminal != "" || s.Ref.External.PID != 0 || s.Ref.External.Incarnation != "" || state.Worktree.Path != s.Workspace.Path) {
+	if found && (state.RuntimeID == "" || state.Worktree.ID == "" || state.Worktree.InstanceID == "" || state.SessionID != agentSessionID(s) || state.Worktree.ID != s.Ref.External.WorktreeID || state.RuntimeID != s.Ref.External.RuntimeID || s.Ref.External.Kind != "orca_agent_session" || s.Ref.External.Executable != l.profile.Executable || s.Ref.External.ExecutionHost != l.profile.Target().ExecutionHost || s.Ref.External.Terminal != "" || s.Ref.External.PID != 0 || s.Ref.External.Incarnation != "" || state.Worktree.Path != s.Workspace.Path) {
 		return state, errors.New("original structured Orca resource binding changed")
 	}
 	if len(state.CloseReceipt) > 0 && (!state.CloseAttempted || !agentCloseSucceeded(state.CloseReceipt)) {
@@ -207,10 +223,10 @@ func (l *Lifecycle) finishStructuredWorkspace(ctx context.Context, r b.Lifecycle
 		if t.AgentIdentity != "" || t.Orphaned || t.WorktreePath != state.Worktree.Path {
 			return receipt, errors.New("structured workspace contains an unexpected agent or shell")
 		}
-		state.Shells = append(state.Shells, b.ProcessIdentity{Kind: "orca_terminal", Executable: l.profile.Executable, RuntimeID: state.RuntimeID, WorktreeID: state.Worktree.ID, Terminal: t.Handle, Incarnation: t.IncarnationID, ExecutionHost: "local"})
+		state.Shells = append(state.Shells, b.ProcessIdentity{Kind: "orca_terminal", Executable: l.profile.Executable, RuntimeID: state.RuntimeID, WorktreeID: state.Worktree.ID, Terminal: t.Handle, Incarnation: t.IncarnationID, ExecutionHost: l.profile.Target().ExecutionHost})
 	}
 	sort.Slice(state.Shells, func(i, j int) bool { return state.Shells[i].Terminal < state.Shells[j].Terminal })
-	p := b.ProcessIdentity{Kind: "orca_agent_session", Executable: l.profile.Executable, RuntimeID: state.RuntimeID, WorktreeID: state.Worktree.ID, ExecutionHost: "local"}
+	p := b.ProcessIdentity{Kind: "orca_agent_session", Executable: l.profile.Executable, RuntimeID: state.RuntimeID, WorktreeID: state.Worktree.ID, ExecutionHost: l.profile.Target().ExecutionHost}
 	workspace := b.WorkspaceInspection{InspectionScope: "revision", Repository: s.Session.ProjectID, Worktree: state.Worktree.Path, Branch: strings.TrimPrefix(state.Worktree.Branch, "refs/heads/"), Base: r.Input.Workspace.BaseCommit, Head: state.Worktree.Head, CheckedAt: time.Now().UTC()}
 	target := s.Ref.Target
 	target.WorktreeID = state.Worktree.ID
@@ -413,13 +429,18 @@ func (l *Lifecycle) agentHistory(ctx context.Context, state agentSessionState) (
 	return nil, tail, errors.New("complete agent history exceeds page limit")
 }
 func (l *Lifecycle) readStructured(ctx context.Context, s b.LifecycleSnapshot) (b.LifecycleReceipt, error) {
+	receipt, _, err := l.readStructuredActivity(ctx, s)
+	return receipt, err
+}
+
+func (l *Lifecycle) readStructuredActivity(ctx context.Context, s b.LifecycleSnapshot) (b.LifecycleReceipt, *b.PublicMessage, error) {
 	receipt := b.LifecycleReceipt{Disposition: b.OperationUnknown}
 	state, err := l.agentState(s)
 	if err != nil {
-		return receipt, err
+		return receipt, nil, err
 	}
 	if state.CommandID == "" {
-		return receipt, errors.New("original structured input is unavailable")
+		return receipt, nil, errors.New("original structured input is unavailable")
 	}
 	// An incomplete later read cannot erase the already verified native binding
 	// needed to persist its diagnostic; it does not reconfirm input or liveness.
@@ -428,14 +449,14 @@ func (l *Lifecycle) readStructured(ctx context.Context, s b.LifecycleSnapshot) (
 	}
 	items, page, err := l.agentHistory(ctx, state)
 	if err != nil {
-		return receipt, err
+		return receipt, nil, err
 	}
 	var submission *native.AgentSubmission
 	for i := range page.Submissions {
 		sub := &page.Submissions[i]
 		if sub.ClientMessageID == state.MessageID {
 			if submission != nil || sub.PayloadFingerprint != state.BodyFingerprint {
-				return receipt, errors.New("original agent submission binding changed")
+				return receipt, nil, errors.New("original agent submission binding changed")
 			}
 			submission = sub
 		}
@@ -451,7 +472,7 @@ func (l *Lifecycle) readStructured(ctx context.Context, s b.LifecycleSnapshot) (
 			Blocks     []native.AgentTextBlock
 		}
 		if json.Unmarshal(item.Body, &body) != nil {
-			return receipt, errors.New("invalid public agent item")
+			return receipt, nil, errors.New("invalid public agent item")
 		}
 		if body.Kind == "message" && body.Role == "user" {
 			users++
@@ -462,11 +483,11 @@ func (l *Lifecycle) readStructured(ctx context.Context, s b.LifecycleSnapshot) (
 		if body.Kind == "turn" {
 			var value native.AgentTurn
 			if json.Unmarshal(item.Body, &value) != nil {
-				return receipt, errors.New("invalid native turn")
+				return receipt, nil, errors.New("invalid native turn")
 			}
 			if value.UserItemID == userID {
 				if turnItem != "" {
-					return receipt, errors.New("multiple native turns for original input")
+					return receipt, nil, errors.New("multiple native turns for original input")
 				}
 				turn = value
 				turnItem = item.ItemID
@@ -474,19 +495,19 @@ func (l *Lifecycle) readStructured(ctx context.Context, s b.LifecycleSnapshot) (
 		}
 	}
 	if users > 1 || users == 1 && !userMatched {
-		return receipt, errors.New("unexpected user input in original execute session")
+		return receipt, nil, errors.New("unexpected user input in original execute session")
 	}
 	if submission == nil || submission.DispatchState != "accepted" || !userMatched || turn.TurnID == "" {
 		receipt.Diagnostic = "Original structured input/turn not yet verified; read-only reconciliation required."
-		return receipt, nil
+		return receipt, nil, nil
 	}
 	if state.TurnID != "" && state.TurnID != turn.TurnID || state.TurnItemID != "" && state.TurnItemID != turnItem || state.ProviderItemID != "" && state.ProviderItemID != submission.ProviderItemID {
-		return receipt, errors.New("original native turn identity changed")
+		return receipt, nil, errors.New("original native turn identity changed")
 	}
 	state.TurnID, state.TurnItemID, state.ProviderItemID, state.Epoch = turn.TurnID, turnItem, submission.ProviderItemID, page.Epoch
 	receipt.Implementation, err = l.agentEnvelope(s, state)
 	if err != nil {
-		return receipt, err
+		return receipt, nil, err
 	}
 	ended := turn.State == "completed" || turn.State == "interrupted"
 	receipt.State = b.LifecycleStateFacts{SessionID: state.SessionID, SessionGeneration: s.ResourceGeneration, SessionAvailable: true, WorkerLive: page.Working, TurnID: turn.TurnID, InputAccepted: true, TurnStarted: turn.StartedAt > 0, TurnCompleted: ended}
@@ -494,8 +515,39 @@ func (l *Lifecycle) readStructured(ctx context.Context, s b.LifecycleSnapshot) (
 		receipt.State.QuestionPending = true
 		receipt.Diagnostic = "Original Orca session requires native input/approval; structured execute/1 cannot answer it. Stop remains available."
 	}
+	var messages, ids []string
+	var message *b.PublicMessage
+	for _, item := range items {
+		var body struct {
+			Kind, Role string
+			Blocks     []native.AgentTextBlock
+		}
+		_ = json.Unmarshal(item.Body, &body)
+		if body.Kind != "message" || body.Role != "assistant" {
+			continue
+		}
+		if item.TurnScope.Kind != "turn" || item.TurnScope.TurnItemID != turnItem {
+			return receipt, nil, errors.New("assistant result attribution unverified")
+		}
+		var text strings.Builder
+		for _, block := range body.Blocks {
+			if block.Type != "text" {
+				return receipt, nil, errors.New("non-text assistant result cannot be returned completely")
+			}
+			text.WriteString(block.Text)
+		}
+		messages = append(messages, text.String())
+		ids = append(ids, item.ItemID)
+		// The observer can be constructed before the first receipt is merged.
+		// Its confirmed native generation is the same one exported in State,
+		// rather than the pre-creation Session.Generation captured by that call.
+		message = &b.PublicMessage{AttemptID: s.Session.AttemptID, Generation: receipt.State.SessionGeneration, SessionID: state.SessionID, TurnID: turn.TurnID, Kind: "assistant", Text: text.String(), ObservedAt: time.Now().UTC()}
+	}
+	if !receipt.State.TurnStarted {
+		message = nil
+	}
 	if !ended {
-		return receipt, nil
+		return receipt, message, nil
 	}
 	outcome := "unknown"
 	switch turn.Outcome {
@@ -507,37 +559,14 @@ func (l *Lifecycle) readStructured(ctx context.Context, s b.LifecycleSnapshot) (
 		outcome = "cancelled"
 	}
 	if outcome == "unknown" {
-		return receipt, errors.New("original native turn outcome unverified")
+		return receipt, nil, errors.New("original native turn outcome unverified")
 	}
 	if turn.CompletedAt <= 0 || turn.StartedAt <= 0 || turn.CompletedAt < turn.StartedAt {
-		return receipt, errors.New("native turn completion timestamps unverified")
-	}
-	var messages, ids []string
-	for _, item := range items {
-		var body struct {
-			Kind, Role string
-			Blocks     []native.AgentTextBlock
-		}
-		_ = json.Unmarshal(item.Body, &body)
-		if body.Kind != "message" || body.Role != "assistant" {
-			continue
-		}
-		if item.TurnScope.Kind != "turn" || item.TurnScope.TurnItemID != turnItem {
-			return receipt, errors.New("assistant result attribution unverified")
-		}
-		var text strings.Builder
-		for _, block := range body.Blocks {
-			if block.Type != "text" {
-				return receipt, errors.New("non-text assistant result cannot be returned completely")
-			}
-			text.WriteString(block.Text)
-		}
-		messages = append(messages, text.String())
-		ids = append(ids, item.ItemID)
+		return receipt, nil, errors.New("native turn completion timestamps unverified")
 	}
 	result := strings.Join(messages, "\n\n")
 	receipt.TurnEvidence = &b.TurnEvidence{CommandID: state.CommandID, SessionID: state.SessionID, TurnID: turn.TurnID, Started: true, Completed: true, Succeeded: outcome == "succeeded", NativeOutcome: outcome, LastMessage: result, FinalVerified: true, FinalSource: agentResultSource, FinalItemID: turnItem + ":" + digest([]byte(strings.Join(ids, "\n")+"\x00"+result)), FinalSessionID: state.SessionID, FinalTurnID: turn.TurnID, FinalNativeSessionID: state.SessionID, FinalNativeTurnID: turn.TurnID, FinalOrigin: "native_turn_assistant_messages"}
-	return receipt, nil
+	return receipt, message, nil
 }
 func (l *Lifecycle) structuredObserveLifecycle(ctx context.Context, s b.LifecycleSnapshot) (b.LifecycleReceipt, b.LifecycleObserver, error) {
 	receipt, err := l.readStructured(ctx, s)
@@ -553,6 +582,7 @@ func (l *Lifecycle) observeStructured(s b.LifecycleSnapshot) b.LifecycleObserver
 		var failure error
 		started := s.Session.CurrentTurnID != ""
 		lastDiagnostic := ""
+		lastMessage := ""
 		send := func(event b.LifecycleEvent) bool {
 			event.Persisted = make(chan error, 1)
 			select {
@@ -577,7 +607,7 @@ func (l *Lifecycle) observeStructured(s b.LifecycleSnapshot) b.LifecycleObserver
 		}()
 		for {
 			callCtx, done := context.WithTimeout(ctx, 30*time.Second)
-			receipt, err := l.readStructured(callCtx, s)
+			receipt, message, err := l.readStructuredActivity(callCtx, s)
 			done()
 			if err != nil {
 				failure = err
@@ -597,6 +627,12 @@ func (l *Lifecycle) observeStructured(s b.LifecycleSnapshot) b.LifecycleObserver
 					return
 				}
 				lastDiagnostic = receipt.Diagnostic
+			}
+			if message != nil && message.Text != "" && message.Text != lastMessage {
+				if !send(b.LifecycleEvent{PublicMessage: message}) {
+					return
+				}
+				lastMessage = message.Text
 			}
 			if evidence := receipt.TurnEvidence; evidence != nil {
 				event := b.LifecycleEvent{Fact: b.EventFact{Kind: b.EventCompleted, Source: agentResultSource, SourceIdentity: evidence.SessionID, SourceSegment: evidence.TurnID, SourceEventID: evidence.FinalItemID, SessionID: evidence.SessionID, StartedTurnID: evidence.TurnID, Completed: true, Matched: true, Outcome: evidence.NativeOutcome, LastMessage: evidence.LastMessage}, Implementation: receipt.Implementation, Persisted: make(chan error, 1)}
@@ -630,7 +666,14 @@ func agentCloseSucceeded(raw json.RawMessage) bool {
 	return json.Unmarshal(raw, &reply) == nil && reply.OK != nil && *reply.OK
 }
 
+func (l *Lifecycle) closeSettlesAgentSession() bool {
+	return l.profile.Environment == "" || l.profileVersion == AgentSessionPairedCloseProfileVersion
+}
+
 func (l *Lifecycle) verifyAgentSessionStopped(s b.LifecycleSnapshot) error {
+	if !l.closeSettlesAgentSession() {
+		return errors.New(AgentSessionStopDiagnostic)
+	}
 	state, err := l.agentState(s)
 	if err != nil {
 		return err
@@ -682,6 +725,7 @@ func (l *Lifecycle) structuredStop(ctx context.Context, r b.LifecycleRequest, re
 		// Reuse only the original operation's durable native acknowledgement.
 		// A lost response has no acknowledgement and must never replay close.
 		receipt.Operation.Receipt = append([]byte(nil), saved.Operation.Receipt...)
+		receipt.TurnEvidence = saved.TurnEvidence
 		if saved.Disposition != b.OperationRejected && agentCloseSucceeded(saved.Operation.Receipt) {
 			state.CloseAttempted = true
 			state.CloseReceipt = append([]byte(nil), saved.Operation.Receipt...)
@@ -692,8 +736,12 @@ func (l *Lifecycle) structuredStop(ctx context.Context, r b.LifecycleRequest, re
 		mayExist := agentSessionMayExist(r.Snapshot, state)
 		if mayExist {
 			receipt.Operation.Receipt, err = l.agentClient(state.RuntimeID).Close(ctx, state.SessionID)
-			if err == nil && agentCloseSucceeded(receipt.Operation.Receipt) {
-				state.CloseReceipt = append([]byte(nil), receipt.Operation.Receipt...)
+			if agentCloseSucceeded(receipt.Operation.Receipt) {
+				if err == nil {
+					state.CloseReceipt = append([]byte(nil), receipt.Operation.Receipt...)
+				} else {
+					receipt.Operation.Receipt = nil
+				}
 			}
 		} else {
 			// No create was dispatched, so this attempt has no native session.
@@ -706,8 +754,19 @@ func (l *Lifecycle) structuredStop(ctx context.Context, r b.LifecycleRequest, re
 			}
 		}
 	}
-	receipt.Implementation, _ = l.agentEnvelope(r.Snapshot, state)
-	if err == nil && (agentCloseSucceeded(state.CloseReceipt) || state.SessionNotCreated && !agentSessionMayExist(r.Snapshot, state)) {
+	envelope, envelopeErr := l.agentEnvelope(r.Snapshot, state)
+	if envelopeErr != nil {
+		return receipt, errors.Join(err, envelopeErr)
+	}
+	receipt.Implementation = envelope
+	// Retain the original remote turn for result/usage independently of stop.
+	// A missing result permits another read, never another close or input.
+	if l.profile.Environment != "" && receipt.TurnEvidence == nil && state.Attempted && state.TurnID != "" {
+		if observed, readErr := l.readStructured(ctx, r.Snapshot); readErr == nil && observed.TurnEvidence != nil {
+			receipt.TurnEvidence = observed.TurnEvidence
+		}
+	}
+	if l.closeSettlesAgentSession() && err == nil && (agentCloseSucceeded(state.CloseReceipt) || state.SessionNotCreated && !agentSessionMayExist(r.Snapshot, state)) {
 		receipt.Disposition = b.OperationConfirmed
 		receipt.State = b.LifecycleStateFacts{Stopped: true, WorkerAbsent: true}
 		receipt.Diagnostic = AgentSessionStopLimitation

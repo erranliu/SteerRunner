@@ -84,14 +84,19 @@ func resolveStatePairing(environment string) (statePairing, error) {
 }
 
 type stateSocket struct {
-	conn    *websocket.Conn
-	key     [32]byte
-	token   string
-	runtime string
-	mu      sync.Mutex
+	conn         *websocket.Conn
+	key          [32]byte
+	token        string
+	runtime      string
+	mu           sync.Mutex
+	capabilities []string
 }
 
 func openStateSocket(ctx context.Context, pairing statePairing, expectedRuntime string) (*stateSocket, error) {
+	return openStateSocketWithCapabilities(ctx, pairing, expectedRuntime, []string{"agent-session.session-boundary.v1"})
+}
+
+func openStateSocketWithCapabilities(ctx context.Context, pairing statePairing, expectedRuntime string, capabilities []string) (*stateSocket, error) {
 	dialCtx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	conn, response, err := websocket.Dial(dialCtx, pairing.Endpoint, nil)
 	cancel()
@@ -135,7 +140,7 @@ func openStateSocket(ctx context.Context, pairing statePairing, expectedRuntime 
 		return fail(errors.New("Orca state host handshake is unverified"))
 	}
 	if err := socket.write(ctx, map[string]any{"type": "e2ee_auth", "deviceToken": pairing.Token,
-		"clientCapabilities": []string{"agent-session.session-boundary.v1"}}); err != nil {
+		"clientCapabilities": capabilities}); err != nil {
 		return fail(err)
 	}
 	data, err = socket.read(ctx)
@@ -146,13 +151,19 @@ func openStateSocket(ctx context.Context, pairing statePairing, expectedRuntime 
 	if json.Unmarshal(data, &auth) != nil || auth.Type != "e2ee_authenticated" {
 		return fail(errors.New("Orca state pairing authentication was rejected"))
 	}
-	if _, err := socket.call(ctx, "status.get", nil); err != nil {
+	status, err := socket.call(ctx, "status.get", nil)
+	if err != nil {
 		return fail(err)
 	}
+	socket.capabilities = localRuntimeCapabilities(status)
 	return socket, nil
 }
 
 func (s *stateSocket) write(ctx context.Context, value any) error {
+	return s.writeWithCheckpoint(ctx, value, false)
+}
+
+func (s *stateSocket) writeWithCheckpoint(ctx context.Context, value any, mutation bool) error {
 	data, err := json.Marshal(value)
 	if err != nil {
 		return err
@@ -162,9 +173,21 @@ func (s *stateSocket) write(ctx context.Context, value any) error {
 		return err
 	}
 	encrypted := secretbox.Seal(nonce[:], data, &nonce, &s.key)
+	frame := []byte(base64.StdEncoding.EncodeToString(encrypted))
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	if err := s.conn.Write(ctx, websocket.MessageText, []byte(base64.StdEncoding.EncodeToString(encrypted))); err != nil {
+	// Authentication and read-only requests never consume the business intent.
+	// A queued mutation must recheck cancellation and durable authorization only
+	// after encoding and acquiring the writer, immediately before its first frame.
+	if err := ctx.Err(); err != nil {
+		return err
+	}
+	if mutation {
+		if err := CheckpointDispatch(ctx); err != nil {
+			return err
+		}
+	}
+	if err := s.conn.Write(ctx, websocket.MessageText, frame); err != nil {
 		return stateConnectionFailure(err)
 	}
 	return nil
@@ -192,12 +215,20 @@ func (s *stateSocket) read(ctx context.Context) ([]byte, error) {
 }
 
 func (s *stateSocket) request(ctx context.Context, method string, params any) (string, error) {
+	return s.requestWithCapabilities(ctx, method, params, nil, false)
+}
+
+func (s *stateSocket) requestWithCapabilities(ctx context.Context, method string, params any, capabilities []string, mutation bool) (string, error) {
 	var id [16]byte
 	if _, err := rand.Read(id[:]); err != nil {
 		return "", err
 	}
 	requestID := hex.EncodeToString(id[:])
-	return requestID, s.write(ctx, map[string]any{"id": requestID, "deviceToken": s.token, "method": method, "params": params})
+	request := map[string]any{"id": requestID, "deviceToken": s.token, "method": method, "params": params}
+	if capabilities != nil {
+		request["clientCapabilities"] = capabilities
+	}
+	return requestID, s.writeWithCheckpoint(ctx, request, mutation)
 }
 
 func (s *stateSocket) response(data []byte, requestID string) (json.RawMessage, error) {

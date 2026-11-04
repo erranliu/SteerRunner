@@ -2,6 +2,7 @@ package workflow
 
 const ProgressInstruction = "STEERLINE_PROGRESS_FILE: raw<=65536B; lock/read-merge then same-dir temp+atomic replace. Runner preserves bytes, not semantics."
 const ResultFileInstruction = "STEERLINE_RESULT_FILE: raw<=65536B. When asked to write, coordinate writers and use same-dir atomic replace. Sealed once after execution/producers stop; not a success signal."
+const ResultFileSnapshotInstruction = "STEERLINE_RESULT_FILE: independent raw<=65536B; coordinate writers, same-dir atomic replace. Runner takes one snapshot at original business end or explicit stop. Finish writing before the command returns; not a success signal."
 const ContinueProgressInstruction = "progress: same session rules."
 const ContinueResultInstruction = "result: same session rules."
 const ContentRepositoryInstruction = "Investigate only fixed read-only snapshot; no writes/commits/PRs/Tasks/DAGs. Return document paths as logical JSON, use caller Roadmap codes; cite source paths and commit/tree: "
@@ -24,6 +25,6 @@ func InputContract() any {
 		"commit":                CommitInstruction, "success": SuccessLabel, "feedback": FeedbackLabel,
 		"publication": map[string]any{"label": PublicationLabel, "slots": "execute only: provider/repository/base_url/remote/base; no provider query or authentication configuration"},
 		"progress":    map[string]any{"text": ProgressInstruction, "continue": ContinueProgressInstruction, "when": "enabled implementation/audit execute only; reuse rule only if already supplied in this original session"},
-		"result_file": map[string]any{"text": ResultFileInstruction, "continue": ContinueResultInstruction, "when": "enabled development implementation/audit execute or execute/1; reuse rule only if already supplied in this original session"},
+		"result_file": map[string]any{"text": ResultFileInstruction, "remote_orca_execute_snapshot": ResultFileSnapshotInstruction, "continue": ContinueResultInstruction, "when": "enabled development implementation/audit execute or execute/1; remote_orca_execute_snapshot applies only to existing Runs frozen with the legacy remote Orca session profile; reuse rule only if already supplied in this original session"},
 	}
 }

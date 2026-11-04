@@ -137,6 +137,9 @@ func (e *Engine) commitLocked(next *runstate.Record, command *storage.Command, e
 		// new copies. Avoid cloning the whole execution record for this field.
 		next.Progress = prior.Progress
 		next.ResultFile = prior.ResultFile
+		if prior.ResultFileEnd != nil {
+			next.ResultFileEnd = prior.ResultFileEnd
+		}
 	}
 	var expected uint64
 	if prior != nil {

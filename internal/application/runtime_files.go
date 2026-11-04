@@ -47,7 +47,7 @@ func fileState(r *runstate.Record, result bool) *runstate.Progress {
 	}
 	contract, status := contracts.ProgressContract, "initializing"
 	if result {
-		contract, status = contracts.ResultFileContract, "pending"
+		contract, status = resultContract(r), "pending"
 	}
 	return &runstate.Progress{Workspace: r.Snapshot.Workspace.Path, Binding: progressBinding(r), View: contracts.ProgressFileView{Contract: contract, RunID: r.ID, Encoding: "base64", CollectionStatus: status}}
 }

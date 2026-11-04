@@ -61,5 +61,12 @@ func ProgressHost(setup b.LifecycleSetup) (string, error) {
 	if p.Environment == "" {
 		return "local", nil
 	}
+	if setup.Snapshot.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 {
+		profile, err := decodeAgentSessionProfile(setup)
+		if err != nil {
+			return "", err
+		}
+		return profile.PairingHostID, nil
+	}
 	return native.UsageHostID(p.Environment)
 }

@@ -281,7 +281,9 @@ type RunConfiguration struct {
 
 // New admission only. Existing Runs always use their frozen protocol.
 func OrcaStructuredExecute(execution Execution, selected Workflow) bool {
-	if execution.Adapter != "orca-terminal" || execution.Target.Kind != "local" || execution.Target.Environment != "" || selected.ID != workflow.SingleExecution || selected.Version != 1 {
+	local := execution.Target.Kind == "local" && execution.Target.Environment == ""
+	remote := execution.Target.Kind == "orca_environment" && execution.Target.Environment != ""
+	if execution.Adapter != "orca-terminal" || !local && !remote || selected.ID != workflow.SingleExecution || selected.Version != 1 {
 		return false
 	}
 	var settings OrcaSettings
@@ -366,11 +368,11 @@ func ValidateRunConfiguration(data []byte) *Fault {
 			_ = json.Unmarshal(fields["agent_launch"], &launch)
 			for _, name := range []string{"runtime_executable", "runtime_sha256", "executable"} {
 				if _, present := launch[name]; present {
-					return Fail(3, "unsupported_capability", "Local Orca Codex execute/1 uses Orca's native executor; remove explicit agent_launch executable/runtime settings.")
+					return Fail(3, "unsupported_capability", "Orca Codex execute/1 uses Orca's native executor; remove explicit agent_launch executable/runtime settings.")
 				}
 			}
 			if len(settings.AgentLaunch.Args) != 0 {
-				return Fail(3, "unsupported_capability", "Local Orca Codex execute/1 uses Orca's native executor; remove agent_launch.args.")
+				return Fail(3, "unsupported_capability", "Orca Codex execute/1 uses Orca's native executor; remove agent_launch.args.")
 			}
 		}
 	}

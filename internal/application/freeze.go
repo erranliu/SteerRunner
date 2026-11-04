@@ -9,6 +9,7 @@ import (
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
+	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	"github.com/erranliu/SteerRunner/internal/execution/agentlaunch"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/evidence"
@@ -217,7 +218,17 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 			settings.AccessMode = "full_access"
 			r.Request.Execution.Settings = canonical(settings)
 			protocol = b.ProtocolOrcaAgentSessionV1
-			key, codec, payload = orca.AgentSessionProfileKey, orca.AgentSessionVersion, canonical(orca.AgentSessionProfile{Transport: profile, Model: settings.AgentLaunch.Model, ReasoningEffort: settings.AgentLaunch.ReasoningEffort, AccessMode: settings.AccessMode})
+			structuredProfile := orca.AgentSessionProfile{Transport: profile, Model: settings.AgentLaunch.Model, ReasoningEffort: settings.AgentLaunch.ReasoningEffort, AccessMode: settings.AccessMode}
+			codec = orca.AgentSessionVersion
+			if profile.Environment != "" {
+				host, err := native.UsageHostID(profile.Environment)
+				if err != nil {
+					return nil, contracts.Fail(4, "environment_unavailable", "The selected paired Orca host identity is unavailable; no run was accepted.")
+				}
+				structuredProfile.PairingHostID = host
+				codec = orca.AgentSessionPairedCloseProfileVersion
+			}
+			key, payload = orca.AgentSessionProfileKey, canonical(structuredProfile)
 		} else {
 			launch := agentlaunch.Config{AccessMode: settings.AccessMode, Executable: settings.AgentLaunch.Executable, Args: settings.AgentLaunch.Args, Model: settings.AgentLaunch.Model, ReasoningEffort: settings.AgentLaunch.ReasoningEffort}
 			if request.Execution.Target.Kind == "orca_environment" {
@@ -585,6 +596,8 @@ func queueInput(r *runstate.Record, input workflow.StageInput, feedback string) 
 				text := workflow.ResultFileInstruction
 				if priorFileInstruction(r, "result_file") {
 					text = workflow.ContinueResultInstruction
+				} else if resultContract(r) == contracts.ResultFileSnapshotContract {
+					text = workflow.ResultFileSnapshotInstruction
 				}
 
 				parts = append(parts, m.InputPart{Source: "result_file", Owner: m.RunnerInput, Text: "\n" + text})

@@ -61,6 +61,7 @@ type State struct {
 }
 type Lifecycle struct {
 	agentSessions      func(string) agentSessionPort
+	agentHostID        string
 	stopping           atomic.Bool
 	probeProcess       func(*b.ProcessIdentity) b.ProcessProbeFacts
 	uploadStopArtifact func(context.Context, string, string, string, string, io.Reader) error
@@ -118,6 +119,13 @@ func NewLifecycleWithStateFactory(setup b.LifecycleSetup, factory stateFeedFacto
 		return nil, err
 	}
 	l := &Lifecycle{setup: setup, profile: p, profileVersion: version, stateFactory: factory, clock: func() time.Time { return time.Now().UTC() }}
+	if l.structured() {
+		profile, err := decodeAgentSessionProfile(setup)
+		if err != nil {
+			return nil, err
+		}
+		l.agentHostID = profile.PairingHostID
+	}
 	l.probeProcess, l.uploadStopArtifact = process.NewServiceFacts().Probe, UploadWorkspaceArtifact
 	call := func(ctx context.Context, timeout time.Duration, args ...string) ([]byte, error) {
 		command := cliLaunchCommand(p, p.Executable, setup.RepositoryPath, timeout, args...)
@@ -125,6 +133,12 @@ func NewLifecycleWithStateFactory(setup b.LifecycleSetup, factory stateFeedFacto
 			return nil, err
 		}
 		invoke := func(ctx context.Context) ([]byte, error) {
+			if l.structured() && p.Environment != "" {
+				host, err := native.UsageHostID(p.Environment)
+				if err != nil || host != l.agentHostID {
+					return nil, errors.New("original structured Orca pairing changed or is unavailable")
+				}
+			}
 			return setup.ProcessHost.OutputCommand(ctx, command)
 		}
 		if native.PreparationOwnsCLI(ctx) {

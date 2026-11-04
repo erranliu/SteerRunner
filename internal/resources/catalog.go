@@ -65,7 +65,7 @@ func Catalog() CapabilityCatalog {
 						needed := slices.Clone(requirements)
 						structured := contracts.OrcaStructuredExecute(candidate, selection)
 						if structured {
-							needed = []string{"execution_host_authentication", "native_orca_atomic_first_message", "resource_settlement_unverified"}
+							needed = []string{"execution_host_authentication", "native_orca_atomic_first_message", "session_scoped_close_acknowledgement"}
 							selection.PromptOverrides = map[string]string{"execute": "caller operation"}
 						}
 						if profile.AuditModelRequired {
