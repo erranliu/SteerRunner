@@ -3,6 +3,7 @@ package application
 import (
 	"context"
 	"errors"
+	"fmt"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/execution/workspace"
@@ -126,7 +127,7 @@ func (e *Engine) checkDispatchSource(r *runstate.Record, input workflow.StageInp
 	}
 	if state.Kind == "execute" && (state.Contract == "implementation" || state.Contract == "audit" || r.Request.Workflow.ID == workflow.SingleExecution) {
 		if err := e.verifyRequiredInputFile(r); err != nil {
-			return err
+			return fmt.Errorf("%w: %w", errRequiredInputUnverified, err)
 		}
 	}
 	if state.Contract == "final" && workflow.Content(r.Request.Workflow.ID) {

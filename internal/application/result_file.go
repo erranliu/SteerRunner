@@ -15,6 +15,8 @@ import (
 	"github.com/erranliu/SteerRunner/internal/runstate"
 )
 
+var errRequiredInputUnverified = errors.New("required input file is unverified")
+
 func resultPath(r *runstate.Record) string {
 	if r.Request.ResultFile == nil {
 		return ""
@@ -59,8 +61,8 @@ func (e *Engine) verifyRequiredInputFile(r *runstate.Record) error {
 	if !r.Request.ResultFile.IsRequiredInput() {
 		return nil
 	}
-	if r.ResultFile == nil || !r.ResultFile.Initialized {
-		return errors.New("required input file initialization is unverified")
+	if r.ResultFile == nil || !r.ResultFile.InitializationAttempted {
+		return errors.New("required input file has no original initialization attempt")
 	}
 	ctx, cancel := context.WithTimeout(e.ctx, 4*time.Second)
 	defer cancel()

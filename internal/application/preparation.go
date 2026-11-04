@@ -74,7 +74,7 @@ func (e *Engine) prepareRun(id string, w *worker, p b.LifecyclePort, r *runstate
 	}
 	if nativeInputAction(candidate.Action) && r.Snapshot.Workspace.Path != "" && filesNeedPreparation(r) {
 		// Next has established the original workspace/resource/session. Consume
-		// the optional window only now, before committing the first input intent.
+		// the preparation budget now, before committing the first input intent.
 		w.gate.Unlock()
 		e.prepareRuntimeFiles(r)
 		w.gate.Lock()
@@ -109,7 +109,11 @@ func (e *Engine) prepareRun(id string, w *worker, p b.LifecyclePort, r *runstate
 			return false
 		}
 		if checkErr != nil {
-			e.blockRevision(id, r.Revision, "source_unverified", checkErr, false)
+			phase := "source_unverified"
+			if errors.Is(checkErr, errRequiredInputUnverified) {
+				phase = "required_input_unverified"
+			}
+			e.blockRevision(id, r.Revision, phase, checkErr, false)
 			return false
 		}
 	}

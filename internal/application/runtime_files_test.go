@@ -15,6 +15,7 @@ import (
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/execution/workspace"
 	"github.com/erranliu/SteerRunner/internal/runstate"
 )
@@ -29,6 +30,13 @@ func (p *fileBusinessPort) PolicyCapabilities() b.LifecyclePolicyCapabilities {
 func (p *fileBusinessPort) PreparationFacts(context.Context, b.LifecycleSnapshot) (b.PreparationFacts, error) {
 	return b.PreparationFacts{Workspace: b.GateNotApplicable, Resource: b.GateNotApplicable, Session: b.GateNotApplicable}, nil
 }
+
+func (*fileBusinessPort) VerifyManualRecovery(context.Context, b.LifecycleSnapshot) (b.LifecycleRecoveryEvidence, error) {
+	return b.LifecycleRecoveryEvidence{SessionAvailable: true, SessionIdle: true, ResourceAvailable: true}, nil
+}
+
+const native101Arrangement = `{"tests":["N101-CONTENT","N101-SCOPE","demo.progress.roundtrip","demo.progress.retry","demo.progress.cleanup"]}`
+const native101Progress = `{"test.N101-CONTENT":false,"test.N101-SCOPE":false,"test.demo.progress.cleanup":false,"test.demo.progress.retry":false,"test.demo.progress.roundtrip":false}`
 
 func enableTestFiles(t *testing.T, e *Engine, mask int) {
 	t.Helper()
@@ -121,8 +129,8 @@ func TestRuntimeFilesFailureDoesNotGateBusiness(t *testing.T) {
 }
 
 func TestRequiredInputFileGatesBusiness(t *testing.T) {
-	const arrangement = `{"tests":["N101-CONTENT","N101-SCOPE","demo.progress.roundtrip","demo.progress.retry","demo.progress.cleanup"]}`
-	for _, mode := range []string{"exact", "missing", "changed-after-initialization"} {
+	const arrangement = native101Arrangement
+	for _, mode := range []string{"exact", "missing", "changed-after-initialization", "initial-read-unavailable"} {
 		t.Run(mode, func(t *testing.T) {
 			e, w, _ := operationEngine(t)
 			r := e.runs["run"].Clone()
@@ -147,6 +155,8 @@ func TestRequiredInputFileGatesBusiness(t *testing.T) {
 					switch {
 					case mode == "missing":
 						return nil, os.ErrNotExist
+					case mode == "initial-read-unavailable" && prepare:
+						return nil, context.DeadlineExceeded
 					case mode == "changed-after-initialization" && !prepare:
 						return []byte(`{"tests":[]}`), nil
 					default:
@@ -158,9 +168,9 @@ func TestRequiredInputFileGatesBusiness(t *testing.T) {
 			if writes.Load() != 1 {
 				t.Fatalf("required input initialization attempts: %d", writes.Load())
 			}
-			if mode != "exact" {
+			if mode == "missing" || mode == "changed-after-initialization" {
 				got := e.runs["run"]
-				if len(p.requests) != 0 || got.Phase != "source_unverified" || !strings.Contains(got.Diagnostic, "required input file") {
+				if len(p.requests) != 0 || got.Phase != "required_input_unverified" || !strings.Contains(got.Diagnostic, "required input file") {
 					t.Fatalf("unverified file crossed dispatch: requests=%d, phase=%s, diagnostic=%s", len(p.requests), got.Phase, got.Diagnostic)
 				}
 				return
@@ -176,6 +186,120 @@ func TestRequiredInputFileGatesBusiness(t *testing.T) {
 				t.Fatal("required input was exposed as a result")
 			}
 		})
+	}
+}
+
+func TestNative101RequiredInputAndProgressHaveSeparateBudgets(t *testing.T) {
+	e, w, _ := operationEngine(t)
+	r := e.runs["run"].Clone()
+	r.Snapshot.Workspace.Path = t.TempDir()
+	r.Snapshot.WorkspacePlan = r.Snapshot.Workspace
+	r.Request.ResultFile = &contracts.ResultFileInput{RequiredInput: true, InitialContentBase64: base64.StdEncoding.EncodeToString([]byte(native101Arrangement))}
+	r.Request.ProgressFile = &contracts.ProgressFileInput{InitialContentBase64: base64.StdEncoding.EncodeToString([]byte(native101Progress))}
+	if err := e.commitLocked(r, nil); err != nil {
+		t.Fatal(err)
+	}
+	e.advance("run", w)
+	p := &fileBusinessPort{}
+	w.port = p
+	var arrangementReady, progressReady atomic.Bool
+	e.openRuntimeFile = func(_ context.Context, r *runstate.Record, result, _ bool) (*runtimeFileChannel, error) {
+		delay, expected, ready := 2*time.Second, native101Progress, &progressReady
+		if result {
+			delay, expected, ready = 2500*time.Millisecond, native101Arrangement, &arrangementReady
+		}
+		return &runtimeFileChannel{state: fileState(r, result), initialize: func(ctx context.Context, raw []byte) error {
+			if string(raw) != expected {
+				return errors.New("wrong original bytes")
+			}
+			select {
+			case <-ctx.Done():
+				return ctx.Err()
+			case <-time.After(delay):
+				ready.Store(true)
+				return nil
+			}
+		}, read: func(context.Context) ([]byte, error) {
+			if !ready.Load() {
+				return nil, os.ErrNotExist
+			}
+			return []byte(expected), nil
+		}, close: func() error { return nil }}, nil
+	}
+	e.advance("run", w)
+	got := e.runs["run"]
+	if len(p.requests) != 1 || got.ResultFile == nil || !got.ResultFile.Initialized || got.Progress == nil || !got.Progress.Initialized {
+		t.Fatalf("independently valid files were not both initialized before dispatch: requests=%d progress=%+v input=%+v", len(p.requests), got.Progress, got.ResultFile)
+	}
+}
+
+func TestNative101RequiredInputFailurePreservesImplementationOnResume(t *testing.T) {
+	e, w := auditEngine(t)
+	r := e.runs["run"].Clone()
+	r.Snapshot.Ref.RunID, r.Snapshot.Ref.AttemptID = r.ID, r.Snapshot.Session.AttemptID
+	r.Snapshot.Session.ProjectID = r.RepositoryCommon
+	r.Snapshot.Session.WorkflowRunID, r.Snapshot.Session.ExecutionID = r.ID, r.ID
+	r.Snapshot.ConfigurationDigest, r.Snapshot.ResourceGeneration = "config", "generation"
+	r.Request.ResultFile = &contracts.ResultFileInput{RequiredInput: true, InitialContentBase64: base64.StdEncoding.EncodeToString([]byte(native101Arrangement))}
+	if err := e.commitLocked(r, nil); err != nil {
+		t.Fatal(err)
+	}
+	finishStage(t, e, "实施及必要验证已完成。")
+	r = e.runs["run"]
+	audit := *r.Snapshot.PendingTurn
+	implementationID := r.Workflow.ImplementationResultID
+	accepted := workflow.Acquired(r.Workflow, implementationID)
+	if r.Workflow.StepID != workflow.StepAuditCode || accepted == nil || accepted.Status != "satisfied" {
+		t.Fatal("fixture has no accepted implementation and queued audit")
+	}
+	if err := e.saveResultLocked(r.ID, &runstate.ResultFile{Progress: runstate.Progress{InitializationAttempted: true, Initialized: true}}); err != nil {
+		t.Fatal(err)
+	}
+	p := &fileBusinessPort{}
+	w.port = p
+	var reads, preparations atomic.Int32
+	e.openRuntimeFile = func(_ context.Context, r *runstate.Record, result, prepare bool) (*runtimeFileChannel, error) {
+		if !result || prepare {
+			preparations.Add(1)
+			return nil, errors.New("resume must only read the original file")
+		}
+		return &runtimeFileChannel{state: fileState(r, true), read: func(context.Context) ([]byte, error) {
+			switch reads.Add(1) {
+			case 1:
+				return nil, context.DeadlineExceeded
+			case 2:
+				return []byte(`{"tests":[]}`), nil
+			default:
+				return []byte(native101Arrangement), nil
+			}
+		}, close: func() error { return nil }}, nil
+	}
+	w.gate.Lock()
+	defer w.gate.Unlock()
+	for attempt := 0; attempt < 3; attempt++ {
+		if attempt != 0 {
+			r = e.runs["run"].Clone()
+			r.PendingResume = fmt.Sprintf("resume-%d", attempt)
+			if err := e.commitLocked(r, nil); err != nil {
+				t.Fatal(err)
+			}
+			if !e.resumeRun(r.ID, w, p) {
+				t.Fatal("resume did not reauthorize the original audit", e.runs["run"].Diagnostic)
+			}
+		}
+		e.prepareRun("run", w, p, e.runs["run"].Clone())
+		got := e.runs["run"]
+		preserved := workflow.Acquired(got.Workflow, implementationID)
+		if got.Workflow.ImplementationResultID != implementationID || preserved == nil || preserved.Status != "satisfied" || len(preserved.Conflicts) != len(accepted.Conflicts) {
+			t.Fatal("file failure changed the accepted implementation")
+		}
+		if attempt < 2 && (len(p.requests) != 0 || got.Phase != "required_input_unverified" || !got.ResumeRequired) {
+			t.Fatalf("unverified file crossed audit dispatch: requests=%d phase=%s diagnostic=%s", len(p.requests), got.Phase, got.Diagnostic)
+		}
+	}
+	if len(p.requests) != 1 || p.requests[0].Input.Turn == nil || p.requests[0].Input.Turn.CommandID != audit.CommandID || p.requests[0].Input.Turn.Prompt != audit.Prompt || reads.Load() != 3 || preparations.Load() != 0 {
+		got := e.runs["run"]
+		t.Fatalf("expected one dispatch of the original audit after three read-only checks: requests=%d reads=%d preparations=%d phase=%s diagnostic=%s", len(p.requests), reads.Load(), preparations.Load(), got.Phase, got.Diagnostic)
 	}
 }
 

@@ -29,6 +29,8 @@ type runtimeFileSample struct {
 	err   error
 }
 
+const runtimeFilePreparationBudget = 4 * time.Second
+
 func fileState(r *runstate.Record, result bool) *runstate.Progress {
 	p := r.Progress
 	if result {
@@ -69,11 +71,16 @@ func fileInputDispatched(r *runstate.Record) bool {
 	return false
 }
 
-// Claim both optional preparations before I/O, under the same gate as stop.
+// Claim both preparations before I/O, under the same gate as stop.
 // A failed metadata save consumes this service's attempt but permits no write.
 func (e *Engine) prepareRuntimeFiles(original *runstate.Record) {
-	ctx, cancel := context.WithTimeout(e.ctx, 4*time.Second)
-	defer cancel()
+	requiredInput := original.Request.ResultFile.IsRequiredInput()
+	ctx := e.ctx
+	if !requiredInput {
+		shared, cancel := context.WithTimeout(ctx, runtimeFilePreparationBudget)
+		defer cancel()
+		ctx = shared
+	}
 	e.mu.Lock()
 	w := e.workers[original.ID]
 	e.mu.Unlock()
@@ -101,7 +108,7 @@ func (e *Engine) prepareRuntimeFiles(original *runstate.Record) {
 		p := fileState(r, true)
 		p.InitializationAttempted = true
 		next.ResultFile = &runstate.ResultFile{Progress: *p}
-		if r.Request.ResultFile.IsRequiredInput() {
+		if requiredInput {
 			channels = append([]bool{true}, channels...)
 		} else {
 			channels = append(channels, true)
@@ -132,7 +139,11 @@ func (e *Engine) prepareRuntimeFiles(original *runstate.Record) {
 		if !allowed {
 			break
 		}
-		sample := e.sampleRuntimeFile(ctx, next.Clone(), result, true)
+		// Required input and progress each get a full window. The ordinary
+		// output/progress pair remains bounded by the shared parent deadline.
+		channelCtx, cancel := context.WithTimeout(ctx, runtimeFilePreparationBudget)
+		sample := e.sampleRuntimeFile(channelCtx, next.Clone(), result, true)
+		cancel()
 		e.mu.Lock()
 		e.publishFilePreparationLocked(next, sample, result)
 		e.mu.Unlock()
