@@ -21,6 +21,7 @@ type agentFixture struct {
 	create                          native.AgentCreate
 	creates, closes, reads, details int
 	lost                            bool
+	closeRaw                        json.RawMessage
 }
 
 func (f *agentFixture) SupportsCreate(context.Context, string) error { return nil }
@@ -36,6 +37,9 @@ func (f *agentFixture) Close(context.Context, string) (json.RawMessage, error) {
 	f.closes++
 	if f.lost {
 		return nil, errors.New("close response lost")
+	}
+	if f.closeRaw != nil {
+		return f.closeRaw, nil
 	}
 	return json.RawMessage(`{"ok":true}`), nil
 }
@@ -222,7 +226,7 @@ func TestStructuredHistoryFailsClosed(t *testing.T) {
 	}
 }
 
-func TestStructuredCloseNeverProvesSettlementOrReplays(t *testing.T) {
+func TestStructuredLostCloseRemainsUnknownWithoutReplay(t *testing.T) {
 	l, s, f := structuredFixture(t)
 	state, _ := l.agentState(s)
 	state.Attempted = true
@@ -359,6 +363,131 @@ func TestStructuredRecordedPublicResults(t *testing.T) {
 			}
 			if tc.bytes > 0 && (len(receipt.TurnEvidence.LastMessage) != tc.bytes || digest([]byte(receipt.TurnEvidence.LastMessage)) != tc.sha256) {
 				t.Fatal("recorded result truncated or reordered", len(receipt.TurnEvidence.LastMessage))
+			}
+		})
+	}
+}
+
+func TestStructuredCloseAcknowledgementSettlesOnlySessionScope(t *testing.T) {
+	l, s, f := structuredFixture(t)
+	state, _ := l.agentState(s)
+	state.Attempted = true
+	s.Implementation, _ = l.agentEnvelope(s, state)
+	r := request(s, b.LifecycleStopExecution, b.LifecycleInput{Stop: &b.StopInput{TurnID: "native-turn"}})
+	got, err := l.StopLifecycle(context.Background(), r, nil)
+	if err != nil || f.closes != 1 || got.Disposition != b.OperationConfirmed || !got.State.Stopped || !got.State.WorkerAbsent || got.State.WritersAbsent {
+		t.Fatal("session close scope", got, err, f.closes)
+	}
+	settled, _, err := reliable.ApplySessionReceipt(s, nil, got, false)
+	if err != nil {
+		t.Fatal(err)
+	}
+	l.setup.Snapshot = settled
+	if err := VerifyStopped(context.Background(), l.setup); err != nil {
+		t.Fatal("offline session proof", err)
+	}
+	if f.reads != 0 {
+		t.Fatal("offline proof queried or reopened the session")
+	}
+	raw, _ := json.Marshal(got)
+	r.Operation.Receipt = raw
+	restored := &Lifecycle{setup: l.setup, profile: l.profile, client: l.client, agentSessions: l.agentSessions}
+	again, _, err := restored.Reconcile(context.Background(), r)
+	if err != nil || again.Disposition != b.OperationConfirmed || f.closes != 1 {
+		t.Fatal("replayed acknowledged close", again, err, f.closes)
+	}
+	l.setup.Snapshot.Ref.External.RuntimeID = "foreign-runtime"
+	if err := VerifyStopped(context.Background(), l.setup); err == nil {
+		t.Fatal("foreign runtime accepted")
+	}
+}
+
+func TestStructuredDurableCloseReceiptReconcilesWithoutReplay(t *testing.T) {
+	l, s, f := structuredFixture(t)
+	state, _ := l.agentState(s)
+	state.Attempted = true
+	state.CloseAttempted = true
+	s.Implementation, _ = l.agentEnvelope(s, state)
+	r := request(s, b.LifecycleStopExecution, b.LifecycleInput{Stop: &b.StopInput{}})
+	saved := b.LifecycleReceipt{Operation: r.Operation, Disposition: b.OperationUnknown}
+	saved.Operation.Receipt = json.RawMessage(`{"ok":true}`)
+	raw, _ := json.Marshal(saved)
+	r.Operation.Receipt = raw
+	got, _, err := l.Reconcile(context.Background(), r)
+	if err != nil || got.Disposition != b.OperationConfirmed || !got.State.Stopped || f.closes != 0 {
+		t.Fatal("durable original acknowledgement not reconciled", got, err)
+	}
+	saved.Operation.RunID = "foreign-run"
+	raw, _ = json.Marshal(saved)
+	r.Operation.Receipt = raw
+	if _, _, err := l.Reconcile(context.Background(), r); err == nil {
+		t.Fatal("foreign operation receipt accepted")
+	}
+}
+
+func TestStructuredInvalidCloseResponseDoesNotSettle(t *testing.T) {
+	for _, raw := range []string{`{}`, `{"ok":false}`, `{"ok":"true"}`, `null`} {
+		t.Run(raw, func(t *testing.T) {
+			l, s, f := structuredFixture(t)
+			state, _ := l.agentState(s)
+			state.Attempted = true
+			s.Implementation, _ = l.agentEnvelope(s, state)
+			f.closeRaw = json.RawMessage(raw)
+			got, err := l.StopLifecycle(context.Background(), request(s, b.LifecycleStopExecution, b.LifecycleInput{Stop: &b.StopInput{}}), nil)
+			if err == nil || got.State.Stopped || got.Disposition != b.OperationUnknown {
+				t.Fatal("unconfirmed close settled", got, err)
+			}
+		})
+	}
+}
+
+func TestStructuredStopBeforeCreateDoesNotInventCloseReceipt(t *testing.T) {
+	l, s, f := structuredFixture(t)
+	got, err := l.StopLifecycle(context.Background(), request(s, b.LifecycleStopExecution, b.LifecycleInput{Stop: &b.StopInput{}}), nil)
+	if err != nil || got.Disposition != b.OperationConfirmed || !got.State.Stopped || f.closes != 0 || len(got.Operation.Receipt) != 0 {
+		t.Fatal("undispatched session stop", got, err)
+	}
+	settled, _, err := reliable.ApplySessionReceipt(s, nil, got, false)
+	if err != nil {
+		t.Fatal(err)
+	}
+	l.setup.Snapshot = settled
+	if err := VerifyStopped(context.Background(), l.setup); err != nil {
+		t.Fatal(err)
+	}
+	state, _ := l.agentState(settled)
+	state.Attempted = true
+	settled.Implementation, _ = l.agentEnvelope(settled, state)
+	l.setup.Snapshot = settled
+	if err := VerifyStopped(context.Background(), l.setup); err == nil {
+		t.Fatal("contradictory dispatch was accepted as absent")
+	}
+}
+
+func TestStructuredSavedCloseRejectsChangedResource(t *testing.T) {
+	for _, field := range []string{"runtime", "worktree"} {
+		t.Run(field, func(t *testing.T) {
+			l, s, f := structuredFixture(t)
+			state, _ := l.agentState(s)
+			state.Attempted = true
+			state.CloseAttempted = true
+			s.Implementation, _ = l.agentEnvelope(s, state)
+			r := request(s, b.LifecycleStopExecution, b.LifecycleInput{Stop: &b.StopInput{}})
+			saved := b.LifecycleReceipt{Operation: r.Operation, Disposition: b.OperationUnknown}
+			saved.Operation.Receipt = json.RawMessage(`{"ok":true}`)
+			r.Operation.Receipt, _ = json.Marshal(saved)
+			if field == "runtime" {
+				r.Snapshot.Ref.External.RuntimeID = "replacement-runtime"
+				state.RuntimeID = "replacement-runtime"
+			} else {
+				r.Snapshot.Ref.External.WorktreeID = "replacement-worktree"
+				state.Worktree.ID = "replacement-worktree"
+			}
+			r.Snapshot.Implementation, _ = l.agentEnvelope(r.Snapshot, state)
+			l.setup.Snapshot = r.Snapshot.Clone()
+			got, _, err := l.Reconcile(context.Background(), r)
+			if err == nil || got.State.Stopped || f.closes != 0 {
+				t.Fatal("old close proof moved to a replacement resource", got, err)
 			}
 		})
 	}

@@ -1,5 +1,7 @@
 # Spec：SteerRunner 产品与 CLI 契约
 
+> Orca 停止范围增量（2026-11-03）：原 session close 的成功回执可确认 `orca_agent_session` 范围结算；额外清理没有保证，不额外阻断结果、检测、Workflow、重启或部署。PC-R06/PC-R10 的“停止/排空”按对应 scope 解释，不扩大为全进程清场。close 自身失败或未知仍保留未知。统一设计见[Orca 执行链路设计](../orca-execution.md)，实际资格见[专项验收](../acceptance/orca-session-result-settlement.md)。
+
 维护日期：2026-11-02；本次核对代码基线：`efa871c` 加权限资源/原完成证明职责收口工作树差异。本文长期维护 Runner 的能力、可靠性承诺和 CLI 契约，不随某一批实施结束而归档。
 
 ## 长期产品承诺
@@ -141,13 +143,13 @@ Orca 对接按[能力层长期设计](orca-capability-layer.spec.md)逐批收敛
 
 B0–B6 已完成能力迁移、生产接线、正式合同与保留例外同步；最终集成构建的双端开发及活动停止、真实离线核验和独立审计均通过，见[B6 验收](../acceptance/orca-native-rollout.md)。当前选定原生合同及未验证边界见[Orca 双端执行合同](../orca-execution.md)。显式 managed/audited、Pi/DSH 与旧记录仍有消费者，保持原 scope/资格，不能把首轮原生通过扩大到这些组合。
 
-### 待实施：本机 Orca Codex execute/1 结构化执行与 DSH 退役
+### 本机 Orca Codex execute/1 结构化执行与 DSH 退役
 
 2026-11-03 用户确认首 PR 收窄为 [Spec](orca-structured-agent-session.spec.md) / [Plan](orca-structured-agent-session.plan.md)：仅本机 Orca Codex 新 execute/1 从 native session 创建开始使用结构化单消息正文，取得原 turn 完整结果；本 PR 同时移除 DSH 执行、专用历史/用量与恢复支持。其它 Orca Codex Workflow、Pi/远端、公共 terminal、非 Orca codex-app-server 和独立 parser 保持原合同。不修改或要求修改 Orca，不依赖未来上游能力。
 
-用户接受该新协议 `orca_agent_session` scope 在停止证据不足时明确 stop_status=unknown、resources_settled=false/未核实，离线不报通过。原完整业务结果仍可读，不以 close ok 宣称资源退出，不以清理未知抹去业务结果或伪造整体 completed；此限制不推广到其它组合，也不继承旧 terminal/helper 停止证明。首 PR 按所覆盖单组合的多行完整结果、活动停止和定向回归签收，不要求先完成四组合/audited 全量迁移。DSH 旧记录必要时明确 unsupported，不物理删除用户数据或历史 evidence；旧活动任务由原构建先排空。
+用户接受 Orca 全部额外资源清理不保证。该协议 `orca_agent_session` scope 以原 close 的明确成功回执确认原会话停止，允许正常结果封存与业务收尾；不证明任意派生进程、主机资源或凭据清理，额外清理未保证不成为流程门禁。close 自身未知仍为 unknown，不能伪造回执或重放 close。其它组合按其原 scope 核验，不把 terminal/helper 证明套给结构化会话。当前统一规则和验证入口见[长期设计](../orca-execution.md)。DSH 旧记录必要时明确 unsupported，不物理删除用户数据或历史 evidence。
 
-上述仅为已确认的待实施合同，[设计复审](../acceptance/orca-structured-agent-session-mvp-design-audit.md)不代表代码/当前能力已改变。最终 Codex/Pi 全量结构化及 helper/TUI 退役仍是后续方向；audited 实际模型、完整资源结算和远端 Pi 的未验/环境缺口不追认通过。
+上述结构化执行已实现；历史[设计复审](../acceptance/orca-structured-agent-session-mvp-design-audit.md)不代表代码/当前能力已改变。最终 Codex/Pi 全量结构化及 helper/TUI 退役仍是后续方向；audited 实际模型、完整资源结算和远端 Pi 的未验/环境缺口不追认通过。
 
 ### 现行职责收口：权限资源与原完成证明
 

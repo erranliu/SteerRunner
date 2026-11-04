@@ -93,3 +93,27 @@ func TestSRFreezeOrcaStructuredExecuteOnly(t *testing.T) {
 		}
 	}
 }
+
+func TestStructuredFileEnvironmentBindings(t *testing.T) {
+	f := newBaseRefreshFixture(t, "origin", "main")
+	executable, err := exec.LookPath("git")
+	if err != nil {
+		t.Fatal(err)
+	}
+	f.request.Execution = contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "local"}, Settings: canonical(contracts.OrcaSettings{AccessMode: "full_access", Transport: contracts.TransportSettings{Executable: executable}})}
+	f.request.Workflow = contracts.Workflow{ID: workflow.SingleExecution, Version: 1, PromptOverrides: map[string]string{"execute": "caller command must remain unchanged"}}
+	f.request.Publication = contracts.Publication{}
+	f.request.ResultFile = &contracts.ResultFileInput{}
+	f.request.ProgressFile = &contracts.ProgressFileInput{}
+	f.input.Input = canonical(f.request)
+	r := f.freeze()
+	if err := queueInput(r, workflow.StageInput{StepID: r.Workflow.StepID}, ""); err != nil {
+		t.Fatal(err)
+	}
+	prompt := r.Snapshot.PendingTurn.Prompt
+	for _, want := range []string{workflow.OrcaFileEnvironmentInstruction, workflow.ResultFileInstruction, workflow.ProgressInstruction, `"STEERLINE_RESULT_FILE":".steerrunner/result/` + r.ID + `/result.bin"`, `"STEERLINE_PROGRESS_FILE":".steerrunner/progress/` + r.ID + `/progress.bin"`, "caller command must remain unchanged"} {
+		if !strings.Contains(prompt, want) {
+			t.Fatalf("missing original file binding %q in %s", want, prompt)
+		}
+	}
+}

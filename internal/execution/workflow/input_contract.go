@@ -13,14 +13,15 @@ const PublicationLabel = "\nPR target: "
 // InputContract is discovery data for the existing built-ins, not a DSL.
 func InputContract() any {
 	return map[string]any{
-		"project_policies": map[string]any{"slots": PolicySlots(), "read_template": PolicyReadTemplate, "when": "only state.policy_slots with exists=true in the frozen project commit; Runner input budget; no inline content"},
-		"body":             "state.prompt; explicit prompt_overrides replaces only the original body, including audit.execute's default format",
-		"content":          map[string]any{"task_label": ContentTaskLabel, "material_label": ContentMaterialsLabel, "material_frame": "JSON array: inline content or frozen file location, path and sha256; file bodies are not expanded", "repository": ContentRepositoryInstruction, "schema": ContentSchemaInstruction},
-		"facts_label":      FactsLabel,
-		"materials":        "implementation execute: Spec/Plan and distinct reference paths in the original worktree",
-		"facts":            "report source=original command_id, optional failure; exact turn/version/digest and audit/publication prerequisites stay program-verified, never internal ledgers",
-		"result_format":    "report state.result_instruction remains fixed; audit execute format remains part of overridable body",
-		"commit":           CommitInstruction, "success": SuccessLabel, "feedback": FeedbackLabel,
+		"orca_file_environment": map[string]any{"sources": []string{"orca.file_environment", "orca.file_bindings"}, "text": OrcaFileEnvironmentInstruction, "when": "native Orca execute with enabled result/progress files; bindings contain original worktree-relative channel paths"},
+		"project_policies":      map[string]any{"slots": PolicySlots(), "read_template": PolicyReadTemplate, "when": "only state.policy_slots with exists=true in the frozen project commit; Runner input budget; no inline content"},
+		"body":                  "state.prompt; explicit prompt_overrides replaces only the original body, including audit.execute's default format",
+		"content":               map[string]any{"task_label": ContentTaskLabel, "material_label": ContentMaterialsLabel, "material_frame": "JSON array: inline content or frozen file location, path and sha256; file bodies are not expanded", "repository": ContentRepositoryInstruction, "schema": ContentSchemaInstruction},
+		"facts_label":           FactsLabel,
+		"materials":             "implementation execute: Spec/Plan and distinct reference paths in the original worktree",
+		"facts":                 "report source=original command_id, optional failure; exact turn/version/digest and audit/publication prerequisites stay program-verified, never internal ledgers",
+		"result_format":         "report state.result_instruction remains fixed; audit execute format remains part of overridable body",
+		"commit":                CommitInstruction, "success": SuccessLabel, "feedback": FeedbackLabel,
 		"publication": map[string]any{"label": PublicationLabel, "slots": "execute only: provider/repository/base_url/remote/base; no provider query or authentication configuration"},
 		"progress":    map[string]any{"text": ProgressInstruction, "continue": ContinueProgressInstruction, "when": "enabled implementation/audit execute only; reuse rule only if already supplied in this original session"},
 		"result_file": map[string]any{"text": ResultFileInstruction, "continue": ContinueResultInstruction, "when": "enabled development implementation/audit execute or execute/1; reuse rule only if already supplied in this original session"},

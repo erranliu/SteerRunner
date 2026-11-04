@@ -571,13 +571,19 @@ func queueInput(r *runstate.Record, input workflow.StageInput, feedback string) 
 				if priorFileInstruction(r, "result_file") {
 					text = workflow.ContinueResultInstruction
 				}
-				if r.Snapshot.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 {
-					// Native Orca owns the environment. Supply the existing bounded
-					// channel's exact workspace-relative path in this frozen input.
-					text = strings.ReplaceAll(text, "STEERLINE_RESULT_FILE", ".steerrunner/result/"+r.ID+"/result.bin")
-				}
+
 				parts = append(parts, m.InputPart{Source: "result_file", Owner: m.RunnerInput, Text: "\n" + text})
 			}
+		}
+		if r.Snapshot.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 && (r.Request.ResultFile != nil || r.Request.ProgressFile != nil) {
+			bindings := map[string]string{}
+			if r.Request.ResultFile != nil {
+				bindings["STEERLINE_RESULT_FILE"] = workspace.ResultRelative(r.ID)
+			}
+			if r.Request.ProgressFile != nil {
+				bindings["STEERLINE_PROGRESS_FILE"] = workspace.ProgressRelative(r.ID)
+			}
+			parts = append(parts, m.InputPart{Source: "orca.file_environment", Owner: m.RunnerInput, Text: "\n" + workflow.OrcaFileEnvironmentInstruction}, m.InputPart{Source: "orca.file_bindings", Owner: m.RunnerInput, Text: "\nRunner file bindings: " + string(canonical(bindings))})
 		}
 		if r.Request.Execution.Adapter == "orca-terminal" && r.Snapshot.Ref.Protocol != b.ProtocolOrcaAgentSessionV1 {
 			// Preserve the frozen logical body; native normalization/framing owns

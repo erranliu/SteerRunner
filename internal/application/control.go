@@ -326,6 +326,8 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 			next.Diagnostic = orca.NativeStopDiagnostic
 			if next.StopEvidenceScope == orca.LocalCodexStopScope {
 				next.Diagnostic = orca.LocalCodexStopDiagnostic
+			} else if next.StopEvidenceScope == orca.AgentSessionStopScope {
+				next.Diagnostic = orca.AgentSessionStopLimitation
 			}
 		}
 	}

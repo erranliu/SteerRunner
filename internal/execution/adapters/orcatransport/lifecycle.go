@@ -1083,7 +1083,10 @@ func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, own
 
 func (l *Lifecycle) ShutdownLifecycle(ctx context.Context, s b.LifecycleSnapshot, owned b.StopHandle) (b.LifecycleStateFacts, error) {
 	if l.structured() {
-		return b.LifecycleStateFacts{}, errors.New(AgentSessionStopDiagnostic)
+		if err := l.verifyAgentSessionStopped(s); err != nil {
+			return b.LifecycleStateFacts{}, err
+		}
+		return b.LifecycleStateFacts{Stopped: true, WorkerAbsent: true}, nil
 	}
 	if err := l.validate(s); err != nil {
 		return b.LifecycleStateFacts{}, err

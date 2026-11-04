@@ -19,7 +19,8 @@ const AgentSessionProfileKey = "orca.agent-session-profile"
 const AgentSessionStateKey = "orca.agent-session-state"
 const AgentSessionVersion = 1
 const AgentSessionStopScope = "orca_agent_session"
-const AgentSessionStopDiagnostic = "Orca 原会话 close 不提供完整退出证据；资源结算未核实 (resources_settled=false)."
+const AgentSessionStopDiagnostic = "原 Orca 会话关闭结果未核实；额外资源清理不在停止核验范围。"
+const AgentSessionStopLimitation = "Closed the original Orca session; detached processes and additional resource cleanup are not verified."
 const agentResultSource = "orca.agent-session.turn-result.v1"
 
 // Only this frozen protocol uses Orca's native Codex owner. Transport remains
@@ -41,21 +42,23 @@ type agentSessionPort interface {
 
 // No input or result bodies are copied into opaque resource state.
 type agentSessionState struct {
-	RuntimeID       string              `json:"runtime_id"`
-	Worktree        native.Worktree     `json:"worktree"`
-	Shells          []b.ProcessIdentity `json:"shells,omitempty"`
-	SessionID       string              `json:"session_id"`
-	CommandID       string              `json:"command_id,omitempty"`
-	InputDigest     string              `json:"input_digest,omitempty"`
-	BodyFingerprint string              `json:"body_fingerprint,omitempty"`
-	CreateID        string              `json:"create_id,omitempty"`
-	MessageID       string              `json:"message_id,omitempty"`
-	TurnID          string              `json:"turn_id,omitempty"`
-	TurnItemID      string              `json:"turn_item_id,omitempty"`
-	ProviderItemID  string              `json:"provider_item_id,omitempty"`
-	Epoch           string              `json:"epoch,omitempty"`
-	Attempted       bool                `json:"attempted,omitempty"`
-	CloseAttempted  bool                `json:"close_attempted,omitempty"`
+	RuntimeID         string              `json:"runtime_id"`
+	Worktree          native.Worktree     `json:"worktree"`
+	Shells            []b.ProcessIdentity `json:"shells,omitempty"`
+	SessionID         string              `json:"session_id"`
+	CommandID         string              `json:"command_id,omitempty"`
+	InputDigest       string              `json:"input_digest,omitempty"`
+	BodyFingerprint   string              `json:"body_fingerprint,omitempty"`
+	CreateID          string              `json:"create_id,omitempty"`
+	MessageID         string              `json:"message_id,omitempty"`
+	TurnID            string              `json:"turn_id,omitempty"`
+	TurnItemID        string              `json:"turn_item_id,omitempty"`
+	ProviderItemID    string              `json:"provider_item_id,omitempty"`
+	Epoch             string              `json:"epoch,omitempty"`
+	Attempted         bool                `json:"attempted,omitempty"`
+	CloseAttempted    bool                `json:"close_attempted,omitempty"`
+	CloseReceipt      json.RawMessage     `json:"close_receipt,omitempty"`
+	SessionNotCreated bool                `json:"session_not_created,omitempty"`
 }
 
 func (l *Lifecycle) structured() bool {
@@ -127,6 +130,12 @@ func (l *Lifecycle) agentState(s b.LifecycleSnapshot) (agentSessionState, error)
 	}
 	if found && (state.RuntimeID == "" || state.Worktree.ID == "" || state.Worktree.InstanceID == "" || state.SessionID != agentSessionID(s) || state.Worktree.ID != s.Ref.External.WorktreeID || state.RuntimeID != s.Ref.External.RuntimeID || s.Ref.External.Kind != "orca_agent_session" || s.Ref.External.Executable != l.profile.Executable || s.Ref.External.ExecutionHost != "local" || s.Ref.External.Terminal != "" || s.Ref.External.PID != 0 || s.Ref.External.Incarnation != "" || state.Worktree.Path != s.Workspace.Path) {
 		return state, errors.New("original structured Orca resource binding changed")
+	}
+	if len(state.CloseReceipt) > 0 && (!state.CloseAttempted || !agentCloseSucceeded(state.CloseReceipt)) {
+		return state, errors.New("original structured close receipt is invalid")
+	}
+	if state.SessionNotCreated && agentSessionMayExist(s, state) {
+		return state, errors.New("structured session absence contradicts its original dispatch")
 	}
 	if state.CommandID != "" && (!b.StableExecutionID(state.CommandID) || len(state.InputDigest) != 64 || len(state.BodyFingerprint) != 64 || state.CreateID == "" || state.MessageID == "") {
 		return state, errors.New("incomplete original structured input binding")
@@ -611,11 +620,47 @@ func (l *Lifecycle) observeStructured(s b.LifecycleSnapshot) b.LifecycleObserver
 	}()
 	return o
 }
+
+// The acknowledged original session close is the entire orca_agent_session
+// scope. It does not claim that arbitrary descendants or host resources exited.
+func agentCloseSucceeded(raw json.RawMessage) bool {
+	var reply struct {
+		OK *bool `json:"ok"`
+	}
+	return json.Unmarshal(raw, &reply) == nil && reply.OK != nil && *reply.OK
+}
+
+func (l *Lifecycle) verifyAgentSessionStopped(s b.LifecycleSnapshot) error {
+	state, err := l.agentState(s)
+	if err != nil {
+		return err
+	}
+	if !state.CloseAttempted || !agentCloseSucceeded(state.CloseReceipt) && !(state.SessionNotCreated && !agentSessionMayExist(s, state)) {
+		return errors.New(AgentSessionStopDiagnostic)
+	}
+	return nil
+}
+
+func agentSessionMayExist(s b.LifecycleSnapshot, state agentSessionState) bool {
+	if state.Attempted {
+		return true
+	}
+	for _, op := range s.Operations {
+		if (op.Action == string(b.LifecycleStartTurn) || op.Action == string(b.LifecycleSubmitInput)) && op.Status != b.OperationPending && op.Status != b.OperationRejected {
+			return true
+		}
+	}
+	return false
+}
+
 func (l *Lifecycle) structuredStop(ctx context.Context, r b.LifecycleRequest, reconcile bool) (b.LifecycleReceipt, error) {
 	receipt := b.LifecycleReceipt{Operation: r.Operation, Disposition: b.OperationUnknown, Diagnostic: AgentSessionStopDiagnostic}
 	receipt.Operation.Receipt = nil
 	if err := r.Validate(); err != nil {
 		return receipt, err
+	}
+	if r.Operation.Ref == nil || *r.Operation.Ref != r.Snapshot.Ref || r.Operation.LifecycleIdentity == nil || r.Operation.LifecycleIdentity.Ref != r.Snapshot.Ref {
+		return receipt, errors.New("original structured stop resource identity changed")
 	}
 	state, err := l.agentState(r.Snapshot)
 	if err != nil {
@@ -634,31 +679,39 @@ func (l *Lifecycle) structuredStop(ctx context.Context, r b.LifecycleRequest, re
 		if json.Unmarshal(r.Operation.Receipt, &saved) != nil || saved.ValidateFor(r) != nil {
 			return receipt, errors.New("original structured stop receipt is invalid")
 		}
+		// Reuse only the original operation's durable native acknowledgement.
+		// A lost response has no acknowledgement and must never replay close.
 		receipt.Operation.Receipt = append([]byte(nil), saved.Operation.Receipt...)
-	}
-	if !reconcile && !state.CloseAttempted {
-		state.CloseAttempted = true
-		receipt.Implementation, _ = l.agentEnvelope(r.Snapshot, state)
-		mayExist := state.Attempted
-		for _, op := range r.Snapshot.Operations {
-			if (op.Action == string(b.LifecycleStartTurn) || op.Action == string(b.LifecycleSubmitInput)) && op.Status != b.OperationPending && op.Status != b.OperationRejected {
-				mayExist = true
-			}
+		if saved.Disposition != b.OperationRejected && agentCloseSucceeded(saved.Operation.Receipt) {
+			state.CloseAttempted = true
+			state.CloseReceipt = append([]byte(nil), saved.Operation.Receipt...)
 		}
+	}
+	if !reconcile && !state.CloseAttempted && !agentCloseSucceeded(state.CloseReceipt) {
+		state.CloseAttempted = true
+		mayExist := agentSessionMayExist(r.Snapshot, state)
 		if mayExist {
 			receipt.Operation.Receipt, err = l.agentClient(state.RuntimeID).Close(ctx, state.SessionID)
-		}
-		for _, shell := range state.Shells {
-			if _, e := InspectBoundTerminal(ctx, l.client, shell); e != nil {
-				err = errors.Join(err, e)
-				continue
+			if err == nil && agentCloseSucceeded(receipt.Operation.Receipt) {
+				state.CloseReceipt = append([]byte(nil), receipt.Operation.Receipt...)
 			}
-			_, e := CloseTerminalChecked(ctx, l.client, shell.Terminal, shell.RuntimeID)
-			err = errors.Join(err, e)
+		} else {
+			// No create was dispatched, so this attempt has no native session.
+			state.SessionNotCreated = true
+		}
+		// Auxiliary shells are best-effort cleanup, outside the session scope.
+		for _, shell := range state.Shells {
+			if _, e := InspectBoundTerminal(ctx, l.client, shell); e == nil {
+				_, _ = CloseTerminalChecked(ctx, l.client, shell.Terminal, shell.RuntimeID)
+			}
 		}
 	}
-	if len(receipt.Implementation) == 0 {
-		receipt.Implementation, _ = l.agentEnvelope(r.Snapshot, state)
+	receipt.Implementation, _ = l.agentEnvelope(r.Snapshot, state)
+	if err == nil && (agentCloseSucceeded(state.CloseReceipt) || state.SessionNotCreated && !agentSessionMayExist(r.Snapshot, state)) {
+		receipt.Disposition = b.OperationConfirmed
+		receipt.State = b.LifecycleStateFacts{Stopped: true, WorkerAbsent: true}
+		receipt.Diagnostic = AgentSessionStopLimitation
+		return receipt, nil
 	}
 	return receipt, errors.Join(err, errors.New(AgentSessionStopDiagnostic))
 }
