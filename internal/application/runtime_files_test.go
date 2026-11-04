@@ -118,6 +118,65 @@ func TestRuntimeFilesFailureDoesNotGateBusiness(t *testing.T) {
 	}
 }
 
+func TestResultPreparationReadsOnlyAfterUnconfirmedWrite(t *testing.T) {
+	for _, tc := range []struct {
+		name              string
+		writeErr, readErr error
+		wantReads         int
+		wantInitialized   bool
+		wantDiagnostic    string
+	}{
+		{name: "write confirmed", wantInitialized: true},
+		{name: "reply lost, original readable", writeErr: errors.New("initialization_unverified"), wantReads: 1, wantInitialized: true},
+		{name: "reply lost, original missing", writeErr: errors.New("initialization_unverified"), readErr: errors.New("file_missing"), wantReads: 1, wantDiagnostic: "initialization_unverified"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			e, w, _ := operationEngine(t)
+			enableTestFiles(t, e, 3)
+			port := &fileBusinessPort{}
+			w.port = port
+			var resultWrites, resultReads, progressReads int
+			e.openRuntimeFile = func(_ context.Context, r *runstate.Record, result, prepare bool) (*runtimeFileChannel, error) {
+				if !prepare {
+					return nil, errors.New("unexpected non-preparation sample")
+				}
+				return &runtimeFileChannel{
+					state: fileState(r, result),
+					initialize: func(context.Context, []byte) error {
+						if result {
+							resultWrites++
+							return tc.writeErr
+						}
+						return nil
+					},
+					read: func(context.Context) ([]byte, error) {
+						if result {
+							resultReads++
+							return []byte("original result"), tc.readErr
+						}
+						progressReads++
+						return []byte("original progress"), nil
+					},
+					close: func() error { return nil },
+				}, nil
+			}
+			e.advance("run", w)
+			e.prepareRuntimeFiles(e.runs["run"].Clone())
+			if resultWrites != 1 || resultReads != tc.wantReads || progressReads != 1 {
+				t.Fatalf("result writes=%d reads=%d, progress reads=%d", resultWrites, resultReads, progressReads)
+			}
+			got := e.runs["run"].ResultFile
+			if got == nil || !got.InitializationAttempted || got.Initialized != tc.wantInitialized ||
+				got.View.Diagnostic != tc.wantDiagnostic || got.View.Version != 0 || got.View.ContentBase64 != nil {
+				t.Fatalf("unexpected result preparation state: %+v", got)
+			}
+			if len(port.requests) != 1 || !nativeInputAction(b.LifecycleAction(port.requests[0].Operation.Action)) {
+				t.Fatal("result preparation changed business dispatch")
+			}
+		})
+	}
+}
+
 func TestRuntimeFilesIndependentDeadlineAndNoRetry(t *testing.T) {
 	e, w, _ := operationEngine(t)
 	enableTestFiles(t, e, 3)

@@ -13,6 +13,15 @@
 
 定向回归通过，覆盖慢 progress 与独立安排初始化、原工作区已有改动时重启阻断，以及 Pi 使用的权限路径不执行 HEAD 探针。Orca transport 与 workspace 完整包回归通过。修复构建 `0.2.0-dev.fresh-audit` 的 EXE SHA-256 为 `a41b28a5434b87760e34da18dbb4180c9211777216b1cb2d50975acb7665e89b`。任务 101 公开 CLI 正反例和真实 Codex 只读复验通过，原 Run `da64a3da77c9de7d440a924b8271a4b1` 已结算。报告根为 `C:\SteerlineDebug\fresh-worktree-audit-20261104`，真实 Orca Pi smoke 待验。
 
+## 启动路径去重
+
+基于合入后的 Runner 主干 `689f4190`，按以下顺序分别验证。报告根为 `C:\SteerlineDebug\startup-verification-simplification-20261104`。
+
+1. 本机 Codex 在本次连续新建并已绑定权限资源时，首次输入复用冻结的 Git 权限路径。恢复和未绑定仍走原检查。路径复用、真实 Git 重启反例、私有与共享资源边界、原生管理目录绑定和临时目录重定向回归通过，见 `02-linked-roots-verified.log`。
+2. result 初始化返回成功后省去回读。写入响应丢失时仍读取原绑定路径，读取不到时保留诊断，派发继续。回归验证零成功回读、未知时读回及缺文件、独立进度采样、停止和终态封存，见 `01-result-file.log`。
+
+两项配对构建 `0.2.0-dev.startup-verification` 通过任务 101 复验。原固定提交 `9d81d9c2652177faf6354d4e9f9f3aec79535d11` 的就绪快照、启动安排和真实本机 Codex 读取的五项安排均为 111 字节，SHA-256 为 `b9a819296f6f3c6b0e9a3ff9ce4059f89a111a9a7633ed73baa373d0475f6cc4`。真实 Run `ea4c573b1e41f14ed090254ea88de7dd` 和隔离服务已结算。正式公开 CLI 的可读、缺文件和普通结果封存用例通过。证据见 `ready-101`、`public-101` 和 `native-101`。Runner EXE SHA-256 为 `2d98a1f6ed5d7f953aafbaf3b63ba95769038161998a420b9a51b6d6cf7eee6c`，构建记录位于 `packages`。
+
 ## 提示词
 
 原结果文件说明为 `STEERLINE_RESULT_FILE: independent raw<=65536B; coordinate writers, same-dir atomic replace. Sealed once after execution/producers stop, never turn end/pr_ready; not a success signal.`，183 UTF-8 字节。
