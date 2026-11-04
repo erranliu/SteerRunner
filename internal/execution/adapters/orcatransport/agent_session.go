@@ -58,7 +58,7 @@ func (p AgentSessionProfile) selection(input, pending *b.TurnInput) (*native.Age
 }
 
 type agentSessionPort interface {
-	SupportsCreate(context.Context, string) error
+	SupportsCreate(context.Context, string, string) error
 	Create(context.Context, native.AgentCreate) (json.RawMessage, error)
 	Send(context.Context, native.AgentSend) (json.RawMessage, error)
 	History(context.Context, string, *native.AgentCursor, int) (native.AgentPage, error)
@@ -109,18 +109,20 @@ func decodeAgentSessionProfile(setup b.LifecycleSetup) (AgentSessionProfile, err
 		}
 		p.version = e.CodecVersion
 	}
-	if p.version == AgentSessionCloseProfileVersion && p.Transport.Environment == "" && !p.Development {
+	agent := setup.Snapshot.Ref.Agent.Name
+	if p.version == AgentSessionCloseProfileVersion && p.Transport.Environment == "" && !p.Development && agent == "codex" {
 		return p, errors.New("paired close profile requires an original environment")
 	}
-	if p.Audited && (!p.Development || p.Transport.Environment != "" || p.version != AgentSessionCloseProfileVersion || p.Model == "" || p.ReasoningEffort == "") {
+	if p.Audited && (agent != "codex" || !p.Development || p.Transport.Environment != "" || p.version != AgentSessionCloseProfileVersion || p.Model == "" || p.ReasoningEffort == "") {
 		return p, errors.New("audited structured Orca requires its original local close profile and execution model")
 	}
 	wire, _ := json.Marshal(p.Transport)
 	_, err := DecodeProfile(wire)
 	hostDigest, hostErr := hex.DecodeString(strings.TrimPrefix(p.PairingHostID, "sha256:"))
 	validHost := p.Transport.Environment == "" && p.PairingHostID == "" || p.Transport.Environment != "" && strings.HasPrefix(p.PairingHostID, "sha256:") && hostErr == nil && len(hostDigest) == 32 && p.PairingHostID == "sha256:"+hex.EncodeToString(hostDigest)
-	if !found || err != nil || !validHost || setup.Snapshot.Ref.Backend != b.BackendOrca || setup.Snapshot.Ref.Agent.Name != "codex" || p.AccessMode != "full_access" || p.Transport.NativeTerminal || p.Transport.Terminal != nil || p.Transport.RuntimeExecutable != "" || p.Transport.RuntimeSHA256 != "" || p.Transport.RuntimeConfigurationDigest != "" || setup.AgentLaunchCommand != "" || setup.Snapshot.Ref.Target.ID != p.Transport.Target().ID || setup.Snapshot.Ref.Target.ExecutionHost != p.Transport.Target().ExecutionHost {
-		return p, errors.New("structured Orca requires its frozen native Codex profile and original host")
+	validAgent := agent == "codex" || agent == "pi" && p.Transport.Environment == "" && p.version == AgentSessionCloseProfileVersion
+	if !found || err != nil || !validHost || setup.Snapshot.Ref.Backend != b.BackendOrca || !validAgent || p.AccessMode != "full_access" || p.Transport.NativeTerminal || p.Transport.Terminal != nil || p.Transport.RuntimeExecutable != "" || p.Transport.RuntimeSHA256 != "" || p.Transport.RuntimeConfigurationDigest != "" || setup.AgentLaunchCommand != "" || setup.Snapshot.Ref.Target.ID != p.Transport.Target().ID || setup.Snapshot.Ref.Target.ExecutionHost != p.Transport.Target().ExecutionHost {
+		return p, errors.New("structured Orca requires its frozen native profile and original host")
 	}
 	return p, nil
 }
@@ -128,7 +130,7 @@ func (l *Lifecycle) validateStructured(s b.LifecycleSnapshot) error {
 	if err := l.validate(s); err != nil {
 		return err
 	}
-	if s.Ref.Agent.Name != "codex" || s.Ref.Protocol != b.ProtocolOrcaAgentSessionV1 {
+	if s.Ref.Protocol != b.ProtocolOrcaAgentSessionV1 || s.Ref.Agent.Name != "codex" && s.Ref.Agent.Name != "pi" {
 		return errors.New("unsupported structured Orca identity")
 	}
 	return nil
@@ -139,6 +141,9 @@ func (l *Lifecycle) agentClient(runtime string) agentSessionPort {
 	}
 	if l.profile.Environment != "" {
 		return native.NewRemoteAgentSessionClient(l.profile.Environment, runtime, l.agentHostID)
+	}
+	if l.setup.Snapshot.Ref.Agent.Name == "pi" {
+		return native.NewLocalPiAgentSessionClient(runtime)
 	}
 	return native.NewLocalAgentSessionClient(runtime)
 }
@@ -289,7 +294,7 @@ func (l *Lifecycle) prepareStructured(ctx context.Context, r b.LifecycleRequest)
 		if err = l.originalAgentWorkspace(ctx, state); err != nil {
 			return receipt, err
 		}
-		if err = l.agentClient(state.RuntimeID).SupportsCreate(ctx, "id:"+state.Worktree.ID); err != nil {
+		if err = l.agentClient(state.RuntimeID).SupportsCreate(ctx, "id:"+state.Worktree.ID, r.Snapshot.Ref.Agent.Name); err != nil {
 			return receipt, err
 		}
 		state.CommandID, state.InputDigest = input.CommandID, digest([]byte(input.Prompt))
@@ -346,7 +351,11 @@ func (l *Lifecycle) executeStructured(ctx context.Context, r b.LifecycleRequest,
 			if e != nil {
 				return receipt, nil, e
 			}
-			create := native.AgentCreate{Worktree: "id:" + state.Worktree.ID, Agent: "codex", Options: map[string]string{"permissionMode": "full-access"}, FirstMessage: native.AgentFirstMessage{ClientMessageID: state.MessageID, Body: agentBody(r.Input.Turn.Prompt), Selection: selection}, Envelope: native.AgentMutationEnvelope{SessionID: state.SessionID, ClientOperationID: state.CreateID}}
+			options := map[string]string{}
+			if r.Snapshot.Ref.Agent.Name == "codex" {
+				options = map[string]string{"permissionMode": "full-access"}
+			}
+			create := native.AgentCreate{Worktree: "id:" + state.Worktree.ID, Agent: r.Snapshot.Ref.Agent.Name, Options: options, FirstMessage: native.AgentFirstMessage{ClientMessageID: state.MessageID, Body: agentBody(r.Input.Turn.Prompt), Selection: selection}, Envelope: native.AgentMutationEnvelope{SessionID: state.SessionID, ClientOperationID: state.CreateID}}
 			create.Envelope.PayloadFingerprint, e = native.AgentFingerprint("agentSession.create", state.SessionID, map[string]any{"worktree": create.Worktree, "agent": create.Agent, "options": create.Options, "firstMessage": create.FirstMessage})
 			if e != nil {
 				return receipt, nil, e

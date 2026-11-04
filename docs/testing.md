@@ -40,8 +40,7 @@ Orca → 原生 Codex 输入专项复用 `TestOrcaNativeStateLiveLifecycle`，�
 无需真实目标，输出每个叶例及总执行/失败/跳过计数；它不是实际 Orca L3 资格。
 目标 JSON 含 `Worktree`（完整 `id:repo::path`）、`Runtime`、`Environment`、`CLI` 和
 `Launch`（现有 `agentlaunch.Config` 的 executable/args/model/reasoning_effort/access_mode）。
-本机目标的 `Environment` 为空，另须在 `Launch.runtime_executable` 指定本次隔离构建的现有
-`cmd/steerrunner-agent`，保留真实 `repository_url`。helper 须位于受测工作区写入范围之外。
+旧终端链路的本机探针要求 `Environment` 为空，并在 `Launch.runtime_executable` 指向原 Runner 构建提供的隔离 helper。该专项只记录旧链路资格。新本机结构化链路以正式 CLI 真机案例验收。
 本机模型回合还须提供现有 `Launch.audit_model`（model/reasoning_effort），其模型名与 writer
 不同且 effort 合法，与正式 workflow 冻结契约一致；只配置该能力，不额外投递 audit 输入。
 本机适配依次调用原 control、launch、ready、模型 wire/history 和正式 stop 流程；
@@ -475,8 +474,7 @@ Pi 读取配置的 agent_launch.executable／model／reasoning_effort，
 不继承 Codex 参数。本机原 TUI 和 helper 均在所选执行主机运行。
 
 受管版本为 Pi 0.87.1、Node 24；Windows 工具使用原 owned PowerShell host，开发仅支持 full_access，不依赖 Codex sandbox EXE。独立结果 parser 仍需要其自己的 Codex。
-Helper 可用 `go build -o <安装路径>/steerrunner-agent.exe ./cmd/steerrunner-agent` 构建，然后配置绝对路径；
-新 Run 要求 helper metadata v5／原生回执 v4、tools contract v2、local profile v6，回执核验实际 reasoning effort；旧冻结实例仍按原构建和来源读取。
+上述是旧 Pi helper 场景。新本机 Pi 由 Orca 原生结构化会话运行，旧冻结实例由原构建排空。新链路的工具、停止及文件边界见 [本机 Pi 真机烟测](acceptance/orca-native-pi-smoke.md)。
 Pi 要求原生依赖已安装，Run 不联网安装、不修改全局 profile。DSH 执行和专用历史/用量已移除，不再提供安装/运行入口。
 
 原 TUI 的正式扩展提供开始/完成事实，现有 Orca 只负责资源和投递；不修改 Orca。

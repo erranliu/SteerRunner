@@ -76,10 +76,16 @@ func structuredAudited(r *runstate.Record) bool {
 }
 
 func resultContract(r *runstate.Record) string {
-	if r.ResultFileContract != contracts.ResultFileSnapshotContract || r.Request.Execution.Adapter != "orca-terminal" || r.Snapshot.Ref.Backend != b.BackendOrca || r.Snapshot.Ref.Protocol != b.ProtocolOrcaAgentSessionV1 || r.Snapshot.Ref.Agent.Name != "codex" {
+	if r.ResultFileContract != contracts.ResultFileSnapshotContract || r.Request.Execution.Adapter != "orca-terminal" || r.Snapshot.Ref.Backend != b.BackendOrca || r.Snapshot.Ref.Protocol != b.ProtocolOrcaAgentSessionV1 {
 		return contracts.ResultFileContract
 	}
 	selected, target := r.Request.Workflow, r.Request.Execution.Target
+	if r.Snapshot.Ref.Agent.Name == "pi" && target.Kind == "local" && target.Environment == "" && (selected.ID == "execute" && selected.Version == 1 || selected.ID == "development" && selected.Version == 2) {
+		return contracts.ResultFileSnapshotContract
+	}
+	if r.Snapshot.Ref.Agent.Name != "codex" {
+		return contracts.ResultFileContract
+	}
 	if structuredAudited(r) || selected.ID == "development" && selected.Version == 2 || selected.ID == "execute" && selected.Version == 1 && target.Kind == "orca_environment" && target.Environment != "" {
 		return contracts.ResultFileSnapshotContract
 	}

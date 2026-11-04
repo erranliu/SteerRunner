@@ -79,10 +79,10 @@ func TestStructuredExecuteCatalogMatchesNarrowAdmission(t *testing.T) {
 				}
 			}
 		}
-		// Other workflows retain their own executor configuration and input rules.
 		execution.Settings = marshal(map[string]any{"agent": "pi", "access_mode": "full_access"})
-		if fault := contracts.ValidateRunConfiguration(marshal(contracts.RunConfiguration{Execution: execution, Workflow: selection})); fault == nil {
-			t.Fatal("unmigrated Pi execute admission changed")
+		fault := contracts.ValidateRunConfiguration(marshal(contracts.RunConfiguration{Execution: execution, Workflow: selection}))
+		if (fault == nil) != (target.Kind == "local") {
+			t.Fatal("structured Pi execute must be local", target.Kind, fault)
 		}
 	}
 }

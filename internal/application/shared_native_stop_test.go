@@ -19,6 +19,7 @@ import (
 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
+	"github.com/erranliu/SteerRunner/internal/execution/reliable"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/runstate"
 	"github.com/erranliu/SteerRunner/internal/storage"
@@ -108,7 +109,7 @@ func (h *sharedNativeWire) OutputCommand(_ context.Context, command b.LaunchComm
 	args := command.Args
 	var result any
 	runtime := "candidate-runtime"
-	row := native.Terminal{Handle: "candidate-terminal", IncarnationID: "candidate-incarnation", WorktreeID: h.worktree.ID, WorktreePath: h.worktree.Path, Branch: h.worktree.Branch, Connected: true, Status: "running"}
+	row := native.Terminal{Handle: "candidate-terminal", IncarnationID: "candidate-incarnation", WorktreeID: h.worktree.ID, WorktreePath: h.worktree.Path, Branch: h.worktree.Branch, Connected: true, Status: "running", AgentIdentity: "codex"}
 	if len(args) < 2 {
 		return nil, errors.New("unexpected non-Orca command")
 	}
@@ -185,12 +186,22 @@ func sharedNativeEngine(t *testing.T, environment string) (*Engine, *worker, *sh
 	if environment != "" {
 		target = contracts.Target{Kind: "orca_environment", Environment: environment}
 	}
-	f.request.Execution = contracts.Execution{Adapter: "orca-terminal", Target: target, Settings: canonical(settings)}
+	f.request.Execution = contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "local"}, Settings: canonical(settings)}
 	f.input.Input = canonical(f.request)
 	r := f.freeze()
-	if len(r.Profile) != 1 || r.Profile[0].CodecVersion != orca.NativeProfileVersion || r.StopEvidenceScope != "orca_terminal" {
-		t.Fatal("formal freeze did not select candidate profile/scope", r.Profile, r.StopEvidenceScope)
+	// Replay the historical frozen terminal contract without admitting a new
+	// terminal-backed Codex Run through production configuration.
+	r.Request.Execution.Target = target
+	r.InputDigest = reliable.Digest(canonical(r.Request))
+	profile := orca.Profile{NativeTerminal: true, Executable: exe, Environment: environment, WaitTimeout: "30s"}
+	r.Snapshot.Ref.Protocol, r.StopEvidenceScope = b.ProtocolOrcaTerminalV3, "orca_terminal"
+	r.Snapshot.Ref.Target, r.Snapshot.Session.Target = profile.Target(), profile.Target()
+	r.Snapshot.ConfigurationDigest = r.InputDigest
+	envelope, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{ImplementationKey: orca.ProfileKey, CodecVersion: orca.NativeProfileVersion, Purpose: b.ImplementationConfigPurpose, ProjectID: r.Snapshot.Session.ProjectID, ProfileID: r.ID, AcceptedConfigVersion: r.InputDigest}, canonical(profile))
+	if err != nil {
+		t.Fatal(err)
 	}
+	r.Profile = []b.ImplementationDataEnvelope{envelope}
 	store, err := storage.Open(f.state)
 	if err != nil {
 		t.Fatal(err)

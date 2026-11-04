@@ -449,6 +449,9 @@ func (e *Engine) port(r *runstate.Record, w *worker) (b.LifecyclePort, error) {
 	if w.port != nil {
 		return w.port, nil
 	}
+	if r.Request.Execution.Adapter == "orca-terminal" && r.Snapshot.Ref.Protocol != b.ProtocolOrcaAgentSessionV1 {
+		return nil, &b.BackendError{Code: b.BackendUnsupported, Diagnostic: "Legacy Orca terminal execution must be drained with its original Runner build."}
+	}
 	var p b.LifecyclePort
 	var err error
 	if r.Request.Execution.Adapter == "codex-app-server" {
