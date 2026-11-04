@@ -70,7 +70,78 @@ func TestFirstInputReusesOnlyFreshBoundGitPaths(t *testing.T) {
 	}
 }
 
+func TestContentFirstInputUsesReadOnlyWorkspace(t *testing.T) {
+	for _, workflowID := range []string{"generate", "conversation"} {
+		t.Run(workflowID, func(t *testing.T) {
+			e, w := contentEngine(t, workflowID)
+			r := e.runs["run"].Clone()
+			s := &r.Snapshot
+			identity := codex.PolicyResourceIdentity{ProjectID: s.Session.ProjectID, ExecutionID: s.Session.ExecutionID, AttemptID: s.Session.AttemptID, Generation: s.ResourceGeneration, ConfigDigest: s.ConfigurationDigest}
+			permissions, err := codex.NativePermissions("windows", "local", "codex", "read_only")
+			if err != nil {
+				t.Fatal(err)
+			}
+			binding, err := codex.NewPolicyResourceEnvelope(identity, codex.PolicyResourcePayload{
+				NativeVersion: codex.PolicyCodexVersion, Contract: permissions.Contract,
+				Settings: b.LaunchCommand{Executable: "fixture.exe", Args: permissions.Args(), WorkingDirectory: s.Workspace.Path},
+			})
+			if err != nil {
+				t.Fatal(err)
+			}
+			s.PolicyResources = &binding
+			if err := e.commitLocked(r, nil, "permission_resources_bound"); err != nil {
+				t.Fatal(err)
+			}
+			p := &fileBusinessPort{}
+			w.port = p
+			e.advance(r.ID, w)
+			got := e.runs[r.ID]
+			if w.startupWorkspaceChecked || p.executes != 1 || p.requests[0].Operation.Action != string(b.LifecycleStartTurn) {
+				t.Fatalf("first content turn did not dispatch through its read-only workspace: phase=%q diagnostic=%q sends=%d", got.Phase, got.Diagnostic, p.executes)
+			}
+		})
+	}
+}
+
 func TestRecoveredWorkspaceChecksOriginalGitBeforeFirstInput(t *testing.T) {
+	for _, tc := range []struct {
+		name, diagnostic string
+		change           func(*baseRefreshFixture, string)
+	}{
+		{
+			name: "clean_diff_with_wrong_HEAD", diagnostic: "worktree HEAD differs from pinned base",
+			change: func(f *baseRefreshFixture, path string) {
+				f.git(path, "-c", "user.name=Runner Fixture", "-c", "user.email=fixture@example.invalid", "-c", "core.hooksPath=", "commit", "--allow-empty", "-m", "move HEAD only")
+				if f.git(path, "status", "--porcelain=v1") != "" {
+					f.t.Fatal("fixture must move HEAD without changing the diff")
+				}
+			},
+		},
+		{
+			name: "tracked_diff_at_pinned_HEAD", diagnostic: "original worktree changed before first input",
+			change: func(f *baseRefreshFixture, path string) {
+				if err := os.WriteFile(filepath.Join(path, "spec.md"), []byte("changed"), 0600); err != nil {
+					f.t.Fatal(err)
+				}
+			},
+		},
+		{
+			name: "untracked_file_at_pinned_HEAD", diagnostic: "original worktree changed before first input",
+			change: func(f *baseRefreshFixture, path string) {
+				if err := os.WriteFile(filepath.Join(path, "untracked-before-restart"), []byte("changed"), 0600); err != nil {
+					f.t.Fatal(err)
+				}
+			},
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			checkRecoveredWorkspaceBeforeFirstInput(t, tc.change, tc.diagnostic)
+		})
+	}
+}
+
+func checkRecoveredWorkspaceBeforeFirstInput(t *testing.T, change func(*baseRefreshFixture, string), diagnostic string) {
+	t.Helper()
 	f := newBaseRefreshFixture(t, "origin", "main")
 	r := f.freeze()
 	ctx := context.Background()
@@ -96,9 +167,7 @@ func TestRecoveredWorkspaceChecksOriginalGitBeforeFirstInput(t *testing.T) {
 	if err := first.commitLocked(r, nil, "workspace_prepared"); err != nil {
 		t.Fatal(err)
 	}
-	if err := os.WriteFile(filepath.Join(intent.Path, "untracked-before-restart"), []byte("changed"), 0600); err != nil {
-		t.Fatal(err)
-	}
+	change(f, intent.Path)
 	restarted, err := New(ctx, f.state, store, nil)
 	if err != nil {
 		t.Fatal(err)
@@ -110,7 +179,7 @@ func TestRecoveredWorkspaceChecksOriginalGitBeforeFirstInput(t *testing.T) {
 	if restarted.advance(r.ID, w) || port.executes != 0 {
 		t.Fatal("recovery dispatched from an existing changed worktree")
 	}
-	if got := restarted.runs[r.ID]; got.Phase != "workspace_unverified" || got.Diagnostic != "original worktree changed before first input" {
+	if got := restarted.runs[r.ID]; got.Phase != "workspace_unverified" || got.Diagnostic != diagnostic {
 		t.Fatalf("recovery did not check the original Git state: %s / %s", got.Phase, got.Diagnostic)
 	}
 }
