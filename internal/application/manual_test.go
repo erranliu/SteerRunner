@@ -68,7 +68,7 @@ func manualResume(t *testing.T, e *Engine, request string) (contracts.Request, s
 	t.Helper()
 	input, _ := json.Marshal(contracts.RevisionInput{ExpectedRevision: e.runs["run"].Revision})
 	r := contracts.Request{Protocol: contracts.Protocol, RequestID: request, Input: input}
-	response := e.Handle("resume", "run", "", "", "", 0, false, &r)
+	response := e.Handle("resume", "run", "", "", "", 0, &r)
 	if !response.OK {
 		t.Fatal(response.Error)
 	}
@@ -94,7 +94,7 @@ func TestSRManualReconciliationExplicitRetryReplayAndLostResource(t *testing.T) 
 			if mode != "resolved" && (r.Phase != manualIntervention || !r.ResumeRequired || r.Allowed) {
 				t.Fatal("failed reconciliation escaped manual pause")
 			}
-			replay := e.Handle("resume", "run", "", "", "", 0, false, &request)
+			replay := e.Handle("resume", "run", "", "", "", 0, &request)
 			if !replay.OK || replay.Data.(map[string]any)["action_status"] != want {
 				t.Fatal("original resume receipt did not replay", replay)
 			}
@@ -128,7 +128,7 @@ func TestSRManualReconciliationStopWinsDuringRead(t *testing.T) {
 	input, _ := json.Marshal(contracts.RevisionInput{ExpectedRevision: e.runs["run"].Revision})
 	stop := contracts.Request{Protocol: contracts.Protocol, RequestID: "stop-during-query", Input: input}
 	accepted := make(chan contracts.Response, 1)
-	go func() { accepted <- e.Handle("stop", "run", "", "", "", 0, false, &stop) }()
+	go func() { accepted <- e.Handle("stop", "run", "", "", "", 0, &stop) }()
 	select {
 	case response := <-accepted:
 		if !response.OK {
@@ -169,7 +169,7 @@ func TestSRManualReconciliationCommitFailureAndRestart(t *testing.T) {
 	if restarted.runs["run"].CommandStates[command] != "completed" || p.executes != 0 || p.reconciles != 2 {
 		t.Fatal("restart replayed effects instead of original query", r)
 	}
-	replay := restarted.Handle("resume", "run", "", "", "", 0, false, &request)
+	replay := restarted.Handle("resume", "run", "", "", "", 0, &request)
 	if !replay.OK {
 		t.Fatal(replay)
 	}

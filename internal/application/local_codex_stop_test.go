@@ -92,7 +92,7 @@ func TestLocalCodexStopNewRequestCannotReplacePendingStop(t *testing.T) {
 		t.Fatal(err)
 	}
 	input, _ := json.Marshal(contracts.RevisionInput{ExpectedRevision: e.runs["run"].Revision})
-	response := e.Handle("stop", "run", "", "", "", 0, false, &contracts.Request{Protocol: contracts.Protocol, RequestID: "another-stop", Input: input})
+	response := e.Handle("stop", "run", "", "", "", 0, &contracts.Request{Protocol: contracts.Protocol, RequestID: "another-stop", Input: input})
 	if response.OK || response.Error == nil || response.Error.Code != "operation_unverified" || e.runs["run"].PendingStop != "original-stop" {
 		t.Fatal("new stop replaced unresolved original", response)
 	}

@@ -50,7 +50,7 @@ func cliWaitRetry(t *testing.T, m livetest.Manifest) {
 			}
 			var final contracts.RunView
 			for until := time.Now().Add(3 * time.Minute); time.Now().Before(until); time.Sleep(300 * time.Millisecond) {
-				v, err := inspect(m, dir, id, false)
+				v, err := inspect(m, dir, id)
 				if err == nil {
 					final = v
 					if v.StopStatus == "stopped" && !v.NewInputsAllowed {
@@ -138,7 +138,7 @@ func cliWaitRetry(t *testing.T, m livetest.Manifest) {
 		}
 		wait := func(predicate func(contracts.RunView) bool, budget time.Duration) contracts.RunView {
 			for until := time.Now().Add(budget); time.Now().Before(until); time.Sleep(150 * time.Millisecond) {
-				v, err := inspect(m, dir, id, false)
+				v, err := inspect(m, dir, id)
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -166,7 +166,7 @@ func cliWaitRetry(t *testing.T, m livetest.Manifest) {
 			close(release)
 			held = false
 			time.Sleep(300 * time.Millisecond)
-			latest, err := inspect(m, dir, id, false)
+			latest, err := inspect(m, dir, id)
 			if err != nil || latest.ExecutionWait != nil || latest.Execution.Workspace != "" || latest.Execution.TurnStarted || len(latest.Operations) != 1 || latest.Operations[0].ID != queued.Operations[0].ID || latest.Revision != final.Revision {
 				t.Fatal("queued stop dispatched native work", latest, err)
 			}
@@ -175,7 +175,7 @@ func cliWaitRetry(t *testing.T, m livetest.Manifest) {
 			continue
 		}
 		time.Sleep(16 * time.Second)
-		still, err := inspect(m, dir, id, false)
+		still, err := inspect(m, dir, id)
 		if err != nil || still.ExecutionWait == nil || still.ExecutionWait.Stage != "queue" || still.ExecutionWait.CallsStarted != 0 || still.ResumeRequired || still.Revision != queued.Revision {
 			t.Fatal("old queue timeout or GET mutation", still, err)
 		}

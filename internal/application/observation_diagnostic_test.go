@@ -26,7 +26,7 @@ func TestOrcaObservationProjectionAndPublicMessageRemainSeparate(t *testing.T) {
 		t.Fatal("message changed aggregate")
 	}
 	for i := 0; i < 2; i++ {
-		v := e.Handle("last-message", "run", "", "", "", 0, false, nil).Data.(contracts.LastMessageView)
+		v := e.Handle("last-message", "run", "", "", "", 0, nil).Data.(contracts.LastMessageView)
 		if v.Message == nil || !v.Message.ObservedAt.Equal(message.ObservedAt) {
 			t.Fatal(v)
 		}
@@ -55,7 +55,7 @@ func TestLastMessageSameTextFromNewTurnRetainsOriginalIdentities(t *testing.T) {
 	}
 	r.Snapshot.Session.CurrentTurnID = "second"
 	view := func() *contracts.LastMessage {
-		return e.Handle("last-message", "run", "", "", "", 0, false, nil).Data.(contracts.LastMessageView).Message
+		return e.Handle("last-message", "run", "", "", "", 0, nil).Data.(contracts.LastMessageView).Message
 	}
 	if view() == nil || view().TurnID != "first" {
 		t.Fatal("previous sample was relabelled before new evidence")

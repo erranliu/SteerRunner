@@ -155,10 +155,15 @@ func ValidateEvidence(m Manifest, r StabilityResult) error {
 		if len(prs) != 1 || prs[0].URL != r.PRURL {
 			return errors.New("actual PR list differs from result")
 		}
-		raw, err = os.ReadFile(filepath.Join(root, "merged-run.json"))
+		bound, err := os.ReadFile(filepath.Join(root, "merge-bound-run.json"))
 		var v contracts.RunView
-		if err != nil || json.Unmarshal(raw, &v) != nil || v.PR == nil || !v.PR.Merged || v.PR.URL != r.PRURL || v.PR.Repository != Repository || v.PR.BaseBranch != m.BaseBranch || v.PR.MergeCommit == nil || *v.PR.MergeCommit != r.MergeCommit || v.PR.MergedAt == nil {
-			return errors.New("verified merge evidence missing or mismatched")
+		if err != nil || json.Unmarshal(bound, &v) != nil || v.RunID != r.RunID || CheckPR(m, v) != nil || v.PR.URL != r.PRURL {
+			return errors.New("original PR binding evidence missing or mismatched")
+		}
+		platform, err := os.ReadFile(filepath.Join(root, "merge-platform.json"))
+		commit, checkErr := CheckPlatformPR(platform, v.PR, true)
+		if err != nil || checkErr != nil || commit != r.MergeCommit {
+			return errors.New("platform merge evidence missing or mismatched")
 		}
 	} else if len(prs) != 0 {
 		return errors.New("unexpected actual PR in stop evidence")

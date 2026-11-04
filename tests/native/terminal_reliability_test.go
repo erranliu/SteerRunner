@@ -67,7 +67,7 @@ func restartTerminalService(t *testing.T, m livetest.Manifest, dir string, insta
 	var recovered contracts.RunView
 	for until := time.Now().Add(time.Minute); time.Now().Before(until); time.Sleep(time.Second) {
 		var err error
-		recovered, err = inspect(m, dir, original.RunID, false)
+		recovered, err = inspect(m, dir, original.RunID)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -80,7 +80,7 @@ func restartTerminalService(t *testing.T, m livetest.Manifest, dir string, insta
 	}
 	time.Sleep(3 * time.Second)
 	var err error
-	recovered, err = inspect(m, dir, original.RunID, false)
+	recovered, err = inspect(m, dir, original.RunID)
 	if err != nil || recovered.ResumeRequired || !recovered.NewInputsAllowed || terminalInputFingerprint(t, m, original) != before || recovered.Execution.SessionID != original.Execution.SessionID || recovered.Execution.AttemptID != original.Execution.AttemptID || recovered.Execution.Generation != original.Execution.Generation || recovered.Execution.Workspace != original.Execution.Workspace || recovered.PR == nil || recovered.PR.URL != original.PR.URL || recovered.PR.HeadRevision != original.PR.HeadRevision {
 		t.Fatal("service replacement changed original resources, authorization, input history or PR", err)
 	}
@@ -116,7 +116,7 @@ func activeTerminalStop(t *testing.T, m livetest.Manifest, dir string, input con
 	var original contracts.RunView
 	for until := time.Now().Add(time.Minute); time.Now().Before(until); time.Sleep(200 * time.Millisecond) {
 		var err error
-		original, err = inspect(m, dir, id, false)
+		original, err = inspect(m, dir, id)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -249,7 +249,7 @@ func verifyLocalTerminalFaults(t *testing.T, m livetest.Manifest, dir string, in
 			verified := false
 			for until := time.Now().Add(2 * time.Minute); time.Now().Before(until); time.Sleep(time.Second) {
 				var e error
-				view, e = inspect(m, dir, id, false)
+				view, e = inspect(m, dir, id)
 				if e != nil {
 					t.Fatal(e)
 				}
@@ -320,7 +320,7 @@ func verifyLocalTerminalFaults(t *testing.T, m livetest.Manifest, dir string, in
 	hit := false
 	for until := time.Now().Add(3 * time.Minute); time.Now().Before(until); time.Sleep(time.Second) {
 		var e error
-		view, e = inspect(m, dir, id, false)
+		view, e = inspect(m, dir, id)
 		if e != nil {
 			t.Fatal(e)
 		}
@@ -374,7 +374,7 @@ func verifyLocalTerminalFaults(t *testing.T, m livetest.Manifest, dir string, in
 	// Give original reconciliation time to observe even a settled extension fact.
 	// Native settlement alone must never fabricate the missing Orca acceptance.
 	time.Sleep(5 * time.Second)
-	view, e := inspect(m, dir, id, false)
+	view, e := inspect(m, dir, id)
 	if e != nil {
 		t.Fatal(e)
 	}
@@ -403,7 +403,7 @@ func cleanupTerminalFaultRun(t *testing.T, m livetest.Manifest, dir, id, prefix 
 		return
 	}
 	for until := time.Now().Add(time.Minute); time.Now().Before(until); time.Sleep(time.Second) {
-		v, e := inspect(m, dir, id, false)
+		v, e := inspect(m, dir, id)
 		if e == nil && v.StopStatus == "stopped" && !v.NewInputsAllowed {
 			return
 		}

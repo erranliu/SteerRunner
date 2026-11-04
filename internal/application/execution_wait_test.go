@@ -167,7 +167,7 @@ func TestSRExecutionWaitStopKeepsControlPriority(t *testing.T) {
 	revision := e.runs["run"].Revision
 	e.mu.Unlock()
 	req := contracts.Request{Protocol: contracts.Protocol, RequestID: "typed-wait-stop", Input: json.RawMessage(fmt.Sprintf(`{"expected_revision":%d}`, revision))}
-	response := e.Handle("stop", "run", "", "", "", 0, false, &req)
+	response := e.Handle("stop", "run", "", "", "", 0, &req)
 	if !response.OK {
 		t.Fatal(response)
 	}

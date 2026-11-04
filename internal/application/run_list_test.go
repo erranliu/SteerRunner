@@ -11,7 +11,7 @@ import (
 )
 
 func TestDisplayRunsAreIndependentWhitelistCopies(t *testing.T) {
-	r := &runstate.Record{ID: "direct-cli-run", Status: "running", Revision: 4, Request: contracts.RunRequest{Title: "display", Workflow: contracts.Workflow{ID: "development-audited", Version: 2, PromptOverrides: map[string]string{"audit.code": "PRIVATE PROMPT"}, AuditModel: &workflow.ModelSettings{Model: "PRIVATE MODEL"}}}, PR: &contracts.PRFact{URL: "https://github.com/o/r/pull/3", Number: 3, QueryError: "PRIVATE DIAGNOSTIC"}}
+	r := &runstate.Record{ID: "direct-cli-run", Status: "running", Revision: 4, Request: contracts.RunRequest{Title: "display", Workflow: contracts.Workflow{ID: "development-audited", Version: 2, PromptOverrides: map[string]string{"audit.code": "PRIVATE PROMPT"}, AuditModel: &workflow.ModelSettings{Model: "PRIVATE MODEL"}}}, PR: &contracts.PRFact{URL: "https://github.com/o/r/pull/3", Number: 3}}
 	r.Workflow.StepID = "audit.code"
 	e := &Engine{runs: map[string]*runstate.Record{r.ID: r}}
 	rows, err := e.DisplayRuns()

@@ -6,7 +6,7 @@
 
 - capabilities.instance_binding.full_binding 发布 `steerrunner-service-binding/v1`、before_effects/no_implicit_start 与逐命令覆盖。CLI `--expected-binding <JSON>` 接收 contract/protocol/instance_id/state_dir/executable_sha256/version/resource_digest，缺字段、未知命令或与 expected-instance-id 冲突均拒绝。
 - resident 在 handler、PR/原生查询或命令记录受理之前验证完整绑定和 ready；命令持 host 受理读门闩，service stop 持写门闩，停止受理后拒绝新动作。保持 host→engine 锁序，不在 SQLite 事务内进行新外部 I/O；不因绑定错误改写原请求。
-- `observe --run-id R --after C --limit N` 是只读公开命令，禁止 refresh-pr，输出 `steerrunner-run-observation/v1`。同一只读事务读取原 Run、revision、有界事件和 cursor，cursor 只越过实际消费事件，空页保留消费位置，事件不超过该投影 revision。保留现有历史 read_only 投影。
+- `observe --run-id R --after C --limit N` 是只读公开命令，输出 `steerrunner-run-observation/v1`。同一只读事务读取原 Run、revision、有界事件和 cursor，cursor 只越过实际消费事件，空页保留消费位置，事件不超过该投影 revision。保留现有历史 read_only 投影。
 - 这些接口不承担安装排他；未实现安装共享/独占租约、SteerLine-owned 启动上下文或安装续装，不将 JSON 当作租约。
 
 ## 测试计划

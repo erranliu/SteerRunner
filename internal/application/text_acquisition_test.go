@@ -200,7 +200,7 @@ func TestTextAcquisitionOtherRunProgressAndStops(t *testing.T) {
 	for _, id := range []string{"other", "run"} {
 		body := canonical(contracts.RevisionInput{ExpectedRevision: e.runs[id].Revision})
 		request := contracts.Request{Protocol: contracts.Protocol, RequestID: "stop-" + id, Input: body}
-		if response := e.Handle("stop", id, "", "", "", 0, false, &request); !response.OK {
+		if response := e.Handle("stop", id, "", "", "", 0, &request); !response.OK {
 			t.Fatal(response)
 		}
 		stopped := make(chan struct{})

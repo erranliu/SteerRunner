@@ -214,7 +214,7 @@ func TestMergeGuardRejectsForeignAndUnverifiedPR(t *testing.T) {
 	if err := CheckPR(m, v); err != nil {
 		t.Fatal(err)
 	}
-	for _, mutate := range []func(*contracts.RunView){func(x *contracts.RunView) { x.PR.BaseBranch = "main" }, func(x *contracts.RunView) { x.PR.HeadRepository = "other/repo" }, func(x *contracts.RunView) { x.PR.HeadBranch = "other" }, func(x *contracts.RunView) { x.PR.QueryError = "offline" }, func(x *contracts.RunView) { x.PR.HeadRevision = "" }, func(x *contracts.RunView) { x.PR.URL = "https://github.com/other/repo/pull/12" }, func(x *contracts.RunView) { x.Final.Verified = false }, func(x *contracts.RunView) { x.Final.SessionID = "replacement" }, func(x *contracts.RunView) { x.Status = "running" }} {
+	for _, mutate := range []func(*contracts.RunView){func(x *contracts.RunView) { x.PR.BaseBranch = "main" }, func(x *contracts.RunView) { x.PR.HeadRepository = "other/repo" }, func(x *contracts.RunView) { x.PR.HeadBranch = "other" }, func(x *contracts.RunView) { x.PR.HeadRevision = "" }, func(x *contracts.RunView) { x.PR.URL = "https://github.com/other/repo/pull/12" }, func(x *contracts.RunView) { x.Final.Verified = false }, func(x *contracts.RunView) { x.Final.SessionID = "replacement" }, func(x *contracts.RunView) { x.Status = "running" }} {
 		x := v
 		p := *v.PR
 		f := *v.Final

@@ -25,7 +25,7 @@ func TestSRCLIContract(t *testing.T) {
 		{"native_options_not_for_inspect", []string{"inspect", "--run-id", "a", "--session-id", "session"}, "", 2},
 		{"last_message_no_write", []string{"last-message", "--run-id", "a", "--input", "-", "--json"}, "{}", 2},
 		{"last_message_no_request_selector", []string{"last-message", "--request-id", "a", "--json"}, "", 2},
-		{"last_message_no_refresh_pr", []string{"last-message", "--run-id", "a", "--refresh-pr", "--json"}, "", 2},
+		{"retired_refresh_pr", []string{"inspect", "--run-id", "a", "--refresh-pr", "--json"}, "", 2},
 		{"unknown_option", []string{"version", "--unknown", "value", "--json"}, "", 2},
 		{"duplicate_option", []string{"service", "start", "--state-dir", "C:/one", "--state-dir", "C:/two", "--json"}, "", 2},
 		{"protocol", []string{"version", "--protocol", "steerrunner-cli/v99", "--json"}, "", 3},

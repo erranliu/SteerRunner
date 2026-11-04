@@ -93,7 +93,7 @@ func Serve(ctx context.Context, dir, startupID string) (outErr error) {
 	}
 	if pending != nil {
 		for _, stop := range pending.PendingStops {
-			response := engine.Handle("stop", stop.RunID, "", "", "", 0, false, &stop.Request)
+			response := engine.Handle("stop", stop.RunID, "", "", "", 0, &stop.Request)
 			if !response.OK {
 				// An explicit rejection is not an unresolved acceptance. Preserve
 				// accepted controls in commands/Run, and let the caller form a
@@ -374,7 +374,7 @@ func (s *server) dispatch(wire wireRequest) (contracts.Response, bool) {
 		}
 		return s.engine.OpenNativeSession(*wire.Options.NativeSession), false
 	case "submit", "inspect", "last-message", "events", "reply", "resume", "stop", "message", "interrupt", "close", "history":
-		return s.engine.Handle(wire.Options.Command, wire.Options.RunID, wire.Options.RequestID, wire.Options.CommandID, wire.Options.After, wire.Options.Limit, wire.Options.RefreshPR, wire.Request), false
+		return s.engine.Handle(wire.Options.Command, wire.Options.RunID, wire.Options.RequestID, wire.Options.CommandID, wire.Options.After, wire.Options.Limit, wire.Request), false
 	}
 	switch wire.Options.Command {
 	case "service status":

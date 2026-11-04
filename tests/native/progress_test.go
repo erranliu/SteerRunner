@@ -58,7 +58,7 @@ func progressFiles(t *testing.T, m livetest.Manifest) {
 				stopWait = 180 * time.Second
 			}
 			for until := time.Now().Add(stopWait); time.Now().Before(until); time.Sleep(300 * time.Millisecond) {
-				v, err := inspect(m, dir, id, false)
+				v, err := inspect(m, dir, id)
 				if err == nil {
 					views[id] = v
 					if v.StopStatus == "stopped" && !v.NewInputsAllowed {
@@ -220,7 +220,7 @@ func progressFiles(t *testing.T, m livetest.Manifest) {
 					t.Fatal(err)
 				}
 				if bytes.HasPrefix(data, []byte(word+"|")) {
-					view, err := inspect(m, dir, id, false)
+					view, err := inspect(m, dir, id)
 					if err != nil {
 						t.Fatal(err)
 					}
@@ -238,7 +238,7 @@ func progressFiles(t *testing.T, m livetest.Manifest) {
 			time.Sleep(250 * time.Millisecond)
 		}
 		record("timeout", read(id))
-		view, _ := inspect(m, dir, id, false)
+		view, _ := inspect(m, dir, id)
 		record("timeout-run", view)
 		t.Fatal("native producer did not publish", id, word)
 		return contracts.ProgressFileView{}
@@ -246,7 +246,7 @@ func progressFiles(t *testing.T, m livetest.Manifest) {
 	marker := func(id string, step int) {
 		t.Helper()
 		relative := fmt.Sprintf(".sr-runtime-stage/progress-control/%s/%d", id, step)
-		v, err := inspect(m, dir, id, false)
+		v, err := inspect(m, dir, id)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -333,7 +333,7 @@ func progressFiles(t *testing.T, m livetest.Manifest) {
 		time.Sleep(2 * time.Second)
 	}
 	for _, id := range ids {
-		current, err := inspect(m, dir, id, false)
+		current, err := inspect(m, dir, id)
 		if err != nil || current.Execution.SessionID != views[id].Execution.SessionID || current.Execution.FinalAvailable {
 			t.Fatal("waiting native execution changed", current, err)
 		}
@@ -396,7 +396,7 @@ func progressFiles(t *testing.T, m livetest.Manifest) {
 		if !hit {
 			t.Fatal("read fault not hit")
 		}
-		before, _ := inspect(m, dir, id, false)
+		before, _ := inspect(m, dir, id)
 		oldInstance := service.InstanceID
 		req := request("progress-restart", map[string]string{"expected_instance_id": service.InstanceID})
 		invoke(t, m, dir, []string{"service", "stop", "--input", "-"}, &req)
@@ -423,20 +423,20 @@ func progressFiles(t *testing.T, m livetest.Manifest) {
 			t.Fatal("service instance did not change on restart")
 		}
 		after := wait(id, "silver")
-		view, _ := inspect(m, dir, id, false)
+		view, _ := inspect(m, dir, id)
 		if after.Version != last.Version+1 || view.Execution.SessionID != before.Execution.SessionID || view.Execution.TurnID != before.Execution.TurnID || view.Execution.AttemptID != before.Execution.AttemptID || len(view.Operations) != len(before.Operations) || view.NewInputsAllowed != before.NewInputsAllowed || view.ResumeRequired != before.ResumeRequired {
 			t.Fatal("restart replayed/rebound original execution", before, view)
 		}
 		record("recovery", map[string]any{"before": before, "after": view, "snapshot": after})
 	}
 	if len(ids) == 2 {
-		before, _ := inspect(m, dir, ids[1], false)
+		before, _ := inspect(m, dir, ids[1])
 		if err := revokeOriginalRun(m, dir, ids[0], "progress-stop-first"); err != nil {
 			t.Fatal(err)
 		}
 		stopped := false
 		for until := time.Now().Add(45 * time.Second); time.Now().Before(until); time.Sleep(200 * time.Millisecond) {
-			first, err := inspect(m, dir, ids[0], false)
+			first, err := inspect(m, dir, ids[0])
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -452,7 +452,7 @@ func progressFiles(t *testing.T, m livetest.Manifest) {
 		}
 		marker(ids[1], 3)
 		wait(ids[1], "silver")
-		after, _ := inspect(m, dir, ids[1], false)
+		after, _ := inspect(m, dir, ids[1])
 		if before.Execution.SessionID != after.Execution.SessionID || before.Execution.TurnID != after.Execution.TurnID || before.Revision != after.Revision || !after.NewInputsAllowed || after.ResumeRequired {
 			t.Fatal("peer execution/revision changed with progress", before, after)
 		}

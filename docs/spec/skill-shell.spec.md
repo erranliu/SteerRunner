@@ -129,7 +129,7 @@ Viewer 为可单独复制运行的 Windows EXE，不需要 Runner、PowerShell�
 | 回答问题或业务续执行 | 先取当前 Run.controls、revision/question_id，使用 `reply`；只传用户当前明确内容 |
 | 技术恢复 | 先 inspect 原操作与 controls.can_resume；用户明确要求后以新 request_id/当前 revision 发 resume，最多 30 秒只读原事实，查询原命令 action_status；失败保持暂停，同 ID 回放、新 ID 可再查，不重发输入或重建资源，业务等待及 stop/close 保持 |
 | 停止 | `stop` 仅作用于明确原 Run；展示受理、撤销授权、原资源停止/未知的区别，不用 service stop 代替 |
-| 结果与证据 | 使用 Run/PR 事实，按需 `inspect --refresh-pr`、`artifacts discover/collect/list/read` 和 `workspace-git`；不读私有库，不用日志推断完成 |
+| 结果与证据 | 使用 Run/PR 事实，按需读取 `inspect`、`artifacts discover/collect/list/read` 和 `workspace-git`，实时 PR 状态查平台；不读私有库，不用日志推断完成 |
 
 `pr_ready` 展示 PR、base/head、核验信息和已知资源事实，不自动合并或停止仍需保留的资源。当前开发流程在 pr_ready 后拒绝业务反馈，skill 不绕过 controls；后续改动可按用户意图新建执行，但不能把未知旧 Run 重新 submit 当作恢复。
 
