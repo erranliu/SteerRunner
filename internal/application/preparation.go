@@ -50,9 +50,14 @@ func (e *Engine) prepareRun(id string, w *worker, p b.LifecyclePort, r *runstate
 			e.block(id, "input_failed", err, false)
 			return false
 		}
-		if err := e.attachWriteRoots(r, w.freshWorkspace); err != nil {
-			e.block(id, "workspace_unverified", err, false)
-			return false
+		// queueInput copied the paths already bound during policy preparation.
+		reuseWriteRoots := w.freshWorkspace && r.Request.Execution.Adapter == "codex-app-server" &&
+			r.Snapshot.PolicyResources != nil && len(r.LinkedGitPaths) != 0
+		if !reuseWriteRoots {
+			if err := e.attachWriteRoots(r, w.freshWorkspace); err != nil {
+				e.block(id, "workspace_unverified", err, false)
+				return false
+			}
 		}
 		e.mu.Lock()
 		err := e.commitLocked(r, nil, "input_frozen")
