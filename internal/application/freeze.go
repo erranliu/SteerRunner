@@ -568,7 +568,9 @@ func queueInput(r *runstate.Record, input workflow.StageInput, feedback string) 
 			}
 			if r.Request.ResultFile != nil {
 				text := workflow.ResultFileInstruction
-				if priorFileInstruction(r, "result_file") {
+				if r.Request.ResultFile.IsRequiredInput() {
+					text = workflow.RequiredInputFileInstruction
+				} else if priorFileInstruction(r, "result_file") {
 					text = workflow.ContinueResultInstruction
 				}
 

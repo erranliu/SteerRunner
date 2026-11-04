@@ -1,6 +1,7 @@
 package application
 
 import (
+	"bytes"
 	"context"
 	"encoding/base64"
 	"errors"
@@ -54,6 +55,29 @@ func (e *Engine) readResult(ctx context.Context, r *runstate.Record) ([]byte, er
 	return c.read(ctx)
 }
 
+func (e *Engine) verifyRequiredInputFile(r *runstate.Record) error {
+	if !r.Request.ResultFile.IsRequiredInput() {
+		return nil
+	}
+	if r.ResultFile == nil || !r.ResultFile.Initialized {
+		return errors.New("required input file initialization is unverified")
+	}
+	ctx, cancel := context.WithTimeout(e.ctx, 4*time.Second)
+	defer cancel()
+	original, err := base64.StdEncoding.Strict().DecodeString(r.Request.ResultFile.InitialContentBase64)
+	if err != nil || len(original) == 0 {
+		return errors.New("required input file has no valid original bytes")
+	}
+	sample := e.sampleRuntimeFile(ctx, r, true, false)
+	if sample.err != nil {
+		return errors.Join(errors.New("required input file is unreadable"), sample.err)
+	}
+	if !bytes.Equal(sample.data, original) {
+		return errors.New("required input file differs from the original accepted bytes")
+	}
+	return nil
+}
+
 func (e *Engine) HandleResultFile(id string) contracts.Response {
 	e.mu.Lock()
 	defer e.mu.Unlock()
@@ -62,7 +86,7 @@ func (e *Engine) HandleResultFile(id string) contracts.Response {
 		return contracts.Rejected("", contracts.Fail(5, "run_not_found", "Run was not found."))
 	}
 	v := contracts.ResultFileView{Contract: contracts.ResultFileContract, RunID: id, Encoding: "base64", CollectionStatus: "pending"}
-	if r.Request.ResultFile == nil {
+	if r.Request.ResultFile == nil || r.Request.ResultFile.IsRequiredInput() {
 		v.CollectionStatus = "disabled"
 	} else if r.ResultFile != nil {
 		v = r.Clone().ResultFile.View
@@ -93,7 +117,7 @@ func resultEndIdentity(r *runstate.Record) string {
 func (e *Engine) sealResult(parent context.Context, id string) {
 	e.mu.Lock()
 	r := e.runs[id].Clone()
-	if r.Request.ResultFile == nil || !resultEndEligible(r) || r.ResultFile != nil && r.ResultFile.Sealed {
+	if r.Request.ResultFile == nil || r.Request.ResultFile.IsRequiredInput() || !resultEndEligible(r) || r.ResultFile != nil && r.ResultFile.Sealed {
 		e.mu.Unlock()
 		return
 	}

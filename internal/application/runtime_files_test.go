@@ -2,11 +2,13 @@ package application
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -115,6 +117,65 @@ func TestRuntimeFilesFailureDoesNotGateBusiness(t *testing.T) {
 				}
 			})
 		}
+	}
+}
+
+func TestRequiredInputFileGatesBusiness(t *testing.T) {
+	const arrangement = `{"tests":["N101-CONTENT","N101-SCOPE","demo.progress.roundtrip","demo.progress.retry","demo.progress.cleanup"]}`
+	for _, mode := range []string{"exact", "missing", "changed-after-initialization"} {
+		t.Run(mode, func(t *testing.T) {
+			e, w, _ := operationEngine(t)
+			r := e.runs["run"].Clone()
+			r.Snapshot.Workspace.Path = t.TempDir()
+			r.Snapshot.WorkspacePlan = r.Snapshot.Workspace
+			r.Request.ResultFile = &contracts.ResultFileInput{RequiredInput: true, InitialContentBase64: base64.StdEncoding.EncodeToString([]byte(arrangement))}
+			if err := e.commitLocked(r, nil); err != nil {
+				t.Fatal(err)
+			}
+			e.advance("run", w)
+			p := &fileBusinessPort{}
+			w.port = p
+			var writes atomic.Int32
+			e.openRuntimeFile = func(_ context.Context, r *runstate.Record, result, prepare bool) (*runtimeFileChannel, error) {
+				return &runtimeFileChannel{state: fileState(r, result), initialize: func(_ context.Context, raw []byte) error {
+					writes.Add(1)
+					if string(raw) != arrangement {
+						return errors.New("changed seed")
+					}
+					return nil
+				}, read: func(context.Context) ([]byte, error) {
+					switch {
+					case mode == "missing":
+						return nil, os.ErrNotExist
+					case mode == "changed-after-initialization" && !prepare:
+						return []byte(`{"tests":[]}`), nil
+					default:
+						return []byte(arrangement), nil
+					}
+				}, close: func() error { return nil }}, nil
+			}
+			e.advance("run", w)
+			if writes.Load() != 1 {
+				t.Fatalf("required input initialization attempts: %d", writes.Load())
+			}
+			if mode != "exact" {
+				got := e.runs["run"]
+				if len(p.requests) != 0 || got.Phase != "source_unverified" || !strings.Contains(got.Diagnostic, "required input file") {
+					t.Fatalf("unverified file crossed dispatch: requests=%d, phase=%s, diagnostic=%s", len(p.requests), got.Phase, got.Diagnostic)
+				}
+				return
+			}
+			if len(p.requests) != 1 || p.requests[0].Input.Turn == nil {
+				t.Fatalf("verified bytes did not permit one business turn: %v", p.requests)
+			}
+			body := p.requests[0].Input.Turn.Prompt
+			if !strings.Contains(body, "frozen caller input") || strings.Contains(body, "coordinate writers") || strings.Contains(body, arrangement) {
+				t.Fatal("wrong required input prompt", body)
+			}
+			if resultView(e).CollectionStatus != "disabled" {
+				t.Fatal("required input was exposed as a result")
+			}
+		})
 	}
 }
 

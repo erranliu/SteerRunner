@@ -52,7 +52,9 @@ func runInputSchema(schemas map[string]any) map[string]any {
 	result["required"] = []string{"title", "repository", "documents", "execution", "workflow", "publication"}
 	properties := result["properties"].(map[string]any)
 	properties["progress_file"] = progressInputSchema()
-	properties["result_file"] = progressInputSchema()
+	resultFile := progressInputSchema()
+	resultFile["properties"].(map[string]any)["required_input"] = map[string]any{"type": "boolean", "description": "Use the initial bytes as required read-only input. Runner verifies the original bytes before dependent execution turns and does not collect a result."}
+	properties["result_file"] = resultFile
 	properties["title"] = map[string]any{"type": "string", "minLength": 1, "pattern": `\S`}
 	properties["name_prefix"] = namePrefixSchema()
 	properties["execution"] = schemas["run_configuration"].(map[string]any)["properties"].(map[string]any)["execution"]

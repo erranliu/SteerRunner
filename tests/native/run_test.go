@@ -594,7 +594,7 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 	input := contracts.RunRequest{Title: "SteerRunner " + m.Level + " " + m.Scenario, Correlation: map[string]string{"fixture_id": m.ID, "scenario": m.Scenario}, Repository: contracts.Repository{URL: livetest.RemoteURL, LocalPath: source, Remote: "origin", BaseBranch: m.BaseBranch, BaseRevision: m.BaseRevision}, Documents: contracts.Documents{Spec: contracts.Document{Path: "sr-smoke/spec.md"}, Plan: contracts.Document{Path: "sr-smoke/plan.md"}}, Workflow: contracts.Workflow{ID: "development", Version: 2}, Execution: m.Execution, Publication: m.Publication}
 	if observationFault || observationFiles {
 		input.ProgressFile = &contracts.ProgressFileInput{InitialContentBase64: "cDI="}
-		input.ResultFile = &contracts.ProgressFileInput{InitialContentBase64: "cDI="}
+		input.ResultFile = &contracts.ResultFileInput{InitialContentBase64: "cDI="}
 	}
 	input.Workflow, err = m.RunWorkflow(nil)
 	if err != nil {

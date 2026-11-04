@@ -101,7 +101,11 @@ func (e *Engine) prepareRuntimeFiles(original *runstate.Record) {
 		p := fileState(r, true)
 		p.InitializationAttempted = true
 		next.ResultFile = &runstate.ResultFile{Progress: *p}
-		channels = append(channels, true)
+		if r.Request.ResultFile.IsRequiredInput() {
+			channels = append([]bool{true}, channels...)
+		} else {
+			channels = append(channels, true)
+		}
 	}
 	if len(channels) == 0 {
 		e.mu.Unlock()
@@ -200,11 +204,13 @@ func (e *Engine) sampleRuntimeFile(ctx context.Context, r *runstate.Record, resu
 		}
 		defer c.close()
 		if prepare {
-			seed := r.Request.ProgressFile
+			var seed string
 			if result {
-				seed = r.Request.ResultFile
+				seed = r.Request.ResultFile.InitialContentBase64
+			} else {
+				seed = r.Request.ProgressFile.InitialContentBase64
 			}
-			data, _ := base64.StdEncoding.DecodeString(seed.InitialContentBase64)
+			data, _ := base64.StdEncoding.DecodeString(seed)
 			if err = ctx.Err(); err == nil {
 				err = c.initialize(ctx, data)
 			}

@@ -81,6 +81,9 @@ func (e *Engine) prepareRun(id string, w *worker, p b.LifecyclePort, r *runstate
 		e.mu.Lock()
 		current := e.runs[id]
 		stale := current.Revision != r.Revision || !current.Allowed || current.ResumeRequired || current.PendingStop != "" || progressBinding(current) != progressBinding(r)
+		if !stale {
+			r = current.Clone()
+		}
 		e.mu.Unlock()
 		if stale || e.ctx.Err() != nil {
 			return false
@@ -100,7 +103,7 @@ func (e *Engine) prepareRun(id string, w *worker, p b.LifecyclePort, r *runstate
 		checkErr := e.checkDispatchSource(r, *input)
 		w.gate.Lock()
 		e.mu.Lock()
-		stale := e.runs[id].Revision != r.Revision || !e.runs[id].Allowed || e.runs[id].PendingStop != ""
+		stale := e.runs[id].Revision != r.Revision || !e.runs[id].Allowed || e.runs[id].ResumeRequired || e.runs[id].PendingStop != "" || e.ctx.Err() != nil
 		e.mu.Unlock()
 		if stale {
 			return false
