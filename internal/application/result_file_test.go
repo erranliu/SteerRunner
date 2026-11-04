@@ -458,6 +458,53 @@ func TestSingleExecutionClosesWithoutPublicationAndSealsOriginalResult(t *testin
 	}
 }
 
+func TestSingleExecutionUnreportedOutcomeClosesWithVerifiedFinal(t *testing.T) {
+	for _, tc := range []struct {
+		name, outcome, text string
+		verified, completed bool
+		wantPhase           string
+	}{
+		{"unreported", "unreported", "project entry returned", true, true, ""},
+		{"unknown", "unknown", "project entry returned", true, true, "native_outcome_unverified"},
+		{"unverified_final", "unreported", "project entry returned", false, true, "native_outcome_unverified"},
+		{"blank_final", "unreported", " ", true, true, "native_outcome_unverified"},
+		{"turn_still_running", "unreported", "project entry returned", true, false, ""},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			e := singleExecutionFixture(t)
+			value := contentEvidence(e, tc.text, tc.outcome, tc.verified)
+			value.Completed = tc.completed
+			advanced := e.finish("run", value)
+			run := e.runs["run"]
+			if tc.name != "unreported" {
+				if advanced || run.Closed || run.PendingStop != "" || (tc.wantPhase != "" && run.Phase != tc.wantPhase) {
+					t.Fatal("unverified completion advanced", run.View())
+				}
+				return
+			}
+			if !advanced || !run.Closed || run.Status != "settling" || run.PendingStop == "" ||
+				run.ContentResult.Status != "closed" || run.ContentResult.Text != tc.text ||
+				len(run.Workflow.StageInputs) != 1 || run.NextStage != nil || run.PR != nil ||
+				resultView(e).CollectionStatus != "pending" {
+				t.Fatal("original completion did not enter settlement", run.View())
+			}
+			w := e.workers["run"]
+			e.stopRun("run", w, w.port)
+			e.sealResult(context.Background(), "run")
+			view := e.runs["run"].View()
+			if view.Status != "closed" || view.StopStatus != "stopped" || view.Final == nil ||
+				!view.Final.Verified || view.Final.NativeOutcome != "unreported" ||
+				view.Execution.NativeOutcome != "unreported" || view.Final.Text != tc.text {
+				t.Fatal("closed execution receipt lost original evidence", view)
+			}
+			file := resultView(e)
+			if file.CollectionStatus != "closed" || string(snapshotBytes(t, file)) != "seed" {
+				t.Fatal("original result bytes were not sealed after stop", file)
+			}
+		})
+	}
+}
+
 func TestSingleExecutionRejectsReplyAndResumeIncludingAfterStop(t *testing.T) {
 	e := singleExecutionFixture(t)
 	for _, kind := range []string{"answer", "feedback"} {

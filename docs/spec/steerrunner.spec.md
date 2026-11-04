@@ -532,3 +532,5 @@ SteerRunner 内部分工为公共 CLI/DTO、服务与存储、Workflow、Reliabl
 ### Orca 原生缺失 outcome 的结果契约
 
 按 [远端原生 Spec](orca-remote-native.spec.md) 的用户确认增量，native_outcome 现有字符串扩展 unreported（接口未提供）。仅原请求正常结束、完整来源成立且无 Failure 时可进入既有业务核验；它不等于原生 succeeded。显式 unknown/failed/cancelled 和未知输入继续阻断，历史 unknown 不重新解释、不自动推进。CLI v1 结构、工作流/审计/PR 与停止部署门不变。
+
+单次执行的完成回执与业务成功判定分开。对于 `execute/1`，原回合已核实结束且最终回复来源完整时，缺失原生分类的 `unreported` 可以进入关闭和停止结算。Runner 保留该分类并在停止核实后公开 `closed`。调用方校验其正式结果并决定业务是否通过。详见[单次执行的完成回执](../workflows/README.md#单次执行的完成回执)。
