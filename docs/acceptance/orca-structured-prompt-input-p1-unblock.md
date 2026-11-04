@@ -48,3 +48,5 @@ application、Orca adapter、Orca protocol、resources 和 contracts 定向回�
 公开 `result_file_schema` 和 `model_input_contract` 原先仍把历史快照写成新远端 Run 的合同。两处发布说明已明确历史 profile 与新 Run 的边界。固定构建的 `capabilities --offline` 对比确认，schema 约束、结果文件能力和实际提示词均一致，仅两处说明文本改变。
 
 审计版源码摘要 `6e4fdeb653a862a8a7ac061827fce24e41a8f92a7a738ec38d9b0b12fe07ee38`，EXE SHA256 `b7f1c5b9ee5bb89ab22b55f8a68630dcbad78aa86e0ad0ed940207897e4e496e`。使用它作为第二个 EXE，再次通过正式 SteerLine `verify-runner-upgrade`，原应用和 Runner 目录、原固定 EXE 均相同。另逐字段比对两条正式 ready Run 和两条历史远端 Run 的冷读结果。两条历史远端 Run 仍为 unknown，离线 `resources_settled=false`。SteerLine 的环境结果、ready 条件及升级排空门禁定向测试通过。双端正式业务检测的证据对应原固定 EXE。审计版只做能力对比、冷查询和升级预检，没有发起新检测。
+
+Runner 定向复验覆盖 profile 冻结、原停止回执、禁止补发、usage 绑定、v1 封存与历史快照。完整 `go test ./...` 在本机的 application Git fixture 和 integration 结果获取用例达到默认 10 分钟包超时。已有本地文件故障用例的准备阶段曾间歇返回 `read_failed`，独立重跑已通过，主线同用例也通过。完整回归未签收。
