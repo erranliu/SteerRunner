@@ -490,7 +490,7 @@ stopped/failed 的后续 resume 仅在上列资格满足且仍有原会话时可
 
 Runner 按冻结 publication 配置和当前实际工作分支推送，创建或复用该分支 PR。模型返回 URL 后，provider 需核验平台实例、仓库、base/head 仓库及分支与 Run 的绑定一致，才能进入 pr_ready。URL、仓库、number、查询状态和可取得的 revision/时间及诊断作为 PRFact 返回。
 
-PRFact 是带来源的观察事实；Runner 的业务结果不是 TaskDelivery。inspect 默认返回持久快照，不保证读取时已经刷新平台状态。`inspect --run-id ... --refresh-pr` 可有界查询已绑定 PR 并持久化新的观察，不推送、发布、合并或继续代理；查询失败保留已核实的历史绑定并返回 query_error/观察时间，不将旧事实冒充最新。未绑定 PR 时明确无可刷新目标。PR head 可因反馈变化，不增加历史候选 SHA 锁；保留固定 workspace/base 和 PR 身份检查。当前 head 与历史不一致、缺可选 HeadRevision 不单独阻止合法反馈/发布。
+PRFact 记录 Runner 在 Workflow 中确认的 PR 绑定和观察。普通及离线 inspect 读取持久快照。实时合入状态由调用方直接向 PR 平台查询，按原 Run 的仓库、分支和 PR 绑定复核。Runner 自主核验发布及适用的已审计 head；TaskDelivery 归业务调用方。
 
 发布响应未知时查询原配置/分支是否已有 PR；无法核实就保持 reconciling。发布补报不能再发布。不能用报告 done、CLI 退出 0 或任务测试通过代替真实 PR 存在/归属核验。
 

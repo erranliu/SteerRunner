@@ -52,7 +52,7 @@ func TestSharedNativeBlockedRunRetainsFirstStopAuthority(t *testing.T) {
 			e, w, wire, _, id := sharedNativeEngine(t, environment)
 			r := e.runs[id]
 			r.Allowed, r.Status = false, "blocked"
-			response := e.Handle("stop", id, "", "", "", 0, false, &contracts.Request{Protocol: contracts.Protocol, RequestID: "blocked-original-stop", Input: canonical(contracts.RevisionInput{ExpectedRevision: r.Revision})})
+			response := e.Handle("stop", id, "", "", "", 0, &contracts.Request{Protocol: contracts.Protocol, RequestID: "blocked-original-stop", Input: canonical(contracts.RevisionInput{ExpectedRevision: r.Revision})})
 			if !response.OK {
 				t.Fatal("blocked inputs lost original stop authority", response)
 			}
@@ -77,7 +77,7 @@ func TestSharedNativeBusinessFeedbackAdmission(t *testing.T) {
 				for _, step := range []string{workflow.StepImplement, workflow.StepPRReady} {
 					r := e.runs[id]
 					r.Status, r.Workflow.StepID = "waiting_input", step
-					response := e.Handle("reply", id, "", "", "", 0, false, &contracts.Request{Protocol: contracts.Protocol, RequestID: "feedback-reject-" + step, Input: canonical(contracts.ReplyInput{ExpectedRevision: r.Revision, Kind: "feedback", Text: "Continue implementation"})})
+					response := e.Handle("reply", id, "", "", "", 0, &contracts.Request{Protocol: contracts.Protocol, RequestID: "feedback-reject-" + step, Input: canonical(contracts.ReplyInput{ExpectedRevision: r.Revision, Kind: "feedback", Text: "Continue implementation"})})
 					if response.OK || response.Error.Code != "invalid_state" || e.runs[id].PendingFeedback != nil || wire.sends != 0 {
 						t.Fatal("active native question or milestone acquired a feedback edge", response)
 					}
@@ -85,7 +85,7 @@ func TestSharedNativeBusinessFeedbackAdmission(t *testing.T) {
 				r := e.runs[id]
 				r.Status, r.Workflow.StepID = "waiting_input", workflow.StepImplementInput
 				before, session := len(r.Workflow.StageInputs), r.Snapshot.Session.SessionID
-				response := e.Handle("reply", id, "", "", "", 0, false, &contracts.Request{Protocol: contracts.Protocol, RequestID: "business-feedback", Input: canonical(contracts.ReplyInput{ExpectedRevision: r.Revision, Kind: "feedback", Text: "Continue implementation"})})
+				response := e.Handle("reply", id, "", "", "", 0, &contracts.Request{Protocol: contracts.Protocol, RequestID: "business-feedback", Input: canonical(contracts.ReplyInput{ExpectedRevision: r.Revision, Kind: "feedback", Text: "Continue implementation"})})
 				if !response.OK || e.runs[id].PendingFeedback == nil || wire.sends != 0 {
 					t.Fatal("frozen implementation input edge rejected", response)
 				}
@@ -268,7 +268,7 @@ func TestSharedNativeEngineStopReconciliation(t *testing.T) {
 					wire.afterClose = func() { failOperationCommit(t, db) }
 				}
 				input := canonical(contracts.RevisionInput{ExpectedRevision: e.runs[id].Revision})
-				response := e.Handle("stop", id, "", "", "", 0, false, &contracts.Request{Protocol: contracts.Protocol, RequestID: "original-candidate-stop", Input: input})
+				response := e.Handle("stop", id, "", "", "", 0, &contracts.Request{Protocol: contracts.Protocol, RequestID: "original-candidate-stop", Input: input})
 				var accepted struct {
 					CommandID string `json:"command_id"`
 				}
@@ -298,7 +298,7 @@ func TestSharedNativeEngineStopReconciliation(t *testing.T) {
 				e.runs[id] = runs[0]
 				if mode != "lost-absent" {
 					input = canonical(contracts.RevisionInput{ExpectedRevision: e.runs[id].Revision})
-					replacement := e.Handle("stop", id, "", "", "", 0, false, &contracts.Request{Protocol: contracts.Protocol, RequestID: "replacement-candidate-stop", Input: input})
+					replacement := e.Handle("stop", id, "", "", "", 0, &contracts.Request{Protocol: contracts.Protocol, RequestID: "replacement-candidate-stop", Input: input})
 					if replacement.OK || e.runs[id].PendingStop != accepted.CommandID || wire.closes != 1 {
 						t.Fatal("new request replaced unresolved original stop", replacement)
 					}
@@ -312,7 +312,7 @@ func TestSharedNativeEngineStopReconciliation(t *testing.T) {
 					t.Fatal("reconciliation repeated close or overstated stop", wire.closes, wire.sends, e.runs[id].View())
 				}
 				input = canonical(contracts.ReplyInput{ExpectedRevision: e.runs[id].Revision, Kind: "feedback", Text: "No new input after original stop"})
-				if reply := e.Handle("reply", id, "", "", "", 0, false, &contracts.Request{Protocol: contracts.Protocol, RequestID: "late-candidate-feedback", Input: input}); reply.OK || wire.sends != 0 {
+				if reply := e.Handle("reply", id, "", "", "", 0, &contracts.Request{Protocol: contracts.Protocol, RequestID: "late-candidate-feedback", Input: input}); reply.OK || wire.sends != 0 {
 					t.Fatal("late feedback restored dispatch authority", reply)
 				}
 			})
@@ -338,7 +338,7 @@ func TestSharedNativeStopQueuePreservesFirstDispatch(t *testing.T) {
 		t.Run(environment, func(t *testing.T) {
 			e, w, wire, _, id := sharedNativeEngine(t, environment)
 			input := canonical(contracts.RevisionInput{ExpectedRevision: e.runs[id].Revision})
-			response := e.Handle("stop", id, "", "", "", 0, false, &contracts.Request{Protocol: contracts.Protocol, RequestID: "queued-candidate-stop", Input: input})
+			response := e.Handle("stop", id, "", "", "", 0, &contracts.Request{Protocol: contracts.Protocol, RequestID: "queued-candidate-stop", Input: input})
 			if !response.OK {
 				t.Fatal(response)
 			}
@@ -403,7 +403,7 @@ func TestSharedNativeConfirmedStopSurvivesOriginalHostLoss(t *testing.T) {
 		t.Run(environment, func(t *testing.T) {
 			e, w, wire, _, id := sharedNativeEngine(t, environment)
 			r := e.runs[id]
-			response := e.Handle("stop", id, "", "", "", 0, false, &contracts.Request{Protocol: contracts.Protocol, RequestID: "original-stop", Input: canonical(contracts.RevisionInput{ExpectedRevision: r.Revision})})
+			response := e.Handle("stop", id, "", "", "", 0, &contracts.Request{Protocol: contracts.Protocol, RequestID: "original-stop", Input: canonical(contracts.RevisionInput{ExpectedRevision: r.Revision})})
 			if !response.OK {
 				t.Fatal(response)
 			}

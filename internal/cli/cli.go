@@ -48,8 +48,6 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 		case "--json":
 		case "--help", "-h":
 			value.help = true
-		case "--refresh-pr":
-			value.opts.RefreshPR = true
 		case "--offline":
 			value.offline = true
 		default:
@@ -162,8 +160,8 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 		}
 		return value, nil
 	}
-	if value.offline && (value.opts.RefreshPR || value.opts.ExpectedBinding != nil || value.opts.ExpectedInstanceID != "") {
-		return value, contracts.Fail(2, "invalid_arguments", "Offline inspect is an unbound persisted query and cannot refresh PR facts.")
+	if value.offline && (value.opts.ExpectedBinding != nil || value.opts.ExpectedInstanceID != "") {
+		return value, contracts.Fail(2, "invalid_arguments", "Offline inspect does not accept an expected service binding.")
 	}
 	if value.startupID != "" {
 		decoded, err := hex.DecodeString(value.startupID)
@@ -196,8 +194,8 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 	}
 	switch value.opts.Command {
 	case "inspect":
-		if selectors != 1 || value.opts.RefreshPR && value.opts.RunID == "" {
-			return value, contracts.Fail(2, "invalid_arguments", "inspect requires exactly one identifier; refresh-pr requires run-id.")
+		if selectors != 1 {
+			return value, contracts.Fail(2, "invalid_arguments", "inspect requires exactly one identifier.")
 		}
 	case "progress-file", "result-file", "run-usage", "run-usage-events", "estimate-run-cost", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git", "last-message", "open-native-session", "observe", "events", "reply", "resume", "stop", "message", "interrupt", "close", "history":
 		if selectors != 1 || value.opts.RunID == "" {
@@ -208,7 +206,7 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 			return value, contracts.Fail(2, "invalid_arguments", "This command does not accept a target identifier.")
 		}
 	}
-	if value.opts.Command != "events" && value.opts.Command != "history" && value.opts.Command != "run-usage-events" && value.opts.Command != "observe" && (value.opts.After != "" || value.opts.Limit != 0) || value.opts.Command != "inspect" && value.opts.RefreshPR {
+	if value.opts.Command != "events" && value.opts.Command != "history" && value.opts.Command != "run-usage-events" && value.opts.Command != "observe" && (value.opts.After != "" || value.opts.Limit != 0) {
 		return value, contracts.Fail(2, "invalid_arguments", "An option does not apply to this command.")
 	}
 	if (value.opts.Command == "events" || value.opts.Command == "history" || value.opts.Command == "run-usage-events" || value.opts.Command == "observe") && value.opts.Limit == 0 {

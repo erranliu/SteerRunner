@@ -22,7 +22,7 @@ func InspectOffline(ctx context.Context, dir string, opts Options) contracts.Res
 			selectors++
 		}
 	}
-	if selectors != 1 || opts.Command != "inspect" || opts.RefreshPR || opts.ExpectedBinding != nil || opts.ExpectedInstanceID != "" {
+	if selectors != 1 || opts.Command != "inspect" || opts.ExpectedBinding != nil || opts.ExpectedInstanceID != "" {
 		return reject(contracts.Fail(2, "invalid_arguments", "Offline inspect only reads persisted original identities."))
 	}
 	if err := ctx.Err(); err != nil {
@@ -49,5 +49,5 @@ func InspectOffline(ctx context.Context, dir string, opts Options) contracts.Res
 		return reject(fault(err, contracts.Fail(4, "service_unavailable", "Original persisted projection is unavailable.")))
 	}
 	defer projection.Shutdown(ctx)
-	return projection.Handle("inspect", opts.RunID, opts.RequestID, opts.CommandID, "", 0, false, nil)
+	return projection.Handle("inspect", opts.RunID, opts.RequestID, opts.CommandID, "", 0, nil)
 }

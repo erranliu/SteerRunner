@@ -68,7 +68,7 @@ func TestSRPreparationQueryStopAuthorization(t *testing.T) {
 				}
 				input := &contracts.Request{Protocol: contracts.Protocol, RequestID: "stop-query", Input: json.RawMessage(fmt.Sprintf(`{"expected_revision":%d}`, revision))}
 				stopped := make(chan contracts.Response, 1)
-				go func() { stopped <- e.Handle("stop", "run", "", "", "", 0, false, input) }()
+				go func() { stopped <- e.Handle("stop", "run", "", "", "", 0, input) }()
 				select {
 				case response := <-stopped:
 					wantOK := scenario != "failed-stop-commit" && scenario != "stale-stop"
@@ -136,7 +136,7 @@ func TestSRPreparationQueryStopSettlesOriginalOperation(t *testing.T) {
 	r := e.runs["run"].Clone()
 	e.mu.Unlock()
 	input := &contracts.Request{Protocol: contracts.Protocol, RequestID: "stop-inventory", Input: json.RawMessage(fmt.Sprintf(`{"expected_revision":%d}`, r.Revision))}
-	if response := e.Handle("stop", "run", "", "", "", 0, false, input); !response.OK {
+	if response := e.Handle("stop", "run", "", "", "", 0, input); !response.OK {
 		t.Fatal(response)
 	}
 	e.mu.Lock()

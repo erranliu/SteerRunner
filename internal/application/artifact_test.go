@@ -205,7 +205,7 @@ func TestR2SlowEvidenceDoesNotBlockOtherRunControl(t *testing.T) {
 			}
 			stopped := make(chan contracts.Response, 1)
 			go func() {
-				stopped <- e.Handle("stop", "other", "", "", "", 0, false, evidenceRequest("stop-other", other.Revision, false))
+				stopped <- e.Handle("stop", "other", "", "", "", 0, evidenceRequest("stop-other", other.Revision, false))
 			}()
 			if response := evidenceResponse(t, stopped); !response.OK {
 				t.Fatal(response)
@@ -253,7 +253,7 @@ func TestR2CollectionSerializesStopAndRejectsConcurrentRevision(t *testing.T) {
 			if variant == "stop" {
 				stopped = make(chan contracts.Response, 1)
 				go func() {
-					stopped <- e.Handle("stop", "run", "", "", "", 0, false, evidenceRequest("stop", original.Revision+1, false))
+					stopped <- e.Handle("stop", "run", "", "", "", 0, evidenceRequest("stop", original.Revision+1, false))
 				}()
 			} else {
 				e.mu.Lock()

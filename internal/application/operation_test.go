@@ -110,7 +110,7 @@ func TestSRStopSerializesWithNativeDispatch(t *testing.T) {
 	e.mu.Unlock()
 	input := &contracts.Request{Protocol: contracts.Protocol, RequestID: "stop-at-dispatch", Input: json.RawMessage(fmt.Sprintf(`{"expected_revision":%d}`, expected))}
 	stopped := make(chan contracts.Response, 1)
-	go func() { stopped <- e.Handle("stop", "run", "", "", "", 0, false, input) }()
+	go func() { stopped <- e.Handle("stop", "run", "", "", "", 0, input) }()
 	select {
 	case <-stopped:
 		t.Fatal("stop acknowledged revocation while native dispatch held the gate")

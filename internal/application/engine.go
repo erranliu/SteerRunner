@@ -167,7 +167,7 @@ func fault(err error) *contracts.Fault {
 	}
 	return contracts.Fail(1, "internal_error", "Cannot commit or read the requested operation.")
 }
-func (e *Engine) Handle(command, runID, requestID, commandID, after string, limit int, refresh bool, input *contracts.Request) contracts.Response {
+func (e *Engine) Handle(command, runID, requestID, commandID, after string, limit int, input *contracts.Request) contracts.Response {
 	id := ""
 	if input != nil {
 		id = input.RequestID
@@ -382,11 +382,6 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 		}
 		return contracts.Success("", map[string]any{"command": value, "run": view})
 	}
-	if refresh {
-		if err := e.refreshPR(runID); err != nil {
-			return reject(err)
-		}
-	}
 	e.mu.Lock()
 	r := e.runs[runID]
 	if command == "last-message" && r != nil {
@@ -475,42 +470,6 @@ func (e *Engine) port(r *runstate.Record, w *worker) (b.LifecyclePort, error) {
 // capabilities or private checkpoint formats. The query has no dispatch port.
 func readCompletionCheckpoint(snapshot b.LifecycleSnapshot, commandID string) (b.WorkspaceInspection, string, bool, error) {
 	return codex.ReadCompletionCheckpoint(snapshot, commandID, snapshot.Session.SessionID, snapshot.Session.CurrentTurnID)
-}
-
-func (e *Engine) refreshPR(id string) error {
-	e.mu.Lock()
-	r := e.runs[id]
-	if r == nil {
-		e.mu.Unlock()
-		return contracts.Fail(5, "run_not_found", "Run was not found.")
-	}
-	r = r.Clone()
-	e.mu.Unlock()
-	if r.PR == nil {
-		return nil
-	}
-
-	provider, err := providerFor(r)
-	if err != nil {
-		return err
-	}
-	info, queryErr := provider.Query(e.ctx, r.PR.URL)
-	if queryErr == nil {
-		queryErr = validatePR(r, info)
-	}
-	e.mu.Lock()
-	defer e.mu.Unlock()
-	current := e.runs[id]
-	if current == nil || current.PR == nil || current.PR.URL != r.PR.URL {
-		return contracts.Fail(5, "stale_revision", "PR binding changed while refreshing.")
-	}
-	next := current.Clone()
-	if queryErr != nil {
-		next.PR.QueryError = "query_error: provider facts could not be verified"
-	} else {
-		next.PR = prFact(r, info)
-	}
-	return e.commitLocked(next, nil, "pr_refreshed")
 }
 
 func (e *Engine) Shutdown(ctx context.Context) error {

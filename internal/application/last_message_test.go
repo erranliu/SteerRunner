@@ -39,7 +39,7 @@ func TestLastMessageIsBoundedReadOnlyTelemetry(t *testing.T) {
 		}
 	}
 	for i := 0; i < 2; i++ {
-		response := e.Handle("last-message", "run", "", "", "", 0, false, nil)
+		response := e.Handle("last-message", "run", "", "", "", 0, nil)
 		view := response.Data.(contracts.LastMessageView)
 		if view.Message == nil || !view.Message.ObservedAt.Equal(at) {
 			t.Fatal("query changed timestamp")
@@ -49,11 +49,11 @@ func TestLastMessageIsBoundedReadOnlyTelemetry(t *testing.T) {
 		t.Fatal("telemetry changed execution aggregate")
 	}
 	r.Snapshot.Session.AttemptID = "new"
-	if e.Handle("last-message", "run", "", "", "", 0, false, nil).Data.(contracts.LastMessageView).Message != nil {
+	if e.Handle("last-message", "run", "", "", "", 0, nil).Data.(contracts.LastMessageView).Message != nil {
 		t.Fatal("old Attempt leaked")
 	}
 	restarted := &Engine{runs: e.runs}
-	if restarted.Handle("last-message", "run", "", "", "", 0, false, nil).Data.(contracts.LastMessageView).Message != nil {
+	if restarted.Handle("last-message", "run", "", "", "", 0, nil).Data.(contracts.LastMessageView).Message != nil {
 		t.Fatal("restart invented sample")
 	}
 }

@@ -97,7 +97,7 @@ func TestOfflineInspectRejectsInvalidSelectorsAndForeignState(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(dir, "runner.db"), body, 0600); err != nil {
 		t.Fatal(err)
 	}
-	for _, opts := range []Options{{Command: "inspect"}, {Command: "inspect", RunID: "r", RequestID: "q"}, {Command: "inspect", RunID: "r", RefreshPR: true}} {
+	for _, opts := range []Options{{Command: "inspect"}, {Command: "inspect", RunID: "r", RequestID: "q"}} {
 		r := InspectOffline(context.Background(), dir, opts)
 		if r.OK || r.Error.Code != "invalid_arguments" {
 			t.Fatal(r)
@@ -110,5 +110,16 @@ func TestOfflineInspectRejectsInvalidSelectorsAndForeignState(t *testing.T) {
 	after, err := os.ReadFile(filepath.Join(dir, "runner.db"))
 	if err != nil || !bytes.Equal(body, after) {
 		t.Fatal("query mutated foreign state", err)
+	}
+}
+
+func TestInspectRejectsRetiredWireOption(t *testing.T) {
+	var plain wireRequest
+	if err := contracts.DecodeStrict([]byte(`{"options":{"command":"inspect","run_id":"original"}}`), &plain); err != nil || plain.Options.RunID != "original" {
+		t.Fatal("normal inspect wire request failed", err)
+	}
+	var retired wireRequest
+	if err := contracts.DecodeStrict([]byte(`{"options":{"command":"inspect","run_id":"original","refresh_pr":true}}`), &retired); err == nil {
+		t.Fatal("retired PR refresh option accepted on the wire")
 	}
 }

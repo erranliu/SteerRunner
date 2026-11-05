@@ -382,32 +382,36 @@ func TestSRPublicationIdentity(t *testing.T) {
 	if countNative(t, "turn/start") != 4 {
 		t.Fatal("publication formatting did not use one source-bound correction")
 	}
+	if current.PR == nil {
+		t.Fatal("workflow did not bind the publication")
+	}
 	provider := os.Getenv("STEERRUNNER_FIXTURE_PROVIDER")
-	body, _ := os.ReadFile(provider)
+	body, err := os.ReadFile(provider)
+	if err != nil {
+		t.Fatal(err)
+	}
 	var fact map[string]any
-	_ = json.Unmarshal(body, &fact)
+	if err := json.Unmarshal(body, &fact); err != nil {
+		t.Fatal(err)
+	}
 	fact["head_branch"] = "foreign-branch"
-	wrong, _ := json.Marshal(fact)
-	_ = os.WriteFile(provider, wrong, 0600)
-	response := call(t, dir, []string{"inspect", "--run-id", id, "--refresh-pr"}, "", 0)
-	var view struct {
-		Run contracts.RunView `json:"run"`
+	wrong, err := json.Marshal(fact)
+	if err != nil {
+		t.Fatal(err)
 	}
-	raw, _ = json.Marshal(response.Data)
-	_ = json.Unmarshal(raw, &view)
-	if view.Run.PR == nil || view.Run.PR.QueryError == "" || view.Run.PR.HeadBranch != current.PR.HeadBranch || !view.Run.PR.CheckedAt.Equal(current.PR.CheckedAt) {
-		t.Fatal("foreign PR refresh replaced bound fact", view.Run.PR)
+	if err := os.WriteFile(provider, wrong, 0600); err != nil {
+		t.Fatal(err)
 	}
-	_ = os.WriteFile(provider, body, 0600)
-	response = call(t, dir, []string{"inspect", "--run-id", id, "--refresh-pr"}, "", 0)
-	raw, _ = json.Marshal(response.Data)
-	view.Run = contracts.RunView{}
-	_ = json.Unmarshal(raw, &view)
-	if view.Run.PR.QueryError != "" || view.Run.PR.URL != current.PR.URL {
-		t.Fatal("original PR did not refresh")
+	queries := countNative(t, "provider/query")
+	call(t, dir, []string{"inspect", "--run-id", id, "--refresh-pr"}, "", 2)
+	for range 2 {
+		view := runView(t, call(t, dir, []string{"inspect", "--run-id", id}, "", 0))
+		if view.PR == nil || view.PR.HeadBranch != current.PR.HeadBranch || !view.PR.CheckedAt.Equal(current.PR.CheckedAt) || view.Revision != current.Revision {
+			t.Fatal("inspect changed the original publication snapshot", view.PR)
+		}
 	}
-	if countNative(t, "turn/start") != 4 {
-		t.Fatal("read-only PR refresh dispatched another input")
+	if countNative(t, "turn/start") != 4 || countNative(t, "provider/query") != queries {
+		t.Fatal("inspect caused another provider query or input")
 	}
 }
 
@@ -432,16 +436,11 @@ func TestSRPublicationBeforeWorkflowReady(t *testing.T) {
 	fact["state"], fact["merged"], fact["merged_at"], fact["merge_commit"] = "merged", true, time.Now().UTC().Format(time.RFC3339Nano), current.PR.HeadRevision
 	body, _ = json.Marshal(fact)
 	_ = os.WriteFile(provider, body, 0600)
-	response := call(t, dir, []string{"inspect", "--run-id", id, "--refresh-pr"}, "", 0)
-	var refreshed struct {
-		Run contracts.RunView `json:"run"`
+	view := runView(t, call(t, dir, []string{"inspect", "--run-id", id}, "", 0))
+	if view.PR == nil || view.PR.URL != current.PR.URL || view.PR.Merged || view.Status == "pr_ready" {
+		t.Fatal("original early PR binding or workflow snapshot changed", view)
 	}
-	raw, _ = json.Marshal(response.Data)
-	_ = json.Unmarshal(raw, &refreshed)
-	if refreshed.Run.PR == nil || !refreshed.Run.PR.Merged || refreshed.Run.Status == "pr_ready" {
-		t.Fatal("merged PR was gated on workflow readiness", refreshed.Run)
-	}
-	writeCommand(t, dir, "stop", id, "terminal-stop", refreshed.Run.Revision)
+	writeCommand(t, dir, "stop", id, "terminal-stop", view.Revision)
 	stopped := waitRun(t, dir, id, func(r contracts.RunView) bool { return r.StopStatus == "stopped" })
 	if stopped.NewInputsAllowed {
 		t.Fatal("terminal stop did not revoke input")

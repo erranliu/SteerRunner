@@ -19,7 +19,7 @@ import (
 // the Agent to repeat work. This runs only in the existing host-local L2 Run.
 func verifyNativeRunEvidence(t *testing.T, m livetest.Manifest, dir, id string) {
 	t.Helper()
-	before, err := inspect(m, dir, id, false)
+	before, err := inspect(m, dir, id)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -96,7 +96,7 @@ func verifyNativeRunEvidence(t *testing.T, m livetest.Manifest, dir, id string) 
 	if !reflect.DeepEqual(collected, replay) || !reflect.DeepEqual(original, read()) {
 		t.Fatal("deleted real report invalidated immutable collection or original request replay")
 	}
-	after, err := inspect(m, dir, id, false)
+	after, err := inspect(m, dir, id)
 	if err != nil || !reflect.DeepEqual(before.Execution, after.Execution) || !reflect.DeepEqual(before.PR, after.PR) || before.Step != after.Step || before.Status != after.Status {
 		t.Fatal("evidence queries changed original execution or PR", err)
 	}

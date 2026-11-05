@@ -23,7 +23,7 @@ func TestSRRetiredTakeoverNeverStartsService(t *testing.T) {
 }
 
 func TestOfflineInspectRejectsEffectsAndMissingState(t *testing.T) {
-	for _, extra := range [][]string{nil, {"--refresh-pr"}, {"--expected-instance-id", "original"}, {"--expected-binding", `{}`}} {
+	for _, extra := range [][]string{nil, {"--expected-instance-id", "original"}, {"--expected-binding", `{}`}} {
 		dir := filepath.Join(t.TempDir(), "missing")
 		args := append([]string{"inspect", "--offline", "--run-id", "run", "--state-dir", dir, "--json"}, extra...)
 		var out, diag bytes.Buffer

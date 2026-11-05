@@ -187,7 +187,7 @@ func sharedNativeRunner(t *testing.T, m livetest.Manifest) {
 			}
 		}
 		if r.RunID != "" {
-			view, err := inspect(m, dir, r.RunID, false)
+			view, err := inspect(m, dir, r.RunID)
 			if err == nil && original.WorktreeID == "" && view.Execution.SessionID != "" {
 				resource, _, resourceErr := candidateState(m, client, view)
 				if resource.Handle != "" {
@@ -198,7 +198,7 @@ func sharedNativeRunner(t *testing.T, m livetest.Manifest) {
 				}
 			}
 			for until := time.Now().Add(2 * time.Minute); time.Now().Before(until); time.Sleep(time.Second) {
-				view, err = inspect(m, dir, r.RunID, false)
+				view, err = inspect(m, dir, r.RunID)
 				if err == nil && view.StopStatus == "" && !stopAttempted {
 					// A blocked Run can already forbid inputs while still owning
 					// its original live terminal. That is not a stop receipt.
@@ -324,7 +324,7 @@ func sharedNativeRunner(t *testing.T, m livetest.Manifest) {
 	firstSession, firstProvider := "", ""
 	deadline := time.Now().Add(18 * time.Minute)
 	for time.Now().Before(deadline) {
-		view, err := inspect(m, dir, r.RunID, false)
+		view, err := inspect(m, dir, r.RunID)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -391,7 +391,7 @@ func sharedNativeRunner(t *testing.T, m livetest.Manifest) {
 	if active && !r.ActiveVerified || !active && r.PRURL == "" {
 		t.Fatal("candidate did not reach its required business boundary")
 	}
-	view, err := inspect(m, dir, r.RunID, false)
+	view, err := inspect(m, dir, r.RunID)
 	if err != nil {
 		t.Fatal(err)
 	}

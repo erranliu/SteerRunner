@@ -196,11 +196,8 @@ func invoke(t *testing.T, m livetest.Manifest, dir string, args []string, input 
 	return response
 }
 
-func inspect(m livetest.Manifest, dir, id string, refresh bool) (contracts.RunView, error) {
+func inspect(m livetest.Manifest, dir, id string) (contracts.RunView, error) {
 	args := []string{"inspect", "--run-id", id}
-	if refresh {
-		args = append(args, "--refresh-pr")
-	}
 	r, err := command(m, dir, args, nil)
 	if err != nil {
 		return contracts.RunView{}, err
@@ -221,7 +218,7 @@ func inspect(m livetest.Manifest, dir, id string, refresh bool) (contracts.RunVi
 func revokeOriginalRun(m livetest.Manifest, dir, id, prefix string) error {
 	var last error
 	for attempt := 0; attempt < 5; attempt++ {
-		view, err := inspect(m, dir, id, false)
+		view, err := inspect(m, dir, id)
 		if err != nil {
 			return err
 		}
@@ -271,13 +268,11 @@ func git(t *testing.T, m livetest.Manifest, args ...string) []byte {
 	return shell(t, m.RepositoryPath, "git", append([]string{"-c", "core.longpaths=true"}, args...)...)
 }
 
-func waitReady(t *testing.T, m livetest.Manifest, dir, id, oldHead string) contracts.RunView {
+func waitReady(t *testing.T, m livetest.Manifest, dir, id string) contracts.RunView {
 	t.Helper()
 	until := time.Now().Add(12 * time.Minute)
 	for time.Now().Before(until) {
-		view, err := livetest.ObservePublicationReady(oldHead, func(refresh bool) (contracts.RunView, error) {
-			return inspect(m, dir, id, refresh)
-		})
+		view, err := inspect(m, dir, id)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -285,7 +280,7 @@ func waitReady(t *testing.T, m livetest.Manifest, dir, id, oldHead string) contr
 		if m.Execution.Adapter == "orca-terminal" && m.Execution.Target.Kind == "orca_environment" {
 			assertNativeLastMessage(t, m, dir, view, view.Status == "pr_ready")
 		}
-		if view.Status == "pr_ready" && view.PR != nil && view.PR.HeadRevision != oldHead {
+		if view.Status == "pr_ready" && view.PR != nil && view.PR.HeadRevision != "" {
 			return view
 		}
 		if view.Status == "waiting_input" && view.Phase == "answer_saved" {
@@ -523,7 +518,7 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 			}
 			r.RunID = data.Run.RunID
 		}
-		view, err := inspect(m, dir, r.RunID, false)
+		view, err := inspect(m, dir, r.RunID)
 		if err != nil {
 			t.Error(err)
 			return
@@ -542,7 +537,7 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 			return
 		}
 		for until := time.Now().Add(60 * time.Second); time.Now().Before(until); time.Sleep(time.Second) {
-			view, err = inspect(m, dir, r.RunID, false)
+			view, err = inspect(m, dir, r.RunID)
 			if err != nil {
 				t.Error(err)
 				return
@@ -650,7 +645,7 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 		var question contracts.RunView
 		until := time.Now().Add(5 * time.Minute)
 		for time.Now().Before(until) {
-			question, err = inspect(m, dir, r.RunID, false)
+			question, err = inspect(m, dir, r.RunID)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -669,7 +664,7 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 		answer := request("business-answer", contracts.ReplyInput{ExpectedRevision: question.Revision, Kind: "answer", QuestionID: question.Question.ID, Text: "SR_L3_ARTIFACT_AUTHORIZED. Implement the frozen Spec and Plan now."})
 		invoke(t, m, dir, []string{"reply", "--run-id", r.RunID, "--input", "-"}, &answer)
 	}
-	first := waitReady(t, m, dir, r.RunID, "")
+	first := waitReady(t, m, dir, r.RunID)
 	if observationFault || observationFiles {
 		progress := invoke(t, m, dir, []string{"progress-file", "--run-id", r.RunID}, nil)
 		result := invoke(t, m, dir, []string{"result-file", "--run-id", r.RunID}, nil)
@@ -719,7 +714,7 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 	save(t, "original-pr-ready.json", first)
 	if genericTerminal {
 		restartTerminalService(t, m, dir, &instance, first)
-		first, err = inspect(m, dir, r.RunID, false)
+		first, err = inspect(m, dir, r.RunID)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -804,7 +799,7 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 		}
 		save(t, "feedback-rejected.json", response)
 		r.FeedbackRejected = true
-		after, err := inspect(m, dir, r.RunID, false)
+		after, err := inspect(m, dir, r.RunID)
 		if err != nil || after.Revision != first.Revision || after.PR == nil || after.PR.HeadRevision != first.PR.HeadRevision || after.Execution.TurnID != first.Execution.TurnID {
 			t.Fatal("rejected feedback changed original source", err)
 		}
@@ -815,29 +810,12 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 		save(t, "feedback-boundary.json", map[string]any{"rejected": true, "native_inputs_before": before, "native_inputs_after": afterCount, "revision_unchanged": true, "pr_head_unchanged": true})
 	}
 	updated := first
-	fresh, err := inspect(m, dir, r.RunID, true)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if err := livetest.CheckPR(m, fresh); err != nil {
-		t.Fatal(err)
-	}
-	if fresh.PR.HeadRevision != updated.PR.HeadRevision || fresh.PR.URL != updated.PR.URL {
-		t.Fatal("PR changed before merge")
-	}
-	auditWorkerSandbox(t, m, fresh)
+	platformPR(t, m, updated, false)
+	auditWorkerSandbox(t, m, updated)
 	checkpoint("merge-requested")
 	shell(t, m.Root, "gh", "pr", "merge", r.PRURL, "--merge", "--match-head-commit", updated.PR.HeadRevision)
-	merged, err := inspect(m, dir, r.RunID, true)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if merged.PR == nil || merged.PR.QueryError != "" || !merged.PR.Merged || merged.PR.State != "merged" || merged.PR.MergeCommit == nil || merged.PR.MergedAt == nil || merged.PR.URL != r.PRURL || merged.PR.BaseBranch != m.BaseBranch || merged.PR.HeadRevision != updated.PR.HeadRevision {
-		t.Fatal("Runner did not verify the actual merged PR")
-	}
-	r.MergeCommit = *merged.PR.MergeCommit
+	r.MergeCommit = platformPR(t, m, updated, true)
 	checkpoint("verify-merged-content")
-	save(t, "merged-run.json", merged)
 	git(t, m, "fetch", "--no-tags", "origin", "+refs/heads/"+m.BaseBranch+":refs/remotes/origin/"+m.BaseBranch)
 	if head := strings.TrimSpace(string(git(t, m, "rev-parse", "refs/remotes/origin/"+m.BaseBranch))); head != r.MergeCommit {
 		t.Fatal("dedicated base does not contain the observed merge commit")

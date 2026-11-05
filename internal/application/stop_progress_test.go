@@ -194,7 +194,7 @@ func TestSRUnreachableStopKeepsRevisionStableWithoutLosingProgress(t *testing.T)
 		e.advance("run", w)
 		raw, _ := json.Marshal(contracts.ReplyInput{ExpectedRevision: view.Revision, Kind: "feedback", Text: "revoked input"})
 		input := contracts.Request{Protocol: contracts.Protocol, RequestID: fmt.Sprintf("revoked-%d", n), Input: raw}
-		response := e.Handle("reply", "run", "", "", "", 0, false, &input)
+		response := e.Handle("reply", "run", "", "", "", 0, &input)
 		if response.OK || response.Error == nil || response.Error.Code != "resume_required" {
 			t.Fatalf("unchanged reconciliation starved revoked feedback: %+v", response.Error)
 		}
@@ -235,7 +235,7 @@ func TestSRUnreachableStopKeepsRevisionStableWithoutLosingProgress(t *testing.T)
 	// An actually stale caller still fails CAS after stop completion.
 	raw, _ := json.Marshal(contracts.ReplyInput{ExpectedRevision: baseline.Revision, Kind: "feedback", Text: "stale input"})
 	input := contracts.Request{Protocol: contracts.Protocol, RequestID: "stale-revoked", Input: raw}
-	response := e.Handle("reply", "run", "", "", "", 0, false, &input)
+	response := e.Handle("reply", "run", "", "", "", 0, &input)
 	if response.OK || response.Error == nil || response.Error.Code != "stale_revision" {
 		t.Fatalf("stale revision check was weakened: %+v", response)
 	}

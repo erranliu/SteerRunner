@@ -254,7 +254,7 @@ func TestRuntimeFilesStopDuringIO(t *testing.T) {
 	e.mu.Unlock()
 	input := &contracts.Request{Protocol: contracts.Protocol, RequestID: "stop-file-io", Input: json.RawMessage(fmt.Sprintf(`{"expected_revision":%d}`, revision))}
 	start := time.Now()
-	response := e.Handle("stop", "run", "", "", "", 0, false, input)
+	response := e.Handle("stop", "run", "", "", "", 0, input)
 	if !response.OK || time.Since(start) > 500*time.Millisecond {
 		t.Fatalf("stop blocked by file I/O: %+v %v", response, time.Since(start))
 	}

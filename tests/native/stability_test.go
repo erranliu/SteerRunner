@@ -101,7 +101,7 @@ func (s *stabilityRun) check(name string, ok bool, evidence string) {
 	}
 }
 func (s *stabilityRun) view() contracts.RunView {
-	v, err := inspect(s.m, s.dir, s.r.RunID, false)
+	v, err := inspect(s.m, s.dir, s.r.RunID)
 	if err != nil {
 		s.t.Fatal(err)
 	}
@@ -506,25 +506,11 @@ func (s *stabilityRun) merge(v contracts.RunView) {
 	}
 	save(s.t, "pr-list.json", prList)
 	s.check("single-actual-pr", len(prList) == 1 && prList[0].URL == v.PR.URL, "pr-list.json: exactly one PR on this fixture base")
-	fresh, err := inspect(s.m, s.dir, s.r.RunID, true)
-	if err != nil {
-		s.t.Fatal(err)
-	}
-	if err = livetest.CheckPR(s.m, fresh); err != nil {
-		s.t.Fatal(err)
-	}
-	s.check("merge-head-stable", fresh.PR.HeadRevision == v.PR.HeadRevision && fresh.PR.URL == v.PR.URL, "original PR verified before exact-head merge")
+	platformPR(s.t, s.m, v, false)
+	s.check("merge-head-stable", true, "GitHub confirmed the original PR before exact-head merge")
 	s.auditPermissions()
 	shell(s.t, s.m.Root, "gh", "pr", "merge", v.PR.URL, "--merge", "--match-head-commit", v.PR.HeadRevision)
-	merged, err := inspect(s.m, s.dir, s.r.RunID, true)
-	if err != nil {
-		s.t.Fatal(err)
-	}
-	save(s.t, "merged-run.json", merged)
-	if merged.PR == nil || !merged.PR.Merged || merged.PR.QueryError != "" || merged.PR.MergeCommit == nil || merged.PR.MergedAt == nil || merged.PR.URL != v.PR.URL || merged.PR.HeadRevision != v.PR.HeadRevision {
-		s.t.Fatal("actual merged PR not verified")
-	}
-	s.r.MergeCommit = *merged.PR.MergeCommit
+	s.r.MergeCommit = platformPR(s.t, s.m, v, true)
 	git(s.t, s.m, "fetch", "--no-tags", "origin", "+refs/heads/"+s.m.BaseBranch+":refs/remotes/origin/"+s.m.BaseBranch)
 	s.check("merged-base", strings.TrimSpace(string(git(s.t, s.m, "rev-parse", "refs/remotes/origin/"+s.m.BaseBranch))) == s.r.MergeCommit, "actual base fetch matches merge commit")
 	git(s.t, s.m, "merge-base", "--is-ancestor", v.PR.HeadRevision, s.r.MergeCommit)
@@ -1055,7 +1041,7 @@ func (s *stabilityRun) cleanup() {
 		}
 	}
 	if s.r.RunID != "" {
-		v, err := inspect(s.m, s.dir, s.r.RunID, false)
+		v, err := inspect(s.m, s.dir, s.r.RunID)
 		if err == nil {
 			if v.StopStatus != "stopped" {
 				err = revokeOriginalRun(s.m, s.dir, s.r.RunID, "cleanup-run")
@@ -1063,7 +1049,7 @@ func (s *stabilityRun) cleanup() {
 			if err == nil {
 				until := time.Now().Add(75 * time.Second)
 				for time.Now().Before(until) {
-					v, err = inspect(s.m, s.dir, s.r.RunID, false)
+					v, err = inspect(s.m, s.dir, s.r.RunID)
 					if err == nil && v.StopStatus == "stopped" && !v.NewInputsAllowed {
 						s.r.Cleanup.NativeStopped = true
 						save(s.t, "cleanup-run.json", v)

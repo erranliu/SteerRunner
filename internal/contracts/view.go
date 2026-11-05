@@ -63,7 +63,6 @@ type PRFact struct {
 	MergedAt       *time.Time `json:"merged_at,omitempty"`
 	MergeCommit    *string    `json:"merge_commit,omitempty"`
 	CheckedAt      time.Time  `json:"checked_at"`
-	QueryError     string     `json:"query_error,omitempty"`
 }
 type Controls struct {
 	CanMessage   bool   `json:"can_message"`
