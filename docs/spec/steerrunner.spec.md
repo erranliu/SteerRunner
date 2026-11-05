@@ -2,7 +2,7 @@
 
 > Orca 停止范围增量（2026-11-03）：原 session close 的成功回执可确认 `orca_agent_session` 范围结算；额外清理没有保证，不额外阻断结果、检测、Workflow、重启或部署。PC-R06/PC-R10 的“停止/排空”按对应 scope 解释，不扩大为全进程清场。close 自身失败或未知仍保留未知。统一设计见[Orca 执行链路设计](../orca-execution.md)，实际资格见[专项验收](../acceptance/orca-session-result-settlement.md)。
 
-维护日期：2026-11-02；本次核对代码基线：`efa871c` 加权限资源/原完成证明职责收口工作树差异。本文长期维护 Runner 的能力、可靠性承诺和 CLI 契约，不随某一批实施结束而归档。
+维护日期：2026-11-05；本次核对代码基线：`f6a389c` 加内容结果锁/离线读取职责收口工作树差异；既往专项基线保留在各节。本文长期维护 Runner 的能力、可靠性承诺和 CLI 契约，不随某一批实施结束而归档。
 
 ## 长期产品承诺
 
@@ -160,6 +160,14 @@ B0–B6 已完成能力迁移、生产接线、正式合同与保留例外同步
 同日[实现再审计](../acceptance/native-proof-reaudit.md)未发现产品缺陷；新增实际结果提交/停止先到回归，同步 main `da8155e` 测试接线后，351 个既有测试文件、原持久/执行/恢复/停止保持，33 个定向及最终 EXE 三个公开场景通过。上段为初轮状态，后续按新增授权提交提 PR；初轮基线失败/时限边界不改记通过，不自动合并或部署。
 
 提交前进一步整合 main `efa871c` 的文件材料及夹具修复；353 个既有测试文件无本批改动，38 个定向及同最终 EXE 三公开场景通过，原缺预算测试随上游修复后定向通过。与该 main 原源码捕获相比，145494 字节编码完全相同；与初轮捕获的差异仅是上游 capabilities/resource_digest。A/B 没有改变持久格式或长期承诺，最新产物与资格见再审计报告 §4。
+
+### 现行职责收口：内容结果校验与离线读取
+
+2026-11-05 按两份独立 [A Spec](content-result-lock-boundary.spec.md)/[Plan](content-result-lock-boundary.plan.md)、[B Spec](offline-inspection-boundary.spec.md)/[Plan](offline-inspection-boundary.plan.md)先设计审计，再实施 A、验证后实施 B，见[专项记录](../acceptance/content-inspection-boundaries.md)。内容结果的原材料校验移出 Engine.mu，保留同 Run 派发锁，重锁复核原 revision 后仍沿原结果事务提交；停止后的原 final 可收录但不恢复授权。离线 inspect 直接读取全部严格解码的持久 Run 和原命令，与驻留查询共用投影，不再构造执行 Engine、身份和 workers。
+
+材料/仓库/路径核验、输入与恢复门、全量读取的错误顺序、三 selector 的 null/未找到/查询错误、writer lease/bootstrap/当前格式护栏均保持。SQLite 原只读路径的临时 WAL/SHM 行为保持，DB 原字节与持久/执行文件不变。state/v8、持久声明和编解码、现行后端的执行/恢复/停止及 PC-R01–R06/R08/R09 不变；不新增后台框架、持久校验票据或跨回合缓存。收益是解除跨 Run 材料 I/O 与提交锁、离线读取与执行构造的两处依赖，不以净删或未测量提速为承诺；实际构建和验证资格以专项记录为准。
+
+同日[实现再审计](../acceptance/content-inspection-reaudit.md)未确认生产缺陷，新增真实stop入口的原提交边界回归；46项应用定向、74项组件通过，原4个现场opt-in跳过。351个既有内部测试字节、原持久编码及执行/恢复/停止保持；Runner/受控驱动/原生夹具SHA与初轮相同，三项公开受控沿原同产物证据，不虚记本次重跑。按用户追加授权提交提PR。
 
 ### 文档分工与维护规则
 

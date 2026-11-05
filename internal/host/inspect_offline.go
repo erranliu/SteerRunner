@@ -5,15 +5,12 @@ import (
 	"github.com/erranliu/SteerRunner/internal/application"
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	"github.com/erranliu/SteerRunner/internal/storage"
-	"io"
-	"log"
 	"os"
 	"path/filepath"
 )
 
-// InspectOffline reads the original committed v7 snapshot while no service can
-// write it. The existing query projection is never started: no workers, ports,
-// refresh, replacement resource, authority change or state migration occurs.
+// InspectOffline reads the original committed snapshot while no service can
+// write it, without constructing an execution engine or changing authority.
 func InspectOffline(ctx context.Context, dir string, opts Options) contracts.Response {
 	reject := func(f *contracts.Fault) contracts.Response { return contracts.Rejected("", f) }
 	selectors := 0
@@ -44,10 +41,9 @@ func InspectOffline(ctx context.Context, dir string, opts Options) contracts.Res
 		return reject(fault(err, contracts.Fail(4, "service_unavailable", "Original current-format state cannot be read.")))
 	}
 	defer store.Close()
-	projection, err := application.New(ctx, dir, store, log.New(io.Discard, "", 0))
+	response, err := application.InspectPersisted(store, opts.RunID, opts.RequestID, opts.CommandID)
 	if err != nil {
 		return reject(fault(err, contracts.Fail(4, "service_unavailable", "Original persisted projection is unavailable.")))
 	}
-	defer projection.Shutdown(ctx)
-	return projection.Handle("inspect", opts.RunID, opts.RequestID, opts.CommandID, "", 0, nil)
+	return response
 }

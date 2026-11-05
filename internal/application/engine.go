@@ -3,7 +3,6 @@ package application
 
 import (
 	"context"
-	"database/sql"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -362,25 +361,7 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 	if command == "inspect" && runID == "" {
 		e.mu.Lock()
 		defer e.mu.Unlock()
-		selector, target := "request_id", requestID
-		if commandID != "" {
-			selector, target = "command_id", commandID
-		}
-		value, err := e.store.Command(selector, target)
-		if errors.Is(err, sql.ErrNoRows) {
-			return reject(contracts.Fail(5, selector[:len(selector)-3]+"_not_found", "The original command was not found."))
-		}
-		if err != nil {
-			return reject(err)
-		}
-		var view *contracts.RunView
-		if value.RunID != nil {
-			if r := e.runs[*value.RunID]; r != nil {
-				v := r.View()
-				view = &v
-			}
-		}
-		return contracts.Success("", map[string]any{"command": value, "run": view})
+		return inspectCommand(e.store, e.runs, requestID, commandID)
 	}
 	e.mu.Lock()
 	r := e.runs[runID]
@@ -413,7 +394,7 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 		}
 		return contentHistory(r, after, limit)
 	}
-	return contracts.Success("", map[string]any{"command": nil, "run": r.View()})
+	return inspectionView(nil, r)
 }
 func unknown(r *runstate.Record) bool {
 	for _, intent := range r.Intents {

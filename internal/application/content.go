@@ -149,9 +149,10 @@ const ContentRepositoryInstruction = workflow.ContentRepositoryInstruction
 const ContentSchemaInstruction = workflow.ContentSchemaInstruction
 
 // Called under the sole actor lock after native identity normalization. It
-// records facts in the same StageResults and advances only the frozen cursor.
-func finishContent(r *runstate.Record, input workflow.StageInput, value b.TurnEvidence, result reliable.Result) {
-	oversized := r.Request.Generate != nil && (len(result.Content) > contracts.MaxGenerateResultBytes || !utf8.ValidString(result.Content))
+// consumes the original material sample, records facts in the same StageResults
+// and advances only the frozen cursor. It performs no material filesystem I/O.
+func finishContent(r *runstate.Record, input workflow.StageInput, value b.TurnEvidence, result reliable.Result, materialErr error) {
+	oversized := oversizedContentResult(r, result)
 	if oversized {
 		// Preserve source identity and failure, but never replicate an unbounded
 		// body across Run, final, stage and history responses.
@@ -169,7 +170,7 @@ func finishContent(r *runstate.Record, input workflow.StageInput, value b.TurnEv
 		content.Status, content.Text = "succeeded", result.Content
 		if oversized {
 			content.Status, content.Text, content.Diagnostic = "failed", "", "generate_result_limit_exceeded_or_invalid_utf8"
-		} else if workflow.Content(r.Request.Workflow.ID) && verifyFrozenMaterials(r) != nil {
+		} else if materialErr != nil {
 			content.Status, content.Text, content.Diagnostic = "failed", "", "repository_snapshot_changed"
 		} else if r.Request.Generate != nil && len(r.Request.Generate.OutputSchema) > 0 {
 			data, err := ra.ValidateOutput(r.Request.Generate.OutputSchema, result.Content)
@@ -214,6 +215,10 @@ func finishContent(r *runstate.Record, input workflow.StageInput, value b.TurnEv
 	} else if !r.Closed {
 		r.Workflow.StepID, r.Status, r.Phase = state.Next, "waiting_input", "turn_completed"
 	}
+}
+
+func oversizedContentResult(r *runstate.Record, result reliable.Result) bool {
+	return r.Request.Generate != nil && (len(result.Content) > contracts.MaxGenerateResultBytes || !utf8.ValidString(result.Content))
 }
 
 func closeContent(r *runstate.Record, command string) {
