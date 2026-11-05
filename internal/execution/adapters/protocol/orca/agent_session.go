@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"crypto/sha256"
-	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
@@ -97,12 +96,11 @@ func NewRemoteAgentSessionClient(environment, runtime, expectedHost string) Agen
 		if err != nil {
 			return nil, err
 		}
-		key, err := base64.StdEncoding.DecodeString(pairing.PublicKey)
+		host, err := pairing.hostID()
 		if err != nil {
 			return nil, err
 		}
-		digest := sha256.Sum256(key)
-		if "sha256:"+hex.EncodeToString(digest[:]) != expectedHost {
+		if host != expectedHost {
 			return nil, stateIdentityError("original paired Orca host changed")
 		}
 		capabilities := remoteAgentSessionCapabilities()
