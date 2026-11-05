@@ -22,7 +22,7 @@ func InputContract() any {
 		"facts_label":           FactsLabel,
 		"materials":             "implementation execute: Spec/Plan and distinct reference paths in the original worktree",
 		"facts":                 "report source=original command_id, optional failure; exact turn/version/digest and audit/publication prerequisites stay program-verified, never internal ledgers",
-		"result_format":         "report state.result_instruction remains fixed; audit execute format remains part of overridable body",
+		"result_format":         "implementation execute and reports keep the fixed state.result_instruction; audit execute format remains part of overridable body",
 		"commit":                CommitInstruction, "success": SuccessLabel, "feedback": FeedbackLabel,
 		"publication": map[string]any{"label": PublicationLabel, "slots": "execute only: provider/repository/base_url/remote/base; no provider query or authentication configuration"},
 		"progress":    map[string]any{"text": ProgressInstruction, "continue": ContinueProgressInstruction, "when": "enabled implementation/audit execute only; reuse rule only if already supplied in this original session"},

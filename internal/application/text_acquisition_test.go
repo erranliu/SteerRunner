@@ -30,7 +30,7 @@ func analysisEngine(t *testing.T) (*Engine, *worker) {
 	if err := os.WriteFile(filepath.Join(e.dir, "service", "result-acquisition.json"), canonical(config), 0600); err != nil {
 		t.Fatal(err)
 	}
-	finishStage(t, e, "实施及必要验证已完成。")
+	finishStage(t, e, "实施及必要验证已完成")
 	finishStage(t, e, "Audit and validation completed. Zero repairs, no remaining P0-P2 issues.")
 	if e.runs["run"].Workflow.StepID != workflow.StepAuditParse {
 		t.Fatal("analysis wait not selected", e.runs["run"].Workflow.StepID)
@@ -187,7 +187,7 @@ func TestTextAcquisitionOtherRunProgressAndStops(t *testing.T) {
 		e.runs[r.ID] = next
 		ow.ownedInputs = map[string]bool{input.CommandID: true}
 		e.mu.Unlock()
-		e.finish(r.ID, b.TurnEvidence{CommandID: input.CommandID, SessionID: "session", TurnID: "other-turn", Started: true, Completed: true, Succeeded: true, FinalVerified: true, FinalSource: "native", FinalItemID: "item", LastMessage: "实施及必要验证已完成。"})
+		e.finish(r.ID, b.TurnEvidence{CommandID: input.CommandID, SessionID: "session", TurnID: "other-turn", Started: true, Completed: true, Succeeded: true, FinalVerified: true, FinalSource: "native", FinalItemID: "item", LastMessage: "实施及必要验证已完成"})
 	}()
 	select {
 	case <-finished:

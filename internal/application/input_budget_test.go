@@ -105,7 +105,7 @@ func TestBudgetParserOverflowRetainsReportAndLongFinal(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(e.dir, "service", "result-acquisition.json"), canonical(config), 0600); err != nil {
 		t.Fatal(err)
 	}
-	finishStage(t, e, "实施及必要验证已完成。")
+	finishStage(t, e, "实施及必要验证已完成")
 	final := "Audit incomplete: " + strings.Repeat("unknown evidence ", 4100)
 	finishStage(t, e, final)
 	r := e.runs["run"]
@@ -121,7 +121,7 @@ func TestBudgetAuditedFilesRemainUsable(t *testing.T) {
 	for mask := 0; mask < 4; mask++ {
 		e, _ := auditEngine(t, mask)
 		checkWrappedBudget(t, e.runs["run"].Snapshot.PendingTurn)
-		finishStage(t, e, "实施及必要验证已完成。")
+		finishStage(t, e, "实施及必要验证已完成")
 		r := e.runs["run"]
 		if r.Snapshot.PendingTurn == nil {
 			t.Fatal(mask, "audit unavailable", r.Diagnostic)

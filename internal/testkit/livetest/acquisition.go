@@ -52,11 +52,7 @@ func CheckDevelopmentAcquisition(w workflow.Snapshot, views []contracts.Acquisit
 			input.Version != original.InputVersion || !original.Succeeded || !original.FinalVerified || original.Failure != "" || workflow.Source(*original) != a.Source {
 			return fmt.Errorf("%s original source mismatch", a.Contract)
 		}
-		candidate, decodeErr := ra.DecodeReport(original.Final, a.Contract)
-		programReady := decodeErr == nil && candidate.Outcome == "done"
-		if decodeErr != nil && ra.RecognizeSuccessOutput(original.Final, input.SuccessOutput, input.Prompt) {
-			programReady = true
-		}
+		programReady := ra.RecognizeSuccessOutput(original.Final, input.SuccessOutput, input.Prompt)
 		if a.Contract == "publication" {
 			// A unique clue can enter provider verification without a marker.
 			programReady = len(ra.PublicationClues(original.Final, original.PRCandidates)) == 1
@@ -82,8 +78,12 @@ func CheckDevelopmentAcquisition(w workflow.Snapshot, views []contracts.Acquisit
 				result == nil || result.StepID != reportStep || result.InputVersion != r.Version || !result.Succeeded || !result.FinalVerified || result.Failure != "" || result.UnexpectedWork {
 				return fmt.Errorf("%s report source or native evidence mismatch", a.Contract)
 			}
-			value, err := ra.DecodeReport(result.Final, a.Contract)
-			if err != nil || value.Outcome != "done" {
+			reportDone := ra.RecognizeSuccessOutput(result.Final, r.SuccessOutput, r.Prompt)
+			if a.Contract == "publication" {
+				value, err := ra.DecodeReport(result.Final, a.Contract)
+				reportDone = err == nil && value.Outcome == "done"
+			}
+			if !reportDone {
 				return fmt.Errorf("%s report did not establish completion", a.Contract)
 			}
 			fieldSource = workflow.Source(*result)

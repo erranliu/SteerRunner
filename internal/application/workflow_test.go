@@ -105,7 +105,7 @@ func gitTest(t *testing.T, dir string, args ...string) string {
 }
 func TestRAAuditLifecycle(t *testing.T) {
 	e, _ := auditEngine(t)
-	finishStage(t, e, "实施及必要验证已完成。")
+	finishStage(t, e, "实施及必要验证已完成")
 	r := e.runs["run"]
 	if r.Workflow.StepID != workflow.StepAuditCode || r.Snapshot.PendingTurn.Model != "reviewer" || len(r.Workflow.StageInputs) != 2 {
 		t.Fatalf("audit not selected without report: %+v", r.Workflow)
@@ -141,7 +141,7 @@ func TestRAAuditLifecycle(t *testing.T) {
 }
 func TestRARecoveryBusinessInput(t *testing.T) {
 	e, w := auditEngine(t)
-	finishStage(t, e, "实施及必要验证已完成。")
+	finishStage(t, e, "实施及必要验证已完成")
 	finishStage(t, e, `{"outcome":"needs_input","summary":"unfinished","question":"clarify"}`)
 	r := e.runs["run"].Clone()
 	before := len(r.Workflow.StageInputs)
@@ -194,7 +194,7 @@ func bindTestWorkflow(r *runstate.Record) {
 }
 
 func TestRAUnreportedOutcomeBoundary(t *testing.T) {
-	for _, outcome := range []string{"unreported", "unknown", "failed", "cancelled", "business-blocked"} {
+	for _, outcome := range []string{"unreported", "unknown", "failed", "cancelled", "business-incomplete"} {
 		t.Run(outcome, func(t *testing.T) {
 			e, w := auditEngine(t)
 			r := e.runs["run"].Clone()
@@ -202,10 +202,10 @@ func TestRAUnreportedOutcomeBoundary(t *testing.T) {
 			r.Snapshot.Session.CurrentCommandID, r.Snapshot.Session.CurrentTurnID = input.CommandID, "original-turn"
 			e.runs["run"] = r
 			w.ownedInputs = map[string]bool{input.CommandID: true}
-			body, nativeOutcome := "实施及必要验证已完成。", outcome
-			if outcome == "business-blocked" {
+			body, nativeOutcome := "实施及必要验证已完成", outcome
+			if outcome == "business-incomplete" {
 				nativeOutcome = "unreported"
-				body = `{"outcome":"blocked","summary":"uncertain publication","blocker":{"category":"unknown_external","action":"publish","error":"lost response"}}`
+				body = "Build failed.\n未完成"
 			}
 			e.finish("run", b.TurnEvidence{CommandID: input.CommandID, SessionID: "session", TurnID: "original-turn", NativeOutcome: nativeOutcome, Started: true, Completed: true, Succeeded: true, FinalVerified: true, FinalSource: "native", FinalItemID: "original-final", LastMessage: body})
 			r = e.runs["run"]
@@ -216,7 +216,7 @@ func TestRAUnreportedOutcomeBoundary(t *testing.T) {
 				if r.Workflow.StepID != workflow.StepAuditCode || len(r.Workflow.StageInputs) != 2 {
 					t.Fatal("verified result did not enter existing business routing", r.View())
 				}
-			} else if len(r.Workflow.StageInputs) != 1 || outcome != "business-blocked" && (!r.ResumeRequired || r.Phase != "original_session_recovery") || outcome == "business-blocked" && r.Status != "reconciling" {
+			} else if len(r.Workflow.StageInputs) != 1 || outcome != "business-incomplete" && (!r.ResumeRequired || r.Phase != "original_session_recovery") || outcome == "business-incomplete" && r.Status != "waiting_input" {
 				t.Fatal("blocked result authorized a successor", r.View())
 			}
 		})

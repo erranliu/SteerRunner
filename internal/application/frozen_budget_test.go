@@ -123,7 +123,7 @@ func TestFrozenBudgetSuccessorsAndDraftResume(t *testing.T) {
 				r := e.runs["run"].Clone()
 				r.Allowed, r.ResumeRequired = false, true
 				e.runs["run"] = r
-				finishStage(t, e, "实施及必要验证已完成。")
+				finishStage(t, e, "实施及必要验证已完成")
 				r = e.runs["run"].Clone()
 				if r.NextStage == nil || r.NextStage.Prompt != "" || r.NextStage.Budget != nil {
 					t.Fatal("successor is not an unrendered draft")

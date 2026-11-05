@@ -47,7 +47,7 @@ stateDiagram-v2
   execute --> [*]: 命中实施成功输出且核验通过，外层进入 audit.code
   execute --> report: 来源有效但无法判断成功
   execute --> input: 已明确未成功或结果核验不通过
-  report --> [*]: 报告有效、实施 done 且核验通过，外层进入 audit.code
+  report --> [*]: 命中同一成功标记且核验通过，外层进入 audit.code
   report --> input: 未成功或获取失败已结算
   input --> execute: 明确输入被接受且原会话及原操作资格满足
   note right of report
@@ -59,7 +59,7 @@ stateDiagram-v2
 | 内部状态 | 进入动作 / 提示词 | 核验与后继 |
 | --- | --- | --- |
 | execute | PromptExecutionAgent / A-IMPLEMENT | V-NATIVE、V-SOURCE、RecognizeSuccessOutput、V-RESULT；命中且通过、当前实现已提交且工作区干净 → 完成 implement，进入 audit.code；无法判断 → report；明确未成功 → input |
-| report | PromptExecutionAgent / A-REPORT，原会话、执行模型 | 每原实施最多一次，只整理原实施。程序解码并核验；done 且核验通过、实现已提交且干净 → audit.code；未成功或格式无效/信息不足且操作已结算 → input |
+| report | PromptExecutionAgent / A-REPORT，原会话、执行模型 | 每原实施最多一次。补报末行命中同一成功标记，且原实施和工作区核验通过 → audit.code；其余 → input，保留补报说明 |
 | input | 现有等待/reply 授权能力，无自动 agent 输入 | 与 development 相同，未成功可由 workflow_policy 生成通用等待说明，不强求具体问题或原因；原 outcome/获取缺口保留。明确输入与原会话资格满足才续执行，无输入持续等待 |
 
 进入提示词就是 execute 的输入，只发一次。明确人工输入触发的新实施仍建立新源、失效旧审计；这不构成审计失败后的自动返工边。
@@ -153,7 +153,7 @@ stateDiagram-v2
 
 | 阶段 / 输入 | 最终回复末尾独立行（逐字匹配） | 采纳前核验 |
 | --- | --- | --- |
-| implement / A-IMPLEMENT | 实施及必要验证已完成。 | 原实施来源及必要结果核验，实现已提交且干净；不证明已通过审计 |
+| implement / A-IMPLEMENT、A-REPORT | `实施及必要验证已完成` | 核验原实施来源及必要结果，实现已提交且工作区干净 |
 | publish / A-PUBLISH | 本次发布已完成。 | 原发布资格、唯一 PR 候选、provider 身份/HeadRevision=post_head 及当前审计修复完成结果 |
 | audit.code | 无 | 修复数量、逐项内容及完成情况经程序提取或独立解析/一次补报后核验；不只匹配成功行 |
 | pr_ready | 无 | 无模型输入 |
@@ -165,16 +165,17 @@ stateDiagram-v2
 材料（worktree 内的仓库相对路径）：{{material_refs}}
 用户补充（如有）：{{authorized_feedback}}
 将完成的代码改动提交到当前分支。
-完成实施及必要验证后，在最终回复末尾单独写一行：实施及必要验证已完成。
+成功时末行单独写「实施及必要验证已完成」。
+若明确未完成，简述卡点或需要的输入，末行单独写「未完成」。
 ```
 
 ### A-REPORT → implement 内部 report
 
 ```text
-根据你已有的执行上下文整理指定实施结果；只报告，不补做工作。
-原实施：{{source_binding}}；材料：{{source_material_refs}}
-契约：{{result_contract}}；输出结构：{{acquisition_output_schema}}
-注明依据，保留已知失败、未知情况、缺失和冲突。
+仅整理原实施结果，不补做。
+原实施：{{source_binding}}
+确认实施及必要验证已完成时，只写「实施及必要验证已完成」。
+否则用一句话说明卡点、缺少的证据或需要的输入。
 ```
 
 ### A-AUDIT-CODE → audit.code 内部 execute

@@ -11,7 +11,7 @@ import (
 func plainFixture() (Snapshot, StageInput, reliable.Result) {
 	p, _ := Lookup("development", 2)
 	i := StageInput{CommandID: "execute", AttemptID: "attempt", StepID: StepImplement, Version: 1}
-	return Snapshot{Config: &p, StepID: i.StepID, StageInputs: []StageInput{i}}, i, reliable.Result{Succeeded: true, ContentVerified: true, TurnID: "turn", Content: "实施及必要验证已完成。"}
+	return Snapshot{Config: &p, StepID: i.StepID, StageInputs: []StageInput{i}}, i, reliable.Result{Succeeded: true, ContentVerified: true, TurnID: "turn", Content: "实施及必要验证已完成"}
 }
 func TestRASuccessOutputRouting(t *testing.T) {
 	w, i, r := plainFixture()
@@ -30,13 +30,17 @@ func TestRASuccessOutputRouting(t *testing.T) {
 	report.Version = 2
 	w.StageInputs = append(w.StageInputs, report)
 	w.StageResults = append(w.StageResults, StageResult{CommandID: i.CommandID, AttemptID: i.AttemptID, StepID: i.StepID, InputVersion: 1, TurnID: r.TurnID, Succeeded: true, FinalVerified: true, Final: r.Content})
-	r.Content = "bad report"
+	r.Content = "无法确认构建是否通过"
 	r.TurnID = "report-turn"
 	next = Route(w, report, r, "")
-	if next.Next != nil || next.Status != "waiting_input" || next.Cursor != StepImplementInput {
+	if next.Next != nil || next.Status != "waiting_input" || next.Cursor != StepImplementInput || next.Reason != r.Content {
 		t.Fatal("report retried or did not wait", next)
 	}
 	r.Content = `{"outcome":"done","summary":"implemented"}`
+	if next = Route(w, report, r, ""); next.Next != nil || next.Status != "waiting_input" {
+		t.Fatal("legacy JSON completed the implementation", next)
+	}
+	r.Content = "实施及必要验证已完成"
 	next = Route(w, report, r, "")
 	if next.Next == nil || next.Next.StepID != StepPublish || next.Acquired.Source.InputVersion != 1 {
 		t.Fatal("report replaced original source", next)
@@ -48,18 +52,24 @@ func TestRASuccessOutputRouting(t *testing.T) {
 }
 func TestRASemantics(t *testing.T) {
 	w, i, r := plainFixture()
-	for _, body := range []string{`{"outcome":"needs_input","summary":"incomplete","question":"details?"}`, `{"outcome":"blocked","summary":"unfinished","blocker":{"category":"failure","action":"build","error":"failed"}}`} {
-		r.Content = body
-		n := Route(w, i, r, "")
-		if n.Status != "waiting_input" || n.Cursor != StepImplementInput || n.Next != nil {
-			t.Fatal(n)
-		}
-	}
-	r.Content = `{"outcome":"blocked","summary":"unknown","blocker":{"category":"unknown_external","action":"publish","error":"lost response"}}`
-	if n := Route(w, i, r, ""); n.Status != "reconciling" || n.Next != nil {
+	r.Content = "构建失败，请提供依赖。\n未完成"
+	if n := Route(w, i, r, ""); n.Status != "waiting_input" || n.Cursor != StepImplementInput || n.Next != nil || n.Reason != r.Content {
 		t.Fatal(n)
 	}
-	r.Content = "实施及必要验证已完成。"
+	for _, body := range []string{
+		"实施及必要验证已完成。",
+		"实施及必要验证已完成\n但验证证据不完整",
+		"尚不能确认实施及必要验证已完成",
+		"```\n实施及必要验证已完成",
+		`{"outcome":"done","summary":"implemented"}`,
+	} {
+		r.Content = body
+		n := Route(w, i, r, "")
+		if n.Next == nil || n.Next.StepID != StepReport {
+			t.Fatalf("%q should require clarification: %+v", body, n)
+		}
+	}
+	r.Content = "实施及必要验证已完成"
 	r.Succeeded = false
 	if n := Route(w, i, r, ""); !n.RecoverOriginal || n.Next != nil {
 		t.Fatal(n)
@@ -167,7 +177,7 @@ func TestRAVerificationConflictSurvivesResume(t *testing.T) {
 
 func TestRASuccessOutputLargeFinal(t *testing.T) {
 	w, i, r := plainFixture()
-	r.Content = strings.Repeat("existing output\n", 10000) + "实施及必要验证已完成。"
+	r.Content = strings.Repeat("existing output\n", 10000) + "实施及必要验证已完成"
 	n := Route(w, i, r, "")
 	if n.Next == nil || n.Next.StepID != StepPublish || n.Acquired.Source.FinalDigest != ra.Digest([]byte(r.Content)) {
 		t.Fatal("complete final unnecessarily requested report", n)
@@ -206,11 +216,9 @@ func TestRAHistoricalOutcomeCannotBePromoted(t *testing.T) {
 				t.Fatal(err)
 			}
 			allowed := outcome == "succeeded" || outcome == "unreported"
-			parsed := `{"outcome":"done","summary":"parser claims completed"}`
-			for _, next := range []Transition{Route(w, input, result, ""), RouteParsed(w, input, parsed)} {
-				if (next.Next != nil) != allowed || !allowed && (next.Publish || next.Acquired != nil && next.Acquired.Status == "satisfied") {
-					t.Fatal("historical native outcome was promoted", outcome, next)
-				}
+			next := Route(w, input, result, "")
+			if (next.Next != nil) != allowed || !allowed && (next.Publish || next.Acquired != nil && next.Acquired.Status == "satisfied") {
+				t.Fatal("historical native outcome was promoted", outcome, next)
 			}
 			// A successful report may not launder the original execution outcome.
 			clean := result
@@ -226,9 +234,9 @@ func TestRAHistoricalOutcomeCannotBePromoted(t *testing.T) {
 			report.Version = 2
 			w.Results = append(w.Results, *fallback.Acquired)
 			w.StageInputs = append(w.StageInputs, report)
-			clean.Content = parsed
+			clean.Content = "实施及必要验证已完成"
 			clean.TurnID = "report-turn"
-			next := Route(w, report, clean, "policy")
+			next = Route(w, report, clean, "policy")
 			if (next.Next != nil) != allowed {
 				t.Fatal("report changed original native outcome", outcome, next)
 			}

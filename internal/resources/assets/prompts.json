@@ -1,6 +1,6 @@
 {
   "implement.execute": "读取所列 Spec/Plan/材料，实施并完成必要验证。",
-  "implement.report": "仅整理原实施结果，不补做；保留依据、失败、未知、缺失与冲突。",
+  "implement.report": "仅整理原实施结果，不补做。",
   "publish": "发布当前分支并创建 PR；用 git branch --show-current 确定 head。返回真实 PR URL；结果未知时说明并停止，不重复发布。",
   "publish.report": "仅整理原发布结果与 PR URL，不重发；保留依据、失败、未知、缺失与冲突。",
   "audit.code.report": "仅报告原审计；不补做或编造。",
