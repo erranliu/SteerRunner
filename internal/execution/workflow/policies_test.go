@@ -52,7 +52,7 @@ func TestProjectPolicyOnlyPublicTemplateAndSelectedSlots(t *testing.T) {
 }
 
 func TestProjectPolicyRenderOverrideAndLegacy(t *testing.T) {
-	p, _ := Lookup("development", 2)
+	p, _ := Lookup(AuditedDevelopment, 2)
 	w := Snapshot{Config: &p, ProjectPolicies: &ProjectPolicies{Files: []PolicyFile{{PolicySlot: PolicySlots()[0], Exists: true}}}}
 	input := StageInput{StepID: StepImplement, MaterialFacts: []byte(`{"spec":{"path":"spec.md"},"plan":{"path":"plan.md"}}`)}
 	want, err := RenderInputWithBody(Snapshot{Config: &p}, input, "custom body")

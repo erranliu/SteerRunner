@@ -24,7 +24,7 @@
 
 未提供 `workflow.project_policy_slots` 时，Runner 从本次固定的 `repository.base_revision` Git 对象读取这三个精确路径，在原 Run 的 `workflow.project_policies` 中一起固定 commit、各槽位路径、`exists` 和存在文件的 SHA-256（原始 blob 字节）。不读取调用方工作区或当前 HEAD，不搜索其他目录，也不自动生成策略文档。空文件算存在；缺失文件保存 `exists=false` 并沿用原规则；已存在但不能读取的 blob、目录或符号链接明确以 `project_policy_unreadable` 拒绝。读取失败不会把槽位降级为缺失或接受部分观察。后续输入与恢复复用原记录，文件后来增删或修改不重新决定本 Run 的槽位。
 
-存在且由当前步骤选中的每个槽位，只追加以下公开模板（`%s` 替换为完整固定相对路径，开头有一个换行）：
+对采用策略提示的步骤，存在且由当前步骤选中的每个槽位使用以下公开模板（`%s` 替换为完整固定相对路径，开头有一个换行）：
 
 ```text
 阅读项目策略：%s。
@@ -38,7 +38,7 @@
 
 **SteerLine 新开发 Run**
 
-项目策略槽位由 SteerLine 在固定 commit 上预检，经 `workflow.project_policy_slots` 提供适用槽位。空数组表示无适用槽位。Runner 沿原 Workflow 阶段映射追加引用，Agent 在对应步骤读取。项目材料准入归 SteerLine，Workflow 的实施、审核、修复、发布和原有阶段推进归 Runner。旧 Run 继续沿原记录恢复。
+项目策略槽位由 SteerLine 在固定 commit 上预检，经 `workflow.project_policy_slots` 提供适用槽位。空数组表示无适用槽位。普通 `development/2` 的新实施输入以 Spec 和 Plan 为入口，正文使用实施验证指令、结果末行约定和启用的运行文件绑定。Agent 从原 worktree 查找测试材料和项目规则。引用和策略预检仍作为运行记录；发布等采用策略提示的步骤沿阶段映射追加路径。结构化 Orca 的绑定给出环境变量名及相对 worktree 根目录的路径，使用方式由项目 Plan 和入口定义。本机 Codex 由 Runner 设置环境变量。旧 Run 继续沿原冻结定义恢复。
 
 2026-10-28 输入契约：每次现有投递操作的最终 UTF-8 文字仅限制 Runner ≤1000B；调用方和总量无正文预算，仍记录全部字节、归属和摘要。正文覆盖、inline 材料/schema、回答/反馈属于调用方；默认正文、事实/引用、标签/换行、结果要求和原生包装属于 Runner。完成原有换行与包装后检查，冻结后不得追加；超限明确拒绝，不截断、摘要或拆分。原工具/文件结果不受正文预算限制，复制进新正文时重新归属计量。实际 JSON 封装与 Windows 命令行另行保护。
 

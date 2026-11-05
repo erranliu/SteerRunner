@@ -10,7 +10,7 @@ type FileReference struct {
 	Path string `json:"path"`
 }
 
-const ImplementPrompt = "读取所列 Spec/Plan/材料，实施并完成必要验证。"
+const ImplementPrompt = "按 Spec 和 Plan 实施并验证。"
 const reportPrompt = "仅整理原实施结果，不补做。"
 const implementationIncomplete = "未完成"
 const publishPrompt = "发布当前分支并创建 PR；用 git branch --show-current 确定 head。返回真实 PR URL；结果未知时说明并停止，不重复发布。"
@@ -64,11 +64,13 @@ func promptParts(state State, facts any, body string, caller bool) ([]m.InputPar
 			return nil, err
 		}
 		parts = append(parts, m.InputPart{Source: "materials", Owner: m.RunnerInput, Text: "\nSpec: " + input.Materials.Spec.Path + "\nPlan: " + input.Materials.Plan.Path})
-		seen := map[string]bool{input.Materials.Spec.Path: true, input.Materials.Plan.Path: true}
-		for _, ref := range input.Materials.References {
-			if ref.Path != "" && !seen[ref.Path] {
-				parts = append(parts, m.InputPart{Source: "materials", Owner: m.RunnerInput, Text: "\nReference: " + ref.Path})
-				seen[ref.Path] = true
+		if !state.PlanDriven {
+			seen := map[string]bool{input.Materials.Spec.Path: true, input.Materials.Plan.Path: true}
+			for _, ref := range input.Materials.References {
+				if ref.Path != "" && !seen[ref.Path] {
+					parts = append(parts, m.InputPart{Source: "materials", Owner: m.RunnerInput, Text: "\nReference: " + ref.Path})
+					seen[ref.Path] = true
+				}
 			}
 		}
 	} else if string(raw) != "{}" && string(raw) != "null" {
@@ -80,7 +82,7 @@ func promptParts(state State, facts any, body string, caller bool) ([]m.InputPar
 	if state.CommitWork {
 		parts = append(parts, m.InputPart{Source: "commit", Owner: m.RunnerInput, Text: CommitInstruction})
 	}
-	if state.SuccessOutput != "" {
+	if state.SuccessOutput != "" && !state.PlanDriven {
 		parts = append(parts, m.InputPart{Source: "success", Owner: m.RunnerInput, Text: SuccessLabel + state.SuccessOutput})
 	}
 	return parts, nil

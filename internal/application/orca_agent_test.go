@@ -45,12 +45,17 @@ func TestSRFreezeOrcaAgent(t *testing.T) {
 			}
 			if agent == "" {
 				for _, test := range []struct{ contract, instruction string }{
-					{"", workflow.ResultFileInstruction},
+					{"", workflow.PlanDrivenOrcaFileEnvironment},
 					{contracts.ResultFileSnapshotContract, workflow.DevelopmentResultFileSnapshotInstruction},
 				} {
 					next := r.Clone()
 					next.Request.ResultFile = &contracts.ResultFileInput{}
 					next.ResultFileContract = test.contract
+					if test.contract != "" {
+						state := next.Workflow.Config.States[workflow.StepImplement]
+						state.PlanDriven = false
+						next.Workflow.Config.States[workflow.StepImplement] = state
+					}
 					if err := queueInput(next, workflow.StageInput{StepID: next.Workflow.StepID}, ""); err != nil {
 						t.Fatal(err)
 					}
