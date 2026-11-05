@@ -314,3 +314,123 @@ func Run(argv []string, input io.Reader, output, diagnostics io.Writer) int {
 	}
 	if options.opts.Command == "help" {
 		return finish(contracts.Success("", map[string]any{"usage": "steerrunner <command> --state-dir <absolute-path> --json", "commands": []string{"native-catalog", "progress-file", "result-file", "run-usage", "run-usage-events", "version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "submit", "inspect", "last-message", "open-native-session", "observe", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git"}, "input": "Write commands consume a UTF-8 JSON envelope from --input -. validate consumes a bare object. service start optionally consumes a bare pending_stops object.", "static": "capabilities --offline; validate --kind run-configuration|run --input -", "run_evidence": "artifacts discover|list --run-id R; artifacts collect --run-id R --input -; artifacts read --run-id R --artifact-id A; workspace-git --run-id R. Producer writes .steerrunner/artifacts/<relative_path> in original workspace. Max file 1 MiB. Read is base64; schema/limits in capabilities.run_evidence.", "instance_binding": "--expected-instance-id <id> fences resident business/query commands and disables implicit service startup."}), 0)
+	}
+	if options.offline && options.opts.Command == "capabilities" {
+		executable, err := os.Executable()
+		if err != nil {
+			return reject(contracts.Fail(1, "internal_error", "Cannot identify this executable."))
+		}
+		file, err := os.Open(executable)
+		if err != nil {
+			return reject(contracts.Fail(1, "internal_error", "Cannot verify this executable."))
+		}
+		digest := sha256.New()
+		_, err = io.Copy(digest, file)
+		file.Close()
+		if err != nil {
+			return reject(contracts.Fail(1, "internal_error", "Cannot verify this executable."))
+		}
+		return finish(contracts.Success("", resources.CapabilitiesFrom(resources.CapabilitySource{Kind: "executable", Version: resources.Version, Protocol: contracts.Protocol, ExecutableSHA256: hex.EncodeToString(digest.Sum(nil)), ResourceDigest: resources.Digest()})), 0)
+	}
+	if options.opts.Command == "validate" {
+		data, err := io.ReadAll(io.LimitReader(input, contracts.MaxRequestBytes+1))
+		if err != nil {
+			return reject(contracts.Fail(1, "internal_error", "Cannot read the validation input."))
+		}
+		if len(data) > contracts.MaxRequestBytes {
+			result := resources.ValidationResult{Kind: options.kind, Valid: false, Issues: []resources.Issue{{Path: "", Code: "invalid_value", Message: "Input exceeds the public size limit."}}, Version: resources.Version, ResourceDigest: resources.Digest()}
+			response := contracts.Rejected("", contracts.Fail(2, "invalid_input", "Validation input exceeds the public size limit."))
+			response.Data = result
+			return finish(response, 2)
+		}
+		result, fault := resources.Validate(options.kind, data)
+		if fault != nil {
+			response := contracts.Rejected("", fault)
+			if fault.Exit == 2 || fault.Exit == 3 {
+				response.Data = result
+			}
+			return finish(response, fault.Exit)
+		}
+		return finish(contracts.Success("", result), 0)
+	}
+	var request *contracts.Request
+	var startupInput *contracts.ServiceStartInput
+	if options.opts.Command == "service start" && options.input == "-" {
+		raw, err := io.ReadAll(io.LimitReader(input, contracts.MaxRequestBytes+1))
+		if err != nil {
+			return reject(contracts.Fail(2, "invalid_request", "Cannot read startup input."))
+		}
+		var failure *contracts.Fault
+		startupInput, failure = contracts.ReadServiceStartInput(raw)
+		if failure != nil {
+			return reject(failure)
+		}
+	}
+	if writes(options.opts.Command) {
+		value, requestErr := contracts.ReadRequest(input)
+		id = value.RequestID
+		if requestErr != nil {
+			return reject(requestErr)
+		}
+		if invalid := contracts.ValidateInput(options.opts.Command, value.Input); invalid != nil {
+			return reject(invalid)
+		}
+		request = &value
+	}
+	dir, err := host.Normalize(options.dir)
+	if err != nil {
+		return reject(contracts.Fail(2, "invalid_arguments", "Cannot resolve an absolute state-dir."))
+	}
+	if options.offline && options.opts.Command == "inspect" {
+		ctx, cancel := context.WithTimeout(context.Background(), host.TimeoutSeconds*time.Second)
+		defer cancel()
+		response := host.InspectOffline(ctx, dir, options.opts)
+		return finish(response, contracts.ExitCode(response))
+	}
+	if options.opts.Command == "serve" {
+		ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+		defer cancel()
+		if err := host.Serve(ctx, dir, options.startupID); err != nil {
+			fault := host.PublicFault(err)
+			host.RecordStartupFailure(dir, options.startupID, fault)
+			fmt.Fprintln(diagnostics, fault.Error())
+			return fault.Exit
+		}
+		return 0
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), host.TimeoutSeconds*time.Second)
+	defer cancel()
+	if options.opts.Command == "service start" || options.opts.ExpectedInstanceID == "" && options.opts.ExpectedBinding == nil && options.opts.Command == "submit" {
+		executable, err := os.Executable()
+		if err != nil {
+			return reject(contracts.Fail(4, "service_start_failed", "Cannot locate this executable."))
+		}
+		service, startErr := host.Ensure(ctx, dir, executable, startupInput)
+		if startErr != nil {
+			return reject(startErr)
+		}
+		if options.opts.Command == "service start" {
+			return finish(contracts.Success("", service), 0)
+		}
+	}
+	if options.opts.Command == "service status" {
+		service, statusErr := host.Status(ctx, dir)
+		if statusErr != nil {
+			return reject(statusErr)
+		}
+		return finish(contracts.Success("", service), 0)
+	}
+	if options.opts.Command == "service verify-stopped" {
+		result, verifyErr := host.VerifyStopped(ctx, dir)
+		if verifyErr != nil {
+			return reject(verifyErr)
+		}
+		return finish(contracts.Success("", result), 0)
+	}
+
+	response, callErr := host.Call(ctx, dir, options.opts, request)
+	if callErr != nil {
+		return reject(callErr)
+	}
+	return finish(response, contracts.ExitCode(response))
+}

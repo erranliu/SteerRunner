@@ -191,6 +191,8 @@ func (c *Collector) observe(ctx context.Context, r *runstate.Record) {
 			}
 			continue
 		}
+		// A new observation must re-establish any authorization requirement.
+		cp.Requirement = nil
 		if !sameObservation || cp.Input != inputHash {
 			cp.EndedAt = time.Time{}
 		}
