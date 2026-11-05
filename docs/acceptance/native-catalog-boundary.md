@@ -76,3 +76,9 @@ RNC-A09 为可自动执行的真实依赖联验，条件缺失时保留待验目
 六份修改文档的 185 条本地链接全部有效；21 份新增文件 UTF-8、末尾换行及逐行空白检查通过，`git diff --check` 通过，全部修改 Go 文件经 gofmt 核对。静态验证不代替正式基线与真实目标结果。
 
 交付前按 AGENTS 再次刷新 origin，`origin/main=f8bd932b49ac1d8adb7dd9bb865b91e5baba9f8d` 比本次固定基线多三个提交；唯一同改文件为 state_stream.go。独立临时文件中的 `git merge-file` 三方组合 exit0，同时保留本次 catalog 分支和上游 hostID 提取，没有文本冲突（`target-refresh.json`）。本次保持已选基线 worktree，不合入额外 Workflow/提示词变更；当前没有 PR，不宣称 GitHub 已合并或合并后运行资格。
+
+## PR 发布记录
+
+用户另行授权提交、推送和创建 PR 后，分支 `codex/steerline-boundary-spec-plan` 已提交实现 `742c9b3a`，推送并创建 [PR #117](https://github.com/erranliu/SteerRunner/pull/117)。创建前再次刷新目标 `main=6940c59872d2b857a97b97b0f98090493379a219`；GitHub 原始接口返回 mergeable=true、mergeable_state=clean。以上为本次分支发布状态，不表示已合并，也不将历史固定构建资格改写为提交后或合并后新 EXE 的资格。
+
+配套 SteerLine 为解决其上游部署根清单组合而接入 `main=c94cc5aa`，其提示词正文相对该 main 没有 PR 差异。新的正常 PrepareTestPlan 字节对照为完整 Run **1796→1796**、implement.execute **167→167**、其余三段 **312→312 / 372→372 / 319→319**，全文相等；上文 2706/830 为原固定基线历史证据，未被覆盖。配套主干接线和测试清单合并另经独立只读审核，实际新结果在其专属验收登记。
