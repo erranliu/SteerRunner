@@ -27,6 +27,7 @@ import (
 
 type Collector struct {
 	Store    *storage.Store
+	StateDir string
 	Policy   api.Policy
 	Instance string
 	Leases   *access.Manager
@@ -114,9 +115,13 @@ func (c *Collector) observe(ctx context.Context, r *runstate.Record) {
 		var p orca.Profile
 		var state orca.State
 		var original *orca.StructuredUsageIdentity
+		var localTurns []appServerTurn
 		var err error
+		localAppServer := snap.Ref.Protocol == b.ProtocolLocalCodexAppServer && snap.Ref.Backend == b.BackendLocal
 		development := (r.Request.Workflow.ID == "development" || r.Request.Workflow.ID == "development-audited") && r.Request.Workflow.Version == 2
-		if snap.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 && snap.Ref.Agent.Name == "pi" {
+		if localAppServer {
+			localTurns, err = appServerTurns(r)
+		} else if snap.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 && snap.Ref.Agent.Name == "pi" {
 			err = errors.New("PRODUCTION_BINDING_UNSUPPORTED")
 		} else if snap.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 && (snap.Ref.Target.ExternalRuntime != "" || development) {
 			inputs := make([]b.TurnInput, 0, len(r.Workflow.StageInputs))
@@ -131,7 +136,7 @@ func (c *Collector) observe(ctx context.Context, r *runstate.Record) {
 		} else {
 			binding, p, state, err = orca.UsageBinding(r.Profile, snap, orca.UsageInitialization{LaunchCommand: r.LaunchCommand, CreatedAt: r.CreatedAt})
 		}
-		if err == nil && binding.RunID != r.ID {
+		if err == nil && !localAppServer && binding.RunID != r.ID {
 			err = errors.New("IDENTITY_CHANGED")
 		}
 		if checkpointInvalid {
@@ -143,6 +148,10 @@ func (c *Collector) observe(ctx context.Context, r *runstate.Record) {
 			profileHash = usage.Digest(string(raw))
 		}
 		inputHash := usage.Digest(orca.UsageInputDigest(snap), profileHash, r.LaunchCommand, r.CreatedAt.UTC().Format(time.RFC3339Nano), parsers.Version)
+		if localAppServer {
+			turns, _ := json.Marshal(localTurns)
+			inputHash = usage.Digest(appServerUsageFormat, snap.Session.SessionID, string(turns))
+		}
 		final := snap.ResourcesFinalized || r.Status == "completed" || r.Status == "stopped" || r.Status == "failed" || snap.ResourceGeneration != r.Snapshot.ResourceGeneration
 		allSettled := len(state.Turns) > 0
 		for _, turn := range state.Turns {
@@ -186,7 +195,11 @@ func (c *Collector) observe(ctx context.Context, r *runstate.Record) {
 			observation, cancel := context.WithTimeout(ctx, 30*time.Second)
 			var result parsers.Result
 			var cleanup string
-			result, cleanup, err = c.read(observation, binding, p, original, source, cp)
+			if localAppServer {
+				result, err = readAppServerUsage(observation, c.StateDir, r, localTurns)
+			} else {
+				result, cleanup, err = c.read(observation, binding, p, original, source, cp)
+			}
 			cancel()
 			if cleanup == "pending" {
 				s.AccessCleanupStatus = "pending"

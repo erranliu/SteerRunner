@@ -1,7 +1,9 @@
 package resources
 
 func UsageCapabilities() any {
-	matrix := []map[string]any{}
+	matrix := []map[string]any{
+		{"adapter": "codex-app-server", "target": "local", "agent": "codex", "parser": true, "file_transport": false, "collection": true, "production_run_binding": true, "reason": ""},
+	}
 	for _, target := range []string{"local", "orca_environment"} {
 		for _, agent := range []string{"codex", "pi"} {
 			supported := agent == "codex"
