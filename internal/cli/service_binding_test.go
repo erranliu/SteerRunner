@@ -21,7 +21,6 @@ func TestSRFullBindingCLI(t *testing.T) {
 	for _, args := range [][]string{
 		{"run-usage", "--run-id", "run"},
 		{"run-usage-events", "--run-id", "run", "--snapshot-revision", "1"},
-		{"estimate-run-cost", "--run-id", "run", "--usage-revision", "1", "--pricing-policy", "unused.json"},
 	} {
 		args = append(args, "--expected-binding", string(body))
 		parsed, fault := parse(args)

@@ -12,7 +12,6 @@ import (
 	"time"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
-	"github.com/erranliu/SteerRunner/internal/cost"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/runstate"
 	"github.com/erranliu/SteerRunner/internal/storage"
@@ -124,25 +123,9 @@ func TestRunUsagePublicExecutable(t *testing.T) {
 	if exit != 5 || response.Error.Code != "snapshot_not_found" {
 		t.Fatal(response, exit)
 	}
-	response, exit = call("", "estimate-run-cost", "--run-id", run.ID, "--usage-revision", "1", "--pricing-policy", filepath.Join(root, "absent.json"))
-	if exit != 0 {
-		t.Fatal("bad policy blocked usage service", response)
-	}
-	policy := cost.Policy{Schema: "run-pricing-policy/v1", ID: "test", Version: "1", Source: "synthetic arithmetic fixture", Currency: "USD", Enabled: true, Rules: []cost.Rule{{Provider: provider, Model: model, From: when.Add(-time.Hour), Until: when.Add(time.Hour), Rates: cost.Rates{Input: "2", CacheRead: "0", CacheWrite: "0", Output: "4"}}}}
-	raw, _ = json.Marshal(policy)
-	file := filepath.Join(root, "prices.json")
-	if err = os.WriteFile(file, raw, 0600); err != nil {
-		t.Fatal(err)
-	}
-	response, exit = call("", "estimate-run-cost", "--run-id", run.ID, "--usage-revision", "1", "--pricing-policy", file)
-	if exit != 0 {
-		t.Fatal(response)
-	}
-	raw, _ = json.Marshal(response.Data)
-	var estimate cost.Estimate
-	_ = json.Unmarshal(raw, &estimate)
-	if estimate.Status != "estimated" || estimate.Total == nil || *estimate.Total != "0.00028000" {
-		t.Fatal(estimate)
+	response, exit = call("", "estimate-run-cost", "--run-id", run.ID)
+	if exit != 2 {
+		t.Fatal("retired estimator accepted", response, exit)
 	}
 	response, exit = call(input, "service", "start", "--input", "-")
 	if exit != 0 {

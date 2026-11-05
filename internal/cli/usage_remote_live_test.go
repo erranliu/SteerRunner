@@ -13,7 +13,6 @@ import (
 	"time"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
-	"github.com/erranliu/SteerRunner/internal/cost"
 	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	"github.com/erranliu/SteerRunner/internal/runstate"
@@ -270,7 +269,6 @@ func TestRunUsageRemotePublicLive(t *testing.T) {
 	if len(events) != 11 {
 		t.Fatal("wrong public event count", len(events))
 	}
-	pricing := cost.Policy{Schema: "run-pricing-policy/v1", ID: "live-arithmetic-only", Version: "1", Source: "synthetic rates; not provider prices", Currency: "USD", Enabled: true, AllowCompletionTime: true}
 	seen := map[string]bool{}
 	initialization := 0
 	for _, event := range events {
@@ -288,22 +286,11 @@ func TestRunUsageRemotePublicLive(t *testing.T) {
 			continue
 		}
 		seen[key] = true
-		pricing.Rules = append(pricing.Rules, cost.Rule{Provider: *event.Provider, Model: *event.Model, From: time.Date(2020, 1, 1, 0, 0, 0, 0, time.UTC), Until: time.Date(2030, 1, 1, 0, 0, 0, 0, time.UTC), Rates: cost.Rates{Input: "1", CacheRead: "0.1", CacheWrite: "0", Output: "2"}})
 	}
 	if initialization != 1 {
 		t.Fatal("initialization phase count", initialization)
 	}
-	pricePath := filepath.Join(root, "synthetic-prices.json")
-	body, _ = json.MarshalIndent(pricing, "", "  ")
-	if err = os.WriteFile(pricePath, body, 0600); err != nil {
-		t.Fatal(err)
-	}
-	var estimate cost.Estimate
-	decode(call("", "estimate-run-cost", "--run-id", id, "--usage-revision", revision, "--pricing-policy", pricePath), &estimate)
-	if estimate.Status != "estimated" || estimate.Total == nil || *estimate.Total != "0.05327400" || estimate.Priced != 11 {
-		t.Fatal(estimate)
-	}
-	for name, value := range map[string]any{"usage": snapshot, "events": events, "cost": estimate} {
+	for name, value := range map[string]any{"usage": snapshot, "events": events} {
 		body, _ = json.MarshalIndent(value, "", "  ")
 		if err = os.WriteFile(filepath.Join(root, name+".json"), body, 0600); err != nil {
 			t.Fatal(err)
@@ -343,5 +330,5 @@ func TestRunUsageRemotePublicLive(t *testing.T) {
 	if err = os.WriteFile(filepath.Join(root, "withdrawn-policy.json"), body, 0600); err != nil {
 		t.Fatal(err)
 	}
-	t.Logf("public Run=%s revision=%d responses=%d total=%d synthetic_USD=%s", id, snapshot.Revision, len(events), *snapshot.Tokens.Total, *estimate.Total)
+	t.Logf("public Run=%s revision=%d responses=%d total=%d", id, snapshot.Revision, len(events), *snapshot.Tokens.Total)
 }

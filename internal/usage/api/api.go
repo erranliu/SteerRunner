@@ -46,7 +46,19 @@ type Coverage struct {
 	Finalized             bool            `json:"finalized"`
 	SourceSummaries       []SourceSummary `json:"source_summaries"`
 }
+
+// AccessRequirement is discovered by the background collector through read-only
+// native session and path metadata. It is not an authorization or a log read.
+type AccessRequirement struct {
+	SourceRef   string    `json:"source_ref"`
+	Environment string    `json:"environment"`
+	HostID      string    `json:"host_id"`
+	SessionRoot string    `json:"session_root"`
+	ObservedAt  time.Time `json:"observed_at"`
+}
 type Snapshot struct {
+	AccessRequirements []AccessRequirement `json:"access_requirements,omitempty"`
+
 	Schema              string    `json:"schema"`
 	RunID               string    `json:"run_id"`
 	Revision            uint64    `json:"snapshot_revision"`

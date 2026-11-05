@@ -35,7 +35,13 @@ type Collector struct {
 	// Cleanup of existing leases remains independent of observation eligibility.
 	CanObserveRun func(string) bool
 }
+type accessRequired struct{ Requirement api.AccessRequirement }
+
+func (e *accessRequired) Error() string { return "REMOTE_LOG_ACCESS_NOT_CONFIGURED" }
+
 type checkpoint struct {
+	Requirement *api.AccessRequirement
+
 	Bytes               int
 	Hash, Header, Input string
 	Policy, Instance    string
@@ -171,6 +177,9 @@ func (c *Collector) observe(ctx context.Context, r *runstate.Record) {
 		completeHistory := cp.Summary.Status == "verified" && cp.Summary.Finalized && len(cp.Issues) == 0 && cp.Missing == 0
 		sameObservation := cp.Policy == c.Policy.Digest() && cp.Instance == c.Instance
 		if !checkpointInvalid && cp.Finalized && cp.Input == inputHash && (completeHistory || sameObservation) {
+			if cp.Requirement != nil {
+				s.AccessRequirements = append(s.AccessRequirements, *cp.Requirement)
+			}
 			s.Coverage.SourceSummaries = append(s.Coverage.SourceSummaries, cp.Summary)
 			s.Issues = append(s.Issues, cp.Issues...)
 			s.Coverage.MissingUsageResponses += cp.Missing
@@ -207,6 +216,7 @@ func (c *Collector) observe(ctx context.Context, r *runstate.Record) {
 				s.AccessCleanupStatus = cleanup
 			}
 			if err == nil {
+				cp.Requirement = nil
 				for i := range result.Issues {
 					result.Issues[i].SourceRef = source
 				}
@@ -244,6 +254,11 @@ func (c *Collector) observe(ctx context.Context, r *runstate.Record) {
 			}
 		}
 		if err != nil {
+			var required *accessRequired
+			if errors.As(err, &required) {
+				cp.Requirement = &required.Requirement
+				s.AccessRequirements = append(s.AccessRequirements, required.Requirement)
+			}
 			code := errorCode(err)
 			if strings.HasPrefix(code, "ACCESS_") {
 				issues = append(issues, api.Issue{Category: "access_cleanup", Code: code, Retryable: true, SourceRef: source})
@@ -445,9 +460,6 @@ func (c *Collector) read(ctx context.Context, binding parsers.Binding, p orca.Pr
 			if original != nil && host != original.HostID {
 				return zero, cleanup, errors.New("IDENTITY_CHANGED")
 			}
-			if c.Policy.RemoteLogAccess.Mode != "temporary" {
-				return zero, cleanup, errors.New("REMOTE_LOG_ACCESS_NOT_CONFIGURED")
-			}
 		}
 		runtime := ""
 		if original != nil {
@@ -502,7 +514,11 @@ func (c *Collector) read(ctx context.Context, binding parsers.Binding, p orca.Pr
 		}
 		if p.Environment != "" {
 			if !c.Policy.Allows(p.Environment, host, root) {
-				return zero, cleanup, errors.New("REMOTE_LOG_ACCESS_NOT_CONFIGURED")
+				// Discovery uses directory metadata only; never creates a folder or reads a log.
+				if err = channel.VerifySource(ctx, root, filepath.Base(file)); err != nil {
+					return zero, cleanup, err
+				}
+				return zero, cleanup, &accessRequired{Requirement: api.AccessRequirement{SourceRef: source, Environment: p.Environment, HostID: host, SessionRoot: root, ObservedAt: time.Now().UTC()}}
 			}
 			if err = channel.VerifySource(ctx, root, filepath.Base(file)); err != nil {
 				return zero, cleanup, err

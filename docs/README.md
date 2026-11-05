@@ -46,7 +46,7 @@
 | 退出证明生产端与旧预算重建清尾 | [Spec](spec/exit-proof-budget-cleanup.spec.md) / [Plan](spec/exit-proof-budget-cleanup.plan.md) / [初轮验收](acceptance/exit-proof-budget-cleanup.md) / [再审计](acceptance/exit-proof-budget-reaudit.md)：已实施；保留请求绑定、Job/reader 与直接签名，缺 Budget 只拒绝新派发 |
 | 报告、日志及工作区 Git 查询 | [R2 操作指南](run-evidence-r2.md)、[Spec](spec/run-evidence-r2.spec.md) / [Plan](spec/run-evidence-r2.plan.md) |
 | 运行时单文件汇报、原始字节快照 | [接入指南](runtime-progress.md)、[Spec](spec/runtime-progress.spec.md) / [Plan](spec/runtime-progress.plan.md)、[主线整合验收](acceptance/runtime-progress-integration.md) / [专项历史](acceptance/runtime-progress.md) |
-| Run token、独立估价及日志授权 | [用量与费用 Spec](spec/run-usage-and-cost.spec.md) / [Plan](spec/run-usage-and-cost.plan.md)、[实现及现场验收](acceptance/run-usage-and-cost.md) |
+| Run token 与日志授权 | [当前计费职责与公开用量契约](acceptance/billing-ownership.md)；[旧构建用量/费用 Spec](spec/run-usage-and-cost.spec.md) / [Plan](spec/run-usage-and-cost.plan.md)、[历史验收](acceptance/run-usage-and-cost.md)；估价职责已退出 Runner |
 | 实例绑定与同快照 observe | [公开读取与受理边界 Plan](spec/reliability-simplification.plan.md) |
 | 执行可见性与原会话查看 | [可见性 Plan](spec/execution-observability.plan.md)、[原会话查看 Plan](spec/native-session-viewer.plan.md)；[Orca 最后消息 Spec](spec/orca-last-message.spec.md) / [Plan](spec/orca-last-message.plan.md)，实现结果归入原可见性及远端原生验收 |
 | Git 基线、工作区名称及 PR 元数据 | [基线刷新 Plan](spec/repository-base-refresh.plan.md)、[名称前缀 Plan](spec/worktree-name-prefix.plan.md)、[PR 元数据 Plan](spec/pr-merge-metadata.plan.md) |
