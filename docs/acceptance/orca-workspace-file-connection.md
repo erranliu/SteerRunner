@@ -31,3 +31,11 @@
 | 配对远端 | `672f0799c8f1affd53800e3a28a63817cd52169e8141df751f8f671eb8b3adcd` | `f22f45d2c8bc7af18bb8ae9deacac7b1e8d8ed4ada9d2a77ae98a9b96c9bbe28` |
 
 审计冷读持久记录，核对冻结正文摘要、原消息/turn、文件绑定的 host、worktree 和 instance。两个实际原目录通过 SteerLine `57e3c52` 生产 `VerifyUpgradeDrained` 的双 EXE 冷读，原服务均 `not_running`，停止范围为 `orca_agent_session`，数据库与停机证明摘要不变。原始 CLI、活动窗口证明、临时变异测试和冷读工具位于本机 `.evidence/orca-workspace-file-live/`。本记录覆盖受影响组件、定向应用回归和专项真机。
+
+## PR #113 合入前审计
+
+原远端夹具的两个端点使用相同设备 token，无法验证原端点与替代 token 被混用的情况。审计改为不同 token，认证握手和每次请求均核对各自 token。新夹具及本机身份、文件 wire、远端会话定向回归通过。临时 overlay 将替代 token 混入原连接后，替换场景在认证断言处失败，正式实现通过。审计改动仅涉及测试和本记录，真机候选的生产代码保持相同。
+
+重新核对两份固定 EXE 摘要与持久记录，并从原始 CLI 回执顺序验证双端活动窗口。读取前后原 Run 均运行且 turn 不变，进度为预期新字节，结果仍 pending。原显式 stop 受理后观察到 stopped，随后才收到关闭的版本 1 结果，重复结果快照字段一致。按当前生产准入，进度使用 `development/2`；两次 `execute/1` 原始拒绝回执和零 Run 结算也已复核。
+
+使用相同固定 EXE 和 SteerLine `57e3c52` 再次冷读两个实际原目录，生产升级排空门禁通过，数据库与停机证明摘要保持。测试补强后的配对仍只解析一次，替代端点零拨号与零文件操作。

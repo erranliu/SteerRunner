@@ -20,7 +20,7 @@ import (
 	"golang.org/x/crypto/nacl/box"
 )
 
-func remoteWorkspaceFileFixture(t *testing.T, wrongRuntime bool, dials, files *atomic.Int32) (statePairing, func()) {
+func remoteWorkspaceFileFixture(t *testing.T, token string, wrongRuntime bool, dials, files *atomic.Int32) (statePairing, func()) {
 	t.Helper()
 	pub, private, err := box.GenerateKey(rand.Reader)
 	if err != nil {
@@ -57,7 +57,7 @@ func remoteWorkspaceFileFixture(t *testing.T, wrongRuntime bool, dials, files *a
 			Type, DeviceToken  string
 			ClientCapabilities []string
 		}
-		if err != nil || json.Unmarshal(raw, &auth) != nil || auth.Type != "e2ee_auth" || auth.DeviceToken != "file-token" || !slices.Equal(auth.ClientCapabilities, []string{"agent-session.session-boundary.v1"}) {
+		if err != nil || json.Unmarshal(raw, &auth) != nil || auth.Type != "e2ee_auth" || auth.DeviceToken != token || !slices.Equal(auth.ClientCapabilities, []string{"agent-session.session-boundary.v1"}) {
 			t.Error("file authentication or capability changed")
 			return
 		}
@@ -73,7 +73,7 @@ func remoteWorkspaceFileFixture(t *testing.T, wrongRuntime bool, dials, files *a
 			if err != nil {
 				return
 			}
-			if json.Unmarshal(raw, &request) != nil || request.DeviceToken != "file-token" {
+			if json.Unmarshal(raw, &request) != nil || request.DeviceToken != token {
 				t.Error("invalid file request")
 				return
 			}
@@ -120,15 +120,15 @@ func remoteWorkspaceFileFixture(t *testing.T, wrongRuntime bool, dials, files *a
 		}
 	}))
 	t.Cleanup(server.Close)
-	return statePairing{Endpoint: "ws" + strings.TrimPrefix(server.URL, "http"), Token: "file-token", PublicKey: base64.StdEncoding.EncodeToString(pub[:])}, server.Close
+	return statePairing{Endpoint: "ws" + strings.TrimPrefix(server.URL, "http"), Token: token, PublicKey: base64.StdEncoding.EncodeToString(pub[:])}, server.Close
 }
 
 func TestWorkspaceFilesUseTheVerifiedPairingSnapshot(t *testing.T) {
 	for _, scenario := range []string{"normal", "replaced-before-open", "replaced-after-resolve", "original-unavailable", "wrong-runtime", "wrong-instance"} {
 		t.Run(scenario, func(t *testing.T) {
 			var originalDials, originalFiles, replacementDials, replacementFiles atomic.Int32
-			original, closeOriginal := remoteWorkspaceFileFixture(t, scenario == "wrong-runtime", &originalDials, &originalFiles)
-			replacement, _ := remoteWorkspaceFileFixture(t, false, &replacementDials, &replacementFiles)
+			original, closeOriginal := remoteWorkspaceFileFixture(t, "original-file-token", scenario == "wrong-runtime", &originalDials, &originalFiles)
+			replacement, _ := remoteWorkspaceFileFixture(t, "replacement-file-token", false, &replacementDials, &replacementFiles)
 			dir := t.TempDir()
 			t.Setenv("ORCA_USER_DATA_PATH", dir)
 			save := func(pairing statePairing) {
