@@ -33,11 +33,11 @@ func TestOrcaCLICommandEncodingAndConsumers(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			port, err := NewLifecycleWithStateFactory(setup, l.stateFactory)
+			port, err := frozenFixtureLifecycle(setup)
 			if err != nil {
 				t.Fatal(err)
 			}
-			l = port.(*Lifecycle)
+			l = port
 			args := []string{"terminal", "create", "--worktree", "id:repo::C:/my workspace", "--command", "Write-Output '中文'", "--json"}
 			_, err = l.client.MetaCallWithTimeout(context.Background(), 40*time.Second, args...)
 			if err != nil {

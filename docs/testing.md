@@ -1,5 +1,7 @@
 # SteerRunner L1–L4 测试指南
 
+2026-11-05：旧 Orca TUI/helper 输入专项及执行探针已退役，原 `test-native-input.ps1` 明确拒绝，不再作为当前资格入口；下文旧构建记录不变。当前结构化执行、共享创建与历史只读证明的保留范围及实际验证见[验收](acceptance/orca-reader-execution-boundary.md)。
+
 2026-11-02 核对：现行数量与独立原生专项统一见[当前清单与资格边界](test-catalog.md#当前清单与资格边界)。本次仅校正文档/专项描述，并将已有 `TestSRSingleExecutionColdStop` 纳入默认 Controlled 自动回归；其余测试内容、分级、调度与资格规则保持。
 
 > 2026-11-01 当前使用：v8、升级先排空及人工对账规则见[CLI 指南](cli-guide.md#人工对账与资源丢失)。未知操作查询预算耗尽后转待人工；显式 resume 最多 30 秒只读核实原事实，原输入零重发、零资源重建，stop/close 优先。下方按日期保存的旧数量与旧验收说明只描述当时构建。

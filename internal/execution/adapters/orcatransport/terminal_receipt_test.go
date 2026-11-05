@@ -61,10 +61,6 @@ func TestExtensionStateKeepsPreparationSeparateFromCodexProof(t *testing.T) {
 			state.Turns[0].Started, state.Turns[0].Settled = true, true
 			state.Turns[0].Reply, state.Turns[0].ReplyDigest = fact.Reply, fact.ReplySHA256
 			check(true)
-			evidence := l.terminalEvidence(state, state.Turns[0])
-			if evidence.FinalSessionID != evidence.SessionID || evidence.FinalTurnID != turn.Command || evidence.FinalNativeSessionID != ready.NativeSessionID || evidence.FinalNativeTurnID != fact.NativeInputID {
-				t.Fatal("extension final lost normalized binding or native provenance", evidence)
-			}
 			fact.InstanceID = "replacement-load"
 			check(false)
 			fact.InstanceID = ready.InstanceID
@@ -115,5 +111,3 @@ func TestManagedReadinessRequiresEffectiveThinkingForNewSources(t *testing.T) {
 
 	}
 }
-
-func testBool(v bool) *bool { return &v }

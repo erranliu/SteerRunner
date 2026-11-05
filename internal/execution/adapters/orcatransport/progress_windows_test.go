@@ -9,17 +9,11 @@ import (
 	"sync/atomic"
 	"testing"
 	"time"
-
-	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
 
 func TestResultFileRPCUsesOriginalSelectorAndIndependentPath(t *testing.T) {
 	l, f, s := fixture(t)
-	receipt, _, err := l.Execute(context.Background(), request(s, b.LifecyclePrepareWorkspace, b.LifecycleInput{Workspace: &s.WorkspacePlan}))
-	if err != nil {
-		t.Fatal(err)
-	}
-	bind(&s, receipt)
+	s = frozenWorkspaceFixture(t, l, f, s)
 	setup := l.setup
 	setup.Snapshot = s
 	var calls atomic.Int32

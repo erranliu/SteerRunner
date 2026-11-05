@@ -40,7 +40,7 @@ func TestRecoveryProfileQualificationMatchesConstructorWithoutNativeCapabilities
 					if encodeErr != nil {
 						t.Fatal(encodeErr)
 					}
-					_, oldErr := NewLifecycle(setup)
+					_, oldErr := newFrozenReader(setup)
 					setup.ProcessHost = nil
 					_, _, err := decodeLifecycleProfile(setup)
 					if (oldErr == nil) != (err == nil) || oldErr != nil && oldErr.Error() != err.Error() {

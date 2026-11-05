@@ -1,13 +1,18 @@
 package orcatransport
 
 import (
-	"context"
 	"encoding/json"
+
+	"path/filepath"
+
+	"sync/atomic"
+)
+import (
+	"context"
+
 	"errors"
 	"os"
-	"path/filepath"
-	"reflect"
-	"sync/atomic"
+
 	"testing"
 	"time"
 
@@ -41,7 +46,7 @@ func (h *creationTestHost) InspectProcess(p *b.ProcessIdentity) string {
 
 func ownedCreationFixture(t *testing.T, environment string) (*Lifecycle, *fakeHost, b.LifecycleSnapshot, *creationTestHost) {
 	t.Helper()
-	l, f, s := fixtureOn(t, environment)
+	l, f, s := workspaceFixtureOn(t, environment)
 	l.profile.Executable = os.Args[0]
 	l.setup.CommandTimeout = 3 * time.Second
 	h := &creationTestHost{ManagedProcessHost: f, output: f.OutputCommand}
@@ -62,16 +67,6 @@ func creationCount(f *fakeHost, name string) int {
 		}
 	}
 	return n
-}
-
-func TestCreationOwnerRetainsWorkspaceAcrossCallerLoss(t *testing.T) {
-	testCreationOwnerRetainsWorkspaceAcrossCallerLoss(t, false)
-}
-
-// Reproduces a real Orca bare-worktree response without a startup handle:
-// the owner finishes after its caller detached, before terminal preparation.
-func TestCreationOwnerInitialTerminalPlanSurvivesDelayedWorkspaceReceipt(t *testing.T) {
-	testCreationOwnerRetainsWorkspaceAcrossCallerLoss(t, true)
 }
 
 func TestStructuredWorkspaceRecoversOriginalOwnerOutput(t *testing.T) {
@@ -118,76 +113,6 @@ func TestStructuredWorkspaceRecoversOriginalOwnerOutput(t *testing.T) {
 				creationCount(f, "repo list")+creationCount(f, "status --json") != discovery ||
 				creationCount(f, "terminal create") != 0 || creationCount(f, "terminal send") != 0 {
 				t.Fatal("recovery repeated a discovery or mutation", launches, f.calls)
-			}
-		})
-	}
-}
-
-func testCreationOwnerRetainsWorkspaceAcrossCallerLoss(t *testing.T, missingHandle bool) {
-	for _, environment := range []string{"", "paired-worker"} {
-		t.Run(environment, func(t *testing.T) {
-			l, f, s, host := ownedCreationFixture(t, environment)
-			// This is durable owner/terminal recovery, not a one-second latency
-			// assertion. Leave the dispatch handshake and all no-recreate checks
-			// intact while allowing bounded filesystem scheduling under full L1.
-			l.profile.WaitTimeout = "5s"
-			l.setup.AgentLaunchCommand, f.commandMode = "opaque-start", true
-			entered, release, finished := make(chan struct{}), make(chan struct{}), make(chan error, 1)
-			host.output = func(ctx context.Context, c b.LaunchCommand) ([]byte, error) {
-				raw, err := f.OutputCommand(ctx, c)
-				if c.Args[0] == "worktree" && c.Args[1] == "create" {
-					if missingHandle {
-						var envelope map[string]json.RawMessage
-						var result map[string]json.RawMessage
-						_ = json.Unmarshal(raw, &envelope)
-						_ = json.Unmarshal(envelope["result"], &result)
-						delete(result, "agentTerminalHandle")
-						delete(result, "startupTerminal")
-						envelope["result"], _ = json.Marshal(result)
-						raw, _ = json.Marshal(envelope)
-					}
-					close(entered) // The effect happened before its response was delivered.
-					select {
-					case <-release:
-					case <-ctx.Done():
-						return nil, ctx.Err()
-					}
-				}
-				return raw, err
-			}
-			launches := 0
-			l.setup.LaunchExecutionOwner = func(_ context.Context, dir string) error {
-				launches++
-				go func() { finished <- serveCreationOwner(context.Background(), dir, host, false) }()
-				return nil
-			}
-			r := request(s, b.LifecyclePrepareWorkspace, b.LifecycleInput{Workspace: &s.WorkspacePlan})
-			ctx, cancel := context.WithCancel(context.Background())
-			observed := make(chan error, 1)
-			go func() { _, _, err := l.Execute(ctx, r); observed <- err }()
-			select {
-			case <-entered:
-			case <-time.After(3 * time.Second):
-				t.Fatal("original create was not dispatched")
-			}
-			cancel()
-			if err := <-observed; !errors.Is(err, context.Canceled) {
-				t.Fatal("caller did not detach", err)
-			}
-			close(release)
-			if err := <-finished; err != nil {
-				t.Fatal(err)
-			}
-			// A new lifecycle has no in-memory creation response or service receipt.
-			next := &Lifecycle{setup: l.setup.Clone(), profile: l.profile, profileVersion: l.profileVersion, client: l.client}
-			next.setup.LaunchExecutionOwner = func(context.Context, string) error { t.Fatal("replacement owner launched"); return nil }
-			recovered, _, err := next.Reconcile(context.Background(), r)
-			if err != nil || recovered.Disposition != b.OperationConfirmed || recovered.Process == nil || recovered.Process.Terminal != "terminal" || recovered.Process.Incarnation != f.incarnation || recovered.Workspace == nil || recovered.Workspace.Base != s.WorkspacePlan.BaseCommit {
-				t.Fatal("original create was not recovered", recovered, err)
-			}
-			second, _, err := next.Reconcile(context.Background(), r)
-			if err != nil || !reflect.DeepEqual(second.Process, recovered.Process) || launches != 1 || creationCount(f, "worktree create") != 1 || creationCount(f, "terminal send") != 0 || creationCount(f, "worktree list") != 0 {
-				t.Fatal("recovery replaced/resent/rediscovered original resources", err, launches)
 			}
 		})
 	}
@@ -264,35 +189,6 @@ func TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch(t *testing.T) {
 	}
 }
 
-func TestCreationOwnerControlReceiptSurvivesServiceLoss(t *testing.T) {
-	l, f, s, control := fixtureFixedControl(t)
-	l.profile.Executable = os.Args[0]
-	original := l.client
-	host := &creationTestHost{ManagedProcessHost: f, output: func(ctx context.Context, c b.LaunchCommand) ([]byte, error) {
-		return original.Raw(ctx, c.Timeout, c.Args...)
-	}}
-	l.setup.ProcessHost = host
-	l.setup.CommandTimeout = 3 * time.Second
-	l.setup.LaunchExecutionOwner = func(_ context.Context, dir string) error {
-		return serveCreationOwner(context.Background(), dir, host, false)
-	}
-	state, err := l.state(s)
-	if err != nil {
-		t.Fatal(err)
-	}
-	input := l.controlIntent(s, state)
-	r := request(s, b.LifecycleCreateResource, b.LifecycleInput{Resource: &input})
-	first, _, err := l.Execute(context.Background(), r)
-	if err != nil || first.Disposition != b.OperationConfirmed {
-		t.Fatal(first, err)
-	}
-	// Do not merge the response. Recovery starts from the old persisted snapshot.
-	second, _, err := l.Reconcile(context.Background(), r)
-	if err != nil || second.Disposition != b.OperationConfirmed || control.creates != 1 || control.sends != 0 || !reflect.DeepEqual(first.Implementation, second.Implementation) {
-		t.Fatal("control creation was repeated or rebound", second, err, control.creates)
-	}
-}
-
 func TestCreationOwnerIncompleteLaunchClaimNeverRetries(t *testing.T) {
 	for _, mode := range []string{"plan-write-failed", "launch-failed", "launch-response-lost", "completed"} {
 		t.Run(mode, func(t *testing.T) {
@@ -319,8 +215,7 @@ func TestCreationOwnerIncompleteLaunchClaimNeverRetries(t *testing.T) {
 			}
 			r := request(s, b.LifecyclePrepareWorkspace, b.LifecycleInput{Workspace: &s.WorkspacePlan})
 			_, _, _ = l.Execute(context.Background(), r)
-			// Even accidental repeated Execute cannot turn a missing result or
-			// incomplete plan into permission to dispatch a second owner.
+
 			for i := 0; i < 2; i++ {
 				_, _, _ = l.Execute(context.Background(), r)
 				_, _, _ = l.Reconcile(context.Background(), r)
@@ -364,102 +259,5 @@ func TestCreationOwnerStartupUsesOriginalDeadline(t *testing.T) {
 	_, _, _ = l.Execute(context.Background(), r)
 	if launches != 1 || creationCount(f, "worktree create") != 0 {
 		t.Fatal("timed out original startup was relaunched", launches)
-	}
-}
-
-func TestCreationOwnerMissingTerminalReceiptNeverAdoptsInventory(t *testing.T) {
-	l, f, s, host := ownedCreationFixture(t, "")
-	l.setup.AgentLaunchCommand, f.commandMode = "opaque-start", true
-	host.output = func(ctx context.Context, command b.LaunchCommand) ([]byte, error) {
-		raw, err := f.OutputCommand(ctx, command)
-		if len(command.Args) > 1 && command.Args[0] == "worktree" && command.Args[1] == "create" && err == nil {
-			var envelope map[string]json.RawMessage
-			var result map[string]json.RawMessage
-			_ = json.Unmarshal(raw, &envelope)
-			_ = json.Unmarshal(envelope["result"], &result)
-			delete(result, "agentTerminalHandle")
-			delete(result, "startupTerminal")
-			envelope["result"], _ = json.Marshal(result)
-			return json.Marshal(envelope)
-		}
-		return raw, err
-	}
-	launches := 0
-	l.setup.LaunchExecutionOwner = func(_ context.Context, dir string) error {
-		launches++
-		return serveCreationOwner(context.Background(), dir, host, false)
-	}
-	r := request(s, b.LifecyclePrepareWorkspace, b.LifecycleInput{Workspace: &s.WorkspacePlan})
-	first, _, err := l.Execute(context.Background(), r)
-	if err != nil || first.Disposition != b.OperationConfirmed {
-		t.Fatal("fixture did not reach caller-only terminal selection", err)
-	}
-	// Lose the service's selected-terminal checkpoint, then present a different
-	// sole shell inside the exact same original worktree. The durable create
-	// response proves that worktree, but contains no original terminal handle.
-	f.incarnation = "foreign-shell-incarnation"
-	for n := 0; n < 2; n++ {
-		receipt, _, err := l.Reconcile(context.Background(), r)
-		if err == nil || receipt.Disposition != b.OperationUnknown || receipt.Process != nil {
-			t.Fatalf("inventory uniqueness was treated as an original terminal receipt: disposition=%s process=%+v err=%v", receipt.Disposition, receipt.Process, err)
-		}
-	}
-	if launches != 1 || creationCount(f, "worktree create") != 1 || creationCount(f, "terminal create") != 0 || creationCount(f, "terminal send") != 0 {
-		t.Fatal("missing terminal receipt repeated creation or business input")
-	}
-}
-
-func TestCreationOwnerInitialTerminalReceiptAndEmptyRecovery(t *testing.T) {
-	for _, mode := range []string{"receipt-before-checkpoint", "reconcile-empty"} {
-		t.Run(mode, func(t *testing.T) {
-			l, f, s, host := ownedCreationFixture(t, "")
-			// First obtain an exact worktree creation response, as preparation does.
-			original, err := l.client.MetaCall(context.Background(), "worktree", "create", "--name", "original", "--base-branch", s.WorkspacePlan.BaseCommit)
-			if err != nil {
-				t.Fatal(err)
-			}
-			var c workspaceCreation
-			_ = json.Unmarshal(original.Payload, &c)
-			c.RuntimeID, c.AgentTerminalHandle = original.RuntimeID, ""
-			creates, launches := 0, 0
-			made := false
-			host.output = func(ctx context.Context, command b.LaunchCommand) ([]byte, error) {
-				if command.Args[0] == "terminal" && command.Args[1] == "list" && !made {
-					return json.Marshal(map[string]any{"ok": true, "result": map[string]any{"terminals": []any{}, "truncated": false, "totalCount": 0, "hostScope": map[string]any{"hostIds": []string{"original-host"}, "omittedHostIds": []string{}}}, "_meta": map[string]string{"runtimeId": c.RuntimeID}})
-				}
-				if command.Args[0] == "terminal" && command.Args[1] == "create" {
-					creates++
-					made = true
-					return f.OutputCommand(ctx, b.LaunchCommand{Args: []string{"terminal", "show", "--terminal", "terminal"}})
-				}
-				return f.OutputCommand(ctx, command)
-			}
-			l.setup.LaunchExecutionOwner = func(_ context.Context, dir string) error {
-				launches++
-				return serveCreationOwner(context.Background(), dir, host, false)
-			}
-			if mode == "reconcile-empty" {
-				if _, err := l.initialWorkspaceTerminalRecovery(context.Background(), s, c, true); err == nil || creates != 0 || launches != 0 {
-					t.Fatal("reconciliation created an unstarted terminal", err, creates, launches)
-				}
-				return
-			}
-			rejectCheckpoint := true
-			host.write = func(path string, raw []byte) error {
-				var checkpoint initialTerminalCheckpoint
-				if filepath.Base(filepath.Dir(path)) == "orca-initial-terminals" && json.Unmarshal(raw, &checkpoint) == nil && checkpoint.Process != nil && rejectCheckpoint {
-					return errors.New("caller checkpoint commit unavailable")
-				}
-				return process.New(time.Second).WriteExecutionFile(path, raw)
-			}
-			if _, err := l.initialWorkspaceTerminal(context.Background(), s, c); err == nil {
-				t.Fatal("checkpoint failure not injected")
-			}
-			rejectCheckpoint = false
-			terminal, err := l.initialWorkspaceTerminalRecovery(context.Background(), s, c, true)
-			if err != nil || terminal.Handle != "terminal" || terminal.IncarnationID != f.incarnation || creates != 1 || launches != 1 {
-				t.Fatal("original initial terminal was lost or replaced", terminal, err, creates, launches)
-			}
-		})
 	}
 }

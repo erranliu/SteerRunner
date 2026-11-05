@@ -27,7 +27,7 @@ func fileSource(ctx context.Context, setup b.LifecycleSetup, host, instance stri
 	kind := "orca_terminal"
 	if s.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 {
 		kind = "orca_agent_session"
-		l := &Lifecycle{setup: setup, profile: profile}
+		l := &frozenRecord{setup: setup, profile: profile}
 		state, stateErr := l.agentState(s)
 		if stateErr != nil || state.Worktree.Path != s.Workspace.Path || instance != "" && instance != state.Worktree.InstanceID {
 			return nil, errors.New("binding_invalid")

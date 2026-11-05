@@ -87,9 +87,7 @@ type agentSessionState struct {
 	SessionNotCreated bool                `json:"session_not_created,omitempty"`
 }
 
-func (l *Lifecycle) structured() bool {
-	return l.setup.Snapshot.Ref.Protocol == b.ProtocolOrcaAgentSessionV1
-}
+func (l *Lifecycle) structured() bool { return l.frozenRecord().structured() }
 func decodeAgentSessionProfile(setup b.LifecycleSetup) (AgentSessionProfile, error) {
 	var p AgentSessionProfile
 	found := false
@@ -127,13 +125,7 @@ func decodeAgentSessionProfile(setup b.LifecycleSetup) (AgentSessionProfile, err
 	return p, nil
 }
 func (l *Lifecycle) validateStructured(s b.LifecycleSnapshot) error {
-	if err := l.validate(s); err != nil {
-		return err
-	}
-	if s.Ref.Protocol != b.ProtocolOrcaAgentSessionV1 || s.Ref.Agent.Name != "codex" && s.Ref.Agent.Name != "pi" {
-		return errors.New("unsupported structured Orca identity")
-	}
-	return nil
+	return l.frozenRecord().validateStructured(s)
 }
 func (l *Lifecycle) agentClient(runtime string) agentSessionPort {
 	if l.agentSessions != nil {
@@ -151,42 +143,7 @@ func agentSessionID(s b.LifecycleSnapshot) string {
 	return "oas_" + digest([]byte(s.Ref.RunID + "\x00" + s.Ref.AttemptID))[:32]
 }
 func (l *Lifecycle) agentState(s b.LifecycleSnapshot) (agentSessionState, error) {
-	var state agentSessionState
-	if err := l.validateStructured(s); err != nil {
-		return state, err
-	}
-	found := false
-	for _, e := range s.Implementation {
-		if e.ImplementationKey != AgentSessionStateKey {
-			continue
-		}
-		if found || e.CodecVersion != AgentSessionVersion {
-			return state, errors.New("invalid structured Orca state codec")
-		}
-		found = true
-		if err := e.ValidateResourceIdentity(s.Session.ProjectID, s.Session.ExecutionID, s.Session.AttemptID, s.ResourceGeneration, s.ConfigurationDigest); err != nil {
-			return state, err
-		}
-		if err := b.DecodeStrictJSON(e.Payload, &state, "trailing structured Orca state"); err != nil {
-			return state, err
-		}
-	}
-	if found && (state.RuntimeID == "" || state.Worktree.ID == "" || state.Worktree.InstanceID == "" || state.SessionID != agentSessionID(s) || state.Worktree.ID != s.Ref.External.WorktreeID || state.RuntimeID != s.Ref.External.RuntimeID || s.Ref.External.Kind != "orca_agent_session" || s.Ref.External.Executable != l.profile.Executable || s.Ref.External.ExecutionHost != l.profile.Target().ExecutionHost || s.Ref.External.Terminal != "" || s.Ref.External.PID != 0 || s.Ref.External.Incarnation != "" || state.Worktree.Path != s.Workspace.Path) {
-		return state, errors.New("original structured Orca resource binding changed")
-	}
-	if len(state.CloseReceipt) > 0 && (!state.CloseAttempted || !agentCloseSucceeded(state.CloseReceipt)) {
-		return state, errors.New("original structured close receipt is invalid")
-	}
-	if state.SessionNotCreated && agentSessionMayExist(s, state) {
-		return state, errors.New("structured session absence contradicts its original dispatch")
-	}
-	if state.CommandID != "" && (!b.StableExecutionID(state.CommandID) || len(state.InputDigest) != 64 || len(state.BodyFingerprint) != 64 || state.CreateID == "" || state.MessageID == "") {
-		return state, errors.New("incomplete original structured input binding")
-	}
-	if s.PendingTurn != nil && state.CommandID != "" && (state.CommandID == s.PendingTurn.CommandID && state.InputDigest != digest([]byte(s.PendingTurn.Prompt)) || !l.agentDevelopment && state.CommandID != s.PendingTurn.CommandID) {
-		return state, errors.New("original structured input changed")
-	}
-	return state, nil
+	return l.frozenRecord().agentState(s)
 }
 func (l *Lifecycle) agentEnvelope(s b.LifecycleSnapshot, state agentSessionState) ([]b.ImplementationDataEnvelope, error) {
 	raw, err := json.Marshal(state)
@@ -742,24 +699,11 @@ func agentCloseSucceeded(raw json.RawMessage) bool {
 }
 
 func (l *Lifecycle) closeSettlesAgentSession() bool {
-	return l.profileVersion == AgentSessionCloseProfileVersion || l.profile.Environment == "" && !l.agentDevelopment
+	return l.frozenRecord().closeSettlesAgentSession()
 }
 
 func (l *Lifecycle) verifyAgentSessionStopped(s b.LifecycleSnapshot) error {
-	if !l.closeSettlesAgentSession() {
-		if l.agentDevelopment {
-			return errors.New("Orca 原会话 close 不提供完整退出证据；资源结算未核实 (resources_settled=false).")
-		}
-		return errors.New(AgentSessionStopDiagnostic)
-	}
-	state, err := l.agentState(s)
-	if err != nil {
-		return err
-	}
-	if !state.CloseAttempted || !agentCloseSucceeded(state.CloseReceipt) && !(state.SessionNotCreated && !agentSessionMayExist(s, state)) {
-		return errors.New(AgentSessionStopDiagnostic)
-	}
-	return nil
+	return l.frozenRecord().verifyAgentSessionStopped(s)
 }
 
 func agentSessionMayExist(s b.LifecycleSnapshot, state agentSessionState) bool {

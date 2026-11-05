@@ -1,7 +1,6 @@
 package orcatransport
 
 import (
-	"context"
 	"encoding/json"
 	"strings"
 	"testing"
@@ -26,22 +25,14 @@ func TestHostNativeStateCodecRejectsRetiredAndAmbiguousFields(t *testing.T) {
 }
 
 func TestHostNativeStateCodecRoundTripRetainsOriginalBinding(t *testing.T) {
-	l, _, s := fixture(t)
-	r, _, err := l.Execute(context.Background(), request(s, b.LifecyclePrepareWorkspace, b.LifecycleInput{Workspace: &s.WorkspacePlan}))
-	if err != nil {
-		t.Fatal(err)
-	}
-	bind(&s, r)
-	s, input := prepared(t, l, s, strings.Repeat("c", 32))
-	r, err = l.submit(context.Background(), request(s, b.LifecycleStartTurn, b.LifecycleInput{Turn: &input}))
-	if err != nil {
-		t.Fatal(err)
-	}
-	bind(&s, r)
+	l, host, s := fixture(t)
+	s = frozenWorkspaceFixture(t, l, host, s)
+	input := b.TurnInput{CommandID: strings.Repeat("c", 32), Prompt: "Implement the bound Spec and Plan."}
 	state, err := l.state(s)
 	if err != nil {
 		t.Fatal(err)
 	}
+	state.Turns = []Turn{{Command: input.CommandID, Prompt: input.Prompt, InputDigest: digest([]byte(input.Prompt)), Attempted: true, Accepted: true, Native: NativeProof{Agent: "codex", Pane: "tab:pane", Provider: "provider"}}}
 	state.Turns[0].Native.Conflict = "Native original completion/input provenance is unverified"
 	s.Implementation, err = l.envelope(s, state)
 	if err != nil {

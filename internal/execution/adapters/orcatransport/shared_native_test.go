@@ -1,7 +1,6 @@
 package orcatransport
 
 import (
-	"context"
 	"encoding/json"
 	"reflect"
 	"testing"
@@ -23,34 +22,30 @@ func sharedNativeFixture(t *testing.T, environment string) (*Lifecycle, *fakeHos
 	if err != nil {
 		t.Fatal(err)
 	}
-	port, err := NewLifecycleWithStateFactory(setup, host.stateFactory)
+	port, err := frozenFixtureLifecycle(setup)
 	if err != nil {
 		t.Fatal(err)
 	}
-	return port.(*Lifecycle), host, snapshot
+	return port, host, snapshot
 }
 
 func TestSharedNativeProfileAndScope(t *testing.T) {
 	for _, environment := range []string{"", "paired-worker"} {
 		t.Run(environment, func(t *testing.T) {
-			l, _, snapshot := sharedNativeFixture(t, environment)
-			if l.stateVersion() != NativeStateVersion || l.StopEvidenceScope() != "orca_terminal" || l.usesControl() || l.PolicyCapabilities().ReportToolPolicy != "configured_native_launch_parameters; execution_host_existing_authentication; business_read_only_is_prompt_policy" {
+			l, host, snapshot := sharedNativeFixture(t, environment)
+			if l.stateVersion() != NativeStateVersion || l.StopEvidenceScope() != "orca_terminal" || l.usesControl() {
 				t.Fatal("candidate contract differs by location")
 			}
 			production, err := NewLifecycle(l.setup)
-			if err != nil || !production.(*Lifecycle).nativeAccess {
-				t.Fatal("production candidate constructor unavailable", err)
+			if err == nil || production != nil {
+				t.Fatal("retired execution constructor accepted", err)
 			}
 			old := l.profile
 			old.NativeTerminal = false
 			if !reflect.DeepEqual(old.Target(), l.profile.Target()) {
 				t.Fatal("native contract changed target routing hash")
 			}
-			receipt, _, err := l.Execute(context.Background(), request(snapshot, b.LifecyclePrepareWorkspace, b.LifecycleInput{Workspace: &snapshot.WorkspacePlan}))
-			if err != nil {
-				t.Fatal(err)
-			}
-			bind(&snapshot, receipt)
+			snapshot = frozenWorkspaceFixture(t, l, host, snapshot)
 			if len(snapshot.Implementation) != 1 || snapshot.Implementation[0].CodecVersion != NativeStateVersion {
 				t.Fatal("candidate state codec not persisted", snapshot.Implementation)
 			}
