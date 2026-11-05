@@ -228,7 +228,7 @@ func TestContentInterruptRequestStatus(t *testing.T) {
 			if r = e.runs["run"]; r.CommandStates[command] != tc.want || tc.want == "failed" && r.PendingInterrupt != "" || len(r.Workflow.StageInputs) != 1 {
 				t.Fatal("original interrupt request has incorrect outcome", r.CommandStates)
 			}
-			query := e.Handle("inspect", "", "interrupt-receipt", "", "", 0, false, nil)
+			query := e.Handle("inspect", "", "interrupt-receipt", "", "", 0, nil)
 			if !query.OK {
 				t.Fatal(query)
 			}
@@ -274,7 +274,7 @@ func contentEvidence(e *Engine, text, outcome string, verified bool) b.TurnEvide
 }
 func contentControl(e *Engine, command, id string, body any) contracts.Response {
 	raw, _ := json.Marshal(body)
-	return e.Handle(command, "run", "", "", "", 0, false, &contracts.Request{Protocol: contracts.Protocol, RequestID: id, Input: raw})
+	return e.Handle(command, "run", "", "", "", 0, &contracts.Request{Protocol: contracts.Protocol, RequestID: id, Input: raw})
 }
 
 func TestContentGenerateResults(t *testing.T) {

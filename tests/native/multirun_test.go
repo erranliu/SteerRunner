@@ -156,7 +156,7 @@ func developmentMultipleRuns(t *testing.T, m livetest.Manifest) {
 	}
 	r.RunID = ids[0]
 	for i := range ids {
-		runs[i] = waitReady(t, manifests[i], dir, ids[i], "")
+		runs[i] = waitReady(t, manifests[i], dir, ids[i])
 		verifyHead(t, manifests[i], runs[i], started)
 		auditWorkerSandbox(t, manifests[i], runs[i])
 		names := []string{"worker-sandbox-audit.json", "native-turn-audit.json"}
@@ -227,10 +227,11 @@ func developmentMultipleRuns(t *testing.T, m livetest.Manifest) {
 		t.Fatal(err)
 	}
 	waitStopped(t, m, dir, ids[0])
-	peer, err := inspect(m, dir, ids[1], true)
+	peer, err := inspect(m, dir, ids[1])
 	if err != nil || !peer.NewInputsAllowed || peer.StopStatus == "stopped" || peer.Execution.SessionID != runs[1].Execution.SessionID || peer.PR == nil || peer.PR.URL != runs[1].PR.URL {
 		t.Fatal("stopping first Run affected peer", err)
 	}
+	platformPR(t, manifests[1], peer, false)
 	save(t, "peer-after-first-stop.json", peer)
 	// Both workflows end at pr_ready. Recheck the original peer's native owner
 	// and permissions after the first stop. Controlled isolation also holds a
@@ -240,7 +241,7 @@ func developmentMultipleRuns(t *testing.T, m livetest.Manifest) {
 	if peer.PR == nil || peer.PR.HeadRevision != runs[1].PR.HeadRevision || peer.Execution.TurnID != runs[1].Execution.TurnID {
 		t.Fatal("stopping first Run changed peer completion source")
 	}
-	stopped, err := inspect(m, dir, ids[0], false)
+	stopped, err := inspect(m, dir, ids[0])
 	if err != nil || stopped.NewInputsAllowed || stopped.StopStatus != "stopped" || stopped.PR == nil || !strings.EqualFold(stopped.PR.HeadRevision, runs[0].PR.HeadRevision) {
 		t.Fatal("peer observation changed the stopped Run", err)
 	}
@@ -255,7 +256,7 @@ func waitStopped(t *testing.T, m livetest.Manifest, dir, id string) contracts.Ru
 	var view contracts.RunView
 	for until := time.Now().Add(time.Minute); time.Now().Before(until); time.Sleep(time.Second) {
 		var err error
-		view, err = inspect(m, dir, id, false)
+		view, err = inspect(m, dir, id)
 		if err != nil {
 			t.Error(err)
 			return view

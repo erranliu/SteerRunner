@@ -374,7 +374,7 @@ func ValidateArtifact(body []byte, earliest, latest time.Time) (time.Time, error
 // CheckPR is a fail-closed guard immediately before a real merge.
 func CheckPR(m Manifest, view contracts.RunView) error {
 	p := view.PR
-	if view.Status != "pr_ready" || p == nil || p.QueryError != "" || p.Repository != Repository || p.HeadRepository != Repository || p.BaseBranch != m.BaseBranch || p.HeadBranch == "" || p.HeadBranch != view.Execution.Branch || !revisionPattern.MatchString(p.HeadRevision) || p.Number <= 0 || p.URL != fmt.Sprintf("https://github.com/%s/pull/%d", Repository, p.Number) || p.State != "open" || p.Merged {
+	if view.Status != "pr_ready" || p == nil || p.Repository != Repository || p.HeadRepository != Repository || p.BaseBranch != m.BaseBranch || p.HeadBranch == "" || p.HeadBranch != view.Execution.Branch || !revisionPattern.MatchString(p.HeadRevision) || p.Number <= 0 || p.URL != fmt.Sprintf("https://github.com/%s/pull/%d", Repository, p.Number) || p.State != "open" || p.Merged {
 		return errors.New("PR is not a verified open PR on this fixture's exact repository/base/head")
 	}
 	f := view.Final

@@ -55,7 +55,7 @@ func TestFrozenBudgetMissingDoesNotGateOriginalResults(t *testing.T) {
 					commands = append(commands, "history")
 				}
 				for _, command := range commands {
-					if response := e.Handle(command, "run", "", "", "", 100, false, nil); !response.OK {
+					if response := e.Handle(command, "run", "", "", "", 100, nil); !response.OK {
 						t.Fatal("missing budget prevented read", command, response)
 					}
 				}

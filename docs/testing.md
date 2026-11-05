@@ -536,8 +536,8 @@ L3 的固定发布器及故障门保持，用于原有反馈/可靠性场景。
 4. Driver 从 GitHub fetch 实际 PR Git objects，校验原生 final、PR 身份、仅目标文件变更、
    精确格式和新鲜时间戳。远端同样核验实际 Git 内容和固定 runtime 的原会话。
 5. workflow/2 的 pr_ready 没有返工边；保持首次已核验的 PR/head，检查冻结原 final 与程序结果来源；原材料不足时允许一次同源 report，parser 始终为 0。
-6. 刷新原 PR，精确绑定 head，driver 以 `--match-head-commit` 合入本轮专属测试 base。
-   Runner 通过 `inspect --refresh-pr` 保存真实 merged、merge commit 和时间。
+6. Driver 查询 GitHub 核对原 PR 和精确 head，以 `--match-head-commit` 合入本轮专属测试 base。
+   合入后直接查询 GitHub，将平台响应与原 Run 绑定分别保存为 `merge-platform.json` 和 `merge-bound-run.json`。
 7. Fetch 合入后的 base，验证 merge commit、原 head 的祖先关系和文件内容，并在实际合入
    checkout 再运行 checker。
 8. 显式 stop 原 Run，确认 `new_inputs_allowed=false` 和 `stop_status=stopped`；再停止服务并确认
@@ -734,16 +734,9 @@ L1 另覆盖准备/发送前多次断连、独立查询失败、取消/期限耗
 仍要求只有一个业务工作区。首次终端必须有完整空清单、精确固定参数、原身份及后续 ready
 证明，不能按 title 单独豁免；第二个业务终端创建、身份变化或不完整清单均失败。
 
-### PR 只读刷新与历史反馈证据
+### PR 平台证据与 Run 快照
 
-当前 inspect 默认返回持久快照；`inspect --refresh-pr` 查询原绑定 provider，不派发 Agent 输入。workflow/2 在 `pr_ready` 后拒绝业务反馈。下列更新 head 的等待规则保留给 workflow/1 的历史 driver 和对应组件回归，不是当前流程的返工入口。
-
-历史反馈闭环的 driver 等待原 PR 更新时，默认 inspect 只是持久快照。若工作流已回到 pr_ready，
-快照仍是反馈前的 head，则通过现有 inspect --refresh-pr 只读刷新原绑定 provider。刷新后仍须
-保持原 Run、PR/仓库/base/head 分支、Attempt、Session 和工作区；查询失败或身份变化不能通过。
-driver 的原 12 分钟等待预算、原 PR 上的新 head、服务端 Git 对象/产物/时间与 checker、
-精确 head 合入及停止断言均不变。组件反例包含平台迟到的新 head、运行中不刷新、未绑定 PR、
-查询失败和替换 PR/Session；不得用反复读取旧快照来声称反馈未交付。
+普通 inspect 读取 Runner 持久快照。workflow/2 在 pr_ready 后拒绝业务反馈。需要当前平台状态时，验收直接读取原 PR，并与原 Run 中固定的 PR、仓库、base/head 分支和 head SHA 核对。合入验证同时检查平台时间、提交和 Git 对象。
 
 2026-10-19：远端 helper 接线删除后的本次验收以 [原生方案](spec/orca-remote-native.plan.md)及[专属记录](acceptance/orca-remote-native.md)为准。该旧构建当时保留本机 Check；当前已全部退役，见本文件开头的版本边界。原生参数仅核对冻结值与传递命令，离线停止输出的 scope 只描述原 Orca 终端，不证明全 OS 树或撤销登录。
 
