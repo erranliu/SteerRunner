@@ -31,7 +31,7 @@ func StagedBusiness(cwd, prompt, provider, remote string) (string, error) {
 		return strings.TrimSpace(string(data)), nil
 	}
 	switch {
-	case strings.HasPrefix(strings.TrimSpace(prompt), "Implement the following Spec and Plan.") || strings.HasPrefix(prompt, "根据以下 Spec、Plan") || strings.HasPrefix(prompt, "读取当前 worktree 中以下路径的 Spec、Plan") || strings.HasPrefix(prompt, "读取所列 Spec/Plan/材料，实施并完成必要验证。"):
+	case strings.HasPrefix(strings.TrimSpace(prompt), "Implement the following Spec and Plan.") || strings.HasPrefix(prompt, "根据以下 Spec、Plan") || strings.HasPrefix(prompt, "读取当前 worktree 中以下路径的 Spec、Plan") || strings.HasPrefix(prompt, "读取所列 Spec/Plan/材料，实施并完成必要验证。") || strings.HasPrefix(prompt, "按 Spec 和 Plan 实施并验证。"):
 		content := "staged fixture result\n"
 		if err := os.WriteFile(filepath.Join(cwd, "stage-result.txt"), []byte(content), 0600); err != nil {
 			return "", err

@@ -78,6 +78,10 @@ func (e *Engine) retainStructuredStopResult(r *runstate.Record, receipt b.Lifecy
 	}
 }
 func (e *Engine) finishWithGate(id string, value b.TurnEvidence, gate *sync.Mutex) bool {
+	return e.finishWithMaterials(id, value, gate, verifyFrozenMaterials)
+}
+
+func (e *Engine) finishWithMaterials(id string, value b.TurnEvidence, gate *sync.Mutex, verifyMaterials func(*runstate.Record) error) bool {
 	e.mu.Lock()
 	r := e.runs[id].Clone()
 	owner := e.workers[id]
@@ -212,7 +216,18 @@ func (e *Engine) finishWithGate(id string, value b.TurnEvidence, gate *sync.Mute
 			_ = e.commitLocked(r, nil, "final_unavailable")
 			return false
 		}
-		finishContent(r, inputCopy, value, result)
+		var materialErr error
+		if workflow.Content(r.Request.Workflow.ID) && result.Succeeded && result.ContentVerified && result.NativeOutcome == "succeeded" && result.Failure == "" && !oversizedContentResult(r, result) {
+			// Sample only the original snapshot outside the global actor lock.
+			// Keep the caller's Run gate: stop/dispatch ordering is unchanged.
+			e.mu.Unlock()
+			materialErr = verifyMaterials(r)
+			e.mu.Lock()
+			if e.runs[id].Revision != r.Revision {
+				return false
+			}
+		}
+		finishContent(r, inputCopy, value, result, materialErr)
 		if err := e.commitLocked(r, nil, "result_committed"); err != nil {
 			return false
 		}
