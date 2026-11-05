@@ -29,3 +29,17 @@ Windows 执行 `go test ./internal/execution/workspace ./internal/execution/adap
 **非 Orca Codex audited** 使用 `scripts/test.ps1 -Focused -Level L3 -Scenario local-codex.audited`，固定同一写入 EXE，报告为 `passed`，执行并通过一个场景。Run `b3083e724557ebca044cbe6a213df771` 取证审计模型 `gpt-5.6-sol` 和发布切回 `gpt-6.1-sol`。三个原工作区检查点均合格，HEAD `75d8baba413792ad82917de9c477a20b1340114f`、tree `0440a7e019d7a5ac2735cc397e1ac565fd508eb7`，该场沿现有无修复场景规则通过。独立核对真实 PR base/head，原停止收尾通过且禁止新输入。 [专用测试 PR #767](https://github.com/erranliu/SteerlineTest/pull/767)
 
 原始 CLI、冷读与 focused 报告位于本机 `.evidence/workspace-fixed-git-audit-live/`。本记录覆盖受影响组件、定向应用回归和两场专项真机。
+
+## 合入主线 #111 后的同候选复验
+
+提 PR 前主线合入 `a8284d13`，改到服务启动及直连 Codex usage 采集。将其合入候选后，从干净源码 `94b5728753dc7ee84b45e0775823f03702fe6cb2` 重建两份 EXE。源码摘要为 `8595c7a1887079d3ce1b13f0d57c11e5a2979b71fd6a3732a0c5450f08bc737a`。host、usage/collect 和 resources 定向包均通过。
+
+| EXE | SHA256 |
+| --- | --- |
+| 两场共用写入 EXE | `52045b385765c2af89d0e9163fc4d5fdff6403dc7ade352d10faaf1cae58326d` |
+| 独立冷读 EXE | `782563a2fdf59567425578182b989870c86259258f2279a6b72e4c8dcf4dea00` |
+
+- 本机 Orca audited Run `0ca1341e22937c5566cf54eb219ec0b9` 通过。实施 HEAD/tree 为 `16cf651c79eb239eef2ad571c402ca7c2b31a187` / `60f48469102fead07c967a66757dc8fd04bda91f`，审计修复和发布 HEAD/tree 为 `8e81b2668d86f0fdfaaa89579b72e396df40b28f` / `b0f9026d2bcbce3883899cb900f84ea08afab199`。实际角色切回、三次临时登记撤销、真实 PR base/head、单次快照和原会话停止均再次核验。双 EXE 通过原目录排空。 [专用测试 PR #769](https://github.com/erranliu/SteerlineTest/pull/769)
+- 非 Orca Codex audited Run `972a6f1c73c0db6b8eb4ac8e9c6cb5d5` 的 focused 报告通过。审计模型为 `gpt-5.6-sol`，发布切回 `gpt-6.1-sol`。三个原检查点均合格，HEAD/tree 为 `38b9ed985e9c6069bb6a728c910a059fc20e78f4` / `bbedb31f432e9e913f790e96f9a161a5d1e87ac7`。真实 PR 核验和停止收尾通过，原 Run 禁止新输入。 [专用测试 PR #770](https://github.com/erranliu/SteerlineTest/pull/770)
+
+最终候选原始材料位于本机 `.evidence/workspace-fixed-git-audit-main-live/`。
