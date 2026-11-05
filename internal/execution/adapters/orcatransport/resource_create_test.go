@@ -57,3 +57,32 @@ func TestWorkspaceCreationCodecPreservesCheckpoint(t *testing.T) {
 		})
 	}
 }
+
+func TestWorkspaceCreationBindsCLIResult(t *testing.T) {
+	// Keep a frozen payload that distinguishes response metadata from legacy
+	// checkpoint extensions. Binding must not substitute the discovered runtime
+	// for the response runtime, even when they disagree.
+	result := native.Result{RuntimeID: "response-runtime", Payload: json.RawMessage(`{
+		"runtime_id":"payload-runtime",
+		"resolved_runtime_id":"payload-resolved-runtime",
+		"resolved_repository_id":"payload-repo",
+		"worktree":{"id":"original-worktree","repoId":"response-repo"},
+		"selected_terminal":{"handle":"original-terminal"}
+	}`)}
+	for _, tc := range []struct {
+		name, selector, runtime, wantRuntime, wantRepo string
+	}{
+		{"local", "path:C:/project", "discovered", "discovered", "payload-repo"},
+		{"paired", "id:original-repo", "discovered", "discovered", "original-repo"},
+		{"unresolved", "id:original-repo", "", "payload-resolved-runtime", "payload-repo"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			got, err := bindWorkspaceCreation(result, tc.selector, tc.runtime)
+			if err != nil || got.RuntimeID != "response-runtime" || got.ResolvedRuntimeID != tc.wantRuntime ||
+				got.ResolvedRepositoryID != tc.wantRepo || got.Worktree.ID != "original-worktree" ||
+				got.Worktree.RepoID != "response-repo" || got.Terminal.Handle != "original-terminal" {
+				t.Fatalf("CLI result binding changed: %+v, %v", got, err)
+			}
+		})
+	}
+}

@@ -74,6 +74,55 @@ func TestCreationOwnerInitialTerminalPlanSurvivesDelayedWorkspaceReceipt(t *test
 	testCreationOwnerRetainsWorkspaceAcrossCallerLoss(t, true)
 }
 
+func TestStructuredWorkspaceRecoversOriginalOwnerOutput(t *testing.T) {
+	for _, environment := range []string{"", "paired-worker"} {
+		t.Run(environment, func(t *testing.T) {
+			l, f, s, host := ownedCreationFixture(t, environment)
+			s.Ref.Protocol = b.ProtocolOrcaAgentSessionV1
+			l.setup.Snapshot = s.Clone()
+			var blockOriginalRead = true
+			host.output = func(ctx context.Context, command b.LaunchCommand) ([]byte, error) {
+				raw, err := f.OutputCommand(ctx, command)
+				switch command.Args[0] + " " + command.Args[1] {
+				case "worktree show":
+					if blockOriginalRead {
+						return nil, errors.New("service detached before workspace receipt commit")
+					}
+				case "terminal list":
+					return []byte(`{"ok":true,"result":{"terminals":[],"totalCount":0,"truncated":false,"hostScope":{"hostIds":["local"],"omittedHostIds":[]}},"_meta":{"runtimeId":"runtime"}}`), nil
+				}
+				return raw, err
+			}
+			launches := 0
+			l.setup.LaunchExecutionOwner = func(ctx context.Context, dir string) error {
+				launches++
+				return serveCreationOwner(ctx, dir, host, false)
+			}
+			r := request(s, b.LifecyclePrepareWorkspace, b.LifecycleInput{Workspace: &s.WorkspacePlan})
+			first, _, err := l.Execute(context.Background(), r)
+			if err == nil || first.Disposition != b.OperationUnknown || first.Process != nil || len(first.Operation.Receipt) == 0 {
+				t.Fatal("expected owner output before a failed original workspace query", first, err)
+			}
+			blockOriginalRead = false
+			discovery := creationCount(f, "repo list") + creationCount(f, "status --json")
+			// Reconstruct the lifecycle with no committed operation receipt, as
+			// after service loss before the operation transaction was saved.
+			next := &Lifecycle{setup: l.setup.Clone(), profile: l.profile, profileVersion: l.profileVersion, client: l.client}
+			recovered, _, err := next.Reconcile(context.Background(), r)
+			if err != nil || recovered.Disposition != b.OperationConfirmed || recovered.Process == nil ||
+				recovered.Process.Kind != "orca_agent_session" || recovered.Process.RuntimeID != "runtime" ||
+				recovered.Process.WorktreeID != f.workspace["id"] || string(recovered.Operation.Receipt) != string(first.Operation.Receipt) {
+				t.Fatal("did not recover the exact original workspace binding", recovered, err)
+			}
+			if launches != 1 || creationCount(f, "worktree create") != 1 || creationCount(f, "worktree list") != 0 ||
+				creationCount(f, "repo list")+creationCount(f, "status --json") != discovery ||
+				creationCount(f, "terminal create") != 0 || creationCount(f, "terminal send") != 0 {
+				t.Fatal("recovery repeated a discovery or mutation", launches, f.calls)
+			}
+		})
+	}
+}
+
 func testCreationOwnerRetainsWorkspaceAcrossCallerLoss(t *testing.T, missingHandle bool) {
 	for _, environment := range []string{"", "paired-worker"} {
 		t.Run(environment, func(t *testing.T) {

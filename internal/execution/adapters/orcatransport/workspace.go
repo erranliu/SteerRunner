@@ -87,15 +87,8 @@ func (l *Lifecycle) prepareWorkspace(ctx context.Context, r b.LifecycleRequest, 
 		if callErr != nil {
 			return receipt, callErr
 		}
-		if created, err = decodeWorkspaceCreation(result); err != nil {
+		if created, err = bindWorkspaceCreation(result, selector, runtimeID); err != nil {
 			return receipt, err
-		}
-		created.RuntimeID = result.RuntimeID
-		if runtimeID != "" {
-			if strings.HasPrefix(selector, "id:") {
-				created.ResolvedRepositoryID = strings.TrimPrefix(selector, "id:")
-			}
-			created.ResolvedRuntimeID = runtimeID
 		}
 	}
 	worktree := created.Worktree
@@ -231,6 +224,21 @@ func decodeWorkspaceCreation(result native.Result) (workspaceCreation, error) {
 	return created, nil
 }
 
+func bindWorkspaceCreation(result native.Result, selector, runtimeID string) (workspaceCreation, error) {
+	created, err := decodeWorkspaceCreation(result)
+	if err != nil {
+		return created, err
+	}
+	created.RuntimeID = result.RuntimeID
+	if runtimeID != "" {
+		created.ResolvedRuntimeID = runtimeID
+		if strings.HasPrefix(selector, "id:") {
+			created.ResolvedRepositoryID = strings.TrimPrefix(selector, "id:")
+		}
+	}
+	return created, nil
+}
+
 func workspaceName(s b.LifecycleSnapshot) string {
 	return s.Session.NamePrefix + "-" + s.Session.WorkflowRunID
 }
@@ -251,14 +259,7 @@ func (l *Lifecycle) workspaceCreation(ctx context.Context, r b.LifecycleRequest,
 	if err != nil {
 		return created, err
 	}
-	if created, err = decodeWorkspaceCreation(result); err != nil {
-		return created, err
-	}
-	created.RuntimeID, created.ResolvedRuntimeID = result.RuntimeID, plan.Runtime
-	if strings.HasPrefix(plan.Selector, "id:") {
-		created.ResolvedRepositoryID = strings.TrimPrefix(plan.Selector, "id:")
-	}
-	return created, nil
+	return bindWorkspaceCreation(result, plan.Selector, plan.Runtime)
 }
 
 // Repository selection belongs to the project, not a reusable execution profile.
