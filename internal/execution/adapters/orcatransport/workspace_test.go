@@ -156,6 +156,25 @@ func TestWorkspaceCreationReceiptRecovery(t *testing.T) {
 			if json.Unmarshal(receipt.Operation.Receipt, &creation) != nil || creation.Terminal.IncarnationID != f.incarnation {
 				t.Fatal("original inventory identity not retained")
 			}
+			// Freeze the legacy checkpoint layout independently of the new CLI
+			// binder. Older local checkpoints can omit the resolved runtime.
+			var old map[string]json.RawMessage
+			if err := json.Unmarshal(receipt.Operation.Receipt, &old); err != nil {
+				t.Fatal(err)
+			}
+			if environment == "" {
+				delete(old, "resolved_runtime_id")
+				creation.ResolvedRuntimeID = ""
+			}
+			old["historical_extension"] = json.RawMessage(`true`)
+			receipt.Operation.Receipt, err = json.Marshal(old)
+			if err != nil {
+				t.Fatal(err)
+			}
+			canonical, err := json.Marshal(creation)
+			if err != nil {
+				t.Fatal(err)
+			}
 			// Serialize the exact outer operation receipt, as the service does, and rebuild the adapter.
 			req.Operation.Receipt, _ = json.Marshal(receipt)
 			port, err := NewLifecycleWithStateFactory(l.setup, f.stateFactory)
@@ -171,7 +190,7 @@ func TestWorkspaceCreationReceiptRecovery(t *testing.T) {
 				return nil, false
 			})
 			retried, _, err := restarted.Reconcile(context.Background(), req)
-			if err == nil || string(retried.Operation.Receipt) != string(receipt.Operation.Receipt) {
+			if err == nil || string(retried.Operation.Receipt) != string(canonical) {
 				t.Fatal("failed recovery lost or nested the checkpoint", err)
 			}
 			req.Operation.Receipt, _ = json.Marshal(retried)
