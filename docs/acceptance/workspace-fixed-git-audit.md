@@ -43,3 +43,11 @@ Windows 执行 `go test ./internal/execution/workspace ./internal/execution/adap
 - 非 Orca Codex audited Run `972a6f1c73c0db6b8eb4ac8e9c6cb5d5` 的 focused 报告通过。审计模型为 `gpt-5.6-sol`，发布切回 `gpt-6.1-sol`。三个原检查点均合格，HEAD/tree 为 `38b9ed985e9c6069bb6a728c910a059fc20e78f4` / `bbedb31f432e9e913f790e96f9a161a5d1e87ac7`。真实 PR 核验和停止收尾通过，原 Run 禁止新输入。 [专用测试 PR #770](https://github.com/erranliu/SteerlineTest/pull/770)
 
 最终候选原始材料位于本机 `.evidence/workspace-fixed-git-audit-main-live/`。
+
+## PR #112 合入前审计
+
+与主线 `a8284d13` 对照，固定 Git 读取和读取器结清的实现体在包名及入参改写后相同。路径比较增加的非空检查在原绝对路径条件下不改变有效输入。现行 `InspectAudit`、原完成检查点、Workflow 发布判断及运行停止代码保持原样。Orca 的前后 worktree 核验和 Codex 的原 owner、readiness 与远程证明校验仍在各自调用方。
+
+复验核对 #111 后的两份 EXE 实际摘要、源码身份和 PR 生产文件。重新读取原始检查点及真实 PR 回执。Orca 原目录用 SteerLine `57e3c52` 再次通过双 EXE 升级排空，数据库与原停机证明摘要一致。直连 Codex 原目录另以固定写入 EXE 冷读，确认 `service status` 为 `not_running`，`service verify-stopped` 返回同一原 Run 且 `resources_settled=true`。直连记录的资源结清与 Orca 的升级排空分别取证。
+
+合入前重跑三个受影响包的 Git 读取、HEAD 竞争、读后工作区换代及读取器结清定向用例，并重跑六个应用层来源与检查点用例，均通过。
