@@ -2,9 +2,7 @@ package orca
 
 import (
 	"context"
-	"crypto/sha256"
 	"encoding/base64"
-	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"path"
@@ -106,12 +104,7 @@ func UsageHostID(environment string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	key, err := base64.StdEncoding.DecodeString(p.PublicKey)
-	if err != nil {
-		return "", err
-	}
-	h := sha256.Sum256(key)
-	return "sha256:" + hex.EncodeToString(h[:]), nil
+	return p.hostID()
 }
 func OpenUsageFiles(ctx context.Context, environment, runtime, expectedHost string) (*UsageFileChannel, error) {
 	return openUsageFiles(ctx, environment, runtime, expectedHost, nil)
@@ -145,12 +138,10 @@ func openUsageFiles(ctx context.Context, environment, runtime, expectedHost stri
 		if e != nil {
 			return nil, e
 		}
-		key, e := base64.StdEncoding.DecodeString(pairing.PublicKey)
+		host, e = pairing.hostID()
 		if e != nil {
 			return nil, e
 		}
-		digest := sha256.Sum256(key)
-		host = "sha256:" + hex.EncodeToString(digest[:])
 		if runtime == "" {
 			return nil, errors.New("IDENTITY_UNVERIFIED")
 		}

@@ -5,8 +5,54 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"os"
+	"path/filepath"
+	"sync/atomic"
 	"testing"
 )
+
+func TestUsageFilesRejectOriginalIdentityBeforeDial(t *testing.T) {
+	var dials, files atomic.Int32
+	pairing, _ := remoteWorkspaceFileFixture(t, "usage-token", false, &dials, &files)
+	dir := t.TempDir()
+	t.Setenv("ORCA_USER_DATA_PATH", dir)
+	raw, err := json.Marshal(map[string]any{"environments": []any{map[string]any{
+		"id": "usage-env", "preferredEndpointId": "endpoint", "endpoints": []any{map[string]string{
+			"id": "endpoint", "endpoint": pairing.Endpoint, "deviceToken": pairing.Token, "publicKeyB64": pairing.PublicKey,
+		}},
+	}}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "orca-environments.json"), raw, 0600); err != nil {
+		t.Fatal(err)
+	}
+	host, err := UsageHostID("usage-env")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, opener := range []struct {
+		name string
+		open func(context.Context, string, string, string) (*UsageFileChannel, error)
+	}{{"ordinary", OpenUsageFiles}, {"structured", OpenStructuredUsageFiles}} {
+		t.Run(opener.name, func(t *testing.T) {
+			for _, tc := range []struct{ environment, runtime, host, want string }{
+				{"usage-env", "", host, "IDENTITY_UNVERIFIED"},
+				{"usage-env", "runtime", "foreign-host", "IDENTITY_CHANGED"},
+				{"usage-env", "", "foreign-host", "IDENTITY_UNVERIFIED"},
+				{"missing-env", "", "foreign-host", "fixed Orca environment endpoint is unavailable"},
+			} {
+				channel, err := opener.open(context.Background(), tc.environment, tc.runtime, tc.host)
+				if channel != nil {
+					channel.Close()
+				}
+				if channel != nil || err == nil || err.Error() != tc.want || dials.Load() != 0 || files.Load() != 0 {
+					t.Fatal("identity rejection changed or connected", tc, err, dials.Load(), files.Load())
+				}
+			}
+		})
+	}
+}
 
 func TestUsageGroupReferenceProof(t *testing.T) {
 	for _, tc := range []struct {

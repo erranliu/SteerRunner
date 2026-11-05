@@ -2,9 +2,7 @@ package orca
 
 import (
 	"context"
-	"crypto/sha256"
 	"encoding/base64"
-	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"path"
@@ -70,9 +68,8 @@ func openWorkspaceFiles(ctx context.Context, binding WorkspaceFileBinding, scope
 		if resolveErr != nil {
 			return nil, errors.New("binding_invalid")
 		}
-		key, keyErr := base64.StdEncoding.DecodeString(pairing.PublicKey)
-		digest := sha256.Sum256(key)
-		if keyErr != nil || "sha256:"+hex.EncodeToString(digest[:]) != host {
+		pairedHost, keyErr := pairing.hostID()
+		if keyErr != nil || pairedHost != host {
 			return nil, errors.New("binding_invalid")
 		}
 		// Dial with the exact pairing whose public key was just checked.

@@ -3,6 +3,7 @@ package orca
 import (
 	"context"
 	"crypto/rand"
+	"crypto/sha256"
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
@@ -23,6 +24,15 @@ type statePairing struct {
 	Endpoint  string `json:"endpoint"`
 	Token     string `json:"deviceToken"`
 	PublicKey string `json:"publicKeyB64"`
+}
+
+func (p statePairing) hostID() (string, error) {
+	key, err := base64.StdEncoding.DecodeString(p.PublicKey)
+	if err != nil {
+		return "", err
+	}
+	digest := sha256.Sum256(key)
+	return "sha256:" + hex.EncodeToString(digest[:]), nil
 }
 
 func validateStatePairing(pairing statePairing) (statePairing, error) {
