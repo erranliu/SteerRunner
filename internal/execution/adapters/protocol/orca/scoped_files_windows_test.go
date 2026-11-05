@@ -109,4 +109,20 @@ func TestOrcaScopedFileCapability(t *testing.T) {
 			t.Fatal("invalid/overflowing read budget connected", readBytes, err)
 		}
 	}
+	for _, fault := range []string{"runtime", "host"} {
+		t.Run(fault, func(t *testing.T) {
+			bad := binding
+			want := "binding_invalid"
+			if fault == "runtime" {
+				bad.RuntimeID = "replacement"
+				want = "transport_unavailable"
+			} else {
+				bad.ExecutionHostID = "other-host"
+			}
+			before := calls.Load()
+			if file, err := OpenWorkspaceFiles(ctx, bad, scope, limits); err == nil || err.Error() != want || file != nil || calls.Load() != before {
+				t.Fatal("local identity mismatch dispatched", file, err, calls.Load(), before)
+			}
+		})
+	}
 }

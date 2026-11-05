@@ -2,7 +2,9 @@ package orca
 
 import (
 	"context"
+	"crypto/sha256"
 	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"path"
@@ -51,17 +53,31 @@ type ScopedFiles struct {
 }
 
 func OpenWorkspaceFiles(ctx context.Context, binding WorkspaceFileBinding, scope FileScope, limits FileLimits) (*ScopedFiles, error) {
+	return openWorkspaceFiles(ctx, binding, scope, limits, resolveStatePairing)
+}
+
+func openWorkspaceFiles(ctx context.Context, binding WorkspaceFileBinding, scope FileScope, limits FileLimits, resolve func(string) (statePairing, error)) (*ScopedFiles, error) {
 	environment, runtime, host, worktree, workspace, instance := binding.Environment, binding.RuntimeID, binding.ExecutionHostID, binding.WorktreeID, binding.WorkspacePath, binding.InstanceID
 	if environment == "" && host != "local" || runtime == "" || worktree == "" || workspace == "" || !scope.valid() || !limits.valid() {
 		return nil, errors.New("binding_invalid")
 	}
-	if environment != "" {
-		actual, err := UsageHostID(environment)
-		if err != nil || actual != host {
+	var socket stateConnection
+	var err error
+	if environment == "" {
+		socket, err = openStateConnection(ctx, environment, runtime)
+	} else {
+		pairing, resolveErr := resolve(environment)
+		if resolveErr != nil {
 			return nil, errors.New("binding_invalid")
 		}
+		key, keyErr := base64.StdEncoding.DecodeString(pairing.PublicKey)
+		digest := sha256.Sum256(key)
+		if keyErr != nil || "sha256:"+hex.EncodeToString(digest[:]) != host {
+			return nil, errors.New("binding_invalid")
+		}
+		// Dial with the exact pairing whose public key was just checked.
+		socket, err = openStateSocket(ctx, pairing, runtime)
 	}
-	socket, err := openStateConnection(ctx, environment, runtime)
 	if err != nil {
 		return nil, errors.New("transport_unavailable")
 	}
