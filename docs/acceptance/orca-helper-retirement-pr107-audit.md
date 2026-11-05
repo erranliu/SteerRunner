@@ -15,3 +15,5 @@
 | 本机 Codex audited | 一条三轮发布 Run 和一条原续轮活动停止 Run，分属两个目录 |
 
 八条原 Run 的停止证明范围均为 `orca_agent_session`，六个目录的升级排空门禁均通过。复验期间只读原目录。该记录覆盖启动门禁的受控测试和基于真实 Run 的专项排空复验，双端业务回合及 Pi 执行沿用原正式运行证据。
+
+合并 #106 后，host、CLI、公开配置和 usage 采集包，以及应用层 Orca 冻结、结构化会话、audited 与文件结果定向测试通过。CLI 集成定向通过 `TestSRStandalonePackage`、`TestSRServiceOwnership`、`TestSRPublicationIdentity`、`TestSRRestartPreservesAuthorization` 和 `TestSRResultFile`。
