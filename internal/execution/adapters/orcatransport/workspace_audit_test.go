@@ -94,7 +94,14 @@ func TestStructuredWorkspaceAuditReadsOriginalChangedTree(t *testing.T) {
 		t.Fatal(err)
 	}
 	fixture := &fakeHost{workspace: map[string]any{"id": state.Worktree.ID, "repoId": "repo", "instanceId": state.Worktree.InstanceID, "path": root, "branch": "original", "baseRef": base, "head": base}}
+	shows, replaceAfterRead := 0, false
 	l.client = native.New(native.Config{Output: func(ctx context.Context, timeout time.Duration, args ...string) ([]byte, error) {
+		if args[0] == "worktree" && args[1] == "show" {
+			shows++
+			if replaceAfterRead && shows == 2 {
+				fixture.workspace["instanceId"] = "replacement"
+			}
+		}
 		return fixture.OutputCommand(ctx, b.LaunchCommand{Args: args, Timeout: timeout})
 	}})
 	l.setup.ProcessHost, l.setup.RepositoryURL = process.New(10*time.Second), repository
@@ -110,5 +117,10 @@ func TestStructuredWorkspaceAuditReadsOriginalChangedTree(t *testing.T) {
 	fixture.workspace["instanceId"] = "replacement"
 	if fact, err := l.InspectLifecycleAuditWorkspace(context.Background(), snapshot, base); err == nil || fact.Qualified {
 		t.Fatal("replacement worktree qualified", fact, err)
+	}
+	fixture.workspace["instanceId"] = state.Worktree.InstanceID
+	shows, replaceAfterRead = 0, true
+	if fact, err := l.InspectLifecycleAuditWorkspace(context.Background(), snapshot, base); err == nil || fact.Qualified || shows != 2 {
+		t.Fatal("worktree replaced after Git reads qualified", fact, err, shows)
 	}
 }
