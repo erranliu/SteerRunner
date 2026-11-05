@@ -30,6 +30,21 @@ Get-Content -Raw -Encoding utf8 .\run-input.json | .\bin\steerrunner.exe validat
 
 Windows 自动启动先验证挂起子进程的 Job 隔离；原生 breakaway 被明确禁止或创建后仍有 Job 关联时，使用系统自带 Windows PowerShell/CIM 挂起创建独立进程，核验用户、权限与 EXE 后才恢复执行，不请求提升权限。该系统能力不可用时返回明确错误。`startup_unverified` 表示原启动结果未核清，须核实 `service/bootstrap.json` 对应的原进程，不会自动重建另一份启动。`serve --state-dir <绝对路径>` 可从已有独立宿主前台运行，生命周期由该宿主负责。
 
+## 无服务原生目录查询
+
+固定 EXE 的 `capabilities --offline --json` 在 `data.native_catalog` 发布查询组合、自包含请求/响应 schema 和限额。`native-catalog` 直接读取原生目录，不启动 Runner 服务，不创建 state-dir、Run、工作区或模型会话。它读取当前宿主已经选择的 Orca 用户目录/Codex 上下文；目标必须显式选择，失败不会改投其它目标。
+
+```powershell
+'{"kind":"environments"}' | .\bin\steerrunner.exe native-catalog --input - --json
+'{"kind":"agents","adapter":"orca-terminal","target":{"kind":"local"}}' | .\bin\steerrunner.exe native-catalog --input - --json
+'{"kind":"models","adapter":"orca-terminal","target":{"kind":"orca_environment","environment":"<已登记 ID>"},"agent":"codex"}' | .\bin\steerrunner.exe native-catalog --input - --json
+'{"kind":"models","adapter":"codex-app-server","target":{"kind":"local"},"agent":"codex"}' | .\bin\steerrunner.exe native-catalog --input - --json
+```
+
+本机 Codex 可额外提供 `executable`，由可信调用宿主选择；请求不接受目录、凭据、endpoint、pipe 或 RPC 方法。不得附加 `--state-dir`、实例绑定或 Run 选择器。成功使用原 v1 信封且 `request_id=null`；`data.source` 包含实际 EXE SHA256、version、resource_digest，以及可核实的原生版本/runtime。`ready/complete=true` 表示本次完整目录，`loading/complete=false` 表示原生仍在生成。发现 Agent 不表示当前执行支持；原生时间与 `observed_at` 分开保留，`context_unverified` 不构成账号或项目资格证明。
+
+请求限 64 KiB，原生累计与公开输出各限 1 MiB，总查询 30 秒、额外清理 5 秒。输入错误/未实现组合分别退出 2/3；不可达、超时、清理未核实退出 4，安全错误码分别为 `native_catalog_unavailable`、`native_catalog_timeout`、`native_catalog_cleanup_unverified`。目录与执行/停止契约互相独立。完整定义和验收见[Spec](spec/native-catalog-boundary.spec.md)及[专属验收](acceptance/native-catalog-boundary.md)。
+
 ## 提交与查看执行
 
 本机执行支持原生 Codex `>= 0.159.2`，按语义版本比较，无版本上限；更新版本的预发布版也可通过最低版本检查（如 `0.163.0-alpha.10.2`），但 `0.159.2` 自身的预发布版低于基线。各版本仍须通过原有协议与权限资格核验。
@@ -70,7 +85,7 @@ Orca 远端 Codex 的 SessionStart 可能清空输入预览并改变显示回合
 
 调用方负责选定固定 commit 及准备项目材料。Runner 从该 commit 新建专属 worktree，保留创建操作、回执及原资源身份绑定。创建成功后进入 Workflow，省去单独的 HEAD、diff、工作区洁净度及材料交付核验。运行期文件走既有传输渠道，由 Agent 在使用时读取。Runner 自主推进所选 Workflow，旧 Run 恢复继续使用原资源和原恢复流程。
 
-开发请求使用 `workflow.project_policy_slots` 显式提供固定槽位，空数组表示调用方已完成预检且没有适用槽位。跨仓交付与验收由 SteerLine 的 `SteerlineFlow/spec/fresh-worktree-startup.spec.md` 定义。
+开发请求使用 `workflow.project_policy_slots` 显式提供固定槽位，空数组表示调用方已完成预检且没有适用槽位。调用方从固定 EXE 的 `capabilities.data.model_input_contract.workflow.project_policies.slots` 读取唯一生产定义的 `{slot,path}` 有序目录，在候选固定 commit 预检后按原顺序提交，例如 `"project_policy_slots":[]`。省略该字段的独立调用方继续现行 Workflow 默认行为。目录缺失/非法仅阻断需要预检的新开发请求，不能阻断旧请求观察或停止。跨仓交付与验收由 SteerLine 的 `SteerlineFlow/spec/fresh-worktree-startup.spec.md` 定义。
 
 ## 选择 workflow 与审计模型
 
@@ -134,7 +149,7 @@ exit 0 表示命令已持久接受。停服后再次启动服务，可用 `inspe
 
 ## 状态目录
 
-调用方使用绝对 `--state-dir`；省略时为 `%LOCALAPPDATA%/SteerRunner-v8`。目录下有 `runner.db`、`service/`、`inputs/`、`r/`、`workspaces/`、`logs/launch.log` 和 `logs/service.log`。由 SteerLine 使用时，应指定其项目运行目录下的 `runner/`，使数据和日志归属于该项目。CLI 不读取 SQLite，同目录只有服务持锁写入。
+独立调用方使用自己的绝对 `--state-dir`；省略时为 `%LOCALAPPDATA%/SteerRunner-v8`。目录下有 `runner.db`、`service/`、`inputs/`、`r/`、`workspaces/`、`logs/launch.log` 和 `logs/service.log`。SteerLine 按应用 home 派生一个共享 Runner 状态目录，各项目借用同一已绑定客户端；具体绝对路径从 SteerLine 运行信息读取，不按项目另建 Runner 服务。CLI 不读取 SQLite，同目录只有服务持锁写入。无服务的 `native-catalog` 不使用该目录。
 
 本机新 Run 从宿主维护的仓库缓存创建独立、无 hardlink/alternates 的 Git 副本。
 worker 的 common Git 目录只属于该 Run。开发 full_access 不再编译沙箱写根；这个私有目录仍绑定本次 Run，

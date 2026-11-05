@@ -1,0 +1,71 @@
+{
+  "packages": [
+    {
+      "log": "baseline",
+      "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+      "top_pass": 61,
+      "pass_including_subtests": 355,
+      "skipped": [
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestOrcaLocalIPCNativeProbe",
+        "TestOrcaTerminalQueryLive",
+        "TestUsageLocalAcceptanceRepoCleanupLive"
+      ],
+      "failures": 0,
+      "result": "pass",
+      "seconds": 27.312
+    },
+    {
+      "log": "baseline",
+      "package": "github.com/erranliu/SteerRunner/internal/usage/access",
+      "top_pass": 9,
+      "pass_including_subtests": 18,
+      "skipped": [],
+      "failures": 0,
+      "result": "pass",
+      "seconds": 1.024
+    },
+    {
+      "log": "candidate",
+      "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+      "top_pass": 62,
+      "pass_including_subtests": 359,
+      "skipped": [
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestOrcaLocalIPCNativeProbe",
+        "TestOrcaTerminalQueryLive",
+        "TestUsageLocalAcceptanceRepoCleanupLive"
+      ],
+      "failures": 0,
+      "result": "pass",
+      "seconds": 26.133
+    },
+    {
+      "log": "candidate",
+      "package": "github.com/erranliu/SteerRunner/internal/usage/access",
+      "top_pass": 9,
+      "pass_including_subtests": 18,
+      "skipped": [],
+      "failures": 0,
+      "result": "pass",
+      "seconds": 0.996
+    },
+    {
+      "log": "collector",
+      "package": "github.com/erranliu/SteerRunner/internal/usage/collect",
+      "top_pass": 2,
+      "pass_including_subtests": 12,
+      "skipped": [],
+      "failures": 0,
+      "result": "pass",
+      "seconds": 0.596
+    }
+  ],
+  "public_cli": {
+    "test": "TestSRNativeCatalogPublicCLI",
+    "exit_code": 0,
+    "scenario_count": 1,
+    "finished_at": "2026-11-05T10:02:33.3053266Z",
+    "runner_sha256": "AA251CC81F474CCFF5997CC2D65F2798641DBAEABCC7E65EED0860E61854DC12"
+  }
+}

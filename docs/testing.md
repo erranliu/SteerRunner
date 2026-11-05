@@ -2,6 +2,8 @@
 
 2026-11-05：旧 Orca TUI/helper 输入专项及执行探针已退役，原 `test-native-input.ps1` 明确拒绝，不再作为当前资格入口；下文旧构建记录不变。当前结构化执行、共享创建与历史只读证明的保留范围及实际验证见[验收](acceptance/orca-reader-execution-boundary.md)。
 
+2026-11-05 原生目录增量加入 Controlled 的 `TestSRNativeCatalogPublicCLI`，当前共 28 个顶层测试。该项使用固定公开 EXE 核对无服务入口、严格参数、原生元数据读取及父进程退出后精确 Job 清理。组件层覆盖 Codex 分页和 Orca 双端目录矩阵，旧日期的数量按其原版本理解。
+
 2026-11-02 核对：现行数量与独立原生专项统一见[当前清单与资格边界](test-catalog.md#当前清单与资格边界)。本次仅校正文档/专项描述，并将已有 `TestSRSingleExecutionColdStop` 纳入默认 Controlled 自动回归；其余测试内容、分级、调度与资格规则保持。
 
 > 2026-11-01 当前使用：v8、升级先排空及人工对账规则见[CLI 指南](cli-guide.md#人工对账与资源丢失)。未知操作查询预算耗尽后转待人工；显式 resume 最多 30 秒只读核实原事实，原输入零重发、零资源重建，stop/close 优先。下方按日期保存的旧数量与旧验收说明只描述当时构建。
@@ -77,7 +79,7 @@ Orca → 原生 Codex 输入专项复用 `TestOrcaNativeStateLiveLifecycle`，�
 
 2026-10-25 Orca CLI 等待增量：Controlled 新增 `TestSROrcaCLIWaitRetry`（当时 24 个顶层）；L3 新增 `orca-local.cli-wait-retry/default`、`orca-remote.cli-wait-retry/default`，当时 L3 为 29 场景/39 case，全目录 35 场景/45 case。两项原生 case 复用原 fixture 和转发 journal，以独占测试 lease 与同 cache 的其它 case 串行；独立 state-dir 不是 CLI cache 隔离证明。持锁故障只作用于 fixture 私有互斥 key，真实 CLI 转发器仍取得原用户共享 cache 的互斥；不会绕过生产入口。
 
-最小受控入口为 `./scripts/test-foundation.ps1 -Pattern '^TestSROrcaCLIWaitRetry$' -OutDir <新绝对目录>`，覆盖真实跨进程 >15 秒排队、原服务正常/强杀重启、stop、换代前撤销与暂态退避（六个变体）；组件/公开 schema/持久事务反例纳入原 L1。正式原生入口为 `./scripts/test.ps1 -Level L3 -Scenario orca-local.cli-wait-retry,orca-remote.cli-wait-retry -Config <独立配置> -MaxParallel 1 -OutDir <新目录>`；该入口仍运行完整 L1/Controlled 前置。案例实现不代表目标通过，实际构建、原生资格及清理见[专项验收](acceptance/orca-cli-wait-retry.md)。
+最小受控入口为 `./scripts/test-foundation.ps1 -Pattern '^TestSROrcaCLIWaitRetry$' -OutDir <新绝对目录>`，覆盖真实跨进程 >15 秒排队、原服务正常/强杀重启、stop、换代前撤销、三 Run 相互隔离与暂态退避（七个变体）；组件/公开 schema/持久事务反例纳入原 L1。正式原生入口为 `./scripts/test.ps1 -Level L3 -Scenario orca-local.cli-wait-retry,orca-remote.cli-wait-retry -Config <独立配置> -MaxParallel 1 -OutDir <新目录>`；该入口仍运行完整 L1/Controlled 前置。案例实现不代表目标通过，实际构建、原生资格及清理见[专项验收](acceptance/orca-cli-wait-retry.md)。
 
 
 审计默认提示简化的定向入口与结果见[本轮验收](acceptance/reliable-delivery-simplification.md)。
@@ -96,7 +98,7 @@ Run token/独立费用增量入口：`go test ./internal/usage/... ./internal/co
 
 远端已完成 Codex Run 的显式现场入口为 `TestUsageRemoteCodexLive` / `TestRunUsageRemotePublicLive`，所需变量及撤回/清理证明见同一验收记录，默认 skip，标准 L1 拒绝远端 opt-in 遗留。手工整仓 Go 入口应使用 `go test ./... -count=1 -timeout 45m -json`：2026-10-21 实测 application 全包 625.267 秒、`TestSRResultAcquisition` 串行整组 738.65 秒，均可能超过 Go 默认 package 10 分钟上限。该聚合预算不延长产品调用或场景内期限；完整受控入口本已采用 45 分钟预算。
 
-固定 L1 的 Go 包级聚合预算为 20 分钟。2026-11-02 完整执行在应用包已通过大量用例、仍推进最后的审计场景时触及旧 12 分钟上限；该上限不足以容纳当前串行 Git/SQLite/原生进程测试。调整只针对整包聚合，不延长产品操作或用例内期限，不改包清单、skip 白名单、断言、覆盖率、框架和原生驱动守卫。原失败与最终复验见[文件材料验收](acceptance/generate-files.md)。
+固定 L1 的 Go 包级聚合预算为 30 分钟。2026-11-02 曾从 12 分钟增至 20 分钟，记录见[文件材料验收](acceptance/generate-files.md)；2026-11-05 application 全包一次 1159.076 秒通过，另一次在最后共享引擎停止场景仍连续推进时触及 1200.59 秒聚合上限，故经独立审核增加整包余量。调整不延长产品操作或用例内期限，不改包清单、skip 白名单、断言、覆盖率、框架和原生驱动守卫。独立的用例内失败仍保留且须复验，不由 watchdog 调整豁免，证据见[目录边界验收](acceptance/native-catalog-boundary.md)。
 
 裸 `go test ./...` 还会包含 L4 的 `TestSREdgeResourcePressure`（20 轮完整提交/发布/停止及进程退出/句柄检查），并非 L1 入口。常规分层运行使用下文脚本和 catalog；全仓审计保留此测试，不为缩短耗时削减轮数。
 

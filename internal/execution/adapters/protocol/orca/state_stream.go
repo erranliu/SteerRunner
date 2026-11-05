@@ -21,9 +21,10 @@ import (
 )
 
 type statePairing struct {
-	Endpoint  string `json:"endpoint"`
-	Token     string `json:"deviceToken"`
-	PublicKey string `json:"publicKeyB64"`
+	Endpoint     string `json:"endpoint"`
+	Token        string `json:"deviceToken"`
+	PublicKey    string `json:"publicKeyB64"`
+	PairedDevice string `json:"-"`
 }
 
 func (p statePairing) hostID() (string, error) {
@@ -58,10 +59,14 @@ func resolveStatePairing(environment string) (statePairing, error) {
 	if err != nil {
 		return statePairing{}, errors.New("fixed Orca environment authentication is unavailable")
 	}
+	return decodeStatePairing(data, environment)
+}
+
+func decodeStatePairing(data []byte, environment string) (statePairing, error) {
 	var store struct {
 		Environments []struct {
-			ID, Name, PreferredEndpointID string
-			Endpoints                     []struct {
+			ID, Name, PreferredEndpointID, PairedDeviceID string
+			Endpoints                                     []struct {
 				ID, Endpoint, DeviceToken, PublicKeyB64 string
 			}
 		}
@@ -81,7 +86,7 @@ func resolveStatePairing(environment string) (statePairing, error) {
 		}
 		for _, endpoint := range entry.Endpoints {
 			if endpoint.ID == entry.PreferredEndpointID {
-				pairing := statePairing{Endpoint: endpoint.Endpoint, Token: endpoint.DeviceToken, PublicKey: endpoint.PublicKeyB64}
+				pairing := statePairing{Endpoint: endpoint.Endpoint, Token: endpoint.DeviceToken, PublicKey: endpoint.PublicKeyB64, PairedDevice: entry.PairedDeviceID}
 				selected = &pairing
 				break
 			}
@@ -100,6 +105,8 @@ type stateSocket struct {
 	runtime      string
 	mu           sync.Mutex
 	capabilities []string
+	catalog      bool
+	remaining    int
 }
 
 func openStateSocket(ctx context.Context, pairing statePairing, expectedRuntime string) (*stateSocket, error) {
@@ -107,6 +114,10 @@ func openStateSocket(ctx context.Context, pairing statePairing, expectedRuntime 
 }
 
 func openStateSocketWithCapabilities(ctx context.Context, pairing statePairing, expectedRuntime string, capabilities []string) (*stateSocket, error) {
+	return openStateSocketMode(ctx, pairing, expectedRuntime, capabilities, false)
+}
+
+func openStateSocketMode(ctx context.Context, pairing statePairing, expectedRuntime string, capabilities []string, catalog bool) (*stateSocket, error) {
 	dialCtx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	conn, response, err := websocket.Dial(dialCtx, pairing.Endpoint, nil)
 	cancel()
@@ -124,7 +135,10 @@ func openStateSocketWithCapabilities(ctx context.Context, pairing statePairing, 
 		return nil, stateConnectionFailure(err)
 	}
 	conn.SetReadLimit(4 << 20)
-	socket := &stateSocket{conn: conn, token: pairing.Token, runtime: expectedRuntime}
+	if catalog {
+		conn.SetReadLimit(1 << 20)
+	}
+	socket := &stateSocket{conn: conn, token: pairing.Token, runtime: expectedRuntime, catalog: catalog, remaining: 1 << 20}
 	fail := func(err error) (*stateSocket, error) { _ = conn.CloseNow(); return nil, err }
 	pub, private, err := box.GenerateKey(rand.Reader)
 	if err != nil {
@@ -221,6 +235,12 @@ func (s *stateSocket) read(ctx context.Context) ([]byte, error) {
 	if !ok {
 		return nil, errors.New("Orca state host identity could not be verified")
 	}
+	if s.catalog {
+		s.remaining -= len(plain)
+		if s.remaining < 0 {
+			return nil, errors.New("Orca catalog exceeds limit")
+		}
+	}
 	return plain, nil
 }
 
@@ -242,6 +262,26 @@ func (s *stateSocket) requestWithCapabilities(ctx context.Context, method string
 }
 
 func (s *stateSocket) response(data []byte, requestID string) (json.RawMessage, error) {
+	if s.catalog && s.runtime == "" {
+		var frame struct {
+			ID   string `json:"id"`
+			OK   bool   `json:"ok"`
+			Meta struct {
+				RuntimeID string `json:"runtimeId"`
+			} `json:"_meta"`
+			Keepalive bool `json:"_keepalive"`
+		}
+		if json.Unmarshal(data, &frame) != nil {
+			return nil, errors.New("invalid catalog identity")
+		}
+		if frame.Keepalive {
+			return nil, nil
+		}
+		if frame.ID != requestID || !frame.OK || frame.Meta.RuntimeID == "" {
+			return nil, errors.New("unverified catalog identity")
+		}
+		s.runtime = frame.Meta.RuntimeID
+	}
 	return stateResponse(data, requestID, s.runtime)
 }
 

@@ -13,6 +13,17 @@ type stateConnection interface {
 	close() error
 }
 
+// Capability selection and connection ownership remain with the caller.
+// false skips the business dispatch gate; usage scope operations still apply.
+type capabilityState struct {
+	*stateSocket
+	clientCapabilities []string
+}
+
+func (s capabilityState) request(ctx context.Context, method string, params any) (string, error) {
+	return s.requestWithCapabilities(ctx, method, params, s.clientCapabilities, false)
+}
+
 func openStateConnection(ctx context.Context, environment, runtime string) (stateConnection, error) {
 	if runtime == "" {
 		return nil, errors.New("missing original Orca runtime")

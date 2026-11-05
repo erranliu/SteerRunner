@@ -69,8 +69,8 @@ func TestSROrcaCLIWaitRetry(t *testing.T) {
 			accepted := call(t, dir, []string{"submit", "--input", "-"}, string(raw), 0)
 			id := accepted.Data.(map[string]any)["run_id"].(string)
 			before := waitRun(t, dir, id, func(v contracts.RunView) bool { return v.ExecutionWait != nil && v.ExecutionWait.Stage == "queue" })
-			if before.StopEvidenceScope != orca.AgentSessionStopScope {
-				t.Fatal("queue fixture did not exercise the structured session contract", before)
+			if before.StopEvidenceScope != orca.AgentSessionStopScope || before.Execution.Protocol != "orca_agent_session_v1" || before.Execution.Agent != "codex" {
+				t.Fatal("queue fixture did not exercise the structured native local contract", before)
 			}
 			q := *before.ExecutionWait
 			if mode == "three-runs-stop-queued" {

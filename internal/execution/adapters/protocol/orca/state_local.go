@@ -20,9 +20,15 @@ type localState struct {
 	token        string
 	runtime      string
 	capabilities []string
+	catalog      bool
+	remaining    int
 }
 
 func openLocalState(ctx context.Context, runtime string) (*localState, error) {
+	return openLocalStateMode(ctx, runtime, false)
+}
+
+func openLocalStateMode(ctx context.Context, runtime string, catalog bool) (*localState, error) {
 	dir, err := stateUserDataDir()
 	if err != nil {
 		return nil, err
@@ -60,7 +66,7 @@ func openLocalState(ctx context.Context, runtime string) (*localState, error) {
 	if err != nil {
 		return nil, &StateConnectionError{Cause: err}
 	}
-	s := &localState{conn: conn, reader: bufio.NewReaderSize(conn, 64<<10), token: metadata.AuthToken, runtime: runtime}
+	s := &localState{conn: conn, reader: bufio.NewReaderSize(conn, 64<<10), token: metadata.AuthToken, runtime: runtime, catalog: catalog, remaining: 1 << 20}
 	status, err := callState(ctx, s, "status.get", nil)
 	if err != nil {
 		_ = s.close()
@@ -84,7 +90,11 @@ func localRuntimeCapabilities(status json.RawMessage) []string {
 func (s *localState) close() error { return s.conn.Close() }
 
 func (s *localState) request(ctx context.Context, method string, params any) (string, error) {
-	return s.requestWithCapabilities(ctx, method, params, []string{"agent-session.session-boundary.v1"}, false)
+	capabilities := []string{"agent-session.session-boundary.v1"}
+	if s.catalog {
+		capabilities = catalogCapabilities
+	}
+	return s.requestWithCapabilities(ctx, method, params, capabilities, false)
 }
 
 // The ordinary state reader retains its original capabilities and read-only
@@ -131,6 +141,13 @@ func (s *localState) next(ctx context.Context, id string) (json.RawMessage, erro
 		var frame []byte
 		for {
 			part, err := s.reader.ReadSlice('\n')
+			if s.catalog {
+				s.remaining -= len(part)
+				if s.remaining < 0 {
+					_ = s.close()
+					return nil, errors.New("Orca catalog exceeds limit")
+				}
+			}
 			if len(frame)+len(part) > 4<<20 {
 				_ = s.close()
 				return nil, errors.New("Orca IPC state frame exceeds limit")

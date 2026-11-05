@@ -120,15 +120,6 @@ func OpenStructuredUsageFiles(ctx context.Context, environment, runtime, expecte
 	return openUsageFiles(ctx, environment, runtime, expectedHost, remoteAgentSessionCapabilities())
 }
 
-type structuredUsageState struct {
-	*stateSocket
-	clientCapabilities []string
-}
-
-func (s structuredUsageState) request(ctx context.Context, method string, params any) (string, error) {
-	return s.requestWithCapabilities(ctx, method, params, s.clientCapabilities, false)
-}
-
 func openUsageFiles(ctx context.Context, environment, runtime, expectedHost string, capabilities []string) (*UsageFileChannel, error) {
 	host := "local"
 	var err error
@@ -154,7 +145,7 @@ func openUsageFiles(ctx context.Context, environment, runtime, expectedHost stri
 			var remote *stateSocket
 			remote, err = openStateSocketWithCapabilities(ctx, pairing, runtime, capabilities)
 			if err == nil {
-				socket = structuredUsageState{stateSocket: remote, clientCapabilities: capabilities}
+				socket = capabilityState{stateSocket: remote, clientCapabilities: capabilities}
 			}
 		}
 	} else {

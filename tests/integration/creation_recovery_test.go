@@ -8,14 +8,12 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
-	"sync/atomic"
 	"testing"
 	"time"
 
 	"github.com/Microsoft/go-winio"
 	"github.com/erranliu/SteerRunner/internal/contracts"
-	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
+	orcatransport "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
@@ -25,6 +23,7 @@ import (
 // Workspace preparation and recovery cannot dispatch legacy terminal input.
 func assertCreationBootstrapOnly(t *testing.T, dir, state string) {
 	t.Helper()
+	assertCreationReadOnlyRPC(t, state)
 	f, err := os.Open(filepath.Join(state, "calls.jsonl"))
 	if os.IsNotExist(err) {
 		// Cancellation before the first CLI dispatch produces no call log.
@@ -81,14 +80,101 @@ func assertCreationBootstrapOnly(t *testing.T, dir, state string) {
 		t.Error(err)
 		return
 	}
-	if len(sends) != 0 {
-		t.Error("workspace recovery dispatched legacy input", sends)
+	if len(sends) == 0 {
+		store, err := storage.OpenReader(dir)
+		if err != nil {
+			t.Error(err)
+			return
+		}
+		defer store.Close()
+		runs, err := store.Runs()
+		if err != nil || len(runs) == 0 {
+			t.Error("missing original structured creation records", err)
+			return
+		}
+		for _, run := range runs {
+			if run.Snapshot.Ref.Protocol != b.ProtocolOrcaAgentSessionV1 || run.StopEvidenceScope != "orca_agent_session" || run.LaunchCommand != "" || run.LaunchInput != nil {
+				t.Error("unverified structured bootstrap scope", run.ID)
+			}
+		}
+		return
+	}
+	t.Error("workspace recovery dispatched legacy input", sends)
+}
+
+func assertCreationReadOnlyRPC(t *testing.T, state string) {
+	t.Helper()
+	f, err := os.Open(filepath.Join(state, "rpc-methods.jsonl"))
+	if os.IsNotExist(err) {
+		return
+	}
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	defer f.Close()
+	scanner := bufio.NewScanner(f)
+	for scanner.Scan() {
+		var method string
+		if err := json.Unmarshal(scanner.Bytes(), &method); err != nil {
+			t.Error(err)
+			return
+		}
+		switch method {
+		case "status.get", "worktree.ps", "terminal.show":
+		default:
+			t.Error("creation-only fixture received a business RPC", method)
+		}
+	}
+	if err := scanner.Err(); err != nil {
+		t.Error(err)
 	}
 }
 
-func creationObservationFixture(t *testing.T, dir, runtime string) *atomic.Int32 {
+func assertOriginalCreationShellClosed(t *testing.T, state, handle string) {
 	t.Helper()
-	mutations := new(atomic.Int32)
+	f, err := os.Open(filepath.Join(state, "calls.jsonl"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer f.Close()
+	count := 0
+	scanner := bufio.NewScanner(f)
+	for scanner.Scan() {
+		var entry struct {
+			Method string
+			Args   []string
+		}
+		if err := json.Unmarshal(scanner.Bytes(), &entry); err != nil {
+			t.Fatal(err)
+		}
+		if entry.Method != "orca/terminal/close" {
+			continue
+		}
+		count++
+		found := false
+		for i := 0; i+1 < len(entry.Args); i++ {
+			if entry.Args[i] == "--terminal" && entry.Args[i+1] == handle {
+				found = true
+			}
+		}
+		if !found {
+			t.Fatal("closed a foreign creation shell", entry.Args)
+		}
+	}
+	if err := scanner.Err(); err != nil {
+		t.Fatal(err)
+	}
+	if count != 1 {
+		t.Fatal("original creation shell close count", count)
+	}
+	if _, err := os.Stat(filepath.Join(state, "original-terminal-closed")); err != nil {
+		t.Fatal("original creation shell cleanup was not confirmed", err)
+	}
+}
+
+func creationObservationFixture(t *testing.T, dir, runtime string) {
+	t.Helper()
 	// SerializeCLI uses the user cache. This fixture has no shared Orca files;
 	// isolate its lock too so an intentional held response cannot block other
 	// test processes or the user's real CLI.
@@ -117,8 +203,16 @@ func creationObservationFixture(t *testing.T, dir, runtime string) *atomic.Int32
 					if json.Unmarshal(scanner.Bytes(), &request) != nil || request.AuthToken != "creation-fixture-token" {
 						return
 					}
-					if strings.HasPrefix(request.Method, "agentSession.") && (strings.HasSuffix(request.Method, ".create") || strings.HasSuffix(request.Method, ".send") || strings.HasSuffix(request.Method, ".close")) {
-						mutations.Add(1)
+					log, err := os.OpenFile(filepath.Join(dir, "rpc-methods.jsonl"), os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0600)
+					if err != nil {
+						t.Error(err)
+						return
+					}
+					writeErr := json.NewEncoder(log).Encode(request.Method)
+					closeErr := log.Close()
+					if writeErr != nil || closeErr != nil {
+						t.Error("RPC method audit failed", writeErr, closeErr)
+						return
 					}
 					result := map[string]any{}
 					if request.Method == "worktree.ps" {
@@ -152,7 +246,6 @@ func creationObservationFixture(t *testing.T, dir, runtime string) *atomic.Int32
 	if err := os.WriteFile(filepath.Join(dir, "orca-runtime.json"), raw, 0600); err != nil {
 		t.Fatal(err)
 	}
-	return mutations
 }
 
 func awaitCreationFile(t *testing.T, pattern string) string {
@@ -212,13 +305,14 @@ func cleanupCreationService(t *testing.T, dir string, info contracts.ServiceInfo
 
 func TestSRResourceCreationRecovery(t *testing.T) {
 	testCount.Add(1)
-	for _, mode := range []string{"graceful", "kill", "receipt-before-commit", "wire-loss", "owner-crash"} {
+	for _, mode := range []string{"graceful", "kill", "receipt-before-commit", "wire-loss", "owner-crash", "worktree-receipt-without-terminal", "missing-creation-plan"} {
 		t.Run(mode, func(t *testing.T) {
 			dir, request := setupRun(t)
 			state := os.Getenv("STEERRUNNER_FIXTURE_STATE")
 			runtime := "creation-runtime-" + filepath.Base(filepath.Dir(state))
 			t.Setenv("STEERRUNNER_CREATION_RUNTIME", runtime)
-			mutations := creationObservationFixture(t, state, runtime)
+			creationObservationFixture(t, state, runtime)
+			t.Cleanup(func() { assertCreationReadOnlyRPC(t, state) })
 			marker := "hold-create-response"
 			if mode == "receipt-before-commit" {
 				marker = "hold-show-response"
@@ -228,6 +322,9 @@ func TestSRResourceCreationRecovery(t *testing.T) {
 			}
 			if mode == "wire-loss" {
 				_ = os.WriteFile(filepath.Join(state, "lose-create-response"), nil, 0600)
+			}
+			if mode == "worktree-receipt-without-terminal" {
+				_ = os.WriteFile(filepath.Join(state, "omit-create-terminal-identity"), nil, 0600)
 			}
 			var input contracts.RunRequest
 			_ = json.Unmarshal(request.Input, &input)
@@ -286,6 +383,18 @@ func TestSRResourceCreationRecovery(t *testing.T) {
 			if err := waitOwnedService(service); err != nil {
 				t.Fatal("original service did not exit at the creation gate", err)
 			}
+			plans, err := filepath.Glob(filepath.Join(dir, "orca-initial-terminals", "*.json"))
+			if err != nil || len(plans) != 0 {
+				t.Fatal("structured preparation created a terminal launch plan", plans, err)
+			}
+			if before.Run.StopEvidenceScope != "orca_agent_session" || before.Run.Execution.Protocol != string(b.ProtocolOrcaAgentSessionV1) || before.Run.Execution.Agent != "codex" || before.Run.Execution.TurnStarted {
+				t.Fatal("fixture did not freeze the original structured contract", before.Run)
+			}
+			if mode == "missing-creation-plan" {
+				if err := os.Remove(filepath.Join(filepath.Dir(ownerPath), orcatransport.CreationOwnerConfigFile)); err != nil {
+					t.Fatal(err)
+				}
+			}
 			if mode != "receipt-before-commit" && (process.InspectProcess(&owner.Process) != "matching process still exists" || process.InspectProcess(&effect.CLI) != "matching process still exists") {
 				t.Fatal("service exit killed or replaced the independent original CLI")
 			}
@@ -322,7 +431,7 @@ func TestSRResourceCreationRecovery(t *testing.T) {
 			start := contracts.ServiceStartInput{PendingStops: []contracts.PendingStop{{RunID: id, Request: stop}}}
 			next := serviceInfo(t, call(t, dir, []string{"service", "start", "--input", "-"}, string(start.JSON()), 0))
 			cleanupCreationService(t, dir, next)
-			if mode == "wire-loss" || mode == "owner-crash" {
+			if mode == "wire-loss" || mode == "owner-crash" || mode == "missing-creation-plan" {
 				unprovenOriginal := func(v contracts.RunView) bool {
 					// A pending stop has priority over preparation diagnostics. The
 					// original creation must still be unknown and unauthorized; its
@@ -334,19 +443,20 @@ func TestSRResourceCreationRecovery(t *testing.T) {
 				view := waitRun(t, dir, id, unprovenOriginal)
 				time.Sleep(1200 * time.Millisecond)
 				view = waitRun(t, dir, id, unprovenOriginal)
-				if view.StopStatus == "stopped" || view.Execution.SessionID != "" || countNative(t, "orca/terminal/close") != 0 || countNative(t, "orca/worktree/list") != 0 {
+				if view.StopStatus == "stopped" || view.Execution.Workspace != "" || view.Execution.SessionID != "" || view.Execution.TurnStarted || countNative(t, "orca/terminal/close") != 0 || countNative(t, "orca/worktree/list") != 0 {
 					t.Fatal("unproven external creation was adopted, closed or settled", view)
 				}
 			} else {
 				view := waitRun(t, dir, id, func(v contracts.RunView) bool { return v.StopStatus == "stopped" })
-				if view.Execution.Workspace != effect.Worktree.Path || view.Execution.SessionID != "" || view.Execution.Protocol != string(b.ProtocolOrcaAgentSessionV1) || view.StopEvidenceScope != orca.AgentSessionStopScope || view.NewInputsAllowed || countNative(t, "orca/terminal/close") != 1 {
-					t.Fatal("original creation identity/stop was not recovered", view)
+				if view.Execution.Workspace != effect.Worktree.Path || view.Execution.Branch != effect.Worktree.Branch || view.Execution.SessionID != "" || view.Execution.TurnStarted || view.NewInputsAllowed || view.StopEvidenceScope != "orca_agent_session" || view.Execution.Protocol != string(b.ProtocolOrcaAgentSessionV1) || len(view.Operations) == 0 || view.Operations[0].ID != before.Run.Operations[0].ID || view.Operations[0].Action != "prepare_workspace" || view.Operations[0].Status != "confirmed" || countNative(t, "orca/terminal/close") != 1 {
+					t.Fatalf("original creation identity/stop was not recovered: workspace=%q want=%q branch=%q want=%q operation=%+v want=%+v terminal-close=%d view=%+v", view.Execution.Workspace, effect.Worktree.Path, view.Execution.Branch, effect.Worktree.Branch, view.Operations, before.Run.Operations, countNative(t, "orca/terminal/close"), view)
 				}
+				assertOriginalCreationShellClosed(t, state, effect.Terminal.Handle)
 			}
 			if countNative(t, "orca/worktree/create") != 1 || countNative(t, "orca/terminal/create") != 0 || countNative(t, "orca/terminal/send") != 0 {
 				t.Fatal("recovery repeated resource creation or sent business input")
 			}
-			if mode != "wire-loss" && mode != "owner-crash" {
+			if mode != "wire-loss" && mode != "owner-crash" && mode != "missing-creation-plan" {
 				call(t, dir, []string{"service", "stop", "--input", "-"}, stopRequest("inspect-original-creation", next.InstanceID), 0)
 				if err := waitOwnedService(next); err != nil {
 					t.Fatal(err)
@@ -372,7 +482,7 @@ func TestSRResourceCreationRecovery(t *testing.T) {
 				}
 				found := false
 				for _, e := range snapshot.Implementation {
-					if e.ImplementationKey == orca.AgentSessionStateKey {
+					if e.ImplementationKey == orcatransport.AgentSessionStateKey {
 						found = true
 						if json.Unmarshal(e.Payload, &frozen) != nil {
 							t.Fatal("invalid original Agent state")
@@ -384,9 +494,6 @@ func TestSRResourceCreationRecovery(t *testing.T) {
 				if !found || !frozen.SessionNotCreated || frozen.Attempted || !frozen.CloseAttempted || len(frozen.CloseReceipt) != 0 {
 					t.Fatal("undispatched Agent lost its original not-created proof", frozen)
 				}
-			}
-			if mutations.Load() != 0 {
-				t.Fatal("workspace recovery dispatched an Agent operation", mutations.Load())
 			}
 			t.Logf("original=%s runtime=%s handle=%s incarnation=%s create=1 terminal-create=0 business-send=0", effect.Worktree.ID, runtime, effect.Terminal.Handle, effect.Terminal.IncarnationID)
 		})
