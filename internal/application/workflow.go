@@ -76,10 +76,11 @@ func compatibleWorkflow(current, frozen workflow.Profile, adapter string) bool {
 		if !found {
 			return false
 		}
-		// Default text is already frozen in the original definition/PromptBodies.
+		// Rendering is already frozen in the original definition/PromptBodies.
 		// Keep routing, contracts, permissions, model roles and budgets exact.
 		candidate.Prompt, original.Prompt = "", ""
 		candidate.ResultInstruction, original.ResultInstruction = "", ""
+		candidate.PlanDriven, original.PlanDriven = false, false
 		// Runs accepted before policy slots keep their original declarations.
 		if original.PolicySlots == nil {
 			candidate.PolicySlots = nil

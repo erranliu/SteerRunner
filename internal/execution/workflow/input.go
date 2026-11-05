@@ -88,5 +88,8 @@ func InputParts(w Snapshot, input StageInput, body string, caller bool) ([]m.Inp
 	if err != nil {
 		return nil, err
 	}
+	if state.PlanDriven {
+		return parts, nil
+	}
 	return append(parts, policyParts(w, state)...), nil
 }

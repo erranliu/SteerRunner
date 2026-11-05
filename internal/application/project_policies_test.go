@@ -62,9 +62,9 @@ func TestProjectPoliciesFreezeFixedCommitAndRecovery(t *testing.T) {
 	if strings.Contains(first, body) || strings.Contains(first, slots[1].Path) || strings.Contains(first, "environment.md") {
 		t.Fatal("inline body, implicit slot or environment instructions", first)
 	}
-	for _, index := range []int{0, 2} {
-		if !strings.Contains(first, fmt.Sprintf(workflow.PolicyReadTemplate, slots[index].Path)) {
-			t.Fatal("missing selected file")
+	for _, slot := range slots {
+		if strings.Contains(first, slot.Path) {
+			t.Fatal("policy reference leaked into plan-driven input")
 		}
 	}
 	// Advance the repository and mutate checkout files after acceptance.
@@ -174,6 +174,9 @@ func TestProjectPoliciesBudgetAndFrozenInput(t *testing.T) {
 		t.Run(adapter, func(t *testing.T) {
 			r := budgetRecord()
 			r.Request.Execution.Adapter = adapter
+			state := r.Workflow.Config.States[workflow.StepImplement]
+			state.PlanDriven = false
+			r.Workflow.Config.States[workflow.StepImplement] = state
 			base := r.Clone()
 			if err := queueInput(base, workflow.StageInput{StepID: workflow.StepImplement}, ""); err != nil {
 				t.Fatal(err)
@@ -209,9 +212,13 @@ func TestProjectPoliciesLegacyDefinitionUnchanged(t *testing.T) {
 	r.Workflow.Config.PolicyReadTemplate = ""
 	for id, state := range r.Workflow.Config.States {
 		state.PolicySlots = nil
+		state.PlanDriven = false
 		r.Workflow.Config.States[id] = state
 	}
 	r = r.Clone()
+	if err := validateWorkflow(r); err != nil {
+		t.Fatal("old rendering mode invalidated", err)
+	}
 	if err := queueInput(r, workflow.StageInput{StepID: workflow.StepImplement}, ""); err != nil {
 		t.Fatal("old definition invalidated", err)
 	}
@@ -287,6 +294,9 @@ func TestProjectPoliciesAuditedStepsBudget(t *testing.T) {
 
 func TestProjectPoliciesProducerGuidesRespectExistingBudget(t *testing.T) {
 	r := budgetRecord()
+	state := r.Workflow.Config.States[workflow.StepImplement]
+	state.PlanDriven = false
+	r.Workflow.Config.States[workflow.StepImplement] = state
 	r.Request.ProgressFile = &contracts.ProgressFileInput{}
 	r.Request.ResultFile = &contracts.ResultFileInput{}
 	r.Workflow.ProjectPolicies = &workflow.ProjectPolicies{}

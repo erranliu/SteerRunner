@@ -485,7 +485,7 @@ func queueInput(r *runstate.Record, input workflow.StageInput, feedback string) 
 			parts = append(parts, m.InputPart{Source: "publication.target", Owner: m.RunnerInput, Text: workflow.PublicationInstruction(state, canonical(r.Request.Publication), r.Request.Repository.Remote, r.Request.Repository.BaseBranch)})
 			input.SuccessOutput = state.SuccessOutput
 		}
-		if state.Kind == "execute" && (state.Contract == "implementation" || state.Contract == "audit" || r.Request.Workflow.ID == workflow.SingleExecution) {
+		if !state.PlanDriven && state.Kind == "execute" && (state.Contract == "implementation" || state.Contract == "audit" || r.Request.Workflow.ID == workflow.SingleExecution) {
 			if r.Request.ProgressFile != nil {
 				text := workflow.ProgressInstruction
 				if priorFileInstruction(r, "progress") {
@@ -506,7 +506,8 @@ func queueInput(r *runstate.Record, input workflow.StageInput, feedback string) 
 				parts = append(parts, m.InputPart{Source: "result_file", Owner: m.RunnerInput, Text: "\n" + text})
 			}
 		}
-		if r.Snapshot.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 && (r.Request.ResultFile != nil || r.Request.ProgressFile != nil) {
+		initial, _ := r.Workflow.State(r.Workflow.Config.Initial)
+		if r.Snapshot.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 && (state.PlanDriven || !initial.PlanDriven) && (r.Request.ResultFile != nil || r.Request.ProgressFile != nil) {
 			bindings := map[string]string{}
 			if r.Request.ResultFile != nil {
 				bindings["STEERLINE_RESULT_FILE"] = workspace.ResultRelative(r.ID)
@@ -514,7 +515,18 @@ func queueInput(r *runstate.Record, input workflow.StageInput, feedback string) 
 			if r.Request.ProgressFile != nil {
 				bindings["STEERLINE_PROGRESS_FILE"] = workspace.ProgressRelative(r.ID)
 			}
-			parts = append(parts, m.InputPart{Source: "orca.file_environment", Owner: m.RunnerInput, Text: "\n" + workflow.OrcaFileEnvironmentInstruction}, m.InputPart{Source: "orca.file_bindings", Owner: m.RunnerInput, Text: "\nRunner file bindings: " + string(canonical(bindings))})
+			instruction := workflow.OrcaFileEnvironmentInstruction
+			if state.PlanDriven {
+				instruction = workflow.PlanDrivenOrcaFileEnvironment
+			}
+			parts = append(parts, m.InputPart{Source: "orca.file_environment", Owner: m.RunnerInput, Text: "\n" + instruction}, m.InputPart{Source: "orca.file_bindings", Owner: m.RunnerInput, Text: "\nRunner file bindings: " + string(canonical(bindings))})
+		} else if state.PlanDriven && r.Request.Execution.Adapter == "codex-app-server" {
+			if r.Request.ProgressFile != nil {
+				parts = append(parts, m.InputPart{Source: "progress", Owner: m.RunnerInput, Text: "\n进度文件：STEERLINE_PROGRESS_FILE"})
+			}
+			if r.Request.ResultFile != nil {
+				parts = append(parts, m.InputPart{Source: "result_file", Owner: m.RunnerInput, Text: "\n结果文件：STEERLINE_RESULT_FILE"})
+			}
 		}
 		if r.Request.Execution.Adapter == "orca-terminal" && r.Snapshot.Ref.Protocol != b.ProtocolOrcaAgentSessionV1 {
 			// Preserve the frozen logical body; native normalization/framing owns

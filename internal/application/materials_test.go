@@ -43,12 +43,12 @@ func TestDevelopmentPromptsReferenceWorktreeDocuments(t *testing.T) {
 					t.Fatal("dispatch accessed development documents", err)
 				}
 				prompt := r.Snapshot.PendingTurn.Prompt
-				for _, want := range []string{"Custom instruction", "Spec: docs/spec.md", "Plan: docs/plan.md", "Reference: docs/reference.md", feedback} {
+				for _, want := range []string{"Custom instruction", "Spec: docs/spec.md", "Plan: docs/plan.md", feedback} {
 					if !strings.Contains(prompt, want) {
 						t.Fatal("worktree reference or feedback lost", want)
 					}
 				}
-				for _, unwanted := range []string{body, "prompt:", `C:\unavailable`, strings.Repeat("f", 40), "Frozen Spec"} {
+				for _, unwanted := range []string{body, "prompt:", `C:\unavailable`, strings.Repeat("f", 40), "Frozen Spec", "Reference:"} {
 					if strings.Contains(prompt, unwanted) {
 						t.Fatal("prompt contains a material attachment", unwanted[:min(len(unwanted), 80)])
 					}

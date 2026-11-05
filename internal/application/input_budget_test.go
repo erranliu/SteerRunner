@@ -75,8 +75,9 @@ func TestBudgetFileGuidesIsolation(t *testing.T) {
 			t.Fatal(mask, err)
 		}
 		input := r.Workflow.StageInputs[0]
-		if strings.Contains(input.Prompt, workflow.ProgressInstruction) != (mask&1 != 0) || strings.Contains(input.Prompt, workflow.ResultFileInstruction) != (mask&2 != 0) {
-			t.Fatal(mask, "missing write guide")
+		if strings.Contains(input.Prompt, "STEERLINE_PROGRESS_FILE") != (mask&1 != 0) || strings.Contains(input.Prompt, "STEERLINE_RESULT_FILE") != (mask&2 != 0) ||
+			strings.Contains(input.Prompt, workflow.ProgressInstruction) || strings.Contains(input.Prompt, workflow.ResultFileInstruction) {
+			t.Fatal(mask, "expected only concise channel names", input.Prompt)
 		}
 		r.Snapshot.Session.SessionID = "same"
 		r.Workflow.StageResults = []workflow.StageResult{{CommandID: input.CommandID, InputVersion: input.Version, TurnID: "turn", SessionID: "same", FinalVerified: true, Final: "unstructured original"}}

@@ -17,10 +17,9 @@ func TestSRWorkflowDevelopment(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, fixed := range []string{"Custom implementation instruction", "Spec: fixed/spec.md", "Plan: fixed/plan.md", "Reference: fixed/reference.md", "实施及必要验证已完成", "末行单独写「未完成」"} {
-		if !strings.Contains(prompt, fixed) {
-			t.Fatalf("override removed fixed material: %s", fixed)
-		}
+	const want = "Custom implementation instruction\nSpec: fixed/spec.md\nPlan: fixed/plan.md\n末行写「实施及必要验证已完成」或「未完成」。"
+	if prompt != want {
+		t.Fatalf("unexpected plan-driven input: %q", prompt)
 	}
 	prompt, err = RenderPromptWithBody(StepReport, map[string]string{"source_command_id": "original"}, "Custom report instruction")
 	if err != nil || strings.Contains(prompt, "JSON") || !strings.Contains(prompt, "original") || !strings.Contains(prompt, "成功时末行：实施及必要验证已完成") {

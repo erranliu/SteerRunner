@@ -13,6 +13,7 @@ type State struct {
 	ResultInstruction    string   `json:"result_instruction,omitempty"`
 	ManualImplementation string   `json:"manual_implementation,omitempty"`
 	CommitWork           bool     `json:"commit_work,omitempty"`
+	PlanDriven           bool     `json:"plan_driven,omitempty"`
 	Kind                 string   `json:"kind"`
 	Contract             string   `json:"contract,omitempty"`
 	PromptKey            string   `json:"prompt_key,omitempty"`
@@ -32,10 +33,14 @@ func developmentStates(audited bool) map[string]State {
 	implement := State{PolicySlots: []string{"git", "command", "testing"}, Kind: "execute", Contract: "implementation", PromptKey: StepImplement, Prompt: ImplementPrompt, ModelRole: "execution", SuccessOutput: "实施及必要验证已完成", ResultInstruction: "若明确未完成，简述卡点或需要的输入，末行单独写「" + implementationIncomplete + "」。", Next: StepPublish, Report: StepReport, ReportLimit: 1, Wait: StepImplementInput}
 	publish := State{PolicySlots: []string{"git", "command"}, Kind: "execute", Contract: "publication", PromptKey: "publish", Prompt: publishPrompt, ModelRole: "execution", SuccessOutput: "本次发布已完成。", Next: StepPRReady, Verify: StepPublishVerify, Report: StepPublishReport, ReportLimit: 1}
 	if audited {
+		implement.Prompt = "读取所列 Spec/Plan/材料，实施并完成必要验证。"
 		implement.Next = StepAuditCode
 		implement.Workspace = "implementation"
 		implement.CommitWork = true
 		publish.Workspace = "publication"
+	} else {
+		implement.PlanDriven = true
+		implement.ResultInstruction = "末行写「" + implement.SuccessOutput + "」或「" + implementationIncomplete + "」。"
 	}
 	states := map[string]State{
 		StepImplement:      implement,
