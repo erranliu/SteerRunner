@@ -1,6 +1,6 @@
 # Orca 工作区创建回执收敛 Plan
 
-按 [Spec](orca-workspace-creation-receipt.spec.md) 实施。当前只交付文档，以下均待执行。
+按 Spec 实施。实施结果、主线夹具差异及合入前复验见验收记录。 [Spec](orca-workspace-creation-receipt.spec.md) · [验收记录](../acceptance/orca-workspace-creation-receipt.md)
 
 ## P0 核对基线
 

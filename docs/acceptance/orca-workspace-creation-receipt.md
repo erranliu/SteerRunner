@@ -26,3 +26,11 @@ Windows 执行 `go test ./internal/execution/adapters/orcatransport ./internal/e
 两场串行使用同一写入 EXE，每场取得一套原创建计划、派发和输出。以摘要核对计划、派发、输出与原 Run/input/operation 的归属，并核对响应 runtime、worktree ID、instance、固定 base 和结构化会话绑定。两场均取得预期三行可信结果，关闭原会话，撤销恢复授权，封存版本 1 的 `steerrunner-result-file/v1`。文件验证使用预置内容及其摘要。
 
 两场正常停服后，使用 SteerLine `e010373e` 的生产 `VerifyUpgradeDrained` 和两份固定 EXE 冷读各自原目录。两端排空均通过，停止范围为 `orca_agent_session`，冷读前后数据库和停机证明摘要一致。原始 CLI 回执、创建绑定证明、临时 overlay 和冷读日志位于本机 `.evidence/orca-workspace-receipt-live/`。本记录覆盖受影响组件、定向受控恢复及专项真机。
+
+## PR #110 合入前审计
+
+首次创建和原计划恢复仅共用 CLI 结果解码与绑定。恢复进入共用函数前仍要求原计划的 runtime 非空及原 selector 通过校验。CLI 外层 runtime 优先，原 selector 提供远端仓库 ID。已保存的 operation 回执保持原读取分支。主线 `9c36f366` 用相同历史回执夹具复验通过，与候选的接受及重新编码行为一致。
+
+复验核对两份候选 EXE 的实际摘要及源码身份，重新读取两场真机的原创建计划、派发和结果摘要，并再次通过双 EXE 原目录排空。另用 #109 原写入 EXE 与 #110 冷读 EXE 验证 #109 的双端 `execute/1` 原目录，两个原目录均通过 SteerLine 生产升级排空。四个原目录冷读前后的数据库和停机证明摘要一致。
+
+定向重跑原 owner 恢复、仓库及 runtime 错配、未知结果和旧回执用例均通过。用同一固定写入 EXE 复验四个重启集成子例，原 `wire-loss`、`owner-crash` 及结构化夹具的 `graceful`、`receipt-before-commit` 均通过。每例只观察到一次原创建，恢复未派发第二次创建或业务输入。
