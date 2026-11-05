@@ -17,5 +17,5 @@
 ## 验收
 
 - 受控夹具覆盖连接前配对已替换、一次解析后配置被替换、本机 runtime 错配及 worktree/instance 错配。替代远端使用不同公钥和可用 endpoint，但故意通告同一 runtime。验证每次打开只解析一次，替代端点零拨号和零文件 RPC。原端点正常时只使用原绑定，原端点失败时返回原错误。保留正常双端文件读写和原错误分类。
-- 同一候选在本机和真实配对远端各跑一次默认 Orca Codex `execute/1`。真实执行期间用 `progress-file` 读取原工作区新写入的进度字节。用 `result-file` 验证停止前仍待封存，取得原会话关闭证明后才封存实际结果字节。校验原 Run/input、runtime/worktree/instance、版本、摘要及重复读取稳定性。
+- 同一候选在本机和真实配对远端各跑一次默认 Orca Codex `development/2`，沿现有进度文件准入。真实执行期间用 `progress-file` 读取原工作区新写入的进度字节。用 `result-file` 验证停止前仍待封存，可信实施结果进入等待输入后显式停止，取得原会话关闭证明后才封存实际结果字节。校验原 Run/input、runtime/worktree/instance、版本、摘要及重复读取稳定性。`execute/1` 继续不接受进度文件。
 - 用原写入 EXE 正常停服，两个实际原目录分别通过 SteerLine 原 `VerifyUpgradeDrained` 双 EXE 冷读，保留原停止范围和无未决控制证据。受控配对替换使用隔离夹具，真实配对保持原配置。
