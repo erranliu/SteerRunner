@@ -6,6 +6,7 @@ import (
 
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	"github.com/erranliu/SteerRunner/internal/execution/workspace"
 )
 
 func (l *Lifecycle) InspectLifecycleAuditWorkspace(ctx context.Context, s b.LifecycleSnapshot, preHead string) (b.WorkspaceInspection, error) {
@@ -72,8 +73,7 @@ func (l *Lifecycle) inspectStructuredAuditWorkspace(ctx context.Context, s b.Lif
 	if remote == "" {
 		remote = "origin"
 	}
-	q := codex.RemoteWorkspaceAuditQuery{Intent: s.Workspace, PreHead: preHead}
-	fact, _, err := codex.InspectOwnedWorkspaceAudit(ctx, l.setup.ProcessHost, state.Worktree.Path, l.setup.RepositoryURL, remote, q)
+	fact, _, err := workspace.InspectFixedAudit(ctx, l.setup.ProcessHost, state.Worktree.Path, l.setup.RepositoryURL, remote, s.Workspace, preHead)
 	if err != nil {
 		return fact, err
 	}
