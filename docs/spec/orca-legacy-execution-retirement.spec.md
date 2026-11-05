@@ -1,6 +1,6 @@
 # Spec B：旧 Orca 执行支线退役
 
-日期：2026-11-05。状态：设计审计后已实施，最终验证中。基线 main `6940c598`，在 [A](orca-frozen-reader.spec.md) 独立验证后实施；配套 [Plan](orca-legacy-execution-retirement.plan.md)。长期新 Run/旧记录边界见[Orca 设计](../orca-execution.md)及[已实施 helper 退役](orca-helper-retirement.spec.md)。
+日期：2026-11-05。状态：设计审计后已实施并完成受影响验收，见[记录](../acceptance/orca-reader-execution-boundary.md)。基线 main `6940c598`，在 [A](orca-frozen-reader.spec.md) 独立验证后实施，收尾整合至 main `a78d87da`；配套 [Plan](orca-legacy-execution-retirement.plan.md)。长期新 Run/旧记录边界见[Orca 设计](../orca-execution.md)及[已实施 helper 退役](orca-helper-retirement.spec.md)。
 
 ## 合法入口与删除范围
 

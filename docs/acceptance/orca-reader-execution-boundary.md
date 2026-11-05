@@ -47,6 +47,28 @@ A代码与原函数迁移清单已固定后再开始B；A阶段没有删除旧�
 
 完整 adapter 验证及共享公开回归的首次失败均保留：编译期间发现的旧夹具依赖逐项处理；公开创建/排队用例原先仍要求旧 terminal session/scope，已按实际结构化冻结事实修订，未改产品执行或停止规则。新增核验曾错误要求未创建 Agent 的 `CloseAttempted=false`，现按原 stop-operation 语义改为 true，另用实际 RPC 计数证明零派发，不能把该标记当原生 close。
 
-扩展组件回归的 workflow `TestRADefinitionRename` 失败已在独立 HEAD archive（仅原 workflow 及依赖、原 go.mod/go.sum）复现。该包及依赖本轮未改，不以本批改动或放宽断言处理；因此不宣称整组/完整 L1 全绿。零匹配运行 integration 会由原守卫拒绝，本批保留此守卫并用 `go test -c` 和正式 foundation 执行验证构建。
+扩展组件回归的 workflow `TestRADefinitionRename` 失败已在独立 HEAD archive（仅原 workflow 及依赖、原 go.mod/go.sum）复现；整合后资源包 `TestSRWorkflowSelection` 的提示一致性失败也在独立目标 main 复现。这两处提示代码/资产本轮未改，不以本批改动或放宽断言处理；因此不宣称整组/完整 L1 全绿。零匹配运行 integration 会由原守卫拒绝，本批保留此守卫并用 `go test -c` 和正式 foundation 执行验证构建。
 
-最终结果统计待收尾；真实本机/配对主机与模型未重新验收，不继承旧构建现场资格。没有部署、发布或提 PR。
+## 主线整合与最终验证
+
+实施点 `0a374215` 保存 A→B 的独立验证成果。收尾 fetch 发现 main 已新增 #117/#118；按仓库规则在独立工作树解决 docs/testing、公开创建恢复及 CLI 排队三处真实内容冲突，以合并提交 `68c3057a` 保留两侧历史。未为制造线性历史重放或 rebase 已验证提交。
+
+保留上游新增目录能力、`worktree-receipt-without-terminal`/`missing-creation-plan` 两个当前工作区反例、原 shell 身份及完整 RPC 审计；最终创建恢复七个窗口，CLI 排队七个变体。删除的是旧 initial-terminal 计划子例，没有删上游这两个替代反例。原子首消息、当前 create/send/history/close 的实现正文未改；共享创建只删旧 Agent 终端尾段。
+
+| 范围 | 实际结果 |
+| --- | --- |
+| A 独立点 | adapter 213 通过/3 原 opt-in 跳过；host/storage/usage 85 通过/4 原 opt-in 跳过；既有测试原字节不变 |
+| B 完整 adapter | 72 顶层通过，0 失败、0 跳过；整合后同包再次通过 |
+| B 扩展组件（整合前） | application/host/storage/contracts/usage/execution 共 619 顶层通过，1 个已复现 workflow 基线失败，10 个原 helper/现场 skip；原 host probe 随后退役，最终 host 单独 19 通过、0 skip |
+| 整合后九包 | Orca adapter/protocol、host、contracts、cli、resources、nativecatalog、metadataprocess、textanalysis：218 顶层通过，1 个已复现 resources 基线失败，7 个既有 helper/现场 skip |
+| 最终公开 Controlled 定向 | 正式 foundation 构建 Runner/driver/native fixture；CLIWaitRetry、SingleExecutionColdStop、ResourceCreationRecovery、NativeCatalogPublicCLI、NativeUnknownAndStop、RestartPreservesAuthorization 六个顶层全部通过，0 失败/skip |
+| 目录与前置守卫 | 整合后 catalog 冻结/旧目录兼容/冲突拒绝通过；prerequisites 75 项通过；旧 native-input 入口明确拒绝，未创建输出目录 |
+| 编译及静态核对 | 普通与 live 驱动编译；未运行真实 opt-in。无旧执行工厂/RunTerminalAgent 的残留 Go 消费者，diff whitespace 检查通过 |
+
+最终公开构建的 Runner SHA256 为 `a1a0b03257558037456138d3969d9f37e1e17b15e8e03e8dd568a8be4a17b498`；当前最终产品源码摘要与该构建一致。整合后代表编码与独立 main `a78d87da` 均为 `9af1c6d224c5c1c9bced002525ad75d3541554d41277caaa14d81fb941f0c4f7`。与早期 E110 编码点之间的差异来自上游新增目录资源摘要，不是 A/B 持久字段/codec 变化。
+
+从 A 验证点到 B 删除 86 个旧生产函数，退役 145 个旧 adapter 顶层测试、3 个旧实际终端 Engine 执行专项、1 个旧 host 创建 probe；逐函数/逐测试清单及调用边保存在证据中。保留或改写前置的共享案例没有作为旧 writer 整文件删除。收益是当前执行派发只需理解结构化链，历史证明不再随执行构造扩展；不宣称端到端性能提升。
+
+可复核证据归档：[records.json.gz](evidence/orca-reader-execution-boundary/records.json.gz)。包含 A/B 来源摘要、原/最终调用图、实际删除清单、全部类型比较、代表编码、原失败与最终日志、公开构建回执和目标 main 基线复现。每条记录含 `path`、`bytes`、`sha256`、`utf8`，解压后按 UTF-8 重编码可核对原字节摘要；不含 EXE、数据库或真实认证材料。
+
+这是受影响组件与定向公开受控资格，不能替代完整 L1/Controlled 或真实本机/配对主机/模型资格。没有部署、发布或提 PR。
