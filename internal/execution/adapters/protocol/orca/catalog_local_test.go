@@ -13,6 +13,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"slices"
 	"strings"
 	"sync"
 	"testing"
@@ -67,7 +68,8 @@ func TestLocalOrcaCatalog(t *testing.T) {
 							if json.Unmarshal(sc.Bytes(), &q) != nil {
 								return
 							}
-							if (q.AuthToken != "fixture-token" && q.AuthToken != "rotated-token") || len(q.ClientCapabilities) != 2 {
+							if (q.AuthToken != "fixture-token" && q.AuthToken != "rotated-token") || !slices.Equal(q.ClientCapabilities, []string{"agent-session.structured.v1", "agent-session.structured.registered-agents.v1"}) {
+								t.Error("catalog authentication/capabilities changed")
 								return
 							}
 							mu.Lock()
