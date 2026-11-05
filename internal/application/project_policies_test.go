@@ -253,7 +253,7 @@ func TestProjectPoliciesAuditedStepsBudget(t *testing.T) {
 	if err := m.CheckInput(r.Snapshot.PendingTurn.Prompt, r.Snapshot.PendingTurn.Budget); err != nil {
 		t.Fatal(err)
 	}
-	finishStage(t, e, "实施及必要验证已完成。")
+	finishStage(t, e, "实施及必要验证已完成")
 	r = e.runs["run"]
 	if r.Snapshot.PendingTurn == nil || r.Workflow.StepID != workflow.StepAuditCode {
 		t.Fatal("audit with policies unavailable", r.Diagnostic)

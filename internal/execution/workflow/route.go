@@ -116,11 +116,21 @@ func route(w Snapshot, input StageInput, result reliable.Result, reportPolicy st
 		t.Status, t.Reason = "blocked", acquired.Conflicts[0]
 		return t
 	}
-	candidate, err := ra.DecodeReport(result.Content, state.Contract)
+	var candidate ra.Report
+	var err error
 	locator := "native.final:$"
-	if parsed != nil {
+	switch {
+	case state.Contract == "implementation":
+		err = errors.New("未确认实施及必要验证已完成")
+		if state.Kind == "execute" && ra.RecognizeSuccessOutput(result.Content, implementationIncomplete, input.Prompt) {
+			candidate.Outcome, candidate.Summary = "blocked", strings.TrimSpace(result.Content)
+			locator, err = "native.final:body", nil
+		}
+	case parsed != nil:
 		candidate, err = ra.DecodeReport(*parsed, state.Contract)
 		locator = "parser:provided_text:$"
+	default:
+		candidate, err = ra.DecodeReport(result.Content, state.Contract)
 	}
 	semanticMarker := false
 	if state.Contract == "publication" && state.Kind == "execute" {
@@ -170,7 +180,13 @@ func route(w Snapshot, input StageInput, result reliable.Result, reportPolicy st
 			t.Next = &StageInput{StepID: state.Report, SourceCommandID: source.CommandID, SourceTurnID: source.TurnID, SourceVersion: source.InputVersion, SourceResultID: acquired.ID, ImplementationResultID: original.ImplementationResultID, AuditResultID: original.AuditResultID, ReportToolPolicy: reportPolicy}
 			return t
 		}
-		wait(&t, state, "结果不足，请补充输入。原执行结果已保留。")
+		reason := "结果不足，请补充输入。原执行结果已保留。"
+		if state.Contract == "implementation" && state.Kind == "report" {
+			if explanation := strings.TrimSpace(result.Content); explanation != "" {
+				reason = explanation
+			}
+		}
+		wait(&t, state, reason)
 		return t
 	}
 	t.Report = &candidate

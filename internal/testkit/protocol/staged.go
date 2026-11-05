@@ -43,11 +43,11 @@ func StagedBusiness(cwd, prompt, provider, remote string) (string, error) {
 			return "", err
 		}
 		if os.Getenv("STEERRUNNER_SUCCESS_OUTPUT") == "1" {
-			return "Implemented and verified.\n实施及必要验证已完成。", nil
+			return "Implemented and verified.\n实施及必要验证已完成", nil
 		}
 		return "Implemented and verified.", nil
-	case strings.HasPrefix(strings.TrimSpace(prompt), "Format the preceding implementation result as JSON.") || strings.HasPrefix(prompt, "根据已有执行上下文整理指定实施结果") || strings.HasPrefix(prompt, "仅整理原实施结果，不补做；"):
-		return `{"outcome":"done","summary":"source implementation completed"}`, nil
+	case strings.HasPrefix(prompt, "仅整理原实施结果，不补做。"):
+		return "实施及必要验证已完成", nil
 	case strings.HasPrefix(strings.TrimSpace(prompt), "Format the preceding publication result as JSON.") || strings.HasPrefix(prompt, "根据已有上下文整理指定发布") || strings.HasPrefix(prompt, "仅整理原发布结果与 PR URL，不重发；"):
 		// Fixture model memory comes from the provider artifact of its preceding turn.
 		data, err := os.ReadFile(provider)

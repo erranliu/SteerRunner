@@ -17,13 +17,13 @@ func TestSRWorkflowDevelopment(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, fixed := range []string{"Custom implementation instruction", "Spec: fixed/spec.md", "Plan: fixed/plan.md", "Reference: fixed/reference.md"} {
+	for _, fixed := range []string{"Custom implementation instruction", "Spec: fixed/spec.md", "Plan: fixed/plan.md", "Reference: fixed/reference.md", "实施及必要验证已完成", "末行单独写「未完成」"} {
 		if !strings.Contains(prompt, fixed) {
 			t.Fatalf("override removed fixed material: %s", fixed)
 		}
 	}
 	prompt, err = RenderPromptWithBody(StepReport, map[string]string{"source_command_id": "original"}, "Custom report instruction")
-	if err != nil || !strings.Contains(prompt, ResultContract) || !strings.Contains(prompt, "original") {
+	if err != nil || strings.Contains(prompt, "JSON") || !strings.Contains(prompt, "original") || !strings.Contains(prompt, "成功时末行：实施及必要验证已完成") {
 		t.Fatal("override removed machine/source contract")
 	}
 	if DevelopmentFlow != "development/2" || StepPRReady != "pr_ready" {

@@ -345,7 +345,7 @@ func (e *Engine) applyWorkflowTransition(r *runstate.Record, inputCopy workflow.
 
 		}
 	}
-	r.Diagnostic = transition.Reason
+	r.Diagnostic = e.redact(r, transition.Reason)
 	r.Question = nil
 	r.Snapshot.QuestionRoute = nil
 	r.Snapshot.PendingQuestions = nil

@@ -26,7 +26,7 @@ func TestRAAtomicCompletion(t *testing.T) {
 	defer db.Close()
 	failOperationCommit(t, db)
 	before := e.runs["run"].Revision
-	finishStage(t, e, "实施及必要验证已完成。")
+	finishStage(t, e, "实施及必要验证已完成")
 	if e.runs["run"].Revision != before || len(e.runs["run"].Workflow.Results) != 0 || len(e.runs["run"].Workflow.StageInputs) != 1 {
 		t.Fatal("failed commit published successor")
 	}
@@ -39,7 +39,7 @@ func TestRAAtomicCompletion(t *testing.T) {
 		t.Fatal(err)
 	}
 	gitTest(t, e.runs["run"].RepositoryPath, "commit", "--allow-empty", "-m", "later")
-	finishStage(t, e, "实施及必要验证已完成。")
+	finishStage(t, e, "实施及必要验证已完成")
 	r := e.runs["run"]
 	source := workflow.Result(r.Workflow, input.CommandID)
 	if source == nil || source.Workspace.Head != captured || len(r.Workflow.Results) != 1 || len(r.Workflow.StageInputs) != 2 {
@@ -96,7 +96,7 @@ func TestRAConcurrencyPublication(t *testing.T) {
 	for _, variant := range []string{"stop", "new-source", "head-drift", "wrong-pr-head"} {
 		t.Run(variant, func(t *testing.T) {
 			e, _ := auditEngine(t)
-			finishStage(t, e, "实施及必要验证已完成。")
+			finishStage(t, e, "实施及必要验证已完成")
 			finishStage(t, e, `{"outcome":"done","summary":"audited and validated","fixed_count":0,"fixed_issues":[],"remaining_issues":[]}`)
 			entered, release := make(chan struct{}), make(chan struct{})
 			var url string
@@ -181,7 +181,7 @@ func TestRAConfigRejectBeforeEffects(t *testing.T) {
 
 func TestRAAuditObservedReportWork(t *testing.T) {
 	e, _ := auditEngine(t)
-	finishStage(t, e, "实施及必要验证已完成。")
+	finishStage(t, e, "实施及必要验证已完成")
 	finishStage(t, e, "natural audit output")
 	r := e.runs["run"].Clone()
 	input := r.Snapshot.PendingTurn
@@ -206,7 +206,7 @@ func TestRATransitionUnknownNativeGate(t *testing.T) {
 	r := e.runs["run"].Clone()
 	r.Intents = []operation.Intent{{Request: b.LifecycleRequest{Operation: b.Operation{ID: "original-unknown", Status: b.OperationUnknown}}}}
 	e.runs["run"] = r
-	finishStage(t, e, "实施及必要验证已完成。")
+	finishStage(t, e, "实施及必要验证已完成")
 	r = e.runs["run"]
 	if r.Result == nil || len(r.Workflow.StageResults) != 0 || len(r.Workflow.Results) != 0 || r.NextStage != nil {
 		t.Fatal("unknown source unlocked result acquisition")
@@ -214,19 +214,35 @@ func TestRATransitionUnknownNativeGate(t *testing.T) {
 	r = r.Clone()
 	r.Intents[0].Request.Operation.Status = b.OperationConfirmed
 	e.runs["run"] = r
-	finishStage(t, e, "实施及必要验证已完成。")
+	finishStage(t, e, "实施及必要验证已完成")
 	r = e.runs["run"]
 	if r.Workflow.StepID != workflow.StepImplementInput || r.Workflow.ImplementationResultID != "" {
 		t.Fatal("later clean HEAD reconstructed terminal checkpoint")
 	}
 }
 
-func TestRAStateAuthorityQuestionSource(t *testing.T) {
+func TestRAStateAuthorityIncompleteSource(t *testing.T) {
 	e, _ := auditEngine(t)
-	finishStage(t, e, `{"outcome":"needs_input","summary":"unfinished","question":"Which interface?"}`)
+	finishStage(t, e, "Which interface?\n未完成")
 	r := e.runs["run"]
-	if r.Question == nil || r.Question.Source != "program" || r.Workflow.StepID != workflow.StepImplementInput || r.Snapshot.QuestionRoute != nil {
-		t.Fatal("actual question source confused with native request or policy")
+	if r.Question == nil || r.Question.Source != "workflow_policy" || r.Question.Text != "Which interface?\n未完成" || r.Workflow.StepID != workflow.StepImplementInput || r.Snapshot.QuestionRoute != nil || len(r.Workflow.StageInputs) != 1 {
+		t.Fatal("explicitly incomplete implementation did not wait directly")
+	}
+}
+
+func TestRAImplementationReportCompletesOriginal(t *testing.T) {
+	e, _ := auditEngine(t)
+	original := e.runs["run"].Snapshot.PendingTurn.CommandID
+	finishStage(t, e, "Implemented without a clear verification conclusion")
+	r := e.runs["run"]
+	if r.Workflow.StepID != workflow.StepReport {
+		t.Fatal("unclear original did not enter report")
+	}
+	finishStage(t, e, "实施及必要验证已完成")
+	r = e.runs["run"]
+	a := workflow.Acquired(r.Workflow, r.Workflow.ImplementationResultID)
+	if r.Workflow.StepID != workflow.StepAuditCode || a == nil || a.Source.CommandID != original || a.Method != "agent_report" || len(a.Attempts) != 2 {
+		t.Fatal("report did not complete the original implementation")
 	}
 }
 

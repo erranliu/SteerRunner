@@ -29,7 +29,7 @@ type State struct {
 }
 
 func developmentStates(audited bool) map[string]State {
-	implement := State{PolicySlots: []string{"git", "command", "testing"}, Kind: "execute", Contract: "implementation", PromptKey: StepImplement, Prompt: ImplementPrompt, ModelRole: "execution", SuccessOutput: "实施及必要验证已完成。", Next: StepPublish, Report: StepReport, ReportLimit: 1, Wait: StepImplementInput}
+	implement := State{PolicySlots: []string{"git", "command", "testing"}, Kind: "execute", Contract: "implementation", PromptKey: StepImplement, Prompt: ImplementPrompt, ModelRole: "execution", SuccessOutput: "实施及必要验证已完成", ResultInstruction: "若明确未完成，简述卡点或需要的输入，末行单独写「" + implementationIncomplete + "」。", Next: StepPublish, Report: StepReport, ReportLimit: 1, Wait: StepImplementInput}
 	publish := State{PolicySlots: []string{"git", "command"}, Kind: "execute", Contract: "publication", PromptKey: "publish", Prompt: publishPrompt, ModelRole: "execution", SuccessOutput: "本次发布已完成。", Next: StepPRReady, Verify: StepPublishVerify, Report: StepPublishReport, ReportLimit: 1}
 	if audited {
 		implement.Next = StepAuditCode
@@ -39,7 +39,7 @@ func developmentStates(audited bool) map[string]State {
 	}
 	states := map[string]State{
 		StepImplement:      implement,
-		StepReport:         {Kind: "report", Contract: implement.Contract, PromptKey: StepReport, Prompt: reportPrompt, ModelRole: "execution", Next: implement.Next, Wait: implement.Wait, Workspace: implement.Workspace},
+		StepReport:         {Kind: "report", Contract: implement.Contract, PromptKey: StepReport, Prompt: reportPrompt, ModelRole: "execution", SuccessOutput: implement.SuccessOutput, ResultInstruction: "成功时只写成功标记。否则用一句话说明卡点、缺少的证据或需要的输入。", Next: implement.Next, Wait: implement.Wait, Workspace: implement.Workspace},
 		StepImplementInput: {Kind: "input", Continue: StepImplement},
 		StepPublish:        publish,
 		StepPublishReport:  {Kind: "report", Contract: publish.Contract, PromptKey: StepPublishReport, Prompt: PublishReportPrompt, ModelRole: "execution", Next: publish.Next, Verify: publish.Verify, Workspace: publish.Workspace},
@@ -56,7 +56,7 @@ func developmentStates(audited bool) map[string]State {
 		if state.PolicySlots == nil {
 			state.PolicySlots = []string{}
 		}
-		if state.Kind == "report" {
+		if state.Kind == "report" && state.ResultInstruction == "" {
 			state.ResultInstruction = ra.ResultInstruction(state.Contract)
 		}
 		states[key] = state

@@ -11,7 +11,8 @@ type FileReference struct {
 }
 
 const ImplementPrompt = "读取所列 Spec/Plan/材料，实施并完成必要验证。"
-const reportPrompt = "仅整理原实施结果，不补做；保留依据、失败、未知、缺失与冲突。"
+const reportPrompt = "仅整理原实施结果，不补做。"
+const implementationIncomplete = "未完成"
 const publishPrompt = "发布当前分支并创建 PR；用 git branch --show-current 确定 head。返回真实 PR URL；结果未知时说明并停止，不重复发布。"
 const PublishReportPrompt = "仅整理原发布结果与 PR URL，不重发；保留依据、失败、未知、缺失与冲突。"
 const FeedbackLabel = "\n反馈：\n"
@@ -73,7 +74,7 @@ func promptParts(state State, facts any, body string, caller bool) ([]m.InputPar
 	} else if string(raw) != "{}" && string(raw) != "null" {
 		parts = append(parts, m.InputPart{Source: "source_facts", Owner: m.RunnerInput, Text: FactsLabel + string(raw)})
 	}
-	if state.Kind == "report" {
+	if state.ResultInstruction != "" {
 		parts = append(parts, m.InputPart{Source: "result_format", Owner: m.RunnerInput, Text: "\n" + state.ResultInstruction})
 	}
 	if state.CommitWork {

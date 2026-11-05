@@ -145,7 +145,7 @@ func TestNativeCompletionProofWaitsForOriginalDespiteCacheAndReload(t *testing.T
 
 func TestNativeCompletionProofKeepsAuditAncestryCheck(t *testing.T) {
 	e, w := auditEngine(t)
-	finishStage(t, e, "实施及必要验证已完成。")
+	finishStage(t, e, "实施及必要验证已完成")
 	r := e.runs["run"]
 	pre := checkpoint(r, r.Workflow.ImplementationResultID)
 	input, write, _ := nativeProofFixture(t, e, w)
@@ -171,7 +171,7 @@ func TestNativeCompletionProofWaitsAtResultCommitAndPreservesStop(t *testing.T) 
 			r := e.runs["run"]
 			r.Snapshot.Session.CurrentCommandID = input.CommandID
 			inputs, intents := len(r.Workflow.StageInputs), len(r.Intents)
-			value := b.TurnEvidence{CommandID: input.CommandID, SessionID: r.Snapshot.Session.SessionID, TurnID: r.Snapshot.Session.CurrentTurnID, Started: true, Completed: true, Succeeded: true, FinalVerified: true, FinalSource: "native", FinalItemID: "original-item", LastMessage: "实施及必要验证已完成。"}
+			value := b.TurnEvidence{CommandID: input.CommandID, SessionID: r.Snapshot.Session.SessionID, TurnID: r.Snapshot.Session.CurrentTurnID, Started: true, Completed: true, Succeeded: true, FinalVerified: true, FinalSource: "native", FinalItemID: "original-item", LastMessage: "实施及必要验证已完成"}
 			if e.finish(r.ID, value) {
 				t.Fatal("missing proof published a successor")
 			}
