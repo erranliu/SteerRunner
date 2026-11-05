@@ -52,3 +52,11 @@ go test ./internal/usage/collect -run '^TestStructuredUsage' -count=1 -json
 逐行对照确认：包装的固定 false 仍只绕开业务输入 gate，不限制原 usage 授权范围操作；next/close 透传同一 socket。目录共用调用闭包建立在两端原连接验证之后，原 runtime 闭包、pairedDevice、引导状态请求、能力、listing 次数、错误透传、取消、预算和所有权未变。没有复用按次关闭的 agentSession 业务调用器。未发现需修复的运行逻辑缺陷。
 
 本次补齐了原 fixture 对精确能力、授权范围操作、原回执及连接关闭的验收缺口，全部按影响验证通过。gofmt、`git diff --check` 与文档链接核对通过。以上为受影响包、定向 collector、单个公开 Controlled 案例及双端真实目录资格；未运行完整 L1/Controlled 或 L2/L3，也未新建 development Run 或重做原目录排空。不追认历史 #113/#117 证据为本候选资格，已有发布与停止/封存/排空门禁保持，遵循 [测试指南](../testing.md)。
+
+## PR #118 合并前复审
+
+2026-11-05，复审提交 `ad0eab70b9a44945c20057391df156fd07c33f73`，刷新后目标 main 仍为 `a66038c8`。逐行对照生产 diff，确认包装仅搬移改名；usage 的配对、host/runtime 校验、普通 nil 能力分支及授权范围操作不变。目录建立连接后才使用包装，因此远端引导 status 的缺省能力、首次 runtime 发现和后续绑定保持；共用调用没有引入补发，defer 仍在整个查询返回时关闭同一 socket。#113 文件通道及 #117 认证、分帧、预算和公开投影没有生产差异。未发现代码缺陷，无需修改运行代码或测试。
+
+独立核对已提交证据：`tests.json` 的每个包计数、跳过名及结束事件与本地原始 JSONL 一致；四份已提交真实响应逐项与本地公开原响应相等，响应 kind/adapter/target 与原请求一致。重算当前源码摘要及固定 EXE SHA256 均与 build.json 相符，四份响应及公开 CLI 专项使用同一 EXE。原双端目录联验的资格与限制保持，不将其改写成新增或更广的真机资格。
+
+本轮沙箱外独立复跑第一条包测试命令：protocol/orca 顶层 62、含子测试 359 项通过，原 4 项 opt-in 跳过，25.070 秒；usage/access 顶层 9、含子测试 18 项通过，无跳过，0.875 秒；均失败 0、包结束 pass、exit 0。正常、错误回执、丢回执、连接关闭、usage scope 创建/删除及撤销证明、#113 单次解析和替代端点零连接断言通过。本地原始日志 `.evidence/capability-rpc/pr118-review.jsonl`；本轮仅补复审记录，受测运行代码、测试和联验 EXE 均未改变。
