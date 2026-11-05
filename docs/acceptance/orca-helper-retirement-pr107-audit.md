@@ -17,3 +17,5 @@
 八条原 Run 的停止证明范围均为 `orca_agent_session`，六个目录的升级排空门禁均通过。复验期间只读原目录。该记录覆盖启动门禁的受控测试和基于真实 Run 的专项排空复验，双端业务回合及 Pi 执行沿用原正式运行证据。
 
 合并 #106 后，host、CLI、公开配置和 usage 采集包，以及应用层 Orca 冻结、结构化会话、audited 与文件结果定向测试通过。CLI 集成定向通过 `TestSRStandalonePackage`、`TestSRServiceOwnership`、`TestSRPublicationIdentity`、`TestSRRestartPreservesAuthorization` 和 `TestSRResultFile`。
+
+首轮扩展应用测试触发 10 分钟命令总超时，停在配对 worker 的 `receipt-commit-failed` 子例。主线 `fddffa7a` 的同名夹具会在受理阶段要求解析真实配对主机，无法进入受控回执断言。候选以冻结的历史终端记录构建夹具，独立复跑 `TestSharedNative` 组通过，耗时 437.306 秒。18 个停机回执用例全部通过，含原超时所在子例。
