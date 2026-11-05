@@ -23,6 +23,7 @@ import (
 type ipcTestRequest struct {
 	ID, AuthToken, Method string
 	Params                json.RawMessage
+	ClientCapabilities    []string
 }
 
 func localIPCFixture(t *testing.T, serve func(net.Conn, ipcTestRequest)) {

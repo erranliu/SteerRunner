@@ -11,6 +11,55 @@ import (
 	"time"
 )
 
+func TestLocalAgentCreateSupportKeepsAgentCapabilities(t *testing.T) {
+	for _, tc := range []struct {
+		name, agent string
+		missing     bool
+	}{
+		{name: "codex", agent: "codex"},
+		{name: "pi", agent: "pi"},
+		{name: "missing-atomic-create", agent: "codex", missing: true},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			var requests, checks atomic.Int32
+			ctx, cancel := context.WithTimeout(WithDispatchCheckpoint(context.Background(), func() error {
+				checks.Add(1)
+				return nil
+			}), 3*time.Second)
+			defer cancel()
+			client := NewLocalAgentSessionClient("runtime")
+			want := agentSessionCapabilities()
+			if tc.agent == "pi" {
+				client = NewLocalPiAgentSessionClient("runtime")
+				want = append(want, "agent-session.structured.client-launch-mode.v1", "agent-session.structured.registered-agents.v1")
+			}
+			localIPCFixture(t, func(conn net.Conn, req ipcTestRequest) {
+				if req.Method == "status.get" {
+					caps := agentSessionCapabilities()
+					if tc.missing {
+						caps = slices.DeleteFunc(caps, func(c string) bool { return c == "agentSession.create.message.v1" })
+					}
+					ipcReply(conn, req, "runtime", map[string]any{"capabilities": caps})
+					return
+				}
+				requests.Add(1)
+				if req.Method != "agentSession.createSupport" || !slices.Equal(req.ClientCapabilities, want) {
+					t.Error("local create probe lost the original client capability set")
+				}
+				ipcReply(conn, req, "runtime", map[string]bool{"supported": true})
+			})
+			err := client.SupportsCreate(ctx, "id:fixture-worktree", tc.agent)
+			wantRequests := int32(1)
+			if tc.missing {
+				wantRequests = 0
+			}
+			if (err != nil) != tc.missing || requests.Load() != wantRequests || checks.Load() != 0 {
+				t.Fatal(err, requests.Load(), checks.Load())
+			}
+		})
+	}
+}
+
 func TestLocalAgentSendWireAndDispatch(t *testing.T) {
 	for _, scenario := range []string{"accepted", "commit-failed", "revoked-after-status", "lost-response", "missing-send-capability", "wrong-runtime"} {
 		t.Run(scenario, func(t *testing.T) {

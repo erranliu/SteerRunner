@@ -24,6 +24,33 @@ type AgentSessionClient struct {
 	call func(context.Context, string, any, bool) (json.RawMessage, error)
 }
 
+type agentSessionConnection interface {
+	requestWithCapabilities(context.Context, string, any, []string, bool) (string, error)
+	next(context.Context, string) (json.RawMessage, error)
+	close() error
+}
+
+// callAgentSession owns one verified connection and never retries a request.
+// The transport still consumes mutation authorization at its actual write.
+func callAgentSession(ctx context.Context, conn agentSessionConnection, advertised, capabilities []string, method string, params any, mutation bool) (json.RawMessage, error) {
+	defer conn.close()
+	switch method {
+	case "agentSession.createSupport", "agentSession.create":
+		if err := agentCreationCapabilities(advertised); err != nil {
+			return nil, err
+		}
+	case "agentSession.send":
+		if err := agentSendCapabilities(advertised); err != nil {
+			return nil, err
+		}
+	}
+	id, err := conn.requestWithCapabilities(ctx, method, params, capabilities, mutation)
+	if err != nil {
+		return nil, err
+	}
+	return conn.next(ctx, id)
+}
+
 func agentSessionCapabilities() []string {
 	return []string{
 		"agent-session.structured.v1", "agent-session.host-authority.v1",
@@ -54,22 +81,7 @@ func newLocalAgentSessionClient(runtime string, capabilities []string) AgentSess
 		if err != nil {
 			return nil, err
 		}
-		defer connection.close()
-		if method == "agentSession.createSupport" || method == "agentSession.create" {
-			if err := agentCreationCapabilities(connection.capabilities); err != nil {
-				return nil, err
-			}
-		}
-		if method == "agentSession.send" {
-			if err := agentSendCapabilities(connection.capabilities); err != nil {
-				return nil, err
-			}
-		}
-		id, err := connection.requestWithCapabilities(ctx, method, params, capabilities, mutation)
-		if err != nil {
-			return nil, err
-		}
-		return connection.next(ctx, id)
+		return callAgentSession(ctx, connection, connection.capabilities, capabilities, method, params, mutation)
 	}}
 }
 
@@ -100,22 +112,7 @@ func NewRemoteAgentSessionClient(environment, runtime, expectedHost string) Agen
 		if err != nil {
 			return nil, err
 		}
-		defer connection.close()
-		if method == "agentSession.createSupport" || method == "agentSession.create" {
-			if err := agentCreationCapabilities(connection.capabilities); err != nil {
-				return nil, err
-			}
-		}
-		if method == "agentSession.send" {
-			if err := agentSendCapabilities(connection.capabilities); err != nil {
-				return nil, err
-			}
-		}
-		id, err := connection.requestWithCapabilities(ctx, method, params, capabilities, mutation)
-		if err != nil {
-			return nil, err
-		}
-		return connection.next(ctx, id)
+		return callAgentSession(ctx, connection, connection.capabilities, capabilities, method, params, mutation)
 	}}
 }
 
