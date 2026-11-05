@@ -15,8 +15,10 @@ import (
 	"syscall"
 	"time"
 
+	"encoding/json"
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	"github.com/erranliu/SteerRunner/internal/host"
+	"github.com/erranliu/SteerRunner/internal/nativecatalog"
 	"github.com/erranliu/SteerRunner/internal/resources"
 )
 
@@ -139,12 +141,23 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 	switch value.opts.Command {
 	case "progress-file", "result-file", "run-usage", "run-usage-events", "estimate-run-cost":
 	case "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git":
-	case "version", "serve", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "submit", "inspect", "observe", "last-message", "open-native-session", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history":
+	case "native-catalog", "version", "serve", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "submit", "inspect", "observe", "last-message", "open-native-session", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history":
 	default:
 		return value, contracts.Fail(2, "invalid_arguments", "Expected a documented SteerRunner command; use --help.")
 	}
 	if value.protocol != contracts.Protocol {
 		return value, contracts.Fail(3, "unsupported_protocol", "This executable supports "+contracts.Protocol+".")
+	}
+	if value.opts.Command == "native-catalog" {
+		for option := range seen {
+			if option != "--json" && option != "--protocol" && option != "--input" {
+				return value, contracts.Fail(2, "invalid_arguments", "Native catalog does not accept service or target options.")
+			}
+		}
+		if value.input != "-" {
+			return value, contracts.Fail(2, "invalid_arguments", "Native catalog requires --input -.")
+		}
+		return value, nil
 	}
 	if value.offline && value.opts.Command != "capabilities" && value.opts.Command != "inspect" || value.opts.Command != "validate" && seen["--kind"] {
 		return value, contracts.Fail(2, "invalid_arguments", "This option does not apply to this command.")
@@ -262,11 +275,47 @@ func Run(argv []string, input io.Reader, output, diagnostics io.Writer) int {
 	if parseErr != nil {
 		return reject(parseErr)
 	}
+	if options.opts.Command == "native-catalog" {
+		raw, err := io.ReadAll(io.LimitReader(input, contracts.NativeCatalogInputLimit+1))
+		if err != nil {
+			return reject(contracts.Fail(1, "internal_error", "Cannot read catalog input."))
+		}
+		query, fault := contracts.ReadNativeCatalog(raw)
+		if fault != nil {
+			return reject(fault)
+		}
+		executable, err := os.Executable()
+		if err != nil {
+			return reject(contracts.Fail(1, "internal_error", "Cannot identify catalog executable."))
+		}
+		file, err := os.Open(executable)
+		if err != nil {
+			return reject(contracts.Fail(1, "internal_error", "Cannot identify catalog executable."))
+		}
+		digest := sha256.New()
+		_, err = io.Copy(digest, file)
+		file.Close()
+		if err != nil {
+			return reject(contracts.Fail(1, "internal_error", "Cannot verify catalog executable."))
+		}
+		ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+		defer cancel()
+		result, fault := nativecatalog.Query(ctx, query, contracts.NativeCatalogSource{Version: resources.Version, ExecutableSHA256: hex.EncodeToString(digest.Sum(nil)), ResourceDigest: resources.Digest()})
+		if fault != nil {
+			return reject(fault)
+		}
+		response := contracts.Success("", result)
+		encoded, err := json.Marshal(response)
+		if err != nil || len(encoded)+1 > contracts.NativeCatalogOutputLimit {
+			return reject(contracts.Fail(4, "native_catalog_unavailable", "Catalog response exceeds its limit."))
+		}
+		return finish(response, 0)
+	}
 	if options.opts.Command == "version" {
 		return finish(contracts.Success("", resources.VersionInfo()), 0)
 	}
 	if options.opts.Command == "help" {
-		return finish(contracts.Success("", map[string]any{"usage": "steerrunner <command> --state-dir <absolute-path> --json", "commands": []string{"progress-file", "result-file", "run-usage", "run-usage-events", "estimate-run-cost", "version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "submit", "inspect", "last-message", "open-native-session", "observe", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git"}, "input": "Write commands consume a UTF-8 JSON envelope from --input -. validate consumes a bare object. service start optionally consumes a bare pending_stops object.", "static": "capabilities --offline; validate --kind run-configuration|run --input -", "run_evidence": "artifacts discover|list --run-id R; artifacts collect --run-id R --input -; artifacts read --run-id R --artifact-id A; workspace-git --run-id R. Producer writes .steerrunner/artifacts/<relative_path> in original workspace. Max file 1 MiB. Read is base64; schema/limits in capabilities.run_evidence.", "instance_binding": "--expected-instance-id <id> fences resident business/query commands and disables implicit service startup."}), 0)
+		return finish(contracts.Success("", map[string]any{"usage": "steerrunner <command> --state-dir <absolute-path> --json", "commands": []string{"native-catalog", "progress-file", "result-file", "run-usage", "run-usage-events", "estimate-run-cost", "version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "submit", "inspect", "last-message", "open-native-session", "observe", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git"}, "input": "Write commands consume a UTF-8 JSON envelope from --input -. validate consumes a bare object. service start optionally consumes a bare pending_stops object.", "static": "capabilities --offline; validate --kind run-configuration|run --input -", "run_evidence": "artifacts discover|list --run-id R; artifacts collect --run-id R --input -; artifacts read --run-id R --artifact-id A; workspace-git --run-id R. Producer writes .steerrunner/artifacts/<relative_path> in original workspace. Max file 1 MiB. Read is base64; schema/limits in capabilities.run_evidence.", "instance_binding": "--expected-instance-id <id> fences resident business/query commands and disables implicit service startup."}), 0)
 	}
 	if options.offline && options.opts.Command == "capabilities" {
 		executable, err := os.Executable()

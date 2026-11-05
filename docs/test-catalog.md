@@ -90,7 +90,7 @@ L1 补充报告 64 条/16 MiB 总量、单文件 1 MiB 和发现 256 项的包�
 
 该历史构建的通过与阻断按 [2026-10-20 验收](acceptance/pr-test-gaps-20261020.md) 登记，未运行项不计作通过，不扩展为当前构建资格。
 
-`TestSRResourceCreationRecovery` 使用实际独立 Runner 创建执行器和受控 Orca 公开协议夹具，覆盖创建响应返回前正常停服/强杀、响应已落盘但尚未提交服务数据库、上游响应丢失、原执行器崩溃、原终端身份回执缺失六个窗口。成功恢复必须保留原 worktree、terminal handle/incarnation；后三项保持 unknown。所有窗口固定创建一次、零替换终端、零业务发送，不按名称认领资源，也不凭唯一 inventory 猜测原终端。单元测试另覆盖远端路由、初始终端及 native-control 创建、异源/损坏/丢失回执、写入失败、原创建启动期限和迟到回执后的原意图停止。它不替代真实 Orca 后端资格；本轮审查结果见 [PR #38 复验](acceptance/pr38-review-20261020.md)。
+`TestSRResourceCreationRecovery` 使用独立 Runner 创建执行器和受控 Orca 协议夹具，按当前 structured 契约覆盖七场：创建响应前正常停服/强杀、原 create-result 已落盘、worktree show 响应尚被门控且准备事实未提交数据库、响应丢失、原 owner 崩溃、create 回执缺 terminal 字段、原创建计划缺失。可恢复场景必须保留原 worktree/branch 和 prepare_workspace 操作；业务 session 为空且未启动 turn，从完整原工作区 inventory 核实原辅助 shell 的 runtime/handle/incarnation 后恰好关闭一次。响应丢失、owner 崩溃、缺原创建计划保持 unknown，零发现/收养、零关闭。所有场景创建一次、零替换终端、零 CLI 业务发送，RPC method 审计只允许只读方法。缺 create terminal 字段的正例不依赖旧 initial-terminal 计划；旧 owner 单测继续覆盖其原规则。它不替代真实 Orca 资格；历史 [PR #38 复验](acceptance/pr38-review-20261020.md)保留，当前夹具修正及完整复验见[目录边界验收](acceptance/native-catalog-boundary.md)。
 
 ## L2：最小核心 smoke
 
@@ -215,7 +215,7 @@ L4 的候选扩展只有证明独有覆盖、冻结可重现触发与唯一预�
 | 范围 | 现行数量 | 执行范围 |
 | --- | --- | --- |
 | L1 | 按当批报告统计 | framework、`./internal/...`、两项 Node 扩展文件及原生 driver 编译/零匹配保护；不启动真实模型或创建真实 PR |
-| Controlled | 27 个顶层测试 | 默认受控集成前置；其中包括人工对账与 `TestSRSingleExecutionColdStop` |
+| Controlled | 28 个顶层测试 | 默认受控集成前置；其中包括人工对账、`TestSRSingleExecutionColdStop` 和无服务目录 `TestSRNativeCatalogPublicCLI` |
 | L2 | 1 场景 / 1 case | `local-codex.smoke` 最小开发交付 |
 | L3 | 23 场景 / 31 case | 通用目录；含 14 个 execution-stability case |
 | L4 | 4 场景 / 4 case | 四项受控边界与资源压力，保持独占 |
@@ -428,7 +428,7 @@ Controlled 新增 TestSRProgressFile，默认顶层数从 22 增至 23，覆盖�
 
 | ID / Case | 层级 / 入口 | 独有目标与固定预期 | 隔离 / 串行要求 | 实现与资格 |
 | --- | --- | --- | --- | --- |
-| TestSROrcaCLIWaitRetry | Controlled / test-foundation.ps1 精确 Pattern | 真服务/CLI/SQLite；>15 秒排队仍 queue/0 calls，释放后原 operation 自动继续；正常/强杀重启保留 deadline/身份；stop 后零查询/创建；暂态 backoff 自动继续 | 独立 fixture/cache key，无真实 Orca 文件、模型或 PR；六个内部变体 | 已实现；当前证据见专项验收 |
+| TestSROrcaCLIWaitRetry | Controlled / test-foundation.ps1 精确 Pattern | 真服务/CLI/SQLite；>15 秒排队仍 queue/0 calls，释放后原 operation 自动继续；正常/强杀重启保留 deadline/身份；stop 后零查询/创建；暂态 backoff 自动继续 | 独立 fixture/cache key，无真实 Orca 文件、模型或 PR；七个内部变体 | 已实现；当前证据见专项验收 |
 | orca-local.cli-wait-retry/default | L3 / cli-wait-retry driver | 原生本机 status 真实竞争后原 Run 创建一次；另一原排队 Run stop 后零新查询/资源/输入；转发 journal 无重复业务输入，精确停止与离线结算 | 新 C:/srt fixture；共享用户 CLI cache，独占测试 lease；故障 key 私有，不注入生产锁 | 已注册/实现；本机资格单列 |
 | orca-remote.cli-wait-retry/default | L3 / 同一 driver | 原生远端 repo list 在固定 environment/runtime 中恢复，保留原 operation/Attempt；同样验证取消、唯一创建/输入及资源结算 | 同上；原环境目标单独冻结，不以本机结果替代 | 已注册/实现；远端资格单列 |
 

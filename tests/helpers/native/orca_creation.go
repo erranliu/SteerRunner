@@ -94,6 +94,10 @@ func orcaCreationFixture(args []string) int {
 	}
 	switch args[0] + " " + args[1] {
 	case "worktree show":
+		_ = process.New(time.Second).WriteExecutionFile(filepath.Join(root, "show-entered"), []byte("entered"))
+		for exists(filepath.Join(root, "hold-show-response")) {
+			time.Sleep(20 * time.Millisecond)
+		}
 		return respond(map[string]any{"worktree": value.Worktree})
 	case "worktree list":
 		// Even a perfectly matching name in an inventory is not a creation receipt.

@@ -116,7 +116,7 @@ func main() {
 		return
 	}
 	s := &server{}
-	if strings.Contains(args, "--stdio") {
+	if strings.Contains(args, "--stdio") || args == "app-server" {
 		scanner := bufio.NewScanner(os.Stdin)
 		scanner.Buffer(make([]byte, 4096), 16<<20)
 		for scanner.Scan() {
@@ -227,6 +227,13 @@ func (s *server) call(request rpc) (map[string]any, []map[string]any) {
 			return fail(err)
 		}
 		response["result"] = result
+	case "model/list":
+		if file := os.Getenv("STEERRUNNER_FIXTURE_METADATA_PID"); file != "" {
+			_ = os.WriteFile(file, []byte(strconv.Itoa(os.Getpid())), 0600)
+			time.Sleep(time.Minute)
+		}
+		response["result"] = map[string]any{"data": []any{}, "nextCursor": nil}
+
 	case "initialize":
 		home := os.Getenv("STEERRUNNER_FIXTURE_STATE")
 		if home == "" {

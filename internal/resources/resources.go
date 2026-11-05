@@ -96,6 +96,7 @@ func Capabilities() any {
 	}
 	return map[string]any{
 		"model_input_contract": ModelInputContract(),
+		"native_catalog":       NativeCatalog(),
 		"stop_evidence":        map[string]any{"run_property": "stop_evidence_scope", "frozen": true, "schema": json.RawMessage(Read("stop-evidence.schema.json")), "orca_terminal": "original runtime/worktree/local-host terminal identity verified exited or absent in a complete inventory; native local and environment contracts; not all descendants or host credentials", "orca_local_codex_resources": "original Orca business/control terminals and registered local helper/app-server roots; explicit managed local Codex contract; not all descendants or host credentials", "orca_agent_session": "original native session close acknowledged at most once; settlement is session-scoped, not detached processes or host cleanup"},
 		"orca_execution_contracts": map[string]any{
 			"structured_execute": map[string]any{
