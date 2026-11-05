@@ -74,6 +74,14 @@ func TestWorkspaceCreationUsesConfiguredTimeout(t *testing.T) {
 			if err != nil || receipt.Disposition != b.OperationConfirmed || creations != 1 {
 				t.Fatal(receipt, err, creations)
 			}
+			if receipt.Workspace == nil || receipt.Target == nil || receipt.Workspace.Repository != s.Session.ProjectID || receipt.Workspace.Worktree != f.workspace["path"] || receipt.Workspace.Base != s.WorkspacePlan.BaseCommit || receipt.Workspace.Head != f.workspace["head"] || receipt.Workspace.InspectionScope != "revision" || receipt.Workspace.Tree != "" || receipt.Workspace.Qualified || receipt.Workspace.Dirty || receipt.Workspace.CheckedAt.IsZero() {
+				t.Fatal("terminal creation workspace facts changed", receipt.Workspace)
+			}
+			wantTarget := s.Ref.Target
+			wantTarget.WorktreeID, wantTarget.Branch, wantTarget.BaseRevision = f.workspace["id"].(string), receipt.Workspace.Branch, s.WorkspacePlan.BaseCommit
+			if *receipt.Target != wantTarget || receipt.Process.Kind != "orca_terminal" || receipt.State.SessionAvailable || receipt.State.WorkerLive {
+				t.Fatal("terminal target/state ownership changed", receipt.Target, receipt.State)
+			}
 		})
 	}
 }

@@ -171,13 +171,9 @@ func (l *Lifecycle) prepareWorkspace(ctx context.Context, r b.LifecycleRequest, 
 	}
 	created.Terminal = term
 	p := b.ProcessIdentity{Kind: "orca_terminal", Executable: l.profile.Executable, RuntimeID: term.RuntimeID, Terminal: handle, Incarnation: term.IncarnationID, WorktreeID: worktree.ID, ExecutionHost: l.profile.Target().ExecutionHost}
-	workspace := b.WorkspaceInspection{InspectionScope: "revision", Repository: s.Session.ProjectID, Worktree: worktree.Path, Branch: strings.TrimPrefix(worktree.Branch, "refs/heads/"), Base: r.Input.Workspace.BaseCommit, Head: worktree.Head, CheckedAt: time.Now().UTC()}
+	workspace, target := workspaceCreationFacts(s.Session.ProjectID, s.Ref.Target, worktree, r.Input.Workspace.BaseCommit, time.Now().UTC())
 	receipt.Workspace = &workspace
 	receipt.Process = &p
-	target := s.Ref.Target
-	target.WorktreeID = worktree.ID
-	target.Branch = workspace.Branch
-	target.BaseRevision = workspace.Base
 	receipt.Target = &target
 	receipt.State = b.LifecycleStateFacts{SessionID: SessionID(p), SessionGeneration: p.Incarnation, SessionAvailable: !initializing, WorkerLive: !initializing, WorktreeID: worktree.ID}
 	receipt.Implementation, err = l.envelope(s, State{Process: p})
@@ -185,6 +181,14 @@ func (l *Lifecycle) prepareWorkspace(ctx context.Context, r b.LifecycleRequest, 
 		receipt.Disposition = b.OperationConfirmed
 	}
 	return receipt, err
+}
+
+func workspaceCreationFacts(project string, target b.ExecutionTarget, worktree native.Worktree, base string, checkedAt time.Time) (b.WorkspaceInspection, b.ExecutionTarget) {
+	workspace := b.WorkspaceInspection{InspectionScope: "revision", Repository: project, Worktree: worktree.Path, Branch: strings.TrimPrefix(worktree.Branch, "refs/heads/"), Base: base, Head: worktree.Head, CheckedAt: checkedAt}
+	target.WorktreeID = worktree.ID
+	target.Branch = workspace.Branch
+	target.BaseRevision = workspace.Base
+	return workspace, target
 }
 
 func (l *Lifecycle) creationTimeout() time.Duration {

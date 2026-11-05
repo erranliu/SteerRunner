@@ -254,11 +254,7 @@ func (l *Lifecycle) finishStructuredWorkspace(ctx context.Context, r b.Lifecycle
 	}
 	sort.Slice(state.Shells, func(i, j int) bool { return state.Shells[i].Terminal < state.Shells[j].Terminal })
 	p := b.ProcessIdentity{Kind: "orca_agent_session", Executable: l.profile.Executable, RuntimeID: state.RuntimeID, WorktreeID: state.Worktree.ID, ExecutionHost: l.profile.Target().ExecutionHost}
-	workspace := b.WorkspaceInspection{InspectionScope: "revision", Repository: s.Session.ProjectID, Worktree: state.Worktree.Path, Branch: strings.TrimPrefix(state.Worktree.Branch, "refs/heads/"), Base: r.Input.Workspace.BaseCommit, Head: state.Worktree.Head, CheckedAt: time.Now().UTC()}
-	target := s.Ref.Target
-	target.WorktreeID = state.Worktree.ID
-	target.Branch = workspace.Branch
-	target.BaseRevision = workspace.Base
+	workspace, target := workspaceCreationFacts(s.Session.ProjectID, s.Ref.Target, state.Worktree, r.Input.Workspace.BaseCommit, time.Now().UTC())
 	receipt.Workspace, receipt.Target, receipt.Process = &workspace, &target, &p
 	receipt.State = b.LifecycleStateFacts{WorktreeID: state.Worktree.ID, RuntimeID: state.RuntimeID}
 	receipt.Implementation, err = l.agentEnvelope(s, state)
