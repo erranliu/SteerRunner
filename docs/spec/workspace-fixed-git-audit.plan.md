@@ -1,6 +1,6 @@
 # 固定 Git 审计读取解耦 Plan
 
-按 Spec 实施。本次只交付文档，以下为待执行步骤。 [Spec](workspace-fixed-git-audit.spec.md)
+按 Spec 实施。基线核对、受控回归及两场同一候选验收结果见验收记录。 [Spec](workspace-fixed-git-audit.spec.md) · [验收记录](../acceptance/workspace-fixed-git-audit.md)
 
 ## P0 对照基线
 
