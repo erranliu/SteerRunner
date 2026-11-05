@@ -172,17 +172,32 @@ func TestSRNativePreparationReferencesAreStaticConstraints(t *testing.T) {
 		name, transport, helper string
 		available               bool
 	}{
-		{"absolute-uninstalled", filepath.Join(dir, "orca.cmd"), filepath.Join(dir, "helper.exe"), true},
-		{"relative-transport", "orca.cmd", filepath.Join(dir, "helper.exe"), false},
+		{"absolute-uninstalled", filepath.Join(dir, "orca.cmd"), "", true},
+		{"relative-transport", "orca.cmd", "", false},
+		{"retired-absolute-helper", filepath.Join(dir, "orca.cmd"), filepath.Join(dir, "helper.exe"), false},
 		{"relative-local-helper", filepath.Join(dir, "orca.cmd"), "helper.exe", false},
 	} {
 		t.Run(test.name, func(t *testing.T) {
-			execution := contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "local"}, Settings: marshalConfig(contracts.OrcaSettings{AccessMode: "full_access", Transport: contracts.TransportSettings{Executable: test.transport}, AgentLaunch: contracts.AgentSettings{RuntimeExecutable: test.helper, RuntimeSHA256: strings.Repeat("a", 64)}})}
+			launch := contracts.AgentSettings{}
+			if test.helper != "" {
+				launch.RuntimeExecutable = test.helper
+				launch.RuntimeSHA256 = strings.Repeat("a", 64)
+			}
+			execution := contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "local"}, Settings: marshalConfig(contracts.OrcaSettings{Agent: "codex", AccessMode: "full_access", Transport: contracts.TransportSettings{Executable: test.transport}, AgentLaunch: launch})}
 			if fault := contracts.ValidateExecution(execution); fault != nil {
 				t.Fatal("test constraint leaked into the public gate", fault)
 			}
-			config.Configurations["orca-local-codex"] = marshalConfig(map[string]any{"execution": execution, "workflow": contracts.Workflow{ID: "development", Version: 2}})
-			scenario, c, err := Lookup("orca-local.codex", "default")
+			input := marshalConfig(map[string]any{"execution": execution, "workflow": contracts.Workflow{ID: "development", Version: 2}})
+			fault := contracts.ValidateRunConfiguration(input)
+			if test.helper != "" {
+				if fault == nil || fault.Exit != 3 || fault.Detail.Code != "unsupported_capability" {
+					t.Fatal("retired helper was not rejected by the public configuration gate", fault)
+				}
+			} else if fault != nil {
+				t.Fatal("static path constraint leaked into production", fault)
+			}
+			config.Configurations["orca-local-native-codex"] = input
+			scenario, c, err := Lookup("orca-local.native-development", "default")
 			if err != nil {
 				t.Fatal(err)
 			}

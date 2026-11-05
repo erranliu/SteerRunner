@@ -30,7 +30,8 @@
     "TestSRResultFile",
     "TestSROrcaCLIWaitRetry",
     "TestSRManualReconciliation",
-    "TestSRSingleExecutionColdStop"
+    "TestSRSingleExecutionColdStop",
+    "TestSRNativeCatalogPublicCLI"
   ],
   "controlled_selection": {
     "groups": {
@@ -39,7 +40,8 @@
         "TestSRServiceOwnership",
         "TestSRInputFreeze",
         "TestSRPermissionQualification",
-        "TestSRStorageLogsEvents"
+        "TestSRStorageLogsEvents",
+        "TestSRNativeCatalogPublicCLI"
       ],
       "workflow": [
         "TestSRRunWorkflow",

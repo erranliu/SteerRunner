@@ -3,8 +3,8 @@
 package textanalysis
 
 import (
-	"errors"
+	"github.com/erranliu/SteerRunner/internal/metadataprocess"
 	"os/exec"
 )
 
-func start(*exec.Cmd) (func(), error) { return nil, errors.New("parser CLI supported only on Windows") }
+func start(cmd *exec.Cmd) (func(), error) { return metadataprocess.Start(cmd) }
