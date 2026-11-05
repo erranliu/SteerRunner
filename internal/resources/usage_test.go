@@ -28,7 +28,7 @@ func TestUsageCapabilitiesBoundariesAndSeparation(t *testing.T) {
 			t.Fatal(row)
 		}
 		seen[key] = true
-		want := target == "local" || agent == "codex"
+		want := agent == "codex"
 		if row["collection"] != want || row["production_run_binding"] != want || row["parser"] != true || row["file_transport"] != true {
 			t.Fatal(row)
 		}

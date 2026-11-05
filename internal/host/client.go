@@ -169,6 +169,9 @@ func Ensure(ctx context.Context, dir, executable string, pending ...*contracts.S
 	if info.Status == "startup_unverified" {
 		return contracts.ServiceInfo{}, contracts.Fail(4, "startup_unverified", "The original independent startup is unresolved; inspect bootstrap.json and owned processes before starting again.")
 	}
+	if err := checkOrcaStartupState(dir); err != nil {
+		return contracts.ServiceInfo{}, fault(err, contracts.Fail(4, "service_start_failed", "Cannot check the existing Runs for startup compatibility."))
+	}
 	startupID := contracts.NewID()
 	if err := savePendingStart(dir, startupInput); err != nil {
 		return contracts.ServiceInfo{}, fault(err, contracts.Fail(4, "service_start_failed", "Cannot preserve original pending stops."))

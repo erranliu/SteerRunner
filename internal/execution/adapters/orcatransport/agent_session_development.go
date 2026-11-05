@@ -14,6 +14,28 @@ func agentSendID(op b.Operation) string {
 	return fmt.Sprintf("%d-%s", op.StartedAt.UnixMilli(), op.ID)
 }
 
+// Native acceptance consumes PendingTurn. A later observation must use the
+// original committed operation to recover the frozen stage for that turn.
+func originalAuditedInput(s b.LifecycleSnapshot, state agentSessionState) *b.TurnInput {
+	match := func(input *b.TurnInput) bool {
+		return input != nil && input.CommandID == state.CommandID && digest([]byte(input.Prompt)) == state.InputDigest
+	}
+	if match(s.PendingTurn) {
+		return s.PendingTurn
+	}
+	for _, operation := range s.Operations {
+		action := b.LifecycleAction(operation.Action)
+		if operation.Status != b.OperationConfirmed || action != b.LifecycleStartTurn && action != b.LifecycleSubmitInput {
+			continue
+		}
+		candidate, err := b.CandidateForOperation(operation)
+		if err == nil && match(candidate.Input.Turn) {
+			return candidate.Input.Turn
+		}
+	}
+	return nil
+}
+
 // Use only accepted bindings already committed with the original input
 // operations. Current observation can add evidence only for its own message.
 func developmentAgentInputs(s b.LifecycleSnapshot, state agentSessionState) ([]agentSessionState, error) {
@@ -132,16 +154,17 @@ func (l *Lifecycle) sendStructuredDevelopment(ctx context.Context, r b.Lifecycle
 	if err != nil {
 		return receipt, nil, err
 	}
-	selection := &native.AgentSelection{Model: profile.Model, Effort: profile.ReasoningEffort}
+	selection, err := profile.selection(input, r.Snapshot.PendingTurn)
+	if err != nil {
+		return receipt, nil, err
+	}
 	body := agentBody(input.Prompt)
 	fields := map[string]any{"body": body}
 	state.BodyFingerprint, err = native.AgentFingerprint("agentSession.send", state.SessionID, fields)
 	if err != nil {
 		return receipt, nil, err
 	}
-	if selection.Model == "" && selection.Effort == "" {
-		selection = nil
-	} else {
+	if selection != nil {
 		fields["selection"] = selection
 	}
 	if !reconcile {

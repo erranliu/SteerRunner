@@ -51,7 +51,7 @@ func Catalog() CapabilityCatalog {
 					if agent == "codex" {
 						requirements = append(requirements, "native_codex_0.159.2_or_newer_permissions")
 					} else {
-						requirements = append(requirements, "managed_windows_terminal_tools")
+						requirements = append(requirements, "local_orca_pi_tools")
 					}
 					if target == "orca_environment" {
 						requirements = []string{"configured_orca_environment", "execution_host_native_login", "native_launch_parameters_requested_only"}
@@ -69,13 +69,14 @@ func Catalog() CapabilityCatalog {
 							selection.PromptOverrides = map[string]string{"execute": "caller operation"}
 						}
 						if contracts.OrcaStructuredDevelopment(candidate, selection) {
-							needed = append(needed, "default_codex_launch_uses_structured_messages", "session_scoped_close_acknowledgement")
+							needed = append(needed, "orca_structured_messages", "session_scoped_close_acknowledgement")
 						}
 						if profile.AuditModelRequired {
 							selection.AuditModel = &workflow.ModelSettings{Model: "audit-model"}
 							values := map[string]any{"access_mode": mode, "model": "execution-model"}
 							if adapter == "orca-terminal" {
-								values = map[string]any{"agent": agent, "access_mode": mode, "agent_launch": map[string]any{"runtime_executable": "configured-helper.exe", "model": "execution-model"}}
+								values = map[string]any{"agent": agent, "access_mode": mode, "agent_launch": map[string]any{"model": "execution-model"}}
+								needed = append(needed, "native_orca_structured_audit", "original_turn_model_evidence", "original_workspace_checkpoint")
 							}
 							candidate.Settings = marshal(values)
 							needed = append(needed, "explicit_execution_and_audit_models")

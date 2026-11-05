@@ -61,6 +61,9 @@ func Serve(ctx context.Context, dir, startupID string) (outErr error) {
 		return contracts.Fail(5, "directory_conflict", "This state directory already has a writer.")
 	}
 	defer lock.Close()
+	if err := checkOrcaStartupState(dir); err != nil {
+		return err
+	}
 	// A new writer invalidates prior shutdown evidence even if startup fails.
 	if err := os.Remove(shutdownPath(dir)); err != nil && !os.IsNotExist(err) {
 		return err

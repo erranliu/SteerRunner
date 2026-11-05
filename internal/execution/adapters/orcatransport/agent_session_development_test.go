@@ -13,11 +13,20 @@ import (
 )
 
 func TestStructuredDevelopmentFollowUp(t *testing.T) {
-	for _, scenario := range []string{"normal", "lost-response", "active", "reused-turn", "foreign-user"} {
+	for _, scenario := range []string{"normal", "audit-role", "lost-response", "active", "reused-turn", "foreign-user"} {
 		t.Run(scenario, func(t *testing.T) {
 			ctx := context.Background()
 			l, snapshot, fake := structuredFixture(t)
 			l.agentDevelopment = true
+			if scenario == "audit-role" {
+				l.agentAudited = true
+				l.setup.SelectAuditedResult = func(input b.TurnInput, messages []string) (int, error) {
+					if input.Prompt == "" || len(messages) == 0 {
+						t.Fatal("audited selector lost the original input")
+					}
+					return len(messages) - 1, nil
+				}
+			}
 			prepared, err := l.agentState(snapshot)
 			if err != nil {
 				t.Fatal(err)
@@ -41,12 +50,24 @@ func TestStructuredDevelopmentFollowUp(t *testing.T) {
 			snapshot.Operations = append(snapshot.Operations, first.Operation)
 			snapshot.Implementation = original.Implementation
 			snapshot.Session.LastStoppedTurnID = original.State.TurnID
+			body := snapshot.PendingTurn.Prompt
+			if scenario == "audit-role" {
+				snapshot.PendingTurn = nil // Confirmed native acceptance consumed it.
+				observed, err := l.readStructured(ctx, snapshot)
+				if err != nil || observed.TurnEvidence == nil || observed.TurnEvidence.CommandID != original.TurnEvidence.CommandID {
+					t.Fatal("audited result lost the committed input", observed, err)
+				}
+			}
 			fake.pages[0].Fence = 7
 			fake.pages[0].Working = scenario == "active"
 
 			// A distinct original command can carry the same bytes.
-			body := snapshot.PendingTurn.Prompt
 			snapshot.PendingTurn = &b.TurnInput{CommandID: strings.Repeat("b", 32), Prompt: body}
+			wantModel, wantEffort := "requested-model", "medium"
+			if scenario == "audit-role" {
+				wantModel, wantEffort = "audit-model", "high"
+				snapshot.PendingTurn.Model, snapshot.PendingTurn.ReasoningEffort = wantModel, wantEffort
+			}
 			r := request(snapshot, b.LifecycleStartTurn, b.LifecycleInput{Turn: snapshot.PendingTurn})
 			r.Operation.ID = strings.Repeat("a", 32)
 			r.Operation.StartedAt = time.UnixMilli(1793680000123)
@@ -54,7 +75,7 @@ func TestStructuredDevelopmentFollowUp(t *testing.T) {
 			final := `{"outcome":"needs_input","summary":"original result","question":"Continue?"}`
 			fake.send = func(send native.AgentSend) error {
 				writes++
-				if send.Envelope.ClientOperationID != "1793680000123-"+r.Operation.ID || *send.Envelope.ExpectedRuntimeFence != 7 || send.Body.Blocks[0].Text != body || send.Selection == nil || send.Selection.Model != "requested-model" {
+				if send.Envelope.ClientOperationID != "1793680000123-"+r.Operation.ID || *send.Envelope.ExpectedRuntimeFence != 7 || send.Body.Blocks[0].Text != body || send.Selection == nil || send.Selection.Model != wantModel || send.Selection.Effort != wantEffort {
 					t.Fatal("follow-up lost original wire facts", send)
 				}
 				userID := "orca:" + send.Envelope.ClientOperationID

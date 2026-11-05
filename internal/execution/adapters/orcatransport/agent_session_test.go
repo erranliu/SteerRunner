@@ -26,7 +26,7 @@ type agentFixture struct {
 	send                            func(native.AgentSend) error
 }
 
-func (f *agentFixture) SupportsCreate(context.Context, string) error { return nil }
+func (f *agentFixture) SupportsCreate(context.Context, string, string) error { return nil }
 func (f *agentFixture) Create(_ context.Context, c native.AgentCreate) (json.RawMessage, error) {
 	f.creates++
 	f.create = c

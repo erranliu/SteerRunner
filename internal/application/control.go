@@ -348,7 +348,7 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 }
 
 func structuredDevelopmentClose(r *runstate.Record) bool {
-	return r.Snapshot.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 && r.Request.Workflow.ID == "development" && r.Request.Workflow.Version == 2 && slices.ContainsFunc(r.Profile, func(p b.ImplementationDataEnvelope) bool {
+	return r.Snapshot.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 && (r.Request.Workflow.ID == "development" || structuredAudited(r)) && r.Request.Workflow.Version == 2 && slices.ContainsFunc(r.Profile, func(p b.ImplementationDataEnvelope) bool {
 		return p.ImplementationKey == orca.AgentSessionProfileKey && p.CodecVersion == orca.AgentSessionCloseProfileVersion
 	})
 }

@@ -773,6 +773,9 @@ type LifecyclePort interface {
 type LifecycleSetup struct {
 	ProgressFile string
 	ResultFile   string
+	// The workflow owner may select the unique original result from attributed
+	// complete assistant messages. The selector does not run I/O or advance state.
+	SelectAuditedResult func(TurnInput, []string) (int, error)
 	// Optional host scope, invoked synchronously during Execute with the host's
 	// dispatch gate held. Only the supplied read-only query may run with that
 	// gate released. The scope restores the gate and rechecks authorization

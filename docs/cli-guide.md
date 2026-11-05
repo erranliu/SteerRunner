@@ -39,7 +39,7 @@ Runner 在业务前准备各 Run 独立的有限期 capability，并执行与实
 GitHub App 支持已移除，旧 `execution.settings.github_auth`（包括 null）明确拒绝，不能静默改用个人身份。
 升级前须用旧版本停止、核实并收尾已有 App Run/Check；新版本不迁移其身份或接管旧 App 凭据。
 固定 approval never，失败不会回退自动审核发布。
-Orca local 受管执行使用可信 helper、原会话 readiness 与精确资源停止；新远端 Run 只使用已有 Orca/Codex/Git/gh，不部署 helper，不承诺 Runner capability、同工具预检或登录撤销。远端配置中的 runtime_executable/runtime_sha256 键（含空值）拒绝。
+新 Orca Run 使用 Orca 原生结构化会话。配置支持模型选择，显式 `agent_launch.executable`、非空 `args`、`runtime_executable` 和 `runtime_sha256` 在受理前拒绝。旧终端 Run 由原 Runner 构建排空。配对远端继续使用已有 Orca/Codex/Git/gh 登录。
 个人多机边界、App 移除和本次验证见[专项记录](acceptance/personal-runner-gh-only-20261019.md)。
 同服务多 Run 保留原工作区、会话、事件、PR 与停止隔离。原生远端不支持有来源证明的双模型审计；原 helper 构建的历史验证范围见
 [Orca 扩展验收](archive/2026-10/acceptance/orca-remote-extensions-20261018.md)。
@@ -81,7 +81,7 @@ Orca 远端 Codex 的 SessionStart 可能清空输入预览并改变显示回合
 服务启动后，`capabilities` 的 `workflows` 返回可选流程、允许覆盖的提示词步骤及模型要求。submit 继续通过 RunRequest 的 `workflow.id/version` 选择：
 
 - `development/2`：实施→发布→pr_ready；可信成功行或完整机器结果可跳过补报，每个原源最多补报一次。未完成的实施等待输入。
-- `development-audited/2`：实施→一次代码审计及 P0–P2 修复→发布；审计记录修复数量、内容及提交前后来源。支持本机 `codex-app-server` 与配置可信 helper 的 Orca local Codex；实际模型回执和执行主机 Git 来源均须核实。原生远端在接受前返回 unsupported_capability。
+- `development-audited/2`：实施→一次代码审计及 P0–P2 修复→发布。支持本机 `codex-app-server` 和本机 Orca 结构化 Codex，均核实实际模型及执行主机 Git 来源。本机 Orca 可以为两角色选择同一模型和不同 effort，此时必须显式填写审计 effort。停止使用 `orca_agent_session` 范围，`result_file` 在业务结束时采集一次快照。升级前由旧构建排空原状态目录，删除 audited 配置中的 `agent_launch` 可执行文件、参数和 helper 绑定，再由新构建使用独立目录。远端 audited 在受理前返回 `unsupported_capability`。
 
 带审计请求的相关字段如下，其余 RunRequest 字段仍必填。模型标识请替换为账号实际可用型号：
 
@@ -142,7 +142,7 @@ worker 的 common Git 目录只属于该 Run。开发 full_access 不再编译�
 代价是每个 Run 多一份本机仓库副本。
 已有 Run 的共享缓存和冻结权限保持原样，不在恢复时扩大授权；该修复通过新 Run 生效。
 
-开发执行继承宿主机 HOME、Git 配置、credential helper、gh 和 SSH 登录。Runner 不导出 token 到 argv、配置或证据，不再创建认证 broker、CA、socket、capability 或租期。Pi 通用工具保留宿主 HOME，过滤模型 provider 密钥。DSH 执行及专用历史/用量支持已移除。PR 查询 provider 的服务端 TokenEnv/command 认证仍保留。
+开发执行继承宿主机 HOME、Git 配置、credential helper、gh 和 SSH 登录。Runner 不导出 token 到 argv、配置或证据。新本机 Pi 使用 Orca 的工具和宿主环境，Runner 的旧工具白名单、环境过滤与 Job 写入者证明已退役。Pi 使用会话范围停止和业务结束文件快照，原生 usage 归属未验证时显示不可用。PR 查询 provider 的服务端 TokenEnv/command 认证仍保留。
 
 默认的新状态目录为 `%LOCALAPPDATA%/SteerRunner-v8`。已保存的客户端 state_dir 与实例绑定不会自动改写；旧目录明确返回 unsupported_schema，需使用全新目录重新绑定，不迁移旧记录。
 

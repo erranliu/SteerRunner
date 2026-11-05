@@ -19,8 +19,8 @@ func ExecutionModel(e Execution) (workflow.ModelSettings, error) {
 		if err := DecodeStrict(e.Settings, &s); err != nil {
 			return workflow.ModelSettings{}, err
 		}
-		if e.Target.Kind != "local" || s.AgentName() != "codex" || s.AgentLaunch.RuntimeExecutable == "" {
-			return workflow.ModelSettings{}, errors.New("auditing requires the local managed execution-host runtime; native remote Orca has no verified audit model context")
+		if e.Target.Kind != "local" || s.AgentName() != "codex" {
+			return workflow.ModelSettings{}, errors.New("auditing requires local Orca Codex model provenance")
 		}
 		return workflow.ModelSettings{Model: s.AgentLaunch.Model, ReasoningEffort: s.AgentLaunch.ReasoningEffort}, nil
 	}

@@ -37,10 +37,11 @@ func ConfigurationSchemas() json.RawMessage {
 		choice := map[string]any{"type": "object", "required": []string{"adapter", "target", "settings"}, "additionalProperties": false,
 			"properties": map[string]any{"adapter": map[string]any{"const": adapter}, "target": target, "settings": adapters[adapter]}}
 		if adapter == "orca-terminal" {
-			choice["allOf"] = []any{map[string]any{
-				"if":   map[string]any{"properties": map[string]any{"target": remote}},
-				"then": map[string]any{"properties": map[string]any{"settings": map[string]any{"properties": map[string]any{"agent_launch": map[string]any{"not": map[string]any{"anyOf": []any{map[string]any{"required": []string{"runtime_executable"}}, map[string]any{"required": []string{"runtime_sha256"}}}}}}}}},
-			}}
+			nativeLaunch := map[string]any{
+				"properties": map[string]any{"args": map[string]any{"maxItems": 0}},
+				"not":        map[string]any{"anyOf": []any{map[string]any{"required": []string{"executable"}}, map[string]any{"required": []string{"runtime_executable"}}, map[string]any{"required": []string{"runtime_sha256"}}}},
+			}
+			choice["allOf"] = []any{map[string]any{"properties": map[string]any{"settings": map[string]any{"properties": map[string]any{"agent_launch": nativeLaunch}}}}}
 		}
 		choices = append(choices, choice)
 	}
@@ -50,9 +51,10 @@ func ConfigurationSchemas() json.RawMessage {
 		execution := map[string]any{"properties": map[string]any{"adapter": map[string]any{"enum": profile.SupportedAdapters}}}
 		if profile.AuditModelRequired {
 			model := map[string]any{"type": "string", "minLength": 1, "pattern": `^\S(?:.*\S)?$`, "not": map[string]any{"pattern": "[\u0000-\u001f\u007f-\u009f]"}}
+			structuredLaunch := map[string]any{"required": []string{"model"}, "properties": map[string]any{"model": model}}
 			execution["allOf"] = []any{
 				map[string]any{"if": map[string]any{"properties": map[string]any{"adapter": map[string]any{"const": "codex-app-server"}}}, "then": map[string]any{"properties": map[string]any{"settings": map[string]any{"required": []string{"model"}, "properties": map[string]any{"model": model}}}}},
-				map[string]any{"if": map[string]any{"properties": map[string]any{"adapter": map[string]any{"const": "orca-terminal"}}}, "then": map[string]any{"properties": map[string]any{"target": local, "settings": map[string]any{"required": []string{"agent_launch"}, "properties": map[string]any{"agent": map[string]any{"const": "codex"}, "agent_launch": map[string]any{"required": []string{"model", "runtime_executable"}, "properties": map[string]any{"model": model, "runtime_executable": map[string]any{"type": "string", "minLength": 1}}}}}}}},
+				map[string]any{"if": map[string]any{"properties": map[string]any{"adapter": map[string]any{"const": "orca-terminal"}}}, "then": map[string]any{"properties": map[string]any{"target": local, "settings": map[string]any{"required": []string{"agent_launch"}, "properties": map[string]any{"agent": map[string]any{"const": "codex"}, "agent_launch": structuredLaunch}}}}},
 			}
 		}
 		promptNames := any(map[string]any{"enum": profile.PromptSteps})

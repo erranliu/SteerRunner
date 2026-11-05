@@ -287,10 +287,10 @@ func OrcaStructuredExecute(execution Execution, selected Workflow) bool {
 		return false
 	}
 	var settings OrcaSettings
-	return json.Unmarshal(execution.Settings, &settings) == nil && settings.AgentName() == "codex"
+	return json.Unmarshal(execution.Settings, &settings) == nil && (settings.AgentName() == "codex" || local && settings.AgentName() == "pi")
 }
 
-// OrcaStructuredDevelopment selects new default-launch development Runs.
+// OrcaStructuredDevelopment selects new ordinary Orca development Runs.
 func OrcaStructuredDevelopment(execution Execution, selected Workflow) bool {
 	local := execution.Target.Kind == "local" && execution.Target.Environment == ""
 	remote := execution.Target.Kind == "orca_environment" && execution.Target.Environment != ""
@@ -298,11 +298,15 @@ func OrcaStructuredDevelopment(execution Execution, selected Workflow) bool {
 		return false
 	}
 	var settings OrcaSettings
-	if json.Unmarshal(execution.Settings, &settings) != nil || settings.AgentName() != "codex" {
+	return json.Unmarshal(execution.Settings, &settings) == nil && (settings.AgentName() == "codex" || local && settings.AgentName() == "pi")
+}
+
+func OrcaStructuredAudited(execution Execution, selected Workflow) bool {
+	if execution.Adapter != "orca-terminal" || execution.Target.Kind != "local" || execution.Target.Environment != "" || selected.ID != workflow.AuditedDevelopment || selected.Version != 2 {
 		return false
 	}
-	launch := settings.AgentLaunch
-	return launch.Executable == "" && len(launch.Args) == 0 && launch.RuntimeExecutable == "" && launch.RuntimeSHA256 == ""
+	var settings OrcaSettings
+	return json.Unmarshal(execution.Settings, &settings) == nil && settings.AgentName() == "codex"
 }
 
 // ValidateRunConfiguration is pure admission; it performs no environment I/O.
@@ -373,22 +377,18 @@ func ValidateRunConfiguration(data []byte) *Fault {
 			return invalid
 		}
 	}
-	if OrcaStructuredExecute(value.Execution, value.Workflow) {
+	if OrcaStructuredExecute(value.Execution, value.Workflow) || OrcaStructuredDevelopment(value.Execution, value.Workflow) || OrcaStructuredAudited(value.Execution, value.Workflow) {
 		var settings OrcaSettings
 		_ = json.Unmarshal(value.Execution.Settings, &settings)
-		if settings.AgentName() == "codex" {
-			var fields map[string]json.RawMessage
-			_ = json.Unmarshal(value.Execution.Settings, &fields)
-			var launch map[string]json.RawMessage
-			_ = json.Unmarshal(fields["agent_launch"], &launch)
-			for _, name := range []string{"runtime_executable", "runtime_sha256", "executable"} {
-				if _, present := launch[name]; present {
-					return Fail(3, "unsupported_capability", "Orca Codex execute/1 uses Orca's native executor; remove explicit agent_launch executable/runtime settings.")
-				}
-			}
-			if len(settings.AgentLaunch.Args) != 0 {
-				return Fail(3, "unsupported_capability", "Orca Codex execute/1 uses Orca's native executor; remove agent_launch.args.")
-			}
+		var fields map[string]json.RawMessage
+		_ = json.Unmarshal(value.Execution.Settings, &fields)
+		var launch map[string]json.RawMessage
+		_ = json.Unmarshal(fields["agent_launch"], &launch)
+		_, executable := launch["executable"]
+		_, helper := launch["runtime_executable"]
+		_, digest := launch["runtime_sha256"]
+		if executable || helper || digest || len(settings.AgentLaunch.Args) != 0 {
+			return Fail(3, "unsupported_capability", "Orca uses its native executor. Remove explicit agent_launch executable, args and helper settings before submitting.")
 		}
 	}
 	if failure := ValidateExecution(value.Execution); failure != nil {
@@ -406,8 +406,17 @@ func ValidateRunConfiguration(data []byte) *Fault {
 			return Fail(3, "unsupported_capability", "The audited workflow requires a managed Codex execution adapter.")
 		}
 		settings, err := ExecutionModel(value.Execution)
-		if err != nil || !plain(settings.Model) || strings.ContainsFunc(settings.Model, unicode.IsControl) || settings.Model == model.Model {
+		if err != nil || !plain(settings.Model) || strings.ContainsFunc(settings.Model, unicode.IsControl) {
 			return invalid
+		}
+		if settings.Model == model.Model {
+			executionEffort := settings.ReasoningEffort
+			if executionEffort == "" {
+				executionEffort = "medium"
+			}
+			if !OrcaStructuredAudited(value.Execution, value.Workflow) || model.ReasoningEffort == "" || executionEffort == model.ReasoningEffort {
+				return invalid
+			}
 		}
 	}
 	for step, body := range value.Workflow.PromptOverrides {
@@ -472,7 +481,7 @@ func ValidateExecution(value Execution) *Fault {
 			return invalid
 		}
 		if settings.AgentName() == "pi" && (value.Target.Kind != "local" || len(settings.AgentLaunch.Args) != 0 || !slices.Contains([]string{"", "minimal", "low", "medium", "high", "xhigh"}, settings.AgentLaunch.ReasoningEffort)) {
-			return Fail(3, "unsupported_capability", "Pi requires the local managed TUI, fixed tools and a supported thinking level.")
+			return Fail(3, "unsupported_capability", "Pi requires local Orca and a supported thinking level.")
 		}
 		if raw, ok := fields["transport"]; ok && !optionalStrings(raw, "executable", "wait_timeout") {
 			return invalid

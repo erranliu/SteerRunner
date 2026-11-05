@@ -8,7 +8,7 @@ $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 $taskRepo = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 . (Join-Path $PSScriptRoot 'delivery-contract.ps1')
-$taskSourcePaths = @('internal','cmd/steerrunner-agent','go.mod','go.sum','scripts/test-native-input.ps1','scripts/delivery-contract.ps1')
+$taskSourcePaths = @('internal','go.mod','go.sum','scripts/test-native-input.ps1','scripts/delivery-contract.ps1')
 $taskIdentity = Get-SRSourceIdentity $taskRepo $taskSourcePaths
 if ($Mode -ne 'controlled' -and (-not $Target -or $Repeat -ne 1)) { throw 'Real probe requires a fixed target and one fresh independent session per invocation' }
 $taskTarget = if ($Mode -eq 'controlled') { $null } else { Get-Content -LiteralPath $Target -Raw | ConvertFrom-Json }

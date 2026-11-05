@@ -39,6 +39,14 @@ func remoteAgentSessionCapabilities() []string {
 }
 
 func NewLocalAgentSessionClient(runtime string) AgentSessionClient {
+	return newLocalAgentSessionClient(runtime, agentSessionCapabilities())
+}
+
+func NewLocalPiAgentSessionClient(runtime string) AgentSessionClient {
+	return newLocalAgentSessionClient(runtime, remoteAgentSessionCapabilities())
+}
+
+func newLocalAgentSessionClient(runtime string, capabilities []string) AgentSessionClient {
 	return AgentSessionClient{call: func(ctx context.Context, method string, params any, mutation bool) (json.RawMessage, error) {
 		ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
 		defer cancel()
@@ -57,7 +65,7 @@ func NewLocalAgentSessionClient(runtime string) AgentSessionClient {
 				return nil, err
 			}
 		}
-		id, err := connection.requestWithCapabilities(ctx, method, params, agentSessionCapabilities(), mutation)
+		id, err := connection.requestWithCapabilities(ctx, method, params, capabilities, mutation)
 		if err != nil {
 			return nil, err
 		}
@@ -222,8 +230,11 @@ type AgentSessionRefusal struct{ Code, Message string }
 
 func (e *AgentSessionRefusal) Error() string { return e.Code + ": " + e.Message }
 
-func (c AgentSessionClient) SupportsCreate(ctx context.Context, worktree string) error {
-	raw, err := c.call(ctx, "agentSession.createSupport", map[string]string{"worktree": worktree, "agent": "codex"}, false)
+func (c AgentSessionClient) SupportsCreate(ctx context.Context, worktree, agent string) error {
+	if agent != "codex" && agent != "pi" {
+		return errors.New("unsupported structured Orca agent")
+	}
+	raw, err := c.call(ctx, "agentSession.createSupport", map[string]string{"worktree": worktree, "agent": agent}, false)
 	if err != nil {
 		return err
 	}
@@ -231,7 +242,7 @@ func (c AgentSessionClient) SupportsCreate(ctx context.Context, worktree string)
 		Supported bool `json:"supported"`
 	}
 	if json.Unmarshal(raw, &result) != nil || !result.Supported {
-		return errors.New("original Orca host cannot create the required full-access Codex session")
+		return fmt.Errorf("original Orca host cannot create the required %s session", agent)
 	}
 	return nil
 }
@@ -251,7 +262,7 @@ func agentDomain(raw json.RawMessage) error {
 }
 
 func (c AgentSessionClient) Create(ctx context.Context, request AgentCreate) (json.RawMessage, error) {
-	if request.Envelope.SessionID == "" || request.Envelope.ClientOperationID == "" || request.FirstMessage.ClientMessageID == "" || request.Worktree == "" || request.Agent != "codex" {
+	if request.Envelope.SessionID == "" || request.Envelope.ClientOperationID == "" || request.FirstMessage.ClientMessageID == "" || request.Worktree == "" || request.Agent != "codex" && request.Agent != "pi" {
 		return nil, errors.New("incomplete structured creation identity")
 	}
 	if err := request.FirstMessage.Body.ValidateInput(); err != nil {

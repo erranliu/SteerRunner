@@ -56,6 +56,17 @@ type StageResult struct {
 	Succeeded, FinalVerified                 bool
 	Final, Failure, FinalDiagnostic, Outcome string
 	Workspace                                *WorkspaceSource `json:"workspace,omitempty"`
+	ActualModel                              *ModelEvidence   `json:"actual_model,omitempty"`
+}
+
+// ModelEvidence records the native original turn report after its temporary
+// source registration has been revoked.
+type ModelEvidence struct {
+	Model           string `json:"model"`
+	ReasoningEffort string `json:"reasoning_effort"`
+	ProviderSession string `json:"provider_session"`
+	Turn            string `json:"turn"`
+	SourceDigest    string `json:"source_digest"`
 }
 
 func PublicationStep(step string) bool { return step == StepPublish || step == StepPublishReport }

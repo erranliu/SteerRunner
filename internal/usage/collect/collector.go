@@ -115,8 +115,10 @@ func (c *Collector) observe(ctx context.Context, r *runstate.Record) {
 		var state orca.State
 		var original *orca.StructuredUsageIdentity
 		var err error
-		development := r.Request.Workflow.ID == "development" && r.Request.Workflow.Version == 2
-		if snap.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 && (snap.Ref.Target.ExternalRuntime != "" || development) {
+		development := (r.Request.Workflow.ID == "development" || r.Request.Workflow.ID == "development-audited") && r.Request.Workflow.Version == 2
+		if snap.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 && snap.Ref.Agent.Name == "pi" {
+			err = errors.New("PRODUCTION_BINDING_UNSUPPORTED")
+		} else if snap.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 && (snap.Ref.Target.ExternalRuntime != "" || development) {
 			inputs := make([]b.TurnInput, 0, len(r.Workflow.StageInputs))
 			for _, input := range r.Workflow.StageInputs {
 				if input.AttemptID == snap.Session.AttemptID {
@@ -674,6 +676,13 @@ func currentRuntime(ctx context.Context, p orca.Profile) (string, error) {
 	return envelope.Meta.RuntimeID, nil
 }
 func safeFolder(ctx context.Context, p orca.Profile, l access.Lease) bool {
+	return safeFolderForHost(ctx, p, l, false)
+}
+
+func safeFolderForHost(ctx context.Context, p orca.Profile, l access.Lease, localOnly bool) bool {
+	if localOnly && (p.Environment != "" || l.HostID != "local" || l.Environment != "") {
+		return false
+	}
 	args := append([]string{}, p.Args...)
 	// Terminal selectors require the explicit id: prefix even though the file
 	// channel accepts the bare folder: scope. A selector rejection proves nothing
@@ -692,19 +701,40 @@ func safeFolder(ctx context.Context, p orca.Profile, l access.Lease) bool {
 	if err != nil || envelope.Meta.RuntimeID != l.Runtime {
 		return false
 	}
-	return emptyTerminalListing(envelope.Result)
+	return emptyTerminalListingForHost(envelope.Result, localOnly)
 }
 
 func emptyTerminalListing(raw json.RawMessage) bool {
+	return emptyTerminalListingForHost(raw, false)
+}
+
+func emptyTerminalListingForHost(raw json.RawMessage, localOnly bool) bool {
 	var listing struct {
 		Terminals []json.RawMessage `json:"terminals"`
 		Total     *int              `json:"totalCount"`
 		Truncated *bool             `json:"truncated"`
 		HostScope struct {
+			Hosts   []string `json:"hostIds"`
 			Omitted []string `json:"omittedHostIds"`
 		} `json:"hostScope"`
 	}
-	return json.Unmarshal(raw, &listing) == nil && listing.Terminals != nil && len(listing.Terminals) == 0 && listing.Total != nil && *listing.Total == 0 && listing.Truncated != nil && !*listing.Truncated && listing.HostScope.Omitted != nil && len(listing.HostScope.Omitted) == 0
+	if json.Unmarshal(raw, &listing) != nil || listing.Terminals == nil || len(listing.Terminals) != 0 || listing.Total == nil || *listing.Total != 0 || listing.Truncated == nil || *listing.Truncated || listing.HostScope.Omitted == nil {
+		return false
+	}
+	if !localOnly {
+		return len(listing.HostScope.Omitted) == 0
+	}
+	// A local-only registration can have references on its original local
+	// host. Paired runtime omissions are reported even for that exact selector.
+	if len(listing.HostScope.Hosts) != 1 || listing.HostScope.Hosts[0] != "local" {
+		return false
+	}
+	for _, host := range listing.HostScope.Omitted {
+		if !strings.HasPrefix(host, "runtime:") {
+			return false
+		}
+	}
+	return true
 }
 func (c *Collector) cleanupStatus(ctx context.Context, run, prior string) string {
 	keys, err := c.Store.UsageJournalKeys(ctx, "lease:")
