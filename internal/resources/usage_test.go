@@ -17,19 +17,20 @@ func TestUsageCapabilitiesBoundariesAndSeparation(t *testing.T) {
 		}
 	}
 	matrix := caps["matrix"].([]map[string]any)
-	if len(matrix) != 4 {
+	if len(matrix) != 5 {
 		t.Fatal(matrix)
 	}
 	seen := map[string]bool{}
 	for _, row := range matrix {
 		target, agent := row["target"].(string), row["agent"].(string)
-		key := target + "/" + agent
+		adapter := row["adapter"].(string)
+		key := adapter + "/" + target + "/" + agent
 		if seen[key] || (target != "local" && target != "orca_environment") {
 			t.Fatal(row)
 		}
 		seen[key] = true
 		want := agent == "codex"
-		if row["collection"] != want || row["production_run_binding"] != want || row["parser"] != true || row["file_transport"] != true {
+		if row["collection"] != want || row["production_run_binding"] != want || row["parser"] != true || row["file_transport"] != (adapter == "orca-terminal") {
 			t.Fatal(row)
 		}
 		if !want && row["reason"] != "PRODUCTION_BINDING_UNSUPPORTED" {

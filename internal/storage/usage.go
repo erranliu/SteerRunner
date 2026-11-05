@@ -57,7 +57,7 @@ func (s *Store) UsageRuns(ctx context.Context) ([]*runstate.Record, error) {
 			return nil, err
 		}
 		r := &runstate.Record{ID: evidence.ID, Revision: evidence.Revision, Status: evidence.Status, StopStatus: evidence.StopStatus, CreatedAt: evidence.CreatedAt, LaunchCommand: evidence.LaunchCommand, Snapshot: evidence.Snapshot, Profile: evidence.Profile}
-		if evidence.Snapshot.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 {
+		if evidence.Snapshot.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 || evidence.Snapshot.Ref.Protocol == b.ProtocolLocalCodexAppServer {
 			// The structured owner stores no prompt bodies in opaque state. Read
 			// only original input/result facts, without decoding workflow config
 			// or giving this projection any scheduling/control authority. Legacy
