@@ -68,8 +68,7 @@ func CatalogEnvironments(ctx context.Context) ([]CatalogEnvironment, error) {
 
 // QueryCatalog owns only this query's connection. No execution resources are created.
 func QueryCatalog(ctx context.Context, environment, kind, agent string) (Catalog, error) {
-	var call func(context.Context, string, any) (json.RawMessage, error)
-	var closeConnection func() error
+	var socket stateConnection
 	var runtimeID func() string
 	pairedDevice := ""
 	if environment == "" {
@@ -107,10 +106,7 @@ func QueryCatalog(ctx context.Context, environment, kind, agent string) (Catalog
 		if err != nil {
 			return Catalog{}, err
 		}
-		call = func(ctx context.Context, method string, params any) (json.RawMessage, error) {
-			return callState(ctx, connection, method, params)
-		}
-		closeConnection = connection.close
+		socket = connection
 		runtimeID = func() string { return connection.runtime }
 	} else {
 		metadata, err := readCatalogMetadata("orca-environments.json")
@@ -125,18 +121,14 @@ func QueryCatalog(ctx context.Context, environment, kind, agent string) (Catalog
 		if err != nil {
 			return Catalog{}, err
 		}
-		call = func(ctx context.Context, method string, params any) (json.RawMessage, error) {
-			id, err := connection.requestWithCapabilities(ctx, method, params, catalogCapabilities, false)
-			if err != nil {
-				return nil, err
-			}
-			return connection.next(ctx, id)
-		}
-		closeConnection = connection.close
+		socket = capabilityState{stateSocket: connection, clientCapabilities: catalogCapabilities}
 		runtimeID = func() string { return connection.runtime }
 		pairedDevice = pairing.PairedDevice
 	}
-	defer closeConnection()
+	defer socket.close()
+	call := func(ctx context.Context, method string, params any) (json.RawMessage, error) {
+		return callState(ctx, socket, method, params)
+	}
 	result, err := readCatalog(ctx, call, pairedDevice, kind, agent)
 	result.RuntimeID = runtimeID()
 	return result, err

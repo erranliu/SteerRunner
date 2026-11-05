@@ -12,6 +12,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"sync"
 	"testing"
@@ -19,17 +20,22 @@ import (
 )
 
 func TestOrcaCapabilityWire(t *testing.T) {
-	for _, mode := range []string{"probe", "seed", "unsupported", "changed-runtime", "remote-pi"} {
+	for _, mode := range []string{"probe", "seed", "unsupported", "changed-runtime", "wrong-id", "wrong-device", "lost-response", "remote-pi"} {
 		t.Run(mode, func(t *testing.T) {
 			pub, secret, _ := box.GenerateKey(rand.Reader)
 			var mu sync.Mutex
 			methods := []string{}
+			connections := 0
+			closed := make(chan struct{}, 8)
 			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				mu.Lock()
+				connections++
+				mu.Unlock()
 				socket, err := websocket.Accept(w, r, nil)
 				if err != nil {
 					return
 				}
-				defer socket.CloseNow()
+				defer func() { socket.CloseNow(); closed <- struct{}{} }()
 				ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
 				defer cancel()
 				_, hello, _ := socket.Read(ctx)
@@ -50,21 +56,44 @@ func TestOrcaCapabilityWire(t *testing.T) {
 				if err != nil {
 					return
 				}
-				if !strings.Contains(string(auth), "agent-session.structured.registered-agents.v1") {
+				var authentication struct {
+					Type, DeviceToken  string
+					ClientCapabilities []string
+				}
+				wantCapabilities := []string{"agent-session.structured.v1", "agent-session.structured.registered-agents.v1"}
+				if json.Unmarshal(auth, &authentication) != nil || authentication.Type != "e2ee_auth" || authentication.DeviceToken != "test-token" || !slices.Equal(authentication.ClientCapabilities, wantCapabilities) {
+					t.Error("catalog handshake capabilities changed")
 					return
 				}
 				c.write(ctx, map[string]string{"type": "e2ee_authenticated"})
+				requests := 0
 				for {
 					raw, err := c.read(ctx)
 					if err != nil {
 						return
 					}
 					var q struct {
-						ID     string         `json:"id"`
-						Method string         `json:"method"`
-						Params map[string]any `json:"params"`
+						ID, DeviceToken    string
+						Method             string         `json:"method"`
+						Params             map[string]any `json:"params"`
+						ClientCapabilities []string
 					}
-					json.Unmarshal(raw, &q)
+					var shape map[string]json.RawMessage
+					if json.Unmarshal(raw, &q) != nil || json.Unmarshal(raw, &shape) != nil || q.DeviceToken != "test-token" {
+						t.Error("invalid catalog request")
+						return
+					}
+					_, hasCapabilities := shape["clientCapabilities"]
+					if requests == 0 {
+						if q.Method != "status.get" || hasCapabilities || string(shape["params"]) != "null" {
+							t.Error("catalog bootstrap wire changed")
+							return
+						}
+					} else if !hasCapabilities || !slices.Equal(q.ClientCapabilities, wantCapabilities) {
+						t.Error("catalog request capabilities changed")
+						return
+					}
+					requests++
 					mu.Lock()
 					methods = append(methods, q.Method)
 					mu.Unlock()
@@ -76,6 +105,9 @@ func TestOrcaCapabilityWire(t *testing.T) {
 							caps = nil
 						}
 						result = map[string]any{"runtimeProtocolVersion": 3, "minCompatibleRuntimeClientVersion": 2, "pairedDeviceId": "device", "appVersion": "1.4.fixture", "capabilities": caps}
+						if mode == "wrong-device" {
+							result.(map[string]any)["pairedDeviceId"] = "replacement-device"
+						}
 					case "agentSession.agents":
 						if mode == "remote-pi" {
 							result = map[string]any{"agents": []any{map[string]string{"agent": "pi"}, map[string]string{"agent": "custom-agent"}}}
@@ -83,6 +115,9 @@ func TestOrcaCapabilityWire(t *testing.T) {
 						}
 						result = map[string]any{"agents": []any{map[string]string{"agent": "codex"}, map[string]string{"agent": "claude"}}}
 					case "agentSession.modelCatalog":
+						if mode == "lost-response" {
+							return
+						}
 						if mode == "remote-pi" {
 							if q.Params["agent"] != "pi" {
 								return
@@ -102,7 +137,11 @@ func TestOrcaCapabilityWire(t *testing.T) {
 					if mode == "changed-runtime" && q.Method != "status.get" {
 						runtimeID = "other"
 					}
-					if c.write(ctx, map[string]any{"id": q.ID, "ok": true, "result": result, "_meta": map[string]string{"runtimeId": runtimeID}}) != nil {
+					id := q.ID
+					if mode == "wrong-id" && q.Method == "agentSession.agents" {
+						id = "foreign-request"
+					}
+					if c.write(ctx, map[string]any{"id": id, "ok": true, "result": result, "_meta": map[string]string{"runtimeId": runtimeID}}) != nil {
 						return
 					}
 				}
@@ -126,9 +165,17 @@ func TestOrcaCapabilityWire(t *testing.T) {
 				if !errors.Is(err, ErrCatalogUnsupported) {
 					t.Fatal(out, err)
 				}
-			case "changed-runtime":
+			case "changed-runtime", "wrong-id":
+				if !errors.Is(err, ErrStateIdentityChanged) {
+					t.Fatal("identity failure classification changed", err)
+				}
+			case "wrong-device":
+				if err == nil || err.Error() != "Orca directory identity changed" {
+					t.Fatal("paired device identity accepted or misclassified", err)
+				}
+			case "lost-response":
 				if err == nil {
-					t.Fatal("runtime switch accepted")
+					t.Fatal("lost response accepted")
 				}
 			default:
 				if err != nil || len(out.Models) != 1 || out.Models[0].Efforts[0].Value != "high" || out.RuntimeID != "runtime" {
@@ -143,8 +190,26 @@ func TestOrcaCapabilityWire(t *testing.T) {
 					t.Fatal(out)
 				}
 			}
+			select {
+			case <-closed:
+			case <-time.After(time.Second):
+				t.Fatal("catalog connection not closed after return")
+			}
 			mu.Lock()
 			defer mu.Unlock()
+			wantMethods := []string{"status.get", "status.get"}
+			if mode != "unsupported" && mode != "wrong-device" {
+				wantMethods = append(wantMethods, "agentSession.agents")
+				if mode != "changed-runtime" && mode != "wrong-id" {
+					wantMethods = append(wantMethods, "agentSession.modelCatalog")
+					if mode != "lost-response" && mode != "remote-pi" {
+						wantMethods = append(wantMethods, "agentSession.modelCatalog")
+					}
+				}
+			}
+			if connections != 1 || !slices.Equal(methods, wantMethods) {
+				t.Fatal("catalog reconnected/replayed or request order changed", connections, methods, wantMethods)
+			}
 			for _, method := range methods {
 				if method != "status.get" && method != "agentSession.agents" && method != "agentSession.modelCatalog" {
 					t.Fatal("business method", method)

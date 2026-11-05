@@ -10,6 +10,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"reflect"
 	"slices"
 	"strings"
 	"sync/atomic"
@@ -62,11 +63,9 @@ func remoteAgentFixture(t *testing.T, scenario string, business *atomic.Int32, a
 			t.Error("invalid authentication")
 			return
 		}
-		for _, capability := range append(agentSessionCapabilities(), "agent-session.structured.client-launch-mode.v1", "agent-session.structured.registered-agents.v1") {
-			if !slices.Contains(auth.ClientCapabilities, capability) {
-				t.Errorf("authentication capability missing: %s", capability)
-				return
-			}
+		if !slices.Equal(auth.ClientCapabilities, remoteAgentSessionCapabilities()) {
+			t.Error("authentication capabilities changed")
+			return
 		}
 		if scenario == "auth-refused" {
 			_ = socket.write(ctx, map[string]string{"type": "e2ee_rejected"})
@@ -92,6 +91,12 @@ func remoteAgentFixture(t *testing.T, scenario string, business *atomic.Int32, a
 			runtime, id := "original-runtime", request.ID
 			var result any
 			if request.Method == "status.get" {
+				var shape map[string]json.RawMessage
+				_ = json.Unmarshal(raw, &shape)
+				if _, found := shape["clientCapabilities"]; found || string(request.Params) != "null" {
+					t.Error("bootstrap status capabilities/params changed")
+					return
+				}
 				caps := agentSessionCapabilities()
 				if scenario == "missing-capability" {
 					caps = slices.DeleteFunc(caps, func(c string) bool { return c == "agentSession.create.message.v1" })
@@ -130,6 +135,39 @@ func remoteAgentFixture(t *testing.T, scenario string, business *atomic.Int32, a
 					result = map[string]bool{"supported": true}
 				case "aiVault.listSessions":
 					result = map[string]any{"sessions": []any{map[string]any{"agent": "codex", "sessionId": "provider-session", "executionHostId": "local", "structuredSession": map[string]string{"sessionId": "oas_fixture", "workspaceId": "fixture-worktree"}}}}
+				case "projectGroup.create", "folderWorkspace.create", "folderWorkspace.delete", "projectGroup.delete", "files.stat":
+					if scenario != "usage-scope" {
+						t.Error("unexpected usage scope operation", request.Method)
+						return
+					}
+					want := map[string]any{}
+					switch request.Method {
+					case "projectGroup.create":
+						want = map[string]any{"name": "scope-marker", "createdFrom": "manual"}
+						result = map[string]any{"group": UsageGroup{ID: "scope-group"}}
+					case "folderWorkspace.create":
+						want = map[string]any{"projectGroupId": "scope-group", "name": "scope-marker", "folderPath": "C:/scope"}
+						result = map[string]any{"folderWorkspace": UsageFolder{ID: "scope-folder"}}
+					case "folderWorkspace.delete":
+						want = map[string]any{"folderWorkspaceId": "scope-folder"}
+						result = map[string]bool{"deleted": true}
+					case "projectGroup.delete":
+						want = map[string]any{"groupId": "scope-group"}
+						result = map[string]bool{"deleted": true}
+					case "files.stat":
+						want = map[string]any{"worktree": "folder:scope-folder", "relativePath": "log.jsonl"}
+					}
+					var params map[string]any
+					if json.Unmarshal(request.Params, &params) != nil || !reflect.DeepEqual(params, want) {
+						t.Error("usage scope request parameters changed", request.Method)
+						return
+					}
+					if request.Method == "files.stat" {
+						if socket.write(ctx, map[string]any{"id": id, "ok": false, "error": &StateRPCError{Code: "selector_not_found"}, "_meta": map[string]string{"runtimeId": runtime}}) != nil {
+							return
+						}
+						continue
+					}
 				case "agentSession.create":
 					var create AgentCreate
 					if json.Unmarshal(request.Params, &create) != nil || create.FirstMessage.Body.Blocks[0].Text != "one\r\n\r\n中文😀\n```\npath\\with space\n```  \r\n" || create.FirstMessage.Selection.Model != "fixture-model" || create.FirstMessage.Selection.Effort != "medium" || create.Options["permissionMode"] != "full-access" {
@@ -235,6 +273,43 @@ func TestStructuredUsageChannelDeclaresAuthAndRequestCapabilities(t *testing.T) 
 	sessions, err := channel.Sessions(ctx)
 	if err != nil || len(sessions) != 1 || sessions[0].StructuredSession == nil || sessions[0].StructuredSession.SessionID != "oas_fixture" || reads.Load() != 1 || checks != 0 {
 		t.Fatal("structured vault source hidden or read consumed mutation gate", sessions, err, reads.Load(), checks)
+	}
+}
+
+func TestStructuredUsageScopeOperationsKeepCapabilities(t *testing.T) {
+	var calls atomic.Int32
+	var authenticated atomic.Bool
+	host := remoteAgentFixture(t, "usage-scope", &calls, &authenticated)
+	checks := 0
+	ctx, cancel := context.WithTimeout(WithDispatchCheckpoint(context.Background(), func() error {
+		checks++
+		return errors.New("usage scope must not consume business authorization")
+	}), 3*time.Second)
+	defer cancel()
+	channel, err := OpenStructuredUsageFiles(ctx, "fixture-env", "original-runtime", host)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer channel.Close()
+	group, err := channel.CreateGroup(ctx, "scope-marker")
+	if err != nil || group.ID != "scope-group" {
+		t.Fatal(group, err)
+	}
+	folder, err := channel.CreateFolder(ctx, group.ID, "scope-marker", "C:/scope")
+	if err != nil || folder.ID != "scope-folder" {
+		t.Fatal(folder, err)
+	}
+	if err := channel.DeleteFolder(ctx, folder.ID); err != nil {
+		t.Fatal(err)
+	}
+	if !channel.SelectorRevoked(ctx, folder.ID, "log.jsonl") {
+		t.Fatal("original selector revocation proof lost")
+	}
+	if err := channel.DeleteGroup(ctx, group.ID); err != nil {
+		t.Fatal(err)
+	}
+	if calls.Load() != 5 || checks != 0 {
+		t.Fatal("scope operation replayed or consumed business authorization", calls.Load(), checks)
 	}
 }
 
