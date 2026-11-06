@@ -1,0 +1,9 @@
+import json,pathlib,sys
+for name in sys.argv[1:]:
+ p=pathlib.Path(name); events=[json.loads(s) for s in p.read_text(encoding='utf-8-sig').splitlines() if s.startswith('{')]
+ tests={a:[e['Test'] for e in events if e.get('Action')==a and e.get('Test') and '/' not in e['Test']] for a in ('pass','fail','skip')}
+ leaves={a:sum(e.get('Action')==a and bool(e.get('Test')) for e in events) for a in ('pass','fail','skip')}
+ pkgs=[(e.get('Package'),e['Action']) for e in events if e.get('Action') in ('pass','fail','skip') and not e.get('Test')]
+ print(json.dumps({'file':name,'top':{a:len(v) for a,v in tests.items()},'all':leaves,'packages':pkgs,'failures':tests['fail'],'skips':tests['skip']},ensure_ascii=False))
+ for e in events:
+  if 'Output' in e and ('--- FAIL' in e['Output'] or 'panic:' in e['Output']):print(e['Output'])

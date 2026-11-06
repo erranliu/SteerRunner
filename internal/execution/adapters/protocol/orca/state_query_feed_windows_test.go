@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func TestOrcaLocalQueryFeed(t *testing.T) {
+func TestOrcaLocalOriginalQuery(t *testing.T) {
 	var subscriptions, queries atomic.Int32
 	var replacement atomic.Bool
 	var block atomic.Bool
@@ -39,60 +39,48 @@ func TestOrcaLocalQueryFeed(t *testing.T) {
 	})
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	p := StateResource{RuntimeID: "runtime", WorktreeID: "worktree", Handle: "terminal", IncarnationID: "incarnation"}
-	feed, err := OpenStateFeed(ctx, "", p)
-	cancel() // Initialization timeout does not own the feed lifetime.
+	raw, err := QueryState(ctx, "", p.RuntimeID, "id:"+p.WorktreeID)
+	cancel()
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer feed.Close()
-	initial := feed.Initial()
-	if initial.Kind != SampleInitial || initial.ReceivedAt.IsZero() || !feed.Initial().ReceivedAt.Equal(initial.ReceivedAt) {
-		t.Fatal("initial receive metadata missing or unstable", initial)
-	}
-	if feed.Initial().PaneKey != "tab:leaf" || feed.Initial().ProviderSession.ID != "provider" {
-		t.Fatal(feed.Initial())
-	}
-	if events, err := feed.Drain(); err != nil || len(events) != 0 {
-		t.Fatal("query feed synthesized events", events, err)
+	initial, err := DecodeOriginalState(raw, p)
+	if err != nil || initial.PaneKey != "tab:leaf" || initial.ProviderSession.ID != "provider" {
+		t.Fatal(initial, err)
 	}
 	if queries.Load() != 0 || subscriptions.Load() != 0 {
 		t.Fatal("unexpected background observation")
 	}
-	queryStarted := time.Now().UTC()
-	state, err := feed.Query(context.Background())
-	if err != nil || state.LastAssistantMessage != "complete" || state.MainAgent.State != "done" || state.Observation != nil {
+	state, err := QueryOriginalAgent(context.Background(), "", p, initial.PaneKey)
+	if err != nil || state.LastAssistantMessage != "complete" || state.MainAgent == nil || state.MainAgent.State != "done" || state.Observation != nil {
 		t.Fatal(state, err)
 	}
-	if state.Kind != SampleQuery || state.ReceivedAt.Before(queryStarted) || state.ReceivedAt.After(time.Now().UTC()) {
-		t.Fatal("query receive time is not fixed at its source", state)
-	}
+
 	replacement.Store(true)
-	if _, err := feed.Query(context.Background()); !errors.Is(err, ErrStateIdentityChanged) {
+	if _, err := QueryOriginalAgent(context.Background(), "", p, initial.PaneKey); !errors.Is(err, ErrStateIdentityChanged) {
 		t.Fatal("provider mismatch accepted", err)
 	}
 	replacement.Store(false)
 	block.Store(true)
+	queryCtx, queryCancel := context.WithCancel(context.Background())
+	defer queryCancel()
 	queryDone := make(chan error, 1)
-	go func() { _, err := feed.Query(context.Background()); queryDone <- err }()
+	go func() { _, err := QueryOriginalAgent(queryCtx, "", p, initial.PaneKey); queryDone <- err }()
 	select {
 	case <-entered:
 	case <-time.After(3 * time.Second):
 		t.Fatal("query did not start")
 	}
-	feed.Close()
-	feed.Close()
+	queryCancel()
 	select {
 	case err := <-queryDone:
-		if err == nil {
-			t.Fatal("closed query succeeded")
+		if !errors.Is(err, context.Canceled) {
+			t.Fatal("query lost caller cancellation", err)
 		}
 	case <-time.After(time.Second):
-		t.Fatal("close did not cancel query")
-	}
-	if _, err := feed.Query(context.Background()); !errors.Is(err, context.Canceled) {
-		t.Fatal("closed feed queried", err)
+		t.Fatal("caller cancellation did not cancel query")
 	}
 	if subscriptions.Load() != 0 {
-		t.Fatal("local feed attempted subscription")
+		t.Fatal("local query attempted subscription")
 	}
 }

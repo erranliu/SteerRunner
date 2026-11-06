@@ -1,0 +1,489 @@
+{
+  "base_commit": "dda9a82727b6e7ac88e687a250750e8bbae236dc",
+  "source_and_test_files_identical_to_B": 848,
+  "source_manifest_sha256": "b1f21951b3117386d254a49e0eae7fe6c4426a21f0619d26be1ca0fd18807474",
+  "changed_source_files_relative_to_main": [
+    "internal/execution/adapters/orcatransport/access_mode_test.go",
+    "internal/execution/adapters/orcatransport/terminal_assets_test.go",
+    "internal/execution/adapters/orcatransport/terminal_receipt_test.go",
+    "internal/execution/adapters/orcatransport/terminal_runtime.go",
+    "internal/execution/adapters/protocol/orca/state_feed.go",
+    "internal/execution/adapters/protocol/orca/state_query_feed.go",
+    "internal/execution/adapters/protocol/orca/state_query_feed_windows_test.go",
+    "internal/execution/adapters/protocol/orca/state_stream_test.go"
+  ],
+  "deleted_whole_test_files": [],
+  "changed_existing_test_files": [
+    "internal/execution/adapters/orcatransport/access_mode_test.go",
+    "internal/execution/adapters/orcatransport/terminal_receipt_test.go",
+    "internal/execution/adapters/protocol/orca/state_query_feed_windows_test.go",
+    "internal/execution/adapters/protocol/orca/state_stream_test.go"
+  ],
+  "retained_existing_test_files": 382,
+  "new_test_helper": [
+    "internal/execution/adapters/orcatransport/terminal_assets_test.go"
+  ],
+  "baseline_references": {
+    "OpenStateFeed": [
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_feed.go",
+        "line": 174,
+        "text": "func OpenStateFeed(ctx context.Context, environment string, p StateResource) (StateFeed, error) {"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_query_feed_windows_test.go",
+        "line": 42,
+        "text": "feed, err := OpenStateFeed(ctx, \"\", p)"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_stream_test.go",
+        "line": 154,
+        "text": "feed, err := OpenStateFeed(ctx, \"test-remote\", StateResource{RuntimeID: \"runtime\", WorktreeID: \"worktree\", Handle: \"terminal\", IncarnationID: \"incarnation\"})"
+      }
+    ],
+    "QueryOriginalSample": [
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_feed.go",
+        "line": 227,
+        "text": "return QueryOriginalSample(ctx, f.environment, f.process, f.initial.PaneKey)"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_feed.go",
+        "line": 230,
+        "text": "func QueryOriginalSample(ctx context.Context, environment string, process StateResource, pane string) (StateSample, error) {"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_query_feed.go",
+        "line": 41,
+        "text": "return QueryOriginalSample(ctx, \"\", f.process, f.initial.PaneKey)"
+      }
+    ],
+    "StateSample": [
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_feed.go",
+        "line": 76,
+        "text": "// StateSample is transient receive metadata, never part of the native wire or"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_feed.go",
+        "line": 78,
+        "text": "type StateSample struct {"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_feed.go",
+        "line": 85,
+        "text": "Initial() StateSample"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_feed.go",
+        "line": 86,
+        "text": "Drain() ([]StateSample, error)"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_feed.go",
+        "line": 87,
+        "text": "Query(context.Context) (StateSample, error)"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_feed.go",
+        "line": 165,
+        "text": "initial     StateSample"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_feed.go",
+        "line": 170,
+        "text": "updates     []StateSample"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_feed.go",
+        "line": 188,
+        "text": "sample := StateSample{AgentState: initial, ReceivedAt: time.Now().UTC(), Kind: SampleInitial}"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_feed.go",
+        "line": 189,
+        "text": "f := &nativeStateFeed{environment: environment, process: p, initial: sample, sub: sub, cancel: cancel, updates: []StateSample{sample}}"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_feed.go",
+        "line": 198,
+        "text": "sample := StateSample{AgentState: s, ReceivedAt: time.Now().UTC(), Kind: SampleNotification}"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_feed.go",
+        "line": 218,
+        "text": "func (f *nativeStateFeed) Initial() StateSample { return f.initial }"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_feed.go",
+        "line": 219,
+        "text": "func (f *nativeStateFeed) Drain() ([]StateSample, error) {"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_feed.go",
+        "line": 226,
+        "text": "func (f *nativeStateFeed) Query(ctx context.Context) (StateSample, error) {"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_feed.go",
+        "line": 230,
+        "text": "func QueryOriginalSample(ctx context.Context, environment string, process StateResource, pane string) (StateSample, error) {"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_feed.go",
+        "line": 232,
+        "text": "return StateSample{AgentState: s, ReceivedAt: time.Now().UTC(), Kind: SampleQuery}, err"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_query_feed.go",
+        "line": 12,
+        "text": "initial StateSample"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_query_feed.go",
+        "line": 27,
+        "text": "return &localQueryFeed{process: p, initial: StateSample{AgentState: initial, ReceivedAt: time.Now().UTC(), Kind: SampleInitial}, closed: closed, cancel: cancel}, nil"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_query_feed.go",
+        "line": 30,
+        "text": "func (f *localQueryFeed) Initial() StateSample          { return f.initial }"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_query_feed.go",
+        "line": 31,
+        "text": "func (f *localQueryFeed) Drain() ([]StateSample, error) { return nil, f.closed.Err() }"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_query_feed.go",
+        "line": 33,
+        "text": "func (f *localQueryFeed) Query(ctx context.Context) (StateSample, error) {"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_query_feed.go",
+        "line": 35,
+        "text": "return StateSample{}, err"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_stream_test.go",
+        "line": 160,
+        "text": "var buffered []StateSample"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_stream_test.go",
+        "line": 165,
+        "text": "buffered = append([]StateSample(nil), f.updates...)"
+      }
+    ],
+    "SampleKind": [
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_feed.go",
+        "line": 68,
+        "text": "type SampleKind string"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_feed.go",
+        "line": 71,
+        "text": "SampleInitial      SampleKind = \"initial\""
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_feed.go",
+        "line": 72,
+        "text": "SampleNotification SampleKind = \"notification\""
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_feed.go",
+        "line": 73,
+        "text": "SampleQuery        SampleKind = \"query\""
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_feed.go",
+        "line": 81,
+        "text": "Kind       SampleKind `json:\"-\"`"
+      }
+    ],
+    "StateFeed": [
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_feed.go",
+        "line": 84,
+        "text": "type StateFeed interface {"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_feed.go",
+        "line": 174,
+        "text": "func OpenStateFeed(ctx context.Context, environment string, p StateResource) (StateFeed, error) {"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_query_feed.go",
+        "line": 17,
+        "text": "func openLocalQueryFeed(ctx context.Context, p StateResource) (StateFeed, error) {"
+      }
+    ],
+    "nativeStateFeed": [
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_feed.go",
+        "line": 162,
+        "text": "type nativeStateFeed struct {"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_feed.go",
+        "line": 189,
+        "text": "f := &nativeStateFeed{environment: environment, process: p, initial: sample, sub: sub, cancel: cancel, updates: []StateSample{sample}}"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_feed.go",
+        "line": 218,
+        "text": "func (f *nativeStateFeed) Initial() StateSample { return f.initial }"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_feed.go",
+        "line": 219,
+        "text": "func (f *nativeStateFeed) Drain() ([]StateSample, error) {"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_feed.go",
+        "line": 226,
+        "text": "func (f *nativeStateFeed) Query(ctx context.Context) (StateSample, error) {"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_feed.go",
+        "line": 290,
+        "text": "func (f *nativeStateFeed) Close() { f.once.Do(func() { f.cancel(); f.sub.Close() }) }"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_stream_test.go",
+        "line": 159,
+        "text": "f := feed.(*nativeStateFeed)"
+      }
+    ],
+    "localQueryFeed": [
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_query_feed.go",
+        "line": 10,
+        "text": "type localQueryFeed struct {"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_query_feed.go",
+        "line": 27,
+        "text": "return &localQueryFeed{process: p, initial: StateSample{AgentState: initial, ReceivedAt: time.Now().UTC(), Kind: SampleInitial}, closed: closed, cancel: cancel}, nil"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_query_feed.go",
+        "line": 30,
+        "text": "func (f *localQueryFeed) Initial() StateSample          { return f.initial }"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_query_feed.go",
+        "line": 31,
+        "text": "func (f *localQueryFeed) Drain() ([]StateSample, error) { return nil, f.closed.Err() }"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_query_feed.go",
+        "line": 32,
+        "text": "func (f *localQueryFeed) Close()                        { f.cancel() }"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_query_feed.go",
+        "line": 33,
+        "text": "func (f *localQueryFeed) Query(ctx context.Context) (StateSample, error) {"
+      }
+    ],
+    "SampleInitial": [
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_feed.go",
+        "line": 71,
+        "text": "SampleInitial      SampleKind = \"initial\""
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_feed.go",
+        "line": 188,
+        "text": "sample := StateSample{AgentState: initial, ReceivedAt: time.Now().UTC(), Kind: SampleInitial}"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_query_feed.go",
+        "line": 27,
+        "text": "return &localQueryFeed{process: p, initial: StateSample{AgentState: initial, ReceivedAt: time.Now().UTC(), Kind: SampleInitial}, closed: closed, cancel: cancel}, nil"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_query_feed_windows_test.go",
+        "line": 49,
+        "text": "if initial.Kind != SampleInitial || initial.ReceivedAt.IsZero() || !feed.Initial().ReceivedAt.Equal(initial.ReceivedAt) {"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_stream_test.go",
+        "line": 193,
+        "text": "if err != nil || len(samples) != 2 || samples[0].Kind != SampleInitial || samples[1].Kind != SampleNotification || samples[1].LastAssistantMessage != \"public\" || samples[1].ReceivedAt.IsZero() || !samples[1].ReceivedAt.Before(consumedAt) || !samples[0].ReceivedAt.Equal(feed.Initial().ReceivedAt) {"
+      }
+    ],
+    "SampleNotification": [
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_feed.go",
+        "line": 72,
+        "text": "SampleNotification SampleKind = \"notification\""
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_feed.go",
+        "line": 198,
+        "text": "sample := StateSample{AgentState: s, ReceivedAt: time.Now().UTC(), Kind: SampleNotification}"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_stream_test.go",
+        "line": 193,
+        "text": "if err != nil || len(samples) != 2 || samples[0].Kind != SampleInitial || samples[1].Kind != SampleNotification || samples[1].LastAssistantMessage != \"public\" || samples[1].ReceivedAt.IsZero() || !samples[1].ReceivedAt.Before(consumedAt) || !samples[0].ReceivedAt.Equal(feed.Initial().ReceivedAt) {"
+      }
+    ],
+    "SampleQuery": [
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_feed.go",
+        "line": 73,
+        "text": "SampleQuery        SampleKind = \"query\""
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_feed.go",
+        "line": 232,
+        "text": "return StateSample{AgentState: s, ReceivedAt: time.Now().UTC(), Kind: SampleQuery}, err"
+      },
+      {
+        "file": "internal/execution/adapters/protocol/orca/state_query_feed_windows_test.go",
+        "line": 66,
+        "text": "if state.Kind != SampleQuery || state.ReceivedAt.Before(queryStarted) || state.ReceivedAt.After(time.Now().UTC()) {"
+      }
+    ],
+    "TerminalRuntimeMetadata": [
+      {
+        "file": "internal/execution/adapters/orcatransport/terminal_runtime.go",
+        "line": 68,
+        "text": "func TerminalRuntimeMetadata() (TerminalMetadata, error) {"
+      }
+    ],
+    "TerminalMetadata": [
+      {
+        "file": "internal/execution/adapters/orcatransport/terminal_runtime.go",
+        "line": 52,
+        "text": "type TerminalMetadata struct {"
+      },
+      {
+        "file": "internal/execution/adapters/orcatransport/terminal_runtime.go",
+        "line": 68,
+        "text": "func TerminalRuntimeMetadata() (TerminalMetadata, error) {"
+      },
+      {
+        "file": "internal/execution/adapters/orcatransport/terminal_runtime.go",
+        "line": 71,
+        "text": "return TerminalMetadata{}, e"
+      },
+      {
+        "file": "internal/execution/adapters/orcatransport/terminal_runtime.go",
+        "line": 75,
+        "text": "return TerminalMetadata{}, e"
+      },
+      {
+        "file": "internal/execution/adapters/orcatransport/terminal_runtime.go",
+        "line": 78,
+        "text": "return TerminalMetadata{Version: 5, Contract: terminaltools.Contract, Authentication: \"host-native\", CodexTransport: codex.RemoteNativeTransport, CodexPolicy: codex.PolicyContract, RuntimeSHA256: fmt.Sprintf(\"%x\", sha256.Sum256(raw)), BundleSHA256: TerminalExtensionDigest(), PiSHA256: fmt.Sprintf(\"%x\", sha256.Sum256(pi))}, nil"
+      }
+    ],
+    "TerminalExtensionDigest": [
+      {
+        "file": "internal/execution/adapters/orcatransport/access_mode_test.go",
+        "line": 23,
+        "text": "owner.ExtensionSHA256 = TerminalExtensionDigest()"
+      },
+      {
+        "file": "internal/execution/adapters/orcatransport/terminal_receipt_test.go",
+        "line": 25,
+        "text": "l.profile.Terminal.BundleSHA256 = TerminalExtensionDigest()"
+      },
+      {
+        "file": "internal/execution/adapters/orcatransport/terminal_receipt_test.go",
+        "line": 102,
+        "text": "l.profile.Terminal.BundleSHA256 = TerminalExtensionDigest()"
+      },
+      {
+        "file": "internal/execution/adapters/orcatransport/terminal_runtime.go",
+        "line": 78,
+        "text": "return TerminalMetadata{Version: 5, Contract: terminaltools.Contract, Authentication: \"host-native\", CodexTransport: codex.RemoteNativeTransport, CodexPolicy: codex.PolicyContract, RuntimeSHA256: fmt.Sprintf(\"%x\", sha256.Sum256(raw)), BundleSHA256: TerminalExtensionDigest(), PiSHA256: fmt.Sprintf(\"%x\", sha256.Sum256(pi))}, nil"
+      },
+      {
+        "file": "internal/execution/adapters/orcatransport/terminal_runtime.go",
+        "line": 96,
+        "text": "func TerminalExtensionDigest() string {"
+      }
+    ],
+    "terminalAssets": [
+      {
+        "file": "internal/execution/adapters/orcatransport/terminal_receipt_test.go",
+        "line": 23,
+        "text": "body, _ := terminalAssets.ReadFile(\"extensions/\" + file)"
+      },
+      {
+        "file": "internal/execution/adapters/orcatransport/terminal_receipt_test.go",
+        "line": 100,
+        "text": "source, _ := terminalAssets.ReadFile(\"extensions/\" + file)"
+      },
+      {
+        "file": "internal/execution/adapters/orcatransport/terminal_runtime.go",
+        "line": 21,
+        "text": "var terminalAssets embed.FS"
+      },
+      {
+        "file": "internal/execution/adapters/orcatransport/terminal_runtime.go",
+        "line": 77,
+        "text": "pi, _ := terminalAssets.ReadFile(\"extensions/pi-evidence.mjs\")"
+      },
+      {
+        "file": "internal/execution/adapters/orcatransport/terminal_runtime.go",
+        "line": 99,
+        "text": "raw, _ := terminalAssets.ReadFile(\"extensions/\" + name)"
+      }
+    ]
+  },
+  "new_component_results": {
+    "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca": {
+      "top_pass": 62,
+      "top_fail": 0,
+      "top_skip": 4,
+      "all_pass": 360,
+      "all_fail": 0,
+      "all_skip": 4,
+      "skipped": [
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestOrcaLocalIPCNativeProbe",
+        "TestOrcaTerminalQueryLive",
+        "TestUsageLocalAcceptanceRepoCleanupLive"
+      ]
+    },
+    "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport": {
+      "top_pass": 81,
+      "top_fail": 0,
+      "top_skip": 0,
+      "all_pass": 351,
+      "all_fail": 0,
+      "all_skip": 0,
+      "skipped": []
+    }
+  },
+  "new_node_counts": {
+    "tests": 21,
+    "pass": 21,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "reused_evidence": [
+    "B application 103 top-level tests; source and tests identical",
+    "B shared components 135 top-level tests; source and tests identical",
+    "B live driver/helpers compilation; inputs identical",
+    "A/B original serialized bytes and asset hashes; declarations identical",
+    "B final formal EXE controlled 3 tests / restart 4 cases; identical frozen source and EXE hashes"
+  ],
+  "production_findings": [],
+  "delivery_findings": [
+    {
+      "finding": "Git text normalization changed 15 initial evidence blobs and reaudit audit.json relative to raw-byte SHA manifests",
+      "fix": "Scoped -text -whitespace attributes for the two evidence directories; preserve original bytes and verify staged/final Git blobs",
+      "production_or_test_changes": false
+    }
+  ]
+}

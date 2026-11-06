@@ -18,9 +18,27 @@ import (
 	"golang.org/x/crypto/nacl/box"
 )
 
+// Observe the real websocket read's cancellation registration. The barrier
+// prevents the cancellation case from passing with an already-cancelled call.
+type stateStreamReadContext struct {
+	context.Context
+	reading chan struct{}
+}
+
+func (c stateStreamReadContext) Done() <-chan struct{} {
+	select {
+	case c.reading <- struct{}{}:
+	default:
+	}
+	return c.Context.Done()
+}
+
 func TestOrcaNativeStateStream(t *testing.T) {
-	for _, scenario := range []string{"subscription-query", "sample-feed", "wrong-runtime", "wrong-request", "cancelled", "terminal-query", "terminal-query-runtime", "terminal-query-request", "terminal-query-cancelled"} {
+	for _, scenario := range []string{"subscription-query", "subscription-updates-cancel", "subscription-updates-disconnect", "wrong-runtime", "wrong-request", "cancelled", "terminal-query", "terminal-query-runtime", "terminal-query-request", "terminal-query-cancelled"} {
 		t.Run(scenario, func(t *testing.T) {
+			releaseUpdate := make(chan struct{})
+			disconnect := make(chan struct{})
+			serverDone := make(chan struct{})
 			pub, private, err := box.GenerateKey(rand.Reader)
 			if err != nil {
 				t.Fatal(err)
@@ -107,21 +125,34 @@ func TestOrcaNativeStateStream(t *testing.T) {
 						}
 						result = map[string]any{"type": "snapshot", "worktree": "worktree", "tabs": []any{}}
 					}
-					if scenario == "sample-feed" && request.Method == "session.tabs.subscribe" {
+					if strings.HasPrefix(scenario, "subscription-updates-") && request.Method == "session.tabs.subscribe" {
 						result = map[string]any{"type": "snapshot", "worktree": "worktree", "tabs": []any{map[string]any{"terminal": "terminal", "incarnationId": "incarnation", "parentTabId": "tab", "leafId": "leaf", "agentStatus": map[string]any{"state": "working", "lastAssistantMessage": "old"}}}}
 					}
 					if socket.write(ctx, map[string]any{"id": id, "ok": true, "result": result, "_meta": map[string]string{"runtimeId": runtime}}) != nil {
 						return
 					}
-					if scenario == "sample-feed" && request.Method == "session.tabs.subscribe" {
+					if strings.HasPrefix(scenario, "subscription-updates-") && request.Method == "session.tabs.subscribe" {
+						select {
+						case <-releaseUpdate:
+						case <-serverDone:
+							return
+						}
 						update := map[string]any{"type": "updated", "worktree": "worktree", "tabs": []any{map[string]any{"terminal": "terminal", "incarnationId": "incarnation", "parentTabId": "tab", "leafId": "leaf", "agentStatus": map[string]any{"state": "working", "lastAssistantMessage": "public"}}}}
 						if socket.write(ctx, map[string]any{"id": id, "ok": true, "result": update, "_meta": map[string]string{"runtimeId": runtime}}) != nil {
+							return
+						}
+						if scenario == "subscription-updates-disconnect" {
+							select {
+							case <-disconnect:
+							case <-serverDone:
+							}
 							return
 						}
 					}
 				}
 			}))
 			defer server.Close()
+			defer close(serverDone)
 			dir := t.TempDir()
 			t.Setenv("ORCA_USER_DATA_PATH", dir)
 			store, _ := json.Marshal(map[string]any{"environments": []any{map[string]any{"id": "test-remote", "preferredEndpointId": "endpoint", "endpoints": []any{map[string]string{"id": "endpoint", "endpoint": "ws" + strings.TrimPrefix(server.URL, "http"), "deviceToken": "test-only-token", "publicKeyB64": base64.StdEncoding.EncodeToString(pub[:])}}}}})
@@ -150,56 +181,65 @@ func TestOrcaNativeStateStream(t *testing.T) {
 				}
 				return
 			}
-			if scenario == "sample-feed" {
-				feed, err := OpenStateFeed(ctx, "test-remote", StateResource{RuntimeID: "runtime", WorktreeID: "worktree", Handle: "terminal", IncarnationID: "incarnation"})
+			if strings.HasPrefix(scenario, "subscription-updates-") {
+				initCtx, initCancel := context.WithCancel(ctx)
+				sub, raw, err := SubscribeState(initCtx, "test-remote", "runtime", "id:worktree")
+				initCancel() // Only initialization belongs to this context.
 				if err != nil {
 					t.Fatal(err)
 				}
-				defer feed.Close()
-				f := feed.(*nativeStateFeed)
-				var buffered []StateSample
-				for {
-					f.mu.Lock()
-					ready := len(f.updates) == 2
-					if ready {
-						buffered = append([]StateSample(nil), f.updates...)
-					}
-					f.mu.Unlock()
-					if ready {
-						break
-					}
-					select {
-					case <-ctx.Done():
-						t.Fatal("notification not buffered")
-					case <-time.After(time.Millisecond):
-					}
+				defer sub.Close()
+				original := StateResource{RuntimeID: "runtime", WorktreeID: "worktree", Handle: "terminal", IncarnationID: "incarnation"}
+				initial, err := DecodeOriginalState(raw, original)
+				if err != nil || initial.LastAssistantMessage != "old" || initial.PaneKey != "tab:leaf" {
+					t.Fatal(initial, err)
 				}
-				// The platform wall clock can return the same tick for receive and
-				// drain. Advance past both buffered receive times before consuming;
-				// retain the strict before-drain assertion and the original stamps.
-				var consumedAt time.Time
-				for {
-					consumedAt = time.Now().UTC()
-					if consumedAt.After(buffered[0].ReceivedAt) && consumedAt.After(buffered[1].ReceivedAt) {
-						break
-					}
-					select {
-					case <-ctx.Done():
-						t.Fatal("wall clock did not advance past buffered receives")
-					case <-time.After(time.Millisecond):
-					}
+				// Independent queries complete while the same subscription is live.
+				// The server releases its update only after both queries return.
+				if _, err := QueryState(ctx, "test-remote", "runtime", "id:worktree"); err != nil {
+					t.Fatal(err)
 				}
-				samples, err := feed.Drain()
-				if err != nil || len(samples) != 2 || samples[0].Kind != SampleInitial || samples[1].Kind != SampleNotification || samples[1].LastAssistantMessage != "public" || samples[1].ReceivedAt.IsZero() || !samples[1].ReceivedAt.Before(consumedAt) || !samples[0].ReceivedAt.Equal(feed.Initial().ReceivedAt) {
-					t.Fatal("receive metadata was lost or stamped at drain", samples, err)
+				if _, err := QueryWorktreeAgents(ctx, "test-remote", "runtime"); err != nil {
+					t.Fatal(err)
 				}
-				for i := range samples {
-					if !samples[i].ReceivedAt.Equal(buffered[i].ReceivedAt) {
-						t.Fatal("drain changed the buffered receive timestamp", samples[i], buffered[i])
+				close(releaseUpdate)
+				raw, err = sub.Next(ctx)
+				if err != nil {
+					t.Fatal(err)
+				}
+				var frame struct{ Type string }
+				if err := json.Unmarshal(raw, &frame); err != nil || frame.Type != "updated" {
+					t.Fatal(string(raw), err)
+				}
+				updated, err := DecodeOriginalState(raw, original)
+				if err != nil || updated.LastAssistantMessage != "public" || updated.PaneKey != initial.PaneKey {
+					t.Fatal(updated, err)
+				}
+				nextCtx, nextCancel := context.WithCancel(ctx)
+				defer nextCancel()
+				reading, finished := make(chan struct{}, 1), make(chan error, 1)
+				go func() { _, err := sub.Next(stateStreamReadContext{nextCtx, reading}); finished <- err }()
+				select {
+				case <-reading:
+				case <-ctx.Done():
+					t.Fatal("Next did not start reading")
+				}
+				if scenario == "subscription-updates-cancel" {
+					nextCancel()
+				} else {
+					close(disconnect)
+				}
+				select {
+				case err := <-finished:
+					if scenario == "subscription-updates-cancel" {
+						if !errors.Is(err, context.Canceled) {
+							t.Fatal("Next lost caller cancellation", err)
+						}
+					} else if !IsStateConnectionError(err) {
+						t.Fatal("Next lost peer disconnect", err)
 					}
-				}
-				if samples, err = feed.Drain(); err != nil || len(samples) != 0 {
-					t.Fatal(samples, err)
+				case <-ctx.Done():
+					t.Fatal("Next did not end on cancellation/disconnect")
 				}
 				return
 			}

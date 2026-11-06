@@ -1,0 +1,26 @@
+{
+  "stage": "a",
+  "baseline": "baseline",
+  "changed_files": [
+    "internal/execution/adapters/protocol/orca/state_feed.go",
+    "internal/execution/adapters/protocol/orca/state_query_feed.go",
+    "internal/execution/adapters/protocol/orca/state_query_feed_windows_test.go",
+    "internal/execution/adapters/protocol/orca/state_stream_test.go"
+  ],
+  "protected": {
+    "internal/execution/adapters/protocol/orca/state_subscription.go": "1f38bb2e42e692140a2eff6716d7193cde5cc8da20d06b26a0cc2c29c65b67c4",
+    "tests/helpers/stability/main.go": "aee9c7b75887c382d52bc92c33f6fd202250a11e3fe92fee511172b5fae0fa9a",
+    "tests/native/stability_test.go": "7f1d588519aed213fb732c70582733a7417804b421969721458475a9d705299f",
+    "internal/execution/adapters/protocol/orca/state_stream.go": "f301c3c965ae83faa185a713b81298ba3cf4f4833e06510fb16b2245144777bb",
+    "internal/execution/adapters/protocol/orca/state_local.go": "c435c2d065abed268a72056cf77104ab936b693b9269b38cca1fd92c2ca0d17d",
+    "internal/execution/adapters/orcatransport/extensions/pi-evidence.mjs": "3f5076c674f0811dec0768c8a9e5eaadc39bb3345a6ac49ead4659066ea4a95f",
+    "internal/execution/adapters/orcatransport/extensions/pi-managed.mjs": "f1474c7ac6689d9ed87f2e933717dd25a310439a2e249d750fefc0168571a55b",
+    "internal/execution/adapters/orcatransport/extensions/terminal-tools.mjs": "d13645b99194773244ee35719dac1a18523acdc5449ab72014c32a4ab2e79abd",
+    "internal/execution/adapters/orcatransport/extensions/receipt.mjs": "8bcbe054ed42d941b478da38a98243b90018b00931644f6e7ff95db0ab3c8e91",
+    "internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs": "f6104a1effba0618a23e3e6f26087fb820f3d54c76ff4d9142414e01868b1541",
+    "scripts/probe-orca-pi.ps1": "4309676e884ef74646e8d6b8f301df9319bd22c4fba6fb8165354a94ac569719",
+    "scripts/test-prerequisite-contract.ps1": "e788d461fe7505b35c33d9b8ea55fb952fcc29ac6a8f427a2b2f4528f5381a8a"
+  },
+  "unchanged_files": 844,
+  "manifest_sha256": "b88d8339d951176fd9984a8a1379afb464c948073a995b4d994c597e690511b5"
+}

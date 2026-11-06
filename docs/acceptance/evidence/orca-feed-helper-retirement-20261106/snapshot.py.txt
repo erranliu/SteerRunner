@@ -1,0 +1,12 @@
+import hashlib,json,pathlib,subprocess,sys,zipfile
+root=pathlib.Path.cwd(); dest=root/'.evidence/retirement-audit'/sys.argv[1];dest.mkdir(parents=True,exist_ok=False)
+paths=set(subprocess.check_output(['git','ls-files','--','cmd','internal','tests','scripts','go.mod','go.sum'],text=True).splitlines())
+paths.update(str(p).replace('\\','/') for p in pathlib.Path('internal').rglob('*.go'))
+manifest={}
+with zipfile.ZipFile(dest/'source.zip','w',zipfile.ZIP_DEFLATED) as archive:
+ for name in sorted(paths):
+  p=root/name
+  if not p.is_file():continue
+  raw=p.read_bytes();manifest[name]=hashlib.sha256(raw).hexdigest();archive.writestr(name,raw)
+(dest/'source-sha256.json').write_text(json.dumps(manifest,indent=2),encoding='utf-8')
+print(dest,len(manifest))

@@ -1,0 +1,35 @@
+{
+  "added": [],
+  "baseline": "baseline",
+  "changed_or_deleted_types": [
+    "internal/execution/adapters/protocol/orca/state_feed.go:type SampleKind",
+    "internal/execution/adapters/protocol/orca/state_feed.go:type StateFeed",
+    "internal/execution/adapters/protocol/orca/state_feed.go:type StateSample",
+    "internal/execution/adapters/protocol/orca/state_feed.go:type nativeStateFeed",
+    "internal/execution/adapters/protocol/orca/state_query_feed.go:type localQueryFeed"
+  ],
+  "deleted": [
+    "internal/execution/adapters/protocol/orca/state_feed.go:const SampleInitial",
+    "internal/execution/adapters/protocol/orca/state_feed.go:const SampleNotification",
+    "internal/execution/adapters/protocol/orca/state_feed.go:const SampleQuery",
+    "internal/execution/adapters/protocol/orca/state_feed.go:func *nativeStateFeed.Close",
+    "internal/execution/adapters/protocol/orca/state_feed.go:func *nativeStateFeed.Drain",
+    "internal/execution/adapters/protocol/orca/state_feed.go:func *nativeStateFeed.Initial",
+    "internal/execution/adapters/protocol/orca/state_feed.go:func *nativeStateFeed.Query",
+    "internal/execution/adapters/protocol/orca/state_feed.go:func OpenStateFeed",
+    "internal/execution/adapters/protocol/orca/state_feed.go:func QueryOriginalSample",
+    "internal/execution/adapters/protocol/orca/state_feed.go:type SampleKind",
+    "internal/execution/adapters/protocol/orca/state_feed.go:type StateFeed",
+    "internal/execution/adapters/protocol/orca/state_feed.go:type StateSample",
+    "internal/execution/adapters/protocol/orca/state_feed.go:type nativeStateFeed",
+    "internal/execution/adapters/protocol/orca/state_query_feed.go:func *localQueryFeed.Close",
+    "internal/execution/adapters/protocol/orca/state_query_feed.go:func *localQueryFeed.Drain",
+    "internal/execution/adapters/protocol/orca/state_query_feed.go:func *localQueryFeed.Initial",
+    "internal/execution/adapters/protocol/orca/state_query_feed.go:func *localQueryFeed.Query",
+    "internal/execution/adapters/protocol/orca/state_query_feed.go:func openLocalQueryFeed",
+    "internal/execution/adapters/protocol/orca/state_query_feed.go:type localQueryFeed"
+  ],
+  "identical": 2258,
+  "modified": [],
+  "stage": "a"
+}

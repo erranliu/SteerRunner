@@ -1,0 +1,14 @@
+{
+  "wire": {
+    "bytes": 158875,
+    "sha256": "f5d69cd15df16ef2ba029b137e4fc6caea774aadf11565963dd0813254d78b62",
+    "a_identical": true,
+    "b_identical": true
+  },
+  "frozen": {
+    "bytes": 15528,
+    "sha256": "06034f8e8ccba2233eac1518a29ac706ae48f6273993da21cc6a69f233f16d62",
+    "a_identical": true,
+    "b_identical": true
+  }
+}

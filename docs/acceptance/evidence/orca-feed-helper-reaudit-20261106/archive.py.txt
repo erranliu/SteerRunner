@@ -1,0 +1,12 @@
+import gzip,hashlib,json,pathlib,shutil
+base=pathlib.Path('.evidence/retirement-audit');src=base/'reaudit';out=pathlib.Path('docs/acceptance/evidence/orca-feed-helper-reaudit-20261106');out.mkdir(parents=True,exist_ok=True)
+for name in ['audit.json','remaining.txt','node-exit.txt']:
+ shutil.copyfile(src/name,out/name)
+shutil.copyfile(base/'reaudit-declaration-diff.json',out/'declarations.json')
+for name in ['components.jsonl','node.tap','wire.json']:
+ with gzip.open(out/(name+'.gz'),'wb') as f:f.write((src/name).read_bytes())
+for name in ['audit.py','archive.py']:
+ shutil.copyfile(src/name,out/(name+'.txt'))
+manifest={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(out.iterdir()) if p.is_file() and p.name!='SHA256SUMS.json'}
+(out/'SHA256SUMS.json').write_text(json.dumps(manifest,indent=2),encoding='utf-8')
+print('Archived',len(manifest),'fresh audit evidence files')

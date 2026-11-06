@@ -1,0 +1,27 @@
+package main
+
+import (
+ "crypto/sha256"
+ "encoding/json"
+ "fmt"
+ "os"
+ b "github.com/erranliu/SteerRunner/internal/execution/backend"
+ o "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
+ p "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
+ "github.com/erranliu/SteerRunner/internal/resources"
+ "github.com/erranliu/SteerRunner/internal/runstate"
+)
+
+func main() {
+ if len(os.Args)!=2 {panic("output path required")}
+ var absent,zero p.StateObservation
+ for _,v:=range []struct{raw string;out *p.StateObservation}{{`{"origin":"hook","kind":"agent","authorityId":"original","revision":3,"observedAt":4}`, &absent},{`{"origin":"hook","kind":"agent","authorityId":"original","incarnation":0,"revision":3,"observedAt":4}`, &zero}} {if err:=json.Unmarshal([]byte(v.raw),v.out);err!=nil{panic(err)}}
+ profile:=o.Profile{NativeTerminal:true,Terminal:&o.TerminalConfig{ReceiptVersion:3,Agent:"pi",BundleSHA256:"original-bundle",EvidenceSHA256:"original-evidence",ExecutionID:"run",SessionID:"session",AccessMode:"full_access",Model:"model",ReasoningEffort:"high"},RuntimeSHA256:"original-runtime",Executable:"orca",WaitTimeout:"10s"}
+ state:=o.State{Turns:[]o.Turn{{Command:"command",Prompt:"原输入",Attempted:true,Accepted:true,Native:o.NativeProof{Agent:"codex",Pane:"pane",Provider:"provider",Waiting:"Original evidence missing",Conflict:"original conflict",BaseRootAt:17,Outcome:"unreported"}}}}
+ operation:=b.Operation{Version:1,ID:"operation",Action:string(b.LifecycleCleanup),Request:[]byte(`{"resources":[]}`)}
+ snapshot:=b.LifecycleSnapshot{PendingDeliveryID:"saved-delivery",OriginalHost:&b.ProcessIdentity{Kind:"os",PID:7},Operations:[]b.Operation{operation},PendingTurn:&b.TurnInput{CommandID:"command",Prompt:"原输入"}}
+ h:=sha256.New();assets:=map[string]string{}
+ for _,name:=range []string{"pi-evidence.mjs","pi-managed.mjs","terminal-tools.mjs","receipt.mjs"}{raw,err:=os.ReadFile("internal/execution/adapters/orcatransport/extensions/"+name);if err!=nil{panic(err)};assets[name]=fmt.Sprintf("%x",sha256.Sum256(raw));h.Write([]byte(name));h.Write(raw)}
+ values:=map[string]any{"profile":profile,"state":state,"native_proof":state.Turns[0].Native,"owner":o.TerminalOwner{SessionID:"session",RunID:"run",RuntimeSHA256:"original-runtime",ExtensionSHA256:"original-bundle"},"operation":operation,"snapshot":snapshot,"request":b.LifecycleRequest{Snapshot:snapshot},"receipt":b.LifecycleReceipt{OriginalHost:snapshot.OriginalHost},"record":runstate.Record{ID:"run",Snapshot:snapshot},"resource":p.StateResource{RuntimeID:"runtime",WorktreeID:"worktree",Handle:"terminal",IncarnationID:"incarnation"},"agent":p.AgentState{PaneKey:"pane",Prompt:"原输入",Observation:&zero},"observation_absent":absent,"observation_zero":zero,"capabilities":resources.Capabilities(),"resource_digest":resources.Digest(),"bundle":fmt.Sprintf("%x",h.Sum(nil)),"assets":assets}
+ raw,err:=json.Marshal(values);if err!=nil{panic(err)};if err=os.WriteFile(os.Args[1],raw,0600);err!=nil{panic(err)};fmt.Printf("wire bytes=%d sha256=%x bundle=%x\n",len(raw),sha256.Sum256(raw),h.Sum(nil))
+}
