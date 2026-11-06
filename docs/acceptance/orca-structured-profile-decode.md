@@ -1,5 +1,7 @@
 # Orca 结构化 profile 单次解码验收
 
+PR #123 合入前复审更正：本记录中基于忽略错误的 `json.Marshal(setup)` 比较，不能证明 setup 不变；setup 含函数字段，原比较实际为空。已修复新增构造测试及两项 #121 测试，完成最终候选复验，见[审计与修复记录](orca-structured-profile-decode-review.md)。下方保留首次候选及原证据，不把它们追认为修复后候选的结果。
+
 2026-11-06，合并前验证。实际主线基线 `5b5487b56715dfa3a2bbbd9d4c2d207b6647e555`（#122），隔离分支 `codex/orca-structured-profile-decode`；依据 [Spec](../spec/orca-structured-profile-decode.spec.md) 与 [Plan](../spec/orca-structured-profile-decode.plan.md)。本轮未修改 Orca、SteerLine、安装现场、公共协议或门禁。
 
 生产修改限 `frozen_record.go` 与 `lifecycle.go`（+14/-11）：结构化构造直接一次调用原完整 `decodeAgentSessionProfile`，填充原 Transport/version/host/development 和私有 audited；NewLifecycle 消费该结果，执行视图完整投影。原 agent → Clone → ProcessHost 顺序、旧协议执行前置拒绝、旧 terminal 解码、client/clock/nativeAccess/probe 初始化及 frozen 只读白名单保持。未改完整解码器或其内部校验，不新增缓存、工厂、策略接口或配置副本。

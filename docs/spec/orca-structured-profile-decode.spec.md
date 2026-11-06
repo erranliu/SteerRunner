@@ -1,6 +1,6 @@
 # Orca 结构化 profile 单次解码 Spec
 
-2026-11-06：已按本 Spec 实施并完成合并前受影响包、同候选双端 execute/1 及原目录排空验收，见[验收记录](../acceptance/orca-structured-profile-decode.md)。实际实施基线为 `5b5487b56715dfa3a2bbbd9d4c2d207b6647e555`（含 #122）；两处原构造及严格解码器与下述调查基线一致，#122 配置准入和公共接口保持不变。尚未合入或部署，不代表完整发布资格。
+2026-11-06：已按本 Spec 实施并完成合并前受影响包、同候选双端 execute/1 及原目录排空验收，见[首次验收记录](../acceptance/orca-structured-profile-decode.md)和[PR #123 审计修复复验](../acceptance/orca-structured-profile-decode-review.md)。实际实施基线为 `5b5487b56715dfa3a2bbbd9d4c2d207b6647e555`（含 #122）；两处原构造及严格解码器与下述调查基线一致，#122 配置准入和公共接口保持不变。实际合入状态以 [PR #123](https://github.com/erranliu/SteerRunner/pull/123) 为准，未部署，不代表完整发布资格。
 
 以 `main=d58054a78471211c1eeb86c0eb1396ae870d6ca1` 为基线，承接 [#121 冻结读取边界](https://github.com/erranliu/SteerRunner/blob/d58054a78471211c1eeb86c0eb1396ae870d6ca1/docs/spec/orca-frozen-reader.spec.md) 和 [旧执行退役合同](https://github.com/erranliu/SteerRunner/blob/d58054a78471211c1eeb86c0eb1396ae870d6ca1/docs/spec/orca-legacy-execution-retirement.spec.md)。当前成功构造结构化 Lifecycle 时，`decodeLifecycleProfile` 内部、`decodeFrozenRecord` 及 `NewLifecycle` 共调用三次 `decodeAgentSessionProfile`；冻结 reader 的结构化构造调用两次。本 PR 只消除这两个构造入口对同一克隆 setup 的重复解码。
 

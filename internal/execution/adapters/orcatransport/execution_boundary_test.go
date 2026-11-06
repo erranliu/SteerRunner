@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"reflect"
 	"testing"
 
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
@@ -16,7 +17,7 @@ func TestRetiredExecutionFactoryKeepsFrozenProof(t *testing.T) {
 				l, host, s := sharedNativeFixture(t, environment)
 				s = frozenWorkspaceFixture(t, l, host, s)
 				setup := l.setup.Clone()
-				setup.Snapshot = s
+				setup.Snapshot = s.Clone()
 				calls := 0
 				setup.ProcessHost = &creationTestHost{ManagedProcessHost: host, output: func(_ context.Context, c b.LaunchCommand) ([]byte, error) {
 					calls++
@@ -37,7 +38,7 @@ func TestRetiredExecutionFactoryKeepsFrozenProof(t *testing.T) {
 					}
 					return json.Marshal(map[string]any{"ok": true, "result": map[string]any{"terminals": rows, "totalCount": len(rows), "truncated": mode == "incomplete", "hostScope": map[string]any{"hostIds": hosts, "omittedHostIds": []string{}}}, "_meta": map[string]string{"runtimeId": runtime}})
 				}}
-				before, _ := json.Marshal(setup)
+				before := setup.Clone()
 				port, err := NewLifecycle(setup)
 				var failure *b.BackendError
 				if port != nil || !errors.As(err, &failure) || failure.Code != b.BackendUnsupported || calls != 0 {
@@ -51,8 +52,7 @@ func TestRetiredExecutionFactoryKeepsFrozenProof(t *testing.T) {
 				if (err == nil) != (mode == "absent") || calls != 1 {
 					t.Fatal("frozen proof lost original scope", mode, calls, err)
 				}
-				after, _ := json.Marshal(setup)
-				if string(before) != string(after) {
+				if !reflect.DeepEqual(before, setup) {
 					t.Fatal("proof modified saved facts")
 				}
 			})

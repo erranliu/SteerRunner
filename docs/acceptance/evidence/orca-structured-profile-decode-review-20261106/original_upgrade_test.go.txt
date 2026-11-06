@@ -1,0 +1,82 @@
+package runnerclient
+
+import (
+	"context"
+	"crypto/sha256"
+	"encoding/json"
+	"fmt"
+	"os"
+	"path/filepath"
+	"testing"
+	"time"
+)
+
+func TestOrcaWorkspaceReceiptOriginalDirectories(t *testing.T) {
+	root := os.Getenv("ORCA_WORKSPACE_RECEIPT_EVIDENCE")
+	if !filepath.IsAbs(root) {
+		t.Fatal("absolute evidence directory required")
+	}
+	digest := func(t *testing.T, file string) string {
+		data, err := os.ReadFile(file)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return fmt.Sprintf("%x", sha256.Sum256(data))
+	}
+	writer := filepath.Join(root, "writer.exe")
+	reader := "C:\\Users\\lmas1\\.codex\\worktrees\\d634\\SteerRunner\\.evidence\\orca-profile-decode-pr\\.evidence\\profile-decode-review\\live\\reader.exe"
+	writerSHA, readerSHA := digest(t, writer), digest(t, reader)
+	if writerSHA == readerSHA {
+		t.Fatal("expected independent EXE identities")
+	}
+	for _, name := range []string{"local-execute", "remote-execute"} {
+		t.Run(name, func(t *testing.T) {
+			records, err := filepath.Glob(filepath.Join(root, name+"-*", "passed.json"))
+			if err != nil || len(records) != 1 {
+				t.Fatalf("expected one passing original directory: %v %v", records, err)
+			}
+			data, err := os.ReadFile(records[0])
+			if err != nil {
+				t.Fatal(err)
+			}
+			var record struct{ Run, State string }
+			if err := json.Unmarshal(data, &record); err != nil || record.Run == "" || filepath.Join(filepath.Dir(records[0]), "state") != record.State {
+				t.Fatalf("invalid original acceptance identity: %+v %v", record, err)
+			}
+			state := record.State
+			original := Client{Executable: writer, SHA256: writerSHA, StateDir: state}
+			candidate := Client{Executable: reader, SHA256: readerSHA, StateDir: state}
+			ctx, cancel := context.WithTimeout(context.Background(), 90*time.Second)
+			defer cancel()
+			info, err := original.ServiceStatus(ctx)
+			if err != nil || info.Status != "not_running" {
+				t.Fatalf("original writer is not drained: %+v %v", info, err)
+			}
+			db := filepath.Join(state, "runner.db")
+			shutdown := filepath.Join(state, "service", "shutdown.json")
+			dbSHA, shutdownSHA := digest(t, db), digest(t, shutdown)
+			proof, err := original.VerifyStopped(ctx)
+			if err != nil || len(proof.Runs) != 1 || proof.Runs[0].RunID != record.Run || proof.Runs[0].StopEvidenceScope != "orca_agent_session" {
+				t.Fatalf("invalid original stop proof: %+v %v", proof, err)
+			}
+			if err := original.VerifyUpgradeDrained(ctx, candidate); err != nil {
+				t.Fatal(err)
+			}
+			if digest(t, db) != dbSHA || digest(t, shutdown) != shutdownSHA {
+				t.Fatal("cold verification changed original persisted evidence")
+			}
+			evidence, err := json.MarshalIndent(map[string]any{
+				"run": record.Run, "input_digest": proof.Runs[0].InputDigest, "scope": proof.Runs[0].StopEvidenceScope,
+				"writer_sha256": writerSHA, "reader_sha256": readerSHA, "database_before": dbSHA, "database_after": digest(t, db),
+				"shutdown_before": shutdownSHA, "shutdown_after": digest(t, shutdown), "upgrade_drained": true,
+			}, "", "  ")
+			if err != nil {
+				t.Fatal(err)
+			}
+			if err := os.WriteFile(filepath.Join(filepath.Dir(records[0]), "upgrade-proof-review.json"), evidence, 0600); err != nil {
+				t.Fatal(err)
+			}
+			t.Logf("%s %s %s", record.Run, proof.Runs[0].InputDigest, proof.Runs[0].StopEvidenceScope)
+		})
+	}
+}

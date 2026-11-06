@@ -43,7 +43,7 @@ func TestStructuredConstructorFacts(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			before, _ := json.Marshal(setup)
+			before := setup.Clone()
 			r, err := decodeFrozenRecord(setup)
 			if err != nil {
 				t.Fatal(err)
@@ -71,8 +71,7 @@ func TestStructuredConstructorFacts(t *testing.T) {
 			if _, _, err := reader.client.CloseTerminal(context.Background(), "original", "runtime"); err == nil || !strings.Contains(err.Error(), "does not permit mutation") {
 				t.Fatal("structured reader allowed mutation", err)
 			}
-			after, _ := json.Marshal(setup)
-			if string(before) != string(after) || len(host.calls) != 0 {
+			if !reflect.DeepEqual(setup, before) || len(host.calls) != 0 {
 				t.Fatal("constructor mutated input or performed I/O")
 			}
 			setup.ProfileData[0].Payload[0] = '!'

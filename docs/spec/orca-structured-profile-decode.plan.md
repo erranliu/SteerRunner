@@ -1,6 +1,6 @@
 # Orca 结构化 profile 单次解码 Plan
 
-2026-11-06：步骤 1–7 已完成实施、合并前验收与本轮审计；PR 交付状态见聊天，尚未合入或部署。[Spec](orca-structured-profile-decode.spec.md)；[实际验收与资格边界](../acceptance/orca-structured-profile-decode.md)。
+2026-11-06：步骤 1–7 已完成实施及合并前验收，PR #123 复审发现的测试空断言已修复并按影响复验；实际合入状态以 [PR #123](https://github.com/erranliu/SteerRunner/pull/123) 为准，未部署。[Spec](orca-structured-profile-decode.spec.md)；[首次验收](../acceptance/orca-structured-profile-decode.md)；[最终候选审计与复验](../acceptance/orca-structured-profile-decode-review.md)。
 
 1. 实施前刷新主线，在隔离分支记录 `NewLifecycle → decodeFrozenRecord → decodeLifecycleProfile/decodeAgentSessionProfile` 的实际调用和首错顺序，保存受影响包基线。区分当前执行、结构化冻结读取及旧 terminal 只读路径，确认成功路径原三次/两次调用，不能把失败时未执行的后续调用计入。
 2. 在 `decodeFrozenRecord` 的原前置检查之后分流：结构化入口一次调用原完整解码器，填充原 Transport/version/host/development 及新增私有 audited 事实；旧记录仍调用原 `decodeLifecycleProfile`。NewLifecycle 保留原旧协议拒绝，直接消费这些已验证事实。补齐 `Lifecycle.frozenRecord()` 的字段投影，不改签名、解码器内部、读取白名单或 client/clock/probe 初始化。检查没有新增缓存、通用工厂、策略接口或重复完整 profile 存储。
