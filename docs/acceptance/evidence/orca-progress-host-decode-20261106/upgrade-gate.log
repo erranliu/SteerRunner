@@ -1,0 +1,10 @@
+=== RUN   TestWorkspaceFileOriginalDirectories
+=== RUN   TestWorkspaceFileOriginalDirectories/local-development
+    workspace_file_upgrade_test.go:76: dfc2856f89a67a8453f93e858604331c 951388f179e13e7b902e27729174ddc0e806fb8a1d7ead53cae42f4032dddb08 orca_agent_session
+=== RUN   TestWorkspaceFileOriginalDirectories/remote-development
+    workspace_file_upgrade_test.go:76: 4814c858bb4bd4862bd5e3ff8306e4fa 75d20ca8ebcbb2b098ac1a48c157f43290b70c1ee1cd996ec694e11022124530 orca_agent_session
+--- PASS: TestWorkspaceFileOriginalDirectories (1.43s)
+    --- PASS: TestWorkspaceFileOriginalDirectories/local-development (0.82s)
+    --- PASS: TestWorkspaceFileOriginalDirectories/remote-development (0.58s)
+PASS
+ok  	github.com/erranliu/SteerLine/internal/runnerclient	2.815s

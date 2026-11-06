@@ -12,6 +12,7 @@ import (
 )
 
 func TestStructuredConstructorFacts(t *testing.T) {
+	t.Setenv("ORCA_USER_DATA_PATH", t.TempDir())
 	for _, tc := range []struct {
 		name, agent, environment string
 		version                  int
@@ -44,6 +45,17 @@ func TestStructuredConstructorFacts(t *testing.T) {
 				t.Fatal(err)
 			}
 			before := setup.Clone()
+			fileSetup := setup.Clone()
+			fileSetup.ProcessHost = nil
+			fileBefore := fileSetup.Clone()
+			wantHost := "local"
+			if tc.environment != "" {
+				wantHost = "sha256:" + strings.Repeat("ab", 32)
+			}
+			fileHost, err := ProgressHost(fileSetup)
+			if err != nil || fileHost != wantHost || !reflect.DeepEqual(fileSetup, fileBefore) {
+				t.Fatal("file host changed frozen identity or input", fileHost, err)
+			}
 			r, err := decodeFrozenRecord(setup)
 			if err != nil {
 				t.Fatal(err)
@@ -80,6 +92,10 @@ func TestStructuredConstructorFacts(t *testing.T) {
 			}
 			if _, err := NewLifecycle(setup); err == nil {
 				t.Fatal("new construction reused earlier validation")
+			}
+			fileSetup.ProfileData[0].Payload[0] = '!'
+			if host, err := ProgressHost(fileSetup); err == nil || host != "" {
+				t.Fatal("file host reused earlier validation", host, err)
 			}
 		})
 	}
@@ -138,6 +154,13 @@ func TestStructuredConstructorFaultPriority(t *testing.T) {
 			if want == nil {
 				t.Fatal("invalid fixture succeeded")
 			}
+			fileSetup := setup.Clone()
+			fileSetup.ProcessHost = nil
+			host, got := ProgressHost(fileSetup)
+			assertConstructorError(t, got, want)
+			if host != "" {
+				t.Fatal("invalid profile returned a file host", host)
+			}
 			r, got := decodeFrozenRecord(setup)
 			assertConstructorError(t, got, want)
 			port, got := NewLifecycle(setup)
@@ -151,6 +174,12 @@ func TestStructuredConstructorFaultPriority(t *testing.T) {
 			_, got = NewLifecycle(setup)
 			assertConstructorError(t, got, errors.New("unsupported Orca terminal lifecycle"))
 			setup.Snapshot.Ref.Agent.Name = "retired-agent"
+			_, want = decodeAgentSessionProfile(setup)
+			host, got = ProgressHost(setup)
+			assertConstructorError(t, got, want)
+			if host != "" {
+				t.Fatal("invalid agent returned a file host", host)
+			}
 			_, got = decodeFrozenRecord(setup)
 			assertConstructorError(t, got, &b.BackendError{Code: b.BackendUnsupported, Diagnostic: "Orca agent execution/history is unsupported; only Codex and Pi are supported."})
 			_, got = NewLifecycle(setup)

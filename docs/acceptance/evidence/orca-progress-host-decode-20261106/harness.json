@@ -1,0 +1,10 @@
+{
+  "base_commit": "6dd4360a42314e65b427627508ffd2ee3e4287da",
+  "steerline_commit": "d3a76ef8c35f092e969dd5a8bea4c950f1c25cff",
+  "source_digest_after_live": "9bca4d6c84ddb7542497b7ffbe6ec15f55e1da55d16e969e525ffd92fc075a46",
+  "raw_log_sha256": "3b8f76bbc11719accb565b0a739aec36068722e79ae3b2d17f4abadb7dff7bf1",
+  "raw_log_encoding": "utf-8",
+  "archived_log_encoding": "utf-8",
+  "archived_log_sha256": "4fc0c027fb357a7c076706ab76d636ea75619ed8ff9f9cee3f2844d97ff9b8d1",
+  "archived_log_newlines": "LF"
+}

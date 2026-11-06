@@ -54,19 +54,22 @@ func openRunFile(ctx context.Context, environment, runtime, host, worktree, work
 }
 
 func ProgressHost(setup b.LifecycleSetup) (string, error) {
+	if setup.Snapshot.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 {
+		profile, err := decodeAgentSessionProfile(setup)
+		if err != nil {
+			return "", err
+		}
+		if profile.Transport.Environment == "" {
+			return "local", nil
+		}
+		return profile.PairingHostID, nil
+	}
 	p, _, err := decodeLifecycleProfile(setup)
 	if err != nil {
 		return "", err
 	}
 	if p.Environment == "" {
 		return "local", nil
-	}
-	if setup.Snapshot.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 {
-		profile, err := decodeAgentSessionProfile(setup)
-		if err != nil {
-			return "", err
-		}
-		return profile.PairingHostID, nil
 	}
 	return native.UsageHostID(p.Environment)
 }
