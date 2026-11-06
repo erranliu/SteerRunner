@@ -13,6 +13,53 @@ func (e *Engine) feedback(id string, w *worker, p b.LifecyclePort) bool {
 	e.mu.Unlock()
 	return e.feedbackValue(id, w, p, r.PendingFeedback, false)
 }
+
+// Stop revokes unsent follow-ups. A committed native intent remains original
+// even when its receipt has not established whether the input was accepted.
+func revokeDevelopmentInputs(r *runstate.Record) {
+	if !r.DevelopmentMessage() {
+		return
+	}
+	if r.PendingFeedback != nil {
+		r.CommandStates[r.PendingFeedback.CommandID] = "failed"
+		r.PendingFeedback = nil
+	}
+	if answer := r.PendingAnswer; answer != nil {
+		sent := false
+		for _, intent := range r.Intents {
+			if feedback := intent.Request.Input.Feedback; feedback != nil && feedback.DecisionID == answer.CommandID && intent.Request.Operation.Status != b.OperationRejected {
+				sent = true
+				if intent.NeedsReconciliation() && r.CommandStates[answer.CommandID] != "completed" {
+					r.CommandStates[answer.CommandID] = "unknown"
+				}
+			}
+		}
+		if !sent {
+			r.CommandStates[answer.CommandID] = "failed"
+			r.PendingAnswer = nil
+		}
+	}
+	turn := r.Snapshot.PendingTurn
+	if turn == nil || turn.Purpose != "message" {
+		return
+	}
+	input := workflow.Input(r.Workflow, turn.CommandID)
+	if input == nil {
+		return
+	}
+	for _, intent := range r.Intents {
+		if nativeInputAction(b.LifecycleAction(intent.Request.Operation.Action)) && intent.Request.Input.Turn != nil && intent.Request.Input.Turn.CommandID == turn.CommandID && intent.Request.Operation.Status != b.OperationRejected {
+			if intent.NeedsReconciliation() && r.CommandStates[input.FeedbackDecisionID] != "completed" {
+				r.CommandStates[input.FeedbackDecisionID] = "unknown"
+			}
+			return
+		}
+	}
+	r.CommandStates[input.FeedbackDecisionID] = "failed"
+	r.Snapshot.PendingTurn = nil
+	r.Snapshot.Session.PendingCommandID, r.Snapshot.Session.PendingTurnID = "", ""
+}
+
 func (e *Engine) feedbackValue(id string, w *worker, p b.LifecyclePort, answer *runstate.Answer, businessAnswer bool) bool {
 	if answer == nil {
 		return false

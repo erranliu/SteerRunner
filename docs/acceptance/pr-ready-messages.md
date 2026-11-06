@@ -35,3 +35,11 @@ SteerLine `smoke.local-codex` 正式入口：`./scripts/test-live-delivery.ps1 -
 最后在原消息 owner 中补齐普通/审计开发两种流程的原生问题→正式 reply→原路答案一次发送→本轮结束→第二条 message，断言原 question route/turn、串行门禁与 question/answer 历史。`go test ./internal/application -run '^TestDevelopmentRunMessagesRetainOriginalWorkflow$' -count=1` 通过（0.554 秒）；差异只在测试，不改变以上固定 EXE。独立只读 reviewer 复审通过。真实冲突 Agent 未提问，实机问答不据此宣称通过。
 
 SteerLine 最终 smoke 夹具修订后再次运行相同命令，OutDir=`C:/SteerlineDebug/pr-conflict-5c27/live-07`，316.9 秒通过且清理完成；同一固定 Runner EXE，真实 PR 779 两轮均沿原资源完成，第二轮未新增提交。仅此本地组合有真实联验声明。
+
+## 合并前再审与修复
+
+2026-11-06 用户授权再次审计、修复后合并部署。独立审计发现停止窗口 P2：message 已受理或已冻结但尚未提交原生输入时，stop 未清理 pending，原控制会永久 pending/running；消息内答案有同一窗口。本次仅在开发 pr_ready 的 stop 受理事务中撤销未发送/已明确拒绝的输入并标 failed，已提交的 in-flight/unknown 意图保留原身份和对账，completed 回执不降级，保留原 pr_ready 与历史。
+
+`TestDevelopmentRunMessageStopCancelsOnlyUnsentInput` 覆盖普通/审计两流程的 saved、frozen、input-intent、input-rejected、input-accepted、answer、answer-intent、answer-rejected，完整停止后重启查询原 request；原两轮/原生问答测试保留。修复前复现 `runner-stop-audit-before.log`；最终定向 `go test ./internal/application -run '^TestDevelopmentRunMessage' -count=1`，`runner-stop-audit-final.log` 通过（2.251 秒），独立只读复审通过。
+
+中间 `runner-stop-audit-after-01.log` 的 audited 夹具缺原 ExecutionModel，补齐后 after-02、after-03 和 final 通过。正式 L1 首轮 `runner-audit-L1-01` 在 focused 框架阶段因测试期间源码继续修订被生产输入摘要守卫拒绝（150.7 秒，尚未执行内部包）；不放宽守卫，不计通过。冻结修复后另起报告复验。

@@ -2,12 +2,14 @@ package application
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"io"
 	"log"
+	"strings"
 	"testing"
 )
 
@@ -15,6 +17,127 @@ type noMessageProbePort struct{ auditPort }
 
 func (noMessageProbePort) VerifyManualRecovery(context.Context, b.LifecycleSnapshot) (b.LifecycleRecoveryEvidence, error) {
 	return b.LifecycleRecoveryEvidence{}, errors.New("message must not probe the original session")
+}
+
+func TestDevelopmentRunMessageStopCancelsOnlyUnsentInput(t *testing.T) {
+	for _, flow := range []string{"development", "development-audited"} {
+		for _, window := range []string{"saved", "frozen", "input-intent", "input-rejected", "input-accepted", "answer", "answer-intent", "answer-rejected"} {
+			t.Run(flow+"/"+window, func(t *testing.T) {
+				e, w := contentEngine(t, "conversation")
+				e.finish("run", contentEvidence(e, "original result", "succeeded", true))
+				r := e.runs["run"].Clone()
+				p, _ := workflow.Lookup(flow, 2)
+				r.Request.Workflow = contracts.Workflow{ID: flow, Version: 2}
+				r.Request.Conversation = nil
+				r.Workflow.Config, r.Workflow.StepID, r.Status = &p, workflow.StepPRReady, "pr_ready"
+				r.Workflow.ExecutionModel = &workflow.ModelSettings{Model: "original", ReasoningEffort: "medium"}
+				if p.AuditModelRequired {
+					r.Workflow.AuditModel = &workflow.ModelSettings{Model: "auditor", ReasoningEffort: "high"}
+				}
+				if err := e.commitLocked(r, nil, "published"); err != nil {
+					t.Fatal(err)
+				}
+				if response := contentControl(e, "message", "pending-message", contracts.MessageInput{ExpectedRevision: r.Revision, Text: "original message"}); !response.OK {
+					t.Fatal(response)
+				}
+				command := e.runs["run"].PendingFeedback.CommandID
+				if window != "saved" && !e.feedback("run", w, w.port) {
+					t.Fatal("message did not freeze")
+				}
+				if strings.HasPrefix(window, "input-") {
+					r = e.runs["run"]
+					if _, err := e.saveIntent("run", r, b.LifecycleCandidate{Action: b.LifecycleStartTurn, Input: b.LifecycleInput{Turn: r.Snapshot.PendingTurn}}); err != nil {
+						t.Fatal(err)
+					}
+				}
+				if strings.HasPrefix(window, "answer") {
+					_ = contentEvidence(e, "", "succeeded", true)
+					r = e.runs["run"].Clone()
+					r.Snapshot.PendingTurn = nil
+					r.CommandStates[command] = "completed"
+					r.Status, r.Question = "waiting_input", &contracts.QuestionView{ID: "original-question"}
+					if err := e.commitLocked(r, nil, "question"); err != nil {
+						t.Fatal(err)
+					}
+					if response := contentControl(e, "reply", "pending-answer", contracts.ReplyInput{ExpectedRevision: r.Revision, Kind: "answer", QuestionID: "original-question", Text: "original answer"}); !response.OK {
+						t.Fatal(response)
+					}
+					command = e.runs["run"].PendingAnswer.CommandID
+					if window != "answer" {
+						if _, err := e.saveIntent("run", e.runs["run"], b.LifecycleCandidate{Action: b.LifecycleDeliverFeedback, Input: b.LifecycleInput{Feedback: &b.FeedbackInput{DecisionID: command, Message: "original answer"}}}); err != nil {
+							t.Fatal(err)
+						}
+					}
+				}
+				r = e.runs["run"]
+				if strings.HasSuffix(window, "rejected") {
+					r = r.Clone()
+					r.Intents[len(r.Intents)-1].Request.Operation.Status = b.OperationRejected
+					if err := e.commitLocked(r, nil, "input_rejected"); err != nil {
+						t.Fatal(err)
+					}
+				}
+				if window == "input-accepted" {
+					r = r.Clone()
+					intent := &r.Intents[len(r.Intents)-1]
+					intent.Request.Operation.Status = b.OperationAccepted
+					intent.Receipt = &b.LifecycleReceipt{State: b.LifecycleStateFacts{InputAccepted: true, ResourcePending: true}}
+					r.CommandStates[command] = "completed"
+					if err := e.commitLocked(r, nil, "input_accepted"); err != nil {
+						t.Fatal(err)
+					}
+				}
+				intents := string(canonical(r.Intents))
+				if response := contentControl(e, "stop", "stop-message", contracts.RevisionInput{ExpectedRevision: r.Revision}); !response.OK {
+					t.Fatal(response)
+				}
+				r = e.runs["run"]
+				committed := window == "input-intent" || window == "answer-intent" || window == "input-accepted"
+				want := "failed"
+				if committed {
+					want = "unknown"
+				}
+				if window == "input-accepted" {
+					want = "completed"
+				}
+				if r.CommandStates[command] != want || string(canonical(r.Intents)) != intents {
+					t.Fatal("stop confused unsent input with an original native intent", r.CommandStates)
+				}
+				if !committed && (r.PendingFeedback != nil || r.PendingAnswer != nil || r.Snapshot.PendingTurn != nil || r.Snapshot.Session.PendingCommandID != "" || r.Snapshot.Session.PendingTurnID != "") {
+					t.Fatal("stop left unsent input pending")
+				}
+				if committed && (strings.HasPrefix(window, "input-") && r.Snapshot.PendingTurn == nil || window == "answer-intent" && r.PendingAnswer == nil) {
+					t.Fatal("stop lost original uncertain input")
+				}
+				settleRunStop(r)
+				r.CommandStates[r.PendingStop], r.PendingStop = "completed", ""
+				if r.Workflow.StepID != workflow.StepPRReady || r.View().Controls.CanMessage || r.Allowed {
+					t.Fatal("stop changed the milestone or authorized new input")
+				}
+				if err := e.commitLocked(r, nil, "stop_confirmed"); err != nil {
+					t.Fatal(err)
+				}
+				restarted, err := New(context.Background(), e.dir, e.store, log.New(io.Discard, "", 0))
+				if err != nil {
+					t.Fatal(err)
+				}
+				t.Cleanup(restarted.cancel)
+				var inspected struct {
+					Command struct {
+						ActionStatus string `json:"action_status"`
+					} `json:"command"`
+				}
+				request := "pending-message"
+				if strings.HasPrefix(window, "answer") {
+					request = "pending-answer"
+				}
+				response := restarted.Handle("inspect", "", request, "", "", 0, nil)
+				if !response.OK || json.Unmarshal(canonical(response.Data), &inspected) != nil || inspected.Command.ActionStatus != r.CommandStates[command] {
+					t.Fatal("original input settlement did not survive restart", response)
+				}
+			})
+		}
+	}
 }
 
 func TestDevelopmentRunMessagesRetainOriginalWorkflow(t *testing.T) {

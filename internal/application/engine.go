@@ -263,6 +263,7 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 				closeContent(next, receipt.ID)
 				break
 			}
+			revokeDevelopmentInputs(next)
 			next.Allowed = false
 			next.ResumeRequired = true
 			next.PendingStop = receipt.ID
