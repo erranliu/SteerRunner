@@ -145,12 +145,12 @@ func (h *terminalQueryHost) OutputCommand(ctx context.Context, c b.LaunchCommand
 
 func originalQueryFixture(t *testing.T) (*Lifecycle, *terminalQueryHost, b.LifecycleSnapshot, native.Terminal) {
 	t.Helper()
-	l, host, s := fixture(t)
+	l, host, s := frozenFixture(t)
 	s = frozenWorkspaceFixture(t, l, host, s)
 	wrapped := &terminalQueryHost{ManagedProcessHost: host}
 	setup := l.setup.Clone()
 	setup.ProcessHost = wrapped
-	port, err := frozenFixtureLifecycle(setup) // read the original frozen terminal through native RPC
+	port, err := capabilityFixtureLifecycle(setup) // read the original frozen terminal through native RPC
 	if err != nil {
 		t.Fatal(err)
 	}

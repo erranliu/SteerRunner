@@ -46,6 +46,12 @@ Agent 在执行读取这些变量的脚本前，将绑定解析为现有文件�
 
 旧 terminal/helper 的派发、TUI 输入/观察、控制 actor 和主动停止分支已退役。原配置/状态/receipt 格式及严格历史解码保留，公共终端读取和当前结构化工作区创建/原回执对账仍有实际消费者。保留旧 scope 是为了解释原证明，不能据此恢复旧执行或扩大停止范围。实施范围与证据见 [A/B 验收](acceptance/orca-reader-execution-boundary.md)。
 
+2026-11-06 职责进一步收口：application 的开发关闭合同标记、后端冻结 scope 要求及成功 scope 诊断由 adapter 统一解释，业务侧保留 Workflow、授权、相等比较及原事务边界。标记分类不增加严格解码门槛，也不代替停止证明；见 [A 验收](acceptance/orca-stop-contract-boundary.md)。
+
+历史读取测试直接消费 frozenRecord，当前结构化夹具经合法 NewLifecycle 构造后注入隔离传输；生产 Lifecycle 删除 17 个由旧测试维持的方法，旧 State encoder 仅留测试侧。原终端 original/boundTerminal、并发及共享 CLI/creation、旧快照关闭拒绝等真实消费者保留。格式及执行、恢复、停止承诺不变；[B 验收](acceptance/orca-reader-fixture-boundary.md)单列首轮公开 fixture 读取失败和同 EXE 四项复验，不授予完整级别或真机资格。
+
+同日[实现复审](acceptance/orca-stop-reader-reaudit.md)未确认生产缺陷；补强原输入不变和在线/离线 scope 边界测试，原合法入口、错误优先级及格式保持。最新产物与实际定向资格以复审记录为准。
+
 ## 会话停止与已接受限制
 
 **Orca 链路不保证全部派生进程或额外主机资源正确清理。这个限制不成为正常业务链路的额外门禁。** 对本机及配对远端已启用原会话结算的结构化会话，停止资格是精确绑定原 session 的 close 成功回执，不是主机级资源清场。`working=false`、回合结束、观察断线或界面消失均不能替代该回执。

@@ -1,0 +1,10 @@
+{
+  "baseline_top_level_tests": 80,
+  "current_top_level_tests": 81,
+  "missing": [],
+  "new": [
+    "TestCurrentFixtureUsesIsolatedHostWithInvalidPairingStore"
+  ],
+  "reduced_direct_failure_assertions": {},
+  "note": "Static name/direct t.Fatal/Error inventory supplements full package execution; helper methods and detailed semantics were reviewed separately."
+}

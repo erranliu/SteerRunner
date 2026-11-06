@@ -1,0 +1,17 @@
+--- PASS: TestSRSingleExecutionColdStop (10.74s)
+    creation_recovery_test.go:354: fixture did not record actual creation identity
+    workflow_test.go:226: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-2096808231
+--- FAIL: TestSRResourceCreationRecovery (47.66s)
+    --- PASS: TestSRResourceCreationRecovery/graceful (7.46s)
+    --- PASS: TestSRResourceCreationRecovery/kill (6.85s)
+    --- PASS: TestSRResourceCreationRecovery/receipt-before-commit (6.88s)
+    --- PASS: TestSRResourceCreationRecovery/wire-loss (7.52s)
+    --- FAIL: TestSRResourceCreationRecovery/owner-crash (5.25s)
+    --- PASS: TestSRResourceCreationRecovery/worktree-receipt-without-terminal (6.61s)
+    --- PASS: TestSRResourceCreationRecovery/missing-creation-plan (7.07s)
+--- PASS: TestSRNativeUnknownAndStop (11.58s)
+--- PASS: TestSRRestartPreservesAuthorization (54.26s)
+    --- PASS: TestSRRestartPreservesAuthorization/graceful (14.72s)
+    --- PASS: TestSRRestartPreservesAuthorization/kill (14.94s)
+    --- PASS: TestSRRestartPreservesAuthorization/creation_receipt (12.06s)
+    --- PASS: TestSRRestartPreservesAuthorization/pending_stop (12.53s)

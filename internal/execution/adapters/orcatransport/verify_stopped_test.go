@@ -19,7 +19,7 @@ func TestCodexStoppedRequiresNativeExitProofBeyondPTY(t *testing.T) {
 	for _, name := range []string{"live-root", "missing-root", "no-readiness"} {
 		t.Run(name, func(t *testing.T) {
 			environment := ""
-			l, host, s := fixtureOn(t, environment)
+			l, host, s := frozenFixtureOn(t, environment)
 			s = frozenWorkspaceFixture(t, l, host, s)
 			state, err := l.state(s)
 			if err != nil {
@@ -53,7 +53,13 @@ func TestCodexStoppedRequiresNativeExitProofBeyondPTY(t *testing.T) {
 			if process.Probe(current).State != "matches" {
 				t.Fatal("live root fixture exited")
 			}
-			facts, err := l.ShutdownLifecycle(context.Background(), s, nil)
+			// Retain the separate current-port rejection: a legacy reader is not
+			// itself executable, and an old snapshot cannot settle this port.
+			port, err := capabilityFixtureLifecycle(l.setup)
+			if err != nil {
+				t.Fatal(err)
+			}
+			facts, err := port.ShutdownLifecycle(context.Background(), s, nil)
 			if err == nil || facts.Stopped {
 				t.Fatal("shutdown overstated native resource settlement", facts, err)
 			}

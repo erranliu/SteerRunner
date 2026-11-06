@@ -1,0 +1,16 @@
+{
+  "added": [
+    "internal/execution/adapters/orcatransport/stop_contract.go:func ConfirmedStopDiagnostic",
+    "internal/execution/adapters/orcatransport/stop_contract.go:func DevelopmentCloseContract",
+    "internal/execution/adapters/orcatransport/stop_contract.go:func RequiresFrozenStopScope"
+  ],
+  "changed_or_deleted_types": [],
+  "deleted": [],
+  "identical": 2288,
+  "modified": [
+    "internal/application/control.go:func *Engine.stopRun",
+    "internal/application/control.go:func structuredDevelopmentClose",
+    "internal/application/stop_scope.go:func requiresFrozenOrcaScope"
+  ],
+  "stage": "a"
+}

@@ -10,7 +10,7 @@ import (
 func TestRecoveryProfileQualificationMatchesConstructorWithoutNativeCapabilities(t *testing.T) {
 	for _, environment := range []string{"", "remote"} {
 		t.Run(environment, func(t *testing.T) {
-			l, host, _ := fixtureOn(t, environment)
+			l, host, _ := frozenFixtureOn(t, environment)
 			original := l.setup.Clone()
 			for _, variant := range []string{"valid", "version", "identity", "target", "retired-authentication"} {
 				t.Run(variant, func(t *testing.T) {

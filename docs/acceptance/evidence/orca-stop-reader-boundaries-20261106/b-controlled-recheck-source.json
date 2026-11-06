@@ -1,0 +1,15 @@
+{
+  "pid": 32748,
+  "process_started_at": "2026-11-06T08:18:31.7741110Z",
+  "pattern": "^(TestSRResourceCreationRecovery|TestSRSingleExecutionColdStop|TestSRNativeUnknownAndStop|TestSRRestartPreservesAuthorization)$",
+  "result_file_cases": [],
+  "controlled_cases": [],
+  "runner_sha256": "D7A65CFE4E820C3219BF2E945C60B61320D05BCF4FB61BBA795C3604B290B42C",
+  "fixture_sha256": "9F95BBE27E4D03221B0C0BAEAEB700A6005FA8624B4E72538A459A560E3E81B3",
+  "native_fixture_sha256": "62AE746927410DFAFD1090C4E6146EABDF45F371C1BA13F93868A04267F6788D",
+  "source_commit": "458185030c2b43cb93045c546956a79a898cc9ab",
+  "source_dirty": true,
+  "go_version": "go version go1.26.4 windows/amd64",
+  "os_version": "Microsoft Windows NT 10.0.26200.0",
+  "machine": "LIUMING-ASUS"
+}

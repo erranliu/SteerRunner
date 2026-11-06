@@ -6,13 +6,5 @@ import (
 )
 
 func requiresFrozenOrcaScope(r *runstate.Record, scope string) bool {
-	if scope == orca.LocalCodexStopScope || r.StopEvidenceScope != "" {
-		return true
-	}
-	for _, profile := range r.Profile {
-		if profile.ImplementationKey == orca.ProfileKey && profile.CodecVersion == orca.NativeProfileVersion {
-			return true
-		}
-	}
-	return false
+	return r.StopEvidenceScope != "" || orca.RequiresFrozenStopScope(r.Profile, scope)
 }

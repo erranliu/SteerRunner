@@ -8,9 +8,9 @@ import (
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
 
-func sharedNativeFixture(t *testing.T, environment string) (*Lifecycle, *fakeHost, b.LifecycleSnapshot) {
+func sharedNativeFixture(t *testing.T, environment string) (*frozenRecord, *fakeHost, b.LifecycleSnapshot) {
 	t.Helper()
-	legacy, host, snapshot := fixtureOn(t, environment)
+	legacy, host, snapshot := frozenFixtureOn(t, environment)
 	setup := legacy.setup.Clone()
 	profile := legacy.profile
 	profile.NativeTerminal = true
@@ -22,7 +22,7 @@ func sharedNativeFixture(t *testing.T, environment string) (*Lifecycle, *fakeHos
 	if err != nil {
 		t.Fatal(err)
 	}
-	port, err := frozenFixtureLifecycle(setup)
+	port, err := newFrozenReader(setup)
 	if err != nil {
 		t.Fatal(err)
 	}

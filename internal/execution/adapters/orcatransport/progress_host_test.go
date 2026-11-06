@@ -37,7 +37,7 @@ func TestProgressHostLegacyRouting(t *testing.T) {
 					t.Fatal(err)
 				}
 			}
-			l, native, _ := fixtureOn(t, tc.environment)
+			l, native, _ := frozenFixtureOn(t, tc.environment)
 			setup := l.setup.Clone()
 			setup.ProcessHost = nil
 			if tc.name == "profile-before-pairing" {

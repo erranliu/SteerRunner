@@ -3,7 +3,6 @@ package orcatransport
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
@@ -92,27 +91,6 @@ func (l *Lifecycle) PolicyCapabilities() b.LifecyclePolicyCapabilities {
 
 func (l *Lifecycle) validate(s b.LifecycleSnapshot) error { return l.frozenRecord().validate(s) }
 
-// resourceState reads bound resource identities without accepting business evidence.
-func (l *Lifecycle) resourceState(s b.LifecycleSnapshot) (State, error) {
-	return l.frozenRecord().resourceState(s)
-}
-
-func (l *Lifecycle) state(s b.LifecycleSnapshot) (State, error) { return l.frozenRecord().state(s) }
-
-func (l *Lifecycle) stateVersion() int { return l.frozenRecord().stateVersion() }
-
-func (l *Lifecycle) envelope(s b.LifecycleSnapshot, state State) ([]b.ImplementationDataEnvelope, error) {
-	raw, err := json.Marshal(state)
-	if err != nil {
-		return nil, err
-	}
-	e, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{CodecVersion: l.stateVersion(), Purpose: b.ImplementationResourcePurpose, ImplementationKey: StateKey, ProjectID: s.Session.ProjectID, ExecutionID: s.Session.ExecutionID, AttemptID: s.Session.AttemptID, Generation: s.ResourceGeneration, ConfigDigest: s.ConfigurationDigest}, raw)
-	if err != nil {
-		return nil, err
-	}
-	return []b.ImplementationDataEnvelope{e}, nil
-}
-
 func SessionID(p b.ProcessIdentity) string {
 	return "orca-terminal:" + p.RuntimeID + ":" + p.Terminal + ":" + p.Incarnation
 }
@@ -141,7 +119,7 @@ func (l *Lifecycle) boundTerminal(ctx context.Context, p b.ProcessIdentity) (nat
 }
 
 func (l *Lifecycle) original(ctx context.Context, s b.LifecycleSnapshot) (native.Terminal, error) {
-	state, stateErr := l.state(s)
+	state, stateErr := l.frozenRecord().state(s)
 	if stateErr != nil {
 		return native.Terminal{}, stateErr
 	}

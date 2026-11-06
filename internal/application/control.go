@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"reflect"
-	"slices"
 	"time"
 
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
@@ -329,12 +328,7 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 	next.Diagnostic = e.redact(next, diagnostic)
 	if stopped {
 		if terminal, ok := p.(*orca.Lifecycle); ok && terminal.StopEvidenceScope() != "" {
-			next.Diagnostic = orca.NativeStopDiagnostic
-			if next.StopEvidenceScope == orca.LocalCodexStopScope {
-				next.Diagnostic = orca.LocalCodexStopDiagnostic
-			} else if next.StopEvidenceScope == orca.AgentSessionStopScope {
-				next.Diagnostic = orca.AgentSessionStopLimitation
-			}
+			next.Diagnostic = orca.ConfirmedStopDiagnostic(next.StopEvidenceScope)
 		}
 	}
 	// Continue probing an unresolved stop, but only publish a new revision when
@@ -348,9 +342,7 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 }
 
 func structuredDevelopmentClose(r *runstate.Record) bool {
-	return r.Snapshot.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 && (r.Request.Workflow.ID == "development" || structuredAudited(r)) && r.Request.Workflow.Version == 2 && slices.ContainsFunc(r.Profile, func(p b.ImplementationDataEnvelope) bool {
-		return p.ImplementationKey == orca.AgentSessionProfileKey && p.CodecVersion == orca.AgentSessionCloseProfileVersion
-	})
+	return (r.Request.Workflow.ID == "development" || structuredAudited(r)) && r.Request.Workflow.Version == 2 && orca.DevelopmentCloseContract(r.Snapshot.Ref.Protocol, r.Profile)
 }
 
 func settleRunStop(r *runstate.Record) {

@@ -24,7 +24,7 @@ func TestHostNativeStateCodecRejectsRetiredAndAmbiguousFields(t *testing.T) {
 }
 
 func TestHostNativeStateCodecRoundTripRetainsOriginalBinding(t *testing.T) {
-	l, host, s := fixture(t)
+	l, host, s := frozenFixture(t)
 	s = frozenWorkspaceFixture(t, l, host, s)
 	input := b.TurnInput{CommandID: strings.Repeat("c", 32), Prompt: "Implement the bound Spec and Plan."}
 	state, err := l.state(s)

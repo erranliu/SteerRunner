@@ -66,22 +66,16 @@ func (f *agentFixture) Item(context.Context, string, string) (native.AgentItem, 
 
 func structuredFixture(t *testing.T) (*Lifecycle, b.LifecycleSnapshot, *agentFixture) {
 	t.Helper()
-	l, _, s := fixture(t)
+	l, _, s := structuredFixtureOn(t, "")
 	s.Ref.Protocol = b.ProtocolOrcaAgentSessionV1
 	s.Ref.External = b.ProcessIdentity{Kind: "orca_agent_session", RuntimeID: "original-runtime", WorktreeID: "worktree", ExecutionHost: "local", Executable: "orca.exe"}
 	s.Workspace = b.WorkspaceIntent{Path: "original-workspace", Branch: "original-branch", BaseCommit: strings.Repeat("e", 40)}
 	s.Session.PendingCommandID = strings.Repeat("c", 32)
 	s.PendingTurn = &b.TurnInput{CommandID: s.Session.PendingCommandID, Prompt: "one\r\n\r\n中文😀 \"quote\" \\path\n```\n<&>\n```  \r\n"}
 	l.setup.Snapshot = s.Clone()
-	profile := AgentSessionProfile{Transport: l.profile, AccessMode: "full_access", Model: "requested-model", ReasoningEffort: "medium"}
-	raw, _ := json.Marshal(profile)
-	data, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{CodecVersion: AgentSessionVersion, Purpose: b.ImplementationConfigPurpose, ImplementationKey: AgentSessionProfileKey, ProjectID: s.Session.ProjectID, ProfileID: l.setup.ProfileID, AcceptedConfigVersion: l.setup.AcceptedConfigVersion}, raw)
-	if err != nil {
-		t.Fatal(err)
-	}
-	l.setup.ProfileData = []b.ImplementationDataEnvelope{data}
 	state := agentSessionState{RuntimeID: s.Ref.External.RuntimeID, Worktree: native.Worktree{ID: "worktree", InstanceID: "original-instance", Path: s.Workspace.Path}, SessionID: agentSessionID(s), CommandID: s.PendingTurn.CommandID, InputDigest: digest([]byte(s.PendingTurn.Prompt)), MessageID: "1793680000000-00112233445566778899aabbccddeeff", CreateID: "1793680000000-112233445566778899aabbccddeeff00"}
 	state.BodyFingerprint, _ = native.AgentFingerprint("agentSession.send", state.SessionID, map[string]any{"body": agentBody(s.PendingTurn.Prompt)})
+	var err error
 	s.Implementation, err = l.agentEnvelope(s, state)
 	if err != nil {
 		t.Fatal(err)
