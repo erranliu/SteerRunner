@@ -2,34 +2,12 @@ package orcatransport
 
 import (
 	"context"
-	"testing"
+
 	"time"
 
 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
-
-// Completion/progress unit tests below begin with an independently confirmed
-// original input. This is a state precondition, never a fabricated send receipt.
-// Submission qualification and the actual history read are exercised separately
-// by native_submit, native_start and fixed-control lifecycle regressions.
-func confirmedNativeTurn(t *testing.T, l *Lifecycle, s b.LifecycleSnapshot) b.LifecycleSnapshot {
-	t.Helper()
-	state, err := l.state(s)
-	if err != nil {
-		t.Fatal(err)
-	}
-	turn := turnFor(&state, command(s))
-	if turn == nil || !turn.Accepted {
-		t.Fatal("cannot confirm an unaccepted fixture input")
-	}
-	turn.Started = true
-	s.Implementation, err = l.envelope(s, state)
-	if err != nil {
-		t.Fatal(err)
-	}
-	return s
-}
 
 type hostStateFeed struct {
 	host    *fakeHost
@@ -55,6 +33,29 @@ func fixtureSample(s native.AgentState, kind native.SampleKind) native.StateSamp
 func (f *hostStateFeed) Initial() native.StateSample {
 	return fixtureSample(f.initial, native.SampleInitial)
 }
+
+func (f *hostStateFeed) Query(context.Context) (native.StateSample, error) {
+	f.host.mu.Lock()
+	defer f.host.mu.Unlock()
+	h := f.host
+	if h.nativeSends == 0 {
+		return fixtureSample(fixtureState(0, "", "done"), native.SampleQuery), nil
+	}
+	state := "working"
+	seq := h.nativeSends*2 - 1
+	if h.writeReply && !h.busy {
+		state = "done"
+		seq++
+	}
+	s := fixtureState(seq, h.nativePrompt, state)
+	if state == "done" {
+		s.MainAgent.Outcome = "success"
+		s.LastAssistantMessage = h.nativeReply
+	}
+	return fixtureSample(s, native.SampleQuery), nil
+}
+func (*hostStateFeed) Close() {}
+
 func (f *hostStateFeed) Drain() ([]native.StateSample, error) {
 	f.host.mu.Lock()
 	defer f.host.mu.Unlock()
@@ -78,24 +79,3 @@ func (f *hostStateFeed) Drain() ([]native.StateSample, error) {
 	}
 	return samples, nil
 }
-func (f *hostStateFeed) Query(context.Context) (native.StateSample, error) {
-	f.host.mu.Lock()
-	defer f.host.mu.Unlock()
-	h := f.host
-	if h.nativeSends == 0 {
-		return fixtureSample(fixtureState(0, "", "done"), native.SampleQuery), nil
-	}
-	state := "working"
-	seq := h.nativeSends*2 - 1
-	if h.writeReply && !h.busy {
-		state = "done"
-		seq++
-	}
-	s := fixtureState(seq, h.nativePrompt, state)
-	if state == "done" {
-		s.MainAgent.Outcome = "success"
-		s.LastAssistantMessage = h.nativeReply
-	}
-	return fixtureSample(s, native.SampleQuery), nil
-}
-func (*hostStateFeed) Close() {}

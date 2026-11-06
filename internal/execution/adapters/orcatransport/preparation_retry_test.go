@@ -79,7 +79,7 @@ func TestPreparationTransientEligibility(t *testing.T) {
 }
 
 func TestPreparationRevokedBeforeOwnerClaimSettlesWithoutDispatch(t *testing.T) {
-	l, f, s := fixture(t)
+	l, f, s := workspaceFixtureOn(t, "")
 	launches := 0
 	l.setup.LaunchExecutionOwner = func(context.Context, string) error { launches++; return errors.New("unexpected owner launch") }
 	r := request(s, b.LifecyclePrepareWorkspace, b.LifecycleInput{Workspace: &s.WorkspacePlan})

@@ -1,5 +1,7 @@
 # SteerRunner L1–L4 测试指南
 
+2026-11-05：旧 Orca TUI/helper 输入专项及执行探针已退役，原 `test-native-input.ps1` 明确拒绝，不再作为当前资格入口；下文旧构建记录不变。当前结构化执行、共享创建与历史只读证明的保留范围及实际验证见[验收](acceptance/orca-reader-execution-boundary.md)。
+
 2026-11-05 原生目录增量加入 Controlled 的 `TestSRNativeCatalogPublicCLI`，当前共 28 个顶层测试。该项使用固定公开 EXE 核对无服务入口、严格参数、原生元数据读取及父进程退出后精确 Job 清理。组件层覆盖 Codex 分页和 Orca 双端目录矩阵，旧日期的数量按其原版本理解。
 
 2026-11-02 核对：现行数量与独立原生专项统一见[当前清单与资格边界](test-catalog.md#当前清单与资格边界)。本次仅校正文档/专项描述，并将已有 `TestSRSingleExecutionColdStop` 纳入默认 Controlled 自动回归；其余测试内容、分级、调度与资格规则保持。

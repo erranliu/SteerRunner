@@ -72,7 +72,7 @@ SteerRunner 是面向个人、运行在本人管理和信任的本机及多台�
 
 Workflow 完成条件按具体定义解释，不能把 `pr_ready` 的资源边界套用到全部流程。内容结果状态与 cleanup/stop 状态分别报告；generate 成功结果已取得但清理失败时保留这两个事实，不能以结果成功覆盖未结算状态。conversation 的一轮结束也不自动关闭会话，close/stop 沿其显式控制契约。详见[内容流程契约](content-workflows.spec.md)。
 
-当前停止保证按冻结合同分别表达：Codex/development/2/full_access 不配置 helper 时，本机与远端 Orca 均以 `orca_terminal` 核实原终端；本机显式受管 Codex 的 `orca_local_codex_resources` 核实原业务/控制终端及 helper、app-server 原根进程；直接 Codex 和 Pi/DSH 沿各自现行机制。原生合同实际模型未独立核验、workspace audit unreported，不继承 audited 资格。选择、保留例外与排空见[Orca 双端执行合同](../orca-execution.md)。PC-R06 不将这些范围扩大为主机级清场。
+当前新 Orca Agent Run 统一使用结构化会话：双端 Codex execute/1、development/2，本机 Codex development-audited/2 与本机 Pi execute/1、development/2。新 Run 的 `orca_agent_session` 按原 session close 的成功回执或原创建未派发结算；close 自身未知仍不报告 stopped。旧 Agent executable/非空 args/helper 配置受理前拒绝，旧终端协议不能由当前服务启动或接管。旧 Run 由原构建完成/停止及排空；当前构建保留离线读取与原冻结 scope 的只读证明，历史 `orca_terminal`、`orca_local_codex_resources` 不被升级成新执行入口，也不按新 scope 重释。直接 Codex、公共终端、独立 parser 保持；DSH 已退役，远端 Pi/远端 audited 不扩大支持。详细组合和既有资格见[Orca 长期设计](../orca-execution.md)及[helper 退役](orca-helper-retirement.spec.md)。PC-R06 不将任何 scope 扩大为主机级清场。
 
 <a id="待实施的承诺收敛本机-orca-codex-停止"></a>
 ### 现行停止范围：本机 Orca Codex

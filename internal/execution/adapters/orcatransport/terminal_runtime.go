@@ -1,24 +1,20 @@
 package orcatransport
 
 import (
-	"context"
 	"crypto/sha256"
 	"embed"
 	"encoding/base64"
 	"encoding/json"
-	"errors"
+
 	"fmt"
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"github.com/erranliu/SteerRunner/internal/execution/terminaltools"
-	"github.com/erranliu/SteerRunner/internal/execution/workspace"
-	"io"
+
 	"os"
-	"os/exec"
-	"path/filepath"
+
 	"strings"
-	"time"
 )
 
 //go:embed extensions/pi-evidence.mjs extensions/pi-managed.mjs extensions/terminal-tools.mjs extensions/receipt.mjs
@@ -105,190 +101,4 @@ func TerminalExtensionDigest() string {
 		h.Write(raw)
 	}
 	return fmt.Sprintf("%x", h.Sum(nil))
-}
-
-// RunTerminalAgent keeps the original TUI on Orca's stdio. Only native tools use
-// the owned PowerShell tool host; this path never starts a Codex model/server or a Pi SDK agent.
-func RunTerminalAgent(ctx context.Context, c TerminalConfig, input io.Reader, output, diagnostics io.Writer) (result error) {
-	if c.ReceiptVersion != 4 || c.Agent != "pi" || c.AccessMode != "full_access" || !filepath.IsAbs(c.StateDirectory) || !b.StableExecutionID(c.ExecutionID) || c.SessionID == "" {
-		return errors.New("native terminal frozen launch configuration invalid")
-	}
-	metadata, err := TerminalRuntimeMetadata()
-	if err != nil {
-		return err
-	}
-	sourceSHA := metadata.PiSHA256
-	if c.BundleSHA256 != "" && c.BundleSHA256 != metadata.BundleSHA256 || c.EvidenceSHA256 != "" && c.EvidenceSHA256 != sourceSHA {
-		return errors.New("native terminal helper sources changed")
-	}
-	working, err := os.Getwd()
-	if err != nil {
-		return err
-	}
-	for _, name := range []string{"config.json", "owner.json", "startup-exit.json"} {
-		if _, err = os.Stat(filepath.Join(c.StateDirectory, name)); !os.IsNotExist(err) {
-			return errors.New("original native terminal runtime already exists; reconcile only")
-		}
-	}
-	if err = os.MkdirAll(c.StateDirectory, 0700); err != nil {
-		return err
-	}
-
-	host := process.New(time.Minute)
-	root, err := process.CurrentIdentity()
-	if err != nil {
-		return err
-	}
-	startupOwner := TerminalOwner{Job: process.OwnedJobReference{Owner: *root}, RuntimeSHA256: metadata.RuntimeSHA256, ExtensionSHA256: metadata.BundleSHA256, SessionID: c.SessionID, RunID: c.ExecutionID, ConfigurationDigest: c.ConfigurationDigest, AccessMode: c.AccessMode}
-	workerStarted := false
-	// A positive failure receipt is written only after synchronous preparation
-	// commands have returned and their owned Jobs are closed. Missing evidence
-	// never proves no worker. The reader also requires this exact helper to exit.
-	defer func() {
-		if !workerStarted {
-			failure := "native terminal preparation returned without starting a worker"
-			if result != nil {
-				failure = result.Error()
-			}
-			for _, name := range []string{"GH_TOKEN", "GITHUB_TOKEN", "GITEA_TOKEN"} {
-				if secret := os.Getenv(name); secret != "" {
-					failure = strings.ReplaceAll(failure, secret, "[REDACTED]")
-				}
-			}
-			failure = fmt.Sprintf("%.2048s", failure)
-			raw, _ := json.Marshal(TerminalStartupFailure{Version: 2, Failure: failure, Owner: startupOwner, NoWorkerStarted: true, ClosedAt: time.Now().UTC()})
-			result = errors.Join(result, host.WriteExecutionFile(filepath.Join(c.StateDirectory, "startup-exit.json"), raw))
-		}
-	}()
-	git := workspace.Git{Command: b.LaunchCommand{Executable: "git"}, Timeout: 30 * time.Second, Start: host.StartManaged}
-	repo, err := workspace.ResolveRepository(ctx, git, working)
-	if err != nil {
-		return err
-	}
-	roots, err := workspace.ResolveFreshLinkedResourcesAt(ctx, git, repo, working)
-	if err != nil {
-		return err
-	}
-	rootPaths := []string{roots.Objects, roots.Refs, roots.Logs, roots.Admin}
-	agentExecutable, err := exec.LookPath(c.Executable)
-	if err != nil {
-		return err
-	}
-	moduleRoot := filepath.Join(filepath.Dir(agentExecutable), "node_modules")
-	if filepath.Base(filepath.Dir(agentExecutable)) == ".bin" {
-		moduleRoot = filepath.Dir(filepath.Dir(agentExecutable))
-	}
-	packageRoot := filepath.Join(moduleRoot, "@earendil-works", "pi-coding-agent")
-	expectedName, expectedVersion, binName, entry := "@earendil-works/pi-coding-agent", "0.87.1", "pi", "dist/bundle/cli.js"
-	var packageMetadata struct {
-		Name    string            `json:"name"`
-		Version string            `json:"version"`
-		Bin     map[string]string `json:"bin"`
-	}
-	raw, err := os.ReadFile(filepath.Join(packageRoot, "package.json"))
-	if err != nil || json.Unmarshal(raw, &packageMetadata) != nil || packageMetadata.Name != expectedName || packageMetadata.Version != expectedVersion || packageMetadata.Bin[binName] != entry {
-		return errors.New("Pi native package/version unsupported")
-	}
-	node, err := exec.LookPath("node.exe")
-	if err != nil {
-		return err
-	}
-	self, err := os.Executable()
-	if err != nil {
-		return err
-	}
-	shell := filepath.Join(os.Getenv("SystemRoot"), "System32", "WindowsPowerShell", "v1.0", "powershell.exe")
-	policy := terminaltools.Config{AccessMode: c.AccessMode, Workspace: working, WriteRoots: rootPaths, Shell: shell, StateDirectory: c.StateDirectory}
-	if err = policy.Validate(); err != nil {
-		return err
-	}
-	for _, name := range []string{"pi-evidence.mjs", "pi-managed.mjs", "terminal-tools.mjs", "receipt.mjs"} {
-		body, _ := terminalAssets.ReadFile("extensions/" + name)
-		if err = host.WriteExecutionFile(filepath.Join(c.StateDirectory, name), body); err != nil {
-			return err
-		}
-	}
-	config := map[string]any{"version": 2, "run_id": c.ExecutionID, "session_id": c.SessionID, "cwd": working, "directory": c.StateDirectory, "tool_host": self, "tool_policy": policy, "extension_bundle_sha256": TerminalExtensionDigest(), "reasoning_effort": c.ReasoningEffort, "model": c.Model}
-	configBytes, _ := json.Marshal(config)
-	if err = host.WriteExecutionFile(filepath.Join(c.StateDirectory, "config.json"), configBytes); err != nil {
-		return err
-	}
-	args := []string{filepath.Join(packageRoot, "dist", "bundle", "cli.js"), "--offline", "--no-extensions", "--no-skills", "--no-prompt-templates", "--no-context-files", "--no-themes", "--no-approve", "--tools", "read,write,edit,powershell", "--session-id", c.SessionID, "--session-dir", filepath.Join(c.StateDirectory, "sessions"), "-e", filepath.Join(c.StateDirectory, "pi-managed.mjs"), "--steerrunner-evidence-config", filepath.Join(c.StateDirectory, "config.json")}
-	if c.Model != "" {
-		args = append(args, "--model", c.Model)
-	}
-	if c.ReasoningEffort != "" {
-		args = append(args, "--thinking", c.ReasoningEffort)
-	}
-	command := exec.Command(node, args...)
-	command.Dir = working
-	command.Stdin = input
-	command.Stdout = output
-	command.Stderr = diagnostics
-	envObject := map[string]string{}
-	for _, entry := range terminaltools.ToolEnvironment(os.Environ()) {
-		key, value, _ := strings.Cut(entry, "=")
-		envObject[key] = value
-	}
-	envBytes, _ := json.Marshal(envObject)
-	for _, entry := range os.Environ() {
-		key, _, _ := strings.Cut(entry, "=")
-		upper := strings.ToUpper(key)
-		if upper == "GH_TOKEN" || upper == "GITHUB_TOKEN" || upper == "GH_CONFIG_DIR" || strings.HasPrefix(upper, "GIT_CONFIG_") || strings.HasPrefix(upper, "SR_TERMINAL_") {
-			continue
-		}
-		command.Env = append(command.Env, entry)
-	}
-	command.Env = append(command.Env, "SR_TERMINAL_TOOL_ENV="+string(envBytes), "SR_TERMINAL_CONFIG="+filepath.Join(c.StateDirectory, "config.json"), "PI_OFFLINE=1", "PI_TELEMETRY=0")
-	owned, err := host.StartManaged(command)
-	if err != nil {
-		return err
-	}
-	workerStarted = true
-	defer owned.Close()
-	job, err := process.DescribeOwnedJob(owned)
-	if err != nil {
-		owned.Kill()
-		command.Wait()
-		return err
-	}
-	runtimeBytes, err := os.ReadFile(self)
-	if err != nil {
-		owned.Kill()
-		command.Wait()
-		return err
-	}
-	ownerRecord := TerminalOwner{Job: job, RuntimeSHA256: fmt.Sprintf("%x", sha256.Sum256(runtimeBytes)), ExtensionSHA256: TerminalExtensionDigest(), SessionID: c.SessionID, RunID: c.ExecutionID, ConfigurationDigest: c.ConfigurationDigest, AccessMode: c.AccessMode}
-	ownerBytes, _ := json.Marshal(ownerRecord)
-	if err = host.WriteExecutionFile(filepath.Join(c.StateDirectory, "owner.json"), ownerBytes); err != nil {
-		owned.Kill()
-		command.Wait()
-		return err
-	}
-	done := make(chan error, 1)
-	go func() { done <- command.Wait() }()
-	select {
-	case err = <-done:
-	case <-ctx.Done():
-		owned.Kill()
-		<-done
-		err = ctx.Err()
-	}
-	owned.Kill()
-	tree, ok := owned.(b.ProcessTreeHandle)
-	if !ok {
-		return errors.New("Pi owned writers cannot be verified")
-	}
-	until := time.Now().Add(2 * time.Second)
-	for !tree.WritersAbsent() && time.Now().Before(until) {
-		time.Sleep(10 * time.Millisecond)
-	}
-	if !tree.WritersAbsent() {
-		return errors.New("Pi owned writers remain unverified")
-	}
-	exitBytes, _ := json.Marshal(TerminalExit{Version: 2, Owner: ownerRecord, WritersAbsent: true, ClosedAt: time.Now().UTC()})
-	if e := host.WriteExecutionFile(filepath.Join(c.StateDirectory, "exit.json"), exitBytes); e != nil {
-		return e
-	}
-	return err
 }

@@ -207,37 +207,6 @@
   ],
   "focused_native_scenarios": [
     {
-      "id": "orca-remote.native-input",
-      "level": "L3",
-      "test": "TestOrcaNativeStateLiveLifecycle",
-      "entry": "scripts/test-native-input.ps1",
-      "scope": "controlled deterministic input faults, or fresh empty local/remote Orca worktree and fixed native launch through original preparation and completion; no business suite or PR",
-      "requires": [
-        "long-input: explicit fixed target.json",
-        "new output directory for either mode",
-        "long-input: complete empty original-host terminal census",
-        "local long-input: existing isolated Runner agent and original repository URL"
-      ],
-      "expected": [
-        "unique complete original input and canonical result",
-        "one business generic text+enter submit; zero split business input or composer reads",
-        "unknown effects never replayed in controlled regressions",
-        "confirmed terminal close and zero complete census"
-      ],
-      "subcases": [
-        {
-          "id": "long-input",
-          "mode": "long-input",
-          "scope": "production Lifecycle generic submit; no screen draft gate"
-        },
-        {
-          "id": "controlled",
-          "mode": "controlled",
-          "scope": "same production submit through controlled local/remote fixtures; per-leaf Repeat, explicit counts; not real Orca qualification"
-        }
-      ]
-    },
-    {
       "id": "local-codex.generate-repository",
       "level": "L3",
       "test": "TestSRContentRepositoryNative",

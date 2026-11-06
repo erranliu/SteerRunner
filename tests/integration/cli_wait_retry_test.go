@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	"github.com/erranliu/SteerRunner/internal/storage"
 )
@@ -68,7 +69,7 @@ func TestSROrcaCLIWaitRetry(t *testing.T) {
 			accepted := call(t, dir, []string{"submit", "--input", "-"}, string(raw), 0)
 			id := accepted.Data.(map[string]any)["run_id"].(string)
 			before := waitRun(t, dir, id, func(v contracts.RunView) bool { return v.ExecutionWait != nil && v.ExecutionWait.Stage == "queue" })
-			if before.StopEvidenceScope != "orca_agent_session" || before.Execution.Protocol != "orca_agent_session_v1" || before.Execution.Agent != "codex" {
+			if before.StopEvidenceScope != orca.AgentSessionStopScope || before.Execution.Protocol != "orca_agent_session_v1" || before.Execution.Agent != "codex" {
 				t.Fatal("queue fixture did not exercise the structured native local contract", before)
 			}
 			q := *before.ExecutionWait

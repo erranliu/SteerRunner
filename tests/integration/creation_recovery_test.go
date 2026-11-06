@@ -20,8 +20,7 @@ import (
 	"github.com/erranliu/SteerRunner/internal/storage"
 )
 
-// Startup acceptance is not business execution. Read the real frozen launch
-// after writer exit, and forbid any other text, request replay or second send.
+// Workspace preparation and recovery cannot dispatch legacy terminal input.
 func assertCreationBootstrapOnly(t *testing.T, dir, state string) {
 	t.Helper()
 	assertCreationReadOnlyRPC(t, state)
@@ -100,28 +99,7 @@ func assertCreationBootstrapOnly(t *testing.T, dir, state string) {
 		}
 		return
 	}
-	store, err := storage.OpenReader(dir)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	defer store.Close()
-	runs, err := store.Runs()
-	if err != nil || len(runs) != 1 || len(sends) != 1 {
-		t.Error("unexpected bootstrap dispatch or replay", len(runs), len(sends), err)
-		return
-	}
-	arg := func(key string) string {
-		for i, value := range sends[0] {
-			if value == key && i+1 < len(sends[0]) {
-				return sends[0][i+1]
-			}
-		}
-		return ""
-	}
-	if runs[0].LaunchCommand == "" || arg("--text") != runs[0].LaunchCommand || arg("--terminal") != "original-terminal" || arg("--retry-request") == "" || runs[0].StopEvidenceScope != "orca_terminal" {
-		t.Error("non-bootstrap input or foreign resource was dispatched")
-	}
+	t.Error("workspace recovery dispatched legacy input", sends)
 }
 
 func assertCreationReadOnlyRPC(t *testing.T, state string) {
@@ -477,6 +455,45 @@ func TestSRResourceCreationRecovery(t *testing.T) {
 			}
 			if countNative(t, "orca/worktree/create") != 1 || countNative(t, "orca/terminal/create") != 0 || countNative(t, "orca/terminal/send") != 0 {
 				t.Fatal("recovery repeated resource creation or sent business input")
+			}
+			if mode != "wire-loss" && mode != "owner-crash" && mode != "missing-creation-plan" {
+				call(t, dir, []string{"service", "stop", "--input", "-"}, stopRequest("inspect-original-creation", next.InstanceID), 0)
+				if err := waitOwnedService(next); err != nil {
+					t.Fatal(err)
+				}
+				store, err := storage.OpenReader(dir)
+				if err != nil {
+					t.Fatal(err)
+				}
+				runs, err := store.Runs()
+				_ = store.Close()
+				if err != nil || len(runs) != 1 {
+					t.Fatal("original record unavailable", err)
+				}
+				snapshot := runs[0].Snapshot
+				if snapshot.Ref.External.RuntimeID != runtime || snapshot.Ref.External.WorktreeID != effect.Worktree.ID || snapshot.Ref.External.Kind != "orca_agent_session" || snapshot.Ref.External.Terminal != "" {
+					t.Fatal("recovery changed original structured workspace", snapshot.Ref)
+				}
+				var frozen struct {
+					SessionNotCreated bool            `json:"session_not_created"`
+					Attempted         bool            `json:"attempted"`
+					CloseAttempted    bool            `json:"close_attempted"`
+					CloseReceipt      json.RawMessage `json:"close_receipt"`
+				}
+				found := false
+				for _, e := range snapshot.Implementation {
+					if e.ImplementationKey == orcatransport.AgentSessionStateKey {
+						found = true
+						if json.Unmarshal(e.Payload, &frozen) != nil {
+							t.Fatal("invalid original Agent state")
+						}
+					}
+				}
+				// CloseAttempted records the original stop operation even when no
+				// Agent existed; only a native acknowledgement is a close receipt.
+				if !found || !frozen.SessionNotCreated || frozen.Attempted || !frozen.CloseAttempted || len(frozen.CloseReceipt) != 0 {
+					t.Fatal("undispatched Agent lost its original not-created proof", frozen)
+				}
 			}
 			t.Logf("original=%s runtime=%s handle=%s incarnation=%s create=1 terminal-create=0 business-send=0", effect.Worktree.ID, runtime, effect.Terminal.Handle, effect.Terminal.IncarnationID)
 		})

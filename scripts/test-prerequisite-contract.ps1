@@ -88,7 +88,7 @@ function Assert-SRPrerequisiteSet([object[]]$Actual, [object[]]$Expected, [strin
 }
 
 function Get-SRL1AllowedSkips {
-    @('TestShortInputProbeInspect','TestProcessHostCommandHelper','TestServiceStopWorkerHelper','TestOrcaLocalPipeNativeEvidence','TestOrcaLocalIPCNativeProbe','TestOrcaTerminalQueryLive','TestOrcaNativeStateLiveLifecycle','TestOrcaWorkspaceStartupLive','TestOrcaStoppedNativeProbe',
+    @('TestProcessHostCommandHelper','TestServiceStopWorkerHelper','TestOrcaLocalPipeNativeEvidence','TestOrcaLocalIPCNativeProbe','TestOrcaTerminalQueryLive',
       'TestUsageLocalAcceptanceRepoCleanupLive','TestUsageExistingNativeEvidence','TestUsageRemoteCodexCleanupLive','TestUsageRemoteCodexLive','TestRunUsageLocalCodexPublicLive','TestRunUsageLocalPiPublicLive','TestRunUsageLocalDSHPublicLive','TestRunUsageRemotePublicLive')
 }
 

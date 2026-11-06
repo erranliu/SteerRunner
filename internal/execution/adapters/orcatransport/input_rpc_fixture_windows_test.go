@@ -5,7 +5,8 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"encoding/json"
-	"github.com/Microsoft/go-winio"
+
+	winio "github.com/Microsoft/go-winio"
 	"net"
 	"os"
 	"path/filepath"

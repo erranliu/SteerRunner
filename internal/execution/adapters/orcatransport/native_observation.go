@@ -1,7 +1,6 @@
 package orcatransport
 
 import (
-	"strings"
 	"time"
 
 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
@@ -62,63 +61,8 @@ type nativeObservation struct {
 	observedRevision int64
 }
 
-func (l *Lifecycle) observation(s b.LifecycleSnapshot, feed native.StateFeed) *nativeObservation {
-	id := b.PublicMessage{AttemptID: s.Session.AttemptID, Generation: s.Session.Generation, SessionID: SessionID(s.Ref.External), TurnID: command(s), Kind: "assistant"}
-	o := l.nativeObservation
-	if o == nil || o.identity != id {
-		o = &nativeObservation{identity: id, feed: feed}
-		if feed != nil {
-			o.lastDigest = digest([]byte(feed.Initial().LastAssistantMessage))
-		}
-		l.nativeObservation = o
-	} else if o.feed != feed {
-		o.feed, o.continuous = feed, false
-		o.input, o.inputStamp = nil, 0
-	}
-	return o
-}
-
-func (o *nativeObservation) invalidate() {
-	o.continuous, o.turnStartedAt, o.pending = false, 0, nil
-	o.input, o.inputStamp = nil, 0
-}
-
 // A queried input binding is transient and scoped to this exact display stamp.
 // Another boundary or reconnect requires a new independent read.
-func (o *nativeObservation) bindInput(s *native.AgentState, p NativeProof) *nativeInput {
-	// Old notifications cannot acquire a proof, but also cannot revoke the
-	// current binding before NativeProof.signal discards their stale revision.
-	if trustedState(*s) && s.Observation.AuthorityID == p.Authority && s.Observation.Incarnation == p.Incarnation &&
-		(s.Observation.Revision <= p.Revision || o.input != nil && o.input.Observation != nil && s.Observation.Revision < o.input.Observation.Revision) {
-		return nil
-	}
-	if o.input == nil || s.TurnStartedAt <= 0 || s.TurnStartedAt != o.inputStamp || !trustedState(*s) ||
-		s.MainAgent.State != "working" || s.MainAgent.StateStartedAt != p.RootWorkingAt ||
-		s.Observation.AuthorityID != p.Authority || s.Observation.Incarnation != p.Incarnation ||
-		s.Observation.Revision < p.Revision || s.Observation.Boundary || s.ProviderSession.ID != p.Provider || s.PaneKey != p.Pane ||
-		s.SessionBoundary || s.RestoredUnconfirmed || s.Interrupted || s.ToolOutput {
-		o.input, o.inputStamp = nil, 0
-		return nil
-	}
-	input := *o.input
-	input.Observation = s.Observation
-	return &input
-}
-
-func (o *nativeObservation) reattach(s native.AgentState, p NativeProof, turn *Turn) {
-	conflict := s.PaneKey != p.Pane || s.ProviderSession.ID != "" && p.Provider != "" && s.ProviderSession.ID != p.Provider ||
-		s.AgentType != "" && s.AgentType != p.agentName() || s.SessionBoundary || s.RestoredUnconfirmed || s.ToolOutput || s.Interrupted ||
-		s.MainAgent != nil && s.MainAgent.StateStartedAt > p.BaseRootAt && s.Prompt != "" && p.attribution(s, turn, false, nil).kind == provenanceConflict ||
-		o.turnStartedAt > 0 && s.TurnStartedAt > 0 && o.turnStartedAt != s.TurnStartedAt
-	if conflict {
-		o.invalidate()
-		return
-	}
-	// A previously selected, undelivered public sample remains valid. A new
-	// initial snapshot cannot establish coverage or replace that sample.
-	o.continuous, o.turnStartedAt = false, 0
-	o.input, o.inputStamp = nil, 0
-}
 
 // Orca coalesces tab snapshots. A live connection alone is not boundary
 // coverage. The retained native turn-start stamp must survive unchanged from
@@ -134,104 +78,3 @@ func (o *nativeObservation) linked(sample native.StateSample, p NativeProof) boo
 // A query may fill a missing body under current observer coverage. A separate
 // retained-input check in NativeProof.query can recover after reconnect without
 // restoring this transient coverage or treating a snapshot as a notification.
-func (o *nativeObservation) supplements(sample native.StateSample, p NativeProof) bool {
-	s := sample.AgentState
-	return sample.Kind == native.SampleQuery && o.continuous && o.turnStartedAt > 0 && s.TurnStartedAt == o.turnStartedAt &&
-		p.EndedAt > 0 && s.MainAgent != nil && s.MainAgent.State == "done" && s.MainAgent.StateStartedAt == p.EndedAt
-}
-
-func (o *nativeObservation) offer(sample native.StateSample, p NativeProof, turn *Turn, fresh bool, input *nativeInput) {
-	s := sample.AgentState
-	if s.TurnStartedAt > 0 && o.turnStartedAt > 0 && s.TurnStartedAt != o.turnStartedAt {
-		o.invalidate()
-		return
-	}
-	if p.Conflict != "" {
-		o.invalidate()
-		return
-	}
-	if !turn.Accepted || !turn.Started || s.MainAgent == nil || s.PaneKey != p.Pane ||
-		s.AgentType != p.agentName() || s.ProviderSession.ID == "" || s.ProviderSession.ID != p.Provider ||
-		s.SessionBoundary || s.RestoredUnconfirmed || s.ToolOutput || s.Interrupted {
-		return
-	}
-	if sample.Kind == native.SampleInitial {
-		return
-	}
-	if sample.Kind == native.SampleNotification && !fresh {
-		return
-	}
-	if s.UpdatedAt < o.lastSourceAt {
-		return
-	}
-	o.lastSourceAt = s.UpdatedAt
-	ended := p.EndedAt > 0 && p.EndedAt == s.MainAgent.StateStartedAt
-	working := fresh && sample.Kind == native.SampleNotification && trustedState(s) &&
-		p.WorkingAt > 0 && s.MainAgent.State == "working" && s.MainAgent.StateStartedAt == p.RootWorkingAt &&
-		p.attribution(s, turn, false, input).kind == provenanceMatched
-	if !ended && !working {
-		return
-	}
-	if strings.TrimSpace(s.LastAssistantMessage) == "" || len(s.LastAssistantMessage) > 32000 || sample.ReceivedAt.IsZero() || !sample.ReceivedAt.After(o.lastReceived) {
-		return
-	}
-	hash := digest([]byte(s.LastAssistantMessage))
-	if hash == o.lastDigest {
-		o.pending = nil
-		return
-	}
-	if o.pending != nil && o.pending.Text == s.LastAssistantMessage {
-		return
-	}
-	if o.pending != nil && !sample.ReceivedAt.After(o.pending.ObservedAt) {
-		return
-	}
-	m := o.identity
-	m.Text, m.ObservedAt = s.LastAssistantMessage, sample.ReceivedAt
-	o.pending = &m
-}
-
-func (l *Lifecycle) publicCandidate() *b.PublicMessage {
-	l.observationMu.Lock()
-	defer l.observationMu.Unlock()
-	if !l.profile.nativeTerminalContract() || l.nativeObservation == nil {
-		return nil
-	}
-	m := l.nativeObservation.pending
-	if m == nil {
-		return nil
-	}
-	copy := *m
-	return &copy
-}
-
-func (l *Lifecycle) acknowledgeMessage(m *b.PublicMessage) {
-	if m == nil {
-		return
-	}
-	l.observationMu.Lock()
-	defer l.observationMu.Unlock()
-	o := l.nativeObservation
-	if o != nil && o.identity.AttemptID == m.AttemptID && o.identity.Generation == m.Generation && o.identity.SessionID == m.SessionID && o.identity.TurnID == m.TurnID {
-		o.lastDigest = digest([]byte(m.Text))
-		o.lastReceived = m.ObservedAt
-		if o.pending != nil && o.pending.Text == m.Text && o.pending.ObservedAt.Equal(m.ObservedAt) {
-			o.pending = nil
-		}
-	}
-}
-
-func received(sample native.StateSample, fallback time.Time) time.Time {
-	if sample.ReceivedAt.IsZero() {
-		return fallback
-	}
-	return sample.ReceivedAt
-}
-
-func (l *Lifecycle) clearObservation(owned *nativeObservation) {
-	l.observationMu.Lock()
-	defer l.observationMu.Unlock()
-	if l.nativeObservation == owned {
-		l.nativeObservation = nil
-	}
-}

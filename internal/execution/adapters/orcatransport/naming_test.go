@@ -13,7 +13,7 @@ func TestWorkspaceNamePrefixCreationAndRecovery(t *testing.T) {
 	for _, environment := range []string{"", "paired-worker"} {
 		for _, prefix := range []string{"sr", "sl-103", "sl-103-c2", "acme-feature-7"} {
 			t.Run(environment+"/"+prefix, func(t *testing.T) {
-				l, _, s := fixtureOn(t, environment)
+				l, _, s := workspaceFixtureOn(t, environment)
 				s.Session.NamePrefix, s.Session.CorrelationID = prefix, "ignored-business-value"
 				calls := workspaceCalls(l, nil)
 				req := request(s, b.LifecyclePrepareWorkspace, b.LifecycleInput{Workspace: &s.WorkspacePlan})
@@ -44,7 +44,7 @@ func TestWorkspaceNamePrefixCreationAndRecovery(t *testing.T) {
 					t.Fatal(recovered, err)
 				}
 				assertWorkspaceReadonly(t, (*calls)[before:])
-				// A mismatched frozen prefix cannot adopt an existing creation receipt.
+
 				req.Snapshot.Session.NamePrefix = "other"
 				if _, _, err := l.Reconcile(context.Background(), req); err == nil {
 					t.Fatal("foreign name accepted")

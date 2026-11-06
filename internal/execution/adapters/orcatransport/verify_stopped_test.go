@@ -3,6 +3,8 @@ package orcatransport
 import (
 	"context"
 	"encoding/json"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 	"time"
@@ -17,12 +19,8 @@ func TestCodexStoppedRequiresNativeExitProofBeyondPTY(t *testing.T) {
 	for _, name := range []string{"live-root", "missing-root", "no-readiness"} {
 		t.Run(name, func(t *testing.T) {
 			environment := ""
-			l, _, s := fixtureOn(t, environment)
-			receipt, _, err := l.Execute(context.Background(), request(s, b.LifecyclePrepareWorkspace, b.LifecycleInput{Workspace: &s.WorkspacePlan}))
-			if err != nil {
-				t.Fatal(err)
-			}
-			bind(&s, receipt)
+			l, host, s := fixtureOn(t, environment)
+			s = frozenWorkspaceFixture(t, l, host, s)
 			state, err := l.state(s)
 			if err != nil {
 				t.Fatal(err)
@@ -72,22 +70,21 @@ func TestLocalCodexStoppedUsesRegisteredResources(t *testing.T) {
 		t.Run(mode, func(t *testing.T) {
 			l, _, s, c := fixtureFixedControl(t)
 			s = prepareFixedControl(t, l, s, c)
-			r, err := l.StopLifecycle(context.Background(), request(s, b.LifecycleStopExecution, b.LifecycleInput{Stop: &b.StopInput{}}), nil)
-			if err != nil || !r.State.Stopped {
-				t.Fatal(r, err)
-			}
+			// The frozen resources have exited; verification itself only reads inventory.
+			l.client = native.New(native.Config{Output: func(_ context.Context, _ time.Duration, args ...string) ([]byte, error) {
+				if len(args) < 2 || args[1] != "list" {
+					t.Fatal("verification effect", args)
+				}
+				return json.Marshal(map[string]any{"ok": true, "result": map[string]any{"terminals": []any{}, "totalCount": 0, "truncated": false, "hostScope": map[string]any{"hostIds": []string{"local"}, "omittedHostIds": []string{}}}, "_meta": map[string]string{"runtimeId": s.Ref.External.RuntimeID}})
+			}})
 			state, _ := l.state(s)
 			if mode == "missing-control" {
 				state.Control = nil
 				s.Implementation, _ = l.envelope(s, state)
 			}
 			if mode == "pending-control" {
-				j, e := l.loadControlCheckpoint(state)
-				if e != nil {
-					t.Fatal(e)
-				}
-				// A pending or missing query checkpoint is not stop evidence.
-				if e = l.saveControlCheckpoint(state, j); e != nil {
+				// An unfinished historical query journal is not stop evidence.
+				if e := os.WriteFile(filepath.Join(l.setup.RunDirectory, "orca-control.json"), []byte(`{"pending":true}`), 0600); e != nil {
 					t.Fatal(e)
 				}
 			}
@@ -104,7 +101,7 @@ func TestLocalCodexStoppedUsesRegisteredResources(t *testing.T) {
 				}})
 			}
 			before, _ := json.Marshal(s)
-			err = l.verifyStopped(context.Background(), s)
+			err := l.verifyStopped(context.Background(), s)
 			if (err == nil) != (mode == "complete" || mode == "missing-exit-file" || mode == "pending-control") {
 				t.Fatal(mode, err)
 			}

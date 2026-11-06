@@ -18,7 +18,7 @@ func TestWorkspaceRepositoryFollowsProject(t *testing.T) {
 		{"remote-unix", "desktop", "C:/Projects/merge-h-308-code", "/srv/merge-h-308-code/", "id:repo"},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			l, f, s := fixtureOn(t, tc.environment)
+			l, f, s := workspaceFixtureOn(t, tc.environment)
 			l.setup.RepositoryPath = tc.project
 			f.repoInventory = map[string]any{"repos": []any{
 				map[string]any{"id": "wrong-project", "kind": "git", "path": "/srv/SteerlineTest", "displayName": "merge-h-308-code"},
@@ -75,7 +75,7 @@ func TestRemoteRepositoryDiscoveryRejectsBeforeCreation(t *testing.T) {
 		{"missing-id", "no repository identity", map[string]any{"repos": []any{map[string]any{"kind": "git", "path": "/srv/merge-h-308-code"}}}},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			l, f, s := fixtureOn(t, "desktop")
+			l, f, s := workspaceFixtureOn(t, "desktop")
 			l.setup.RepositoryPath = "C:/Projects/merge-h-308-code"
 			f.repoInventory = tc.inventory
 			receipt, _, err := l.Execute(context.Background(), request(s, b.LifecyclePrepareWorkspace, b.LifecycleInput{Workspace: &s.WorkspacePlan}))
@@ -92,7 +92,7 @@ func TestRemoteRepositoryDiscoveryRejectsBeforeCreation(t *testing.T) {
 }
 
 func TestRemoteRepositoryCreationRetainsReceiptOnMismatch(t *testing.T) {
-	l, f, s := fixtureOn(t, "desktop")
+	l, f, s := workspaceFixtureOn(t, "desktop")
 	l.setup.RepositoryPath = "C:/Projects/merge-h-308-code"
 	f.repoInventory = map[string]any{"repos": []any{map[string]any{"id": "different-repo", "kind": "git", "path": "/srv/merge-h-308-code"}}}
 	receipt, _, err := l.Execute(context.Background(), request(s, b.LifecyclePrepareWorkspace, b.LifecycleInput{Workspace: &s.WorkspacePlan}))

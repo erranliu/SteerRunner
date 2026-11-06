@@ -76,12 +76,7 @@ func (l *Lifecycle) prepareWorkspace(ctx context.Context, r b.LifecycleRequest, 
 			return receipt, resolveErr
 		}
 		args := l.workspaceCreationArgs(r, selector)
-		if l.setup.AgentLaunchCommand != "" {
-			if _, _, planErr := l.initialTerminalPlan(s, true); planErr != nil {
-				receipt.Disposition = b.OperationRejected
-				return receipt, planErr
-			}
-		}
+
 		key := l.creationKey(r.Snapshot, r.Operation.ID, r.Operation.PayloadDigest, "workspace")
 		result, callErr := l.creationCall(ctx, key, args, runtimeID, selector, l.creationTimeout(), false)
 		if callErr != nil {
@@ -101,86 +96,9 @@ func (l *Lifecycle) prepareWorkspace(ctx context.Context, r b.LifecycleRequest, 
 		return receipt, errors.New("Orca worktree differs from fixed name/base")
 	}
 	defer func() { receipt.Operation.Receipt, _ = json.Marshal(created) }()
-	if l.structured() {
-		return l.finishStructuredWorkspace(ctx, r, created)
-	}
-	wait, _ := time.ParseDuration(l.profile.WaitTimeout)
-	ctx, cancel := context.WithTimeout(ctx, wait)
-	defer cancel()
-	if reconcile {
-		result, shown, queryErr := l.client.ShowWorktree(ctx, "id:"+worktree.ID)
-		if queryErr != nil {
-			return receipt, queryErr
-		}
-		if !shown.Decoded() || result.RuntimeID != created.RuntimeID || shown.Worktree != worktree {
-			return receipt, errors.New("original Orca workspace creation identity changed")
-		}
-	}
-	handle := created.AgentTerminalHandle
-	if handle == "" {
-		handle = created.StartupTerminal.Handle
-	}
-	if handle == "" || l.setup.AgentLaunchCommand != "" {
-		if l.setup.AgentLaunchCommand == "" {
-			return receipt, errors.New("agent launch did not provide a supported terminal handle; no task was injected")
-		}
-		var sole native.Terminal
-		var inventoryErr error
-		if created.Terminal.Handle == "" && handle == "" {
-			sole, inventoryErr = l.initialWorkspaceTerminalRecovery(ctx, s, created, reconcile)
-		} else {
-			sole, inventoryErr = l.soleWorkspaceTerminal(ctx, worktree.ID, created.RuntimeID)
-		}
-		err = inventoryErr
-		if err != nil {
-			return receipt, err
-		}
-		if handle != "" && handle != sole.Handle {
-			return receipt, errors.New("creation handle differs from the sole original terminal")
-		}
-		if created.Terminal.Handle != "" && (sole.Handle != created.Terminal.Handle ||
-			created.Terminal.IncarnationID != "" && sole.IncarnationID != created.Terminal.IncarnationID) {
-			return receipt, errors.New("original workspace terminal identity changed")
-		}
-		handle = sole.Handle
-		created.Terminal = sole
-	}
-	if created.Terminal.Handle != "" && handle != created.Terminal.Handle {
-		return receipt, errors.New("original workspace terminal handle changed")
-	}
-	// Retain the selected original handle if show is temporarily unavailable.
-	created.Terminal.Handle = handle
-	result, err := l.workspaceTerminalQuery(ctx, "terminal", "show", "--terminal", handle, "--json")
-	if err != nil {
-		return receipt, err
-	}
-	var shown struct {
-		Terminal native.Terminal `json:"terminal"`
-	}
-	if err = json.Unmarshal(result.Payload, &shown); err != nil {
-		return receipt, err
-	}
-	term := shown.Terminal
-	term.RuntimeID = result.RuntimeID
-	initializing := l.setup.AgentLaunchCommand != ""
-	if term.Handle != handle || term.Orphaned || term.RuntimeID != created.RuntimeID || term.WorktreeID != worktree.ID || term.WorktreePath != worktree.Path || term.IncarnationID == "" ||
-		created.Terminal.IncarnationID != "" && created.Terminal.IncarnationID != term.IncarnationID ||
-		created.StartupTerminal.IncarnationID != "" && created.StartupTerminal.IncarnationID != term.IncarnationID ||
-		!initializing && term.AgentIdentity != s.Ref.Agent.Name || initializing && term.AgentIdentity != "" || strings.TrimPrefix(term.Branch, "refs/heads/") != strings.TrimPrefix(worktree.Branch, "refs/heads/") && !(initializing && term.Branch == "") {
-		return receipt, fmt.Errorf("original agent/worktree binding unverified (runtime=%q/%q worktree=%q/%q path=%q/%q incarnation=%q agent=%q initializing=%t branch=%q/%q)", term.RuntimeID, created.RuntimeID, term.WorktreeID, worktree.ID, term.WorktreePath, worktree.Path, term.IncarnationID, term.AgentIdentity, initializing, term.Branch, worktree.Branch)
-	}
-	created.Terminal = term
-	p := b.ProcessIdentity{Kind: "orca_terminal", Executable: l.profile.Executable, RuntimeID: term.RuntimeID, Terminal: handle, Incarnation: term.IncarnationID, WorktreeID: worktree.ID, ExecutionHost: l.profile.Target().ExecutionHost}
-	workspace, target := workspaceCreationFacts(s.Session.ProjectID, s.Ref.Target, worktree, r.Input.Workspace.BaseCommit, time.Now().UTC())
-	receipt.Workspace = &workspace
-	receipt.Process = &p
-	receipt.Target = &target
-	receipt.State = b.LifecycleStateFacts{SessionID: SessionID(p), SessionGeneration: p.Incarnation, SessionAvailable: !initializing, WorkerLive: !initializing, WorktreeID: worktree.ID}
-	receipt.Implementation, err = l.envelope(s, State{Process: p})
-	if err == nil {
-		receipt.Disposition = b.OperationConfirmed
-	}
-	return receipt, err
+
+	return l.finishStructuredWorkspace(ctx, r, created)
+
 }
 
 func workspaceCreationFacts(project string, target b.ExecutionTarget, worktree native.Worktree, base string, checkedAt time.Time) (b.WorkspaceInspection, b.ExecutionTarget) {
@@ -199,11 +117,7 @@ func (l *Lifecycle) creationTimeout() time.Duration {
 }
 
 func (l *Lifecycle) workspaceCreationArgs(r b.LifecycleRequest, selector string) []string {
-	options := native.WorktreeCreate{Repository: selector, Name: workspaceName(r.Snapshot), BaseBranch: r.Input.Workspace.BaseCommit, NoParent: true, Setup: "skip"}
-	if l.setup.AgentLaunchCommand == "" && !l.structured() {
-		options.Agent = &r.Snapshot.Ref.Agent.Name
-	}
-	return native.WorktreeCreateArgs(options)
+	return native.WorktreeCreateArgs(native.WorktreeCreate{Repository: selector, Name: workspaceName(r.Snapshot), BaseBranch: r.Input.Workspace.BaseCommit, NoParent: true, Setup: "skip"})
 }
 
 // Native creation fields and execution checkpoint extensions have different
@@ -327,28 +241,3 @@ func repositoryDirectoryName(repository string) string {
 
 // Only the known surface-registration race is retryable. The caller supplies
 // one deadline shared by inventory and show, and never retries creation/input.
-func (l *Lifecycle) workspaceTerminalQuery(ctx context.Context, args ...string) (native.Result, error) {
-	for {
-		if err := ctx.Err(); err != nil {
-			return native.Result{}, err
-		}
-		result, err := l.client.MetaCall(ctx, args...)
-		if err == nil || result.ErrorCode != "terminal_surface_ownership_unavailable" && result.ErrorMessage != "terminal_surface_ownership_unavailable" {
-			return result, err
-		}
-		if waitErr := waitWorkspaceTerminal(ctx); waitErr != nil {
-			return result, fmt.Errorf("original workspace terminal ownership did not become ready: %w", waitErr)
-		}
-	}
-}
-
-func waitWorkspaceTerminal(ctx context.Context) error {
-	timer := time.NewTimer(200 * time.Millisecond)
-	defer timer.Stop()
-	select {
-	case <-ctx.Done():
-		return ctx.Err()
-	case <-timer.C:
-		return nil
-	}
-}

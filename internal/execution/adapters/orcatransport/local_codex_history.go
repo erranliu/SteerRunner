@@ -1,13 +1,11 @@
 package orcatransport
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
-	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
+
 	"strings"
-	"time"
 )
 
 const remoteWireCommand = "native-command-v1"
@@ -33,66 +31,6 @@ func wirePrompt(t *Turn) string {
 
 func nativePromptText(text string) string {
 	return strings.TrimRight(strings.ReplaceAll(text, "\r\n", "\n"), "\r\n")
-}
-
-func (l *Lifecycle) observeRecorded(ctx context.Context, state *State, turn *Turn) string {
-	if l.profile.Environment != "" {
-		return "helper history readers are local only"
-	}
-	if !turn.Accepted {
-		return "Original input has no verified acceptance; no input was resent"
-	}
-	release, gateErr := l.inspectionGate(ctx)
-	if gateErr != nil {
-		return gateErr.Error()
-	}
-	defer release()
-	if turn.ReceiptQueriedAt.IsZero() && l.clock().Before(turn.Native.LastQuery.Add(30*time.Second)) {
-		// The accepted turn already has a bounded observation interval. Do not
-		// spawn a history client immediately while the original model is working.
-		// A stream notification is only a polling hint; history still establishes
-		// completion, including fast turns whose start notification was missed.
-		due := false
-		if feed, err := l.stateFeed(ctx, state.Process); err == nil {
-			signals, _ := feed.Drain()
-			signals = append(signals, feed.Initial())
-			for _, s := range signals {
-				if s.PaneKey == turn.Native.Pane && s.ProviderSession.ID == state.RemoteReadiness.SessionID && trustedState(s.AgentState) && s.Observation.Revision > turn.Native.BaseRevision && s.MainAgent.State == "done" && s.MainAgent.StateStartedAt > turn.Native.BaseRootAt && s.Prompt == preview(wirePrompt(turn)) && !s.SessionBoundary && !s.RestoredUnconfirmed {
-					due = true
-				}
-			}
-		} else if errors.Is(err, native.ErrStateIdentityChanged) {
-			return err.Error()
-		}
-		if !due {
-			return ""
-		}
-	}
-	if !turn.ReceiptQueriedAt.IsZero() && l.clock().Before(turn.ReceiptQueriedAt.Add(30*time.Second)) {
-		return ""
-	}
-	inspectCtx, cancel := context.WithTimeout(ctx, 45*time.Second)
-	defer cancel()
-	value, err := l.recordedTurn(inspectCtx, state, turn)
-	if err != nil {
-		return "Original native history is unverified: " + err.Error()
-	}
-	if value == nil || !value.Started {
-		return "Original native input not yet recorded; no input was resent"
-	}
-	turn.Recorded = value
-	turn.Started = true
-	if !value.Completed {
-		return ""
-	}
-	if value.Status != "completed" {
-		return "Original native turn ended without successful completion"
-	}
-	if value.FinalText == "" {
-		return "Original native turn ended without a complete final_answer"
-	}
-	turn.Reply, turn.ReplyDigest, turn.Settled = value.FinalText, value.FinalDigest, true
-	return ""
 }
 
 func validateReaderExit(state State, turn *Turn, value codex.RemoteTurnReceipt) error {
@@ -136,24 +74,3 @@ func ValidateRecordedTurn(state State, turn *Turn) error {
 }
 
 // The fixed original control actor reads native history without a model input.
-func (l *Lifecycle) recordedTurn(ctx context.Context, state *State, turn *Turn) (*codex.RemoteTurnReceipt, error) {
-	if l.profile.Environment != "" {
-		return nil, errors.New("helper history is local only")
-	}
-	turn.ReceiptQueriedAt = l.clock()
-	response, err := l.callControl(ctx, *state, "original-turn", digest([]byte(wirePrompt(turn))))
-	if err != nil {
-		return nil, err
-	}
-	if response.Error != "" {
-		return nil, errors.New(response.Error)
-	}
-	if response.Turn == nil {
-		return nil, errors.New("original native control receipt missing")
-	}
-	if err := validateRecordedTurn(*state, turn, *response.Turn); err != nil {
-		return nil, err
-	}
-	turn.ReceiptRequest, turn.ReceiptQueriedAt = response.ID, l.clock()
-	return response.Turn, nil
-}

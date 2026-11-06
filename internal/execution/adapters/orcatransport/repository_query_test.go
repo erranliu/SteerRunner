@@ -50,7 +50,7 @@ func TestRepositoryCacheConflictClassification(t *testing.T) {
 func TestRepositoryQueryRetryBudget(t *testing.T) {
 	for _, scenario := range []string{"attempt-limit", "permanent-after-conflict", "cancel-backoff", "caller-deadline", "slow-call", "shared-deadline", "already-canceled"} {
 		t.Run(scenario, func(t *testing.T) {
-			l, _, _ := fixtureOn(t, "desktop")
+			l, _, _ := workspaceFixtureOn(t, "desktop")
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 			if scenario == "caller-deadline" || scenario == "slow-call" {
@@ -150,9 +150,9 @@ func TestRepositoryQueryRetryBudget(t *testing.T) {
 }
 
 func TestRepositoryCacheRetryNeverReplaysMutations(t *testing.T) {
-	for _, scenario := range []string{"recovers", "inventory-denied", "inventory-exhausted", "creation-unknown", "send-unknown"} {
+	for _, scenario := range []string{"recovers", "inventory-denied", "inventory-exhausted", "creation-unknown"} {
 		t.Run(scenario, func(t *testing.T) {
-			l, f, s := fixtureOn(t, "desktop")
+			l, _, s := workspaceFixtureOn(t, "desktop")
 			counts := map[string]int{}
 			calls := workspaceCalls(l, func(args []string) ([]byte, bool) {
 				command := args[0] + " " + args[1]
@@ -204,30 +204,17 @@ func TestRepositoryCacheRetryNeverReplaysMutations(t *testing.T) {
 			if err != nil || receipt.Disposition != b.OperationConfirmed {
 				t.Fatal(receipt, err)
 			}
-			bind(&s, receipt)
-			s, input := prepared(t, l, s, strings.Repeat("c", 32))
-			f.writeReply = true
-			send := request(s, b.LifecycleStartTurn, b.LifecycleInput{Turn: &input})
-			sent, err := l.submit(context.Background(), send)
-			if scenario == "send-unknown" {
-				if err == nil {
-					t.Fatal("send failure disappeared")
-				}
-				bind(&s, sent)
-				send.Snapshot = s
-				_, _, _ = l.Reconcile(context.Background(), send)
-			} else if err != nil || !sent.State.InputAccepted {
-				t.Fatal(sent, err)
+			// Workspace discovery must not dispatch an Agent input.
+			if counts["terminal send"] != 0 || counts["terminal create"] != 0 {
+				t.Fatal("workspace dispatched a legacy agent", counts)
 			}
-			if counts["worktree create"] != 1 || counts["terminal create"] != 0 || counts["terminal send"] != 1 || counts["repo list"] != 2 {
-				t.Fatal("original resource/input was replayed", counts)
-			}
+
 		})
 	}
 }
 
 func TestRepositoryQueryScopeRevocationPreventsCreation(t *testing.T) {
-	l, _, s := fixtureOn(t, "desktop")
+	l, _, s := workspaceFixtureOn(t, "desktop")
 	scopes := 0
 	l.setup.ReadOnlyPreparation = func(ctx context.Context, query func(context.Context) error) error {
 		scopes++
