@@ -21,3 +21,9 @@
 - 独立只读审核通过：检查原现场直接发送、正文来源、历史/未分类结果、审计隔离、停止/未知边界。Runner 没有新增固定提示词或业务解析。
 
 SteerLine 正式产品的真实 PR 冲突联合验收在其对应记录继续登记；本记录不宣称所有原生 Agent/目标组合已经真机验证。没有合并或部署本分支。
+
+## 刷新主干后的复验
+
+提交 `0b09c3d8` 后按仓库约定正常合入 `a12b24dc`（Orca profile 单次解码），无内容冲突；整合提交 `9f0b0872ba6524316e1fcad83b19bcdf1af90fce`。合入后 orcatransport 包全量通过（64.1 秒，`runner-merged-adapter.log`），新 message/同会话对话定向通过（`runner-merged-message.log`，resources/contracts 该模式仅编译，不作新增断言通过声明）。
+
+整合构建 `C:/SteerlineDebug/pr-conflict-5c27/bin/steerrunner-merged.exe`，版本 `0.2.0-dev.4`，SHA256 `0936ce56129e4522a110c67f51ad95b357f35be1de083258af502e5897f4c30b`；`.build.json` 固定来源 commit 和 source digest。SteerLine 联合真实链使用该独立文件，不覆盖此前构建或安装版。
