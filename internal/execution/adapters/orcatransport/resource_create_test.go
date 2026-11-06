@@ -4,9 +4,30 @@ import (
 	"encoding/json"
 	"reflect"
 	"testing"
+	"time"
 
 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
+	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
+
+func TestWorkspaceCreationFacts(t *testing.T) {
+	checkedAt := time.Date(2026, 11, 5, 12, 34, 56, 789, time.FixedZone("fixture", 3600))
+	originalTarget := b.ExecutionTarget{ID: "target", ConnectionID: "connection", ExternalRuntime: "original-runtime", ExecutionHost: "original-host", WorktreeID: "before", Branch: "before", BaseRevision: "before"}
+	for _, tc := range []struct{ branch, want string }{
+		{"refs/heads/topic", "topic"}, {"topic", "topic"}, {"refs/heads/refs/heads/topic", "refs/heads/topic"}, {"REFS/heads/topic", "REFS/heads/topic"},
+	} {
+		t.Run(tc.branch, func(t *testing.T) {
+			worktree := native.Worktree{ID: "original-worktree", InstanceID: "original-instance", RepoID: "native-repo", Path: `D:\original workspace`, Branch: tc.branch, Head: "actual-head", BaseRef: "native-base"}
+			before := worktree
+			workspace, target := workspaceCreationFacts("original-project", originalTarget, worktree, "requested-base", checkedAt)
+			wantWorkspace := b.WorkspaceInspection{InspectionScope: "revision", Repository: "original-project", Worktree: `D:\original workspace`, Branch: tc.want, Base: "requested-base", Head: "actual-head", CheckedAt: checkedAt}
+			wantTarget := b.ExecutionTarget{ID: "target", ConnectionID: "connection", ExternalRuntime: "original-runtime", ExecutionHost: "original-host", WorktreeID: "original-worktree", Branch: tc.want, BaseRevision: "requested-base"}
+			if workspace != wantWorkspace || target != wantTarget || worktree != before || originalTarget.WorktreeID != "before" || originalTarget.Branch != "before" || originalTarget.BaseRevision != "before" {
+				t.Fatal("creation projection changed fields, zero values, time or inputs", workspace, target)
+			}
+		})
+	}
+}
 
 func TestWorkspaceCreationCodecPreservesCheckpoint(t *testing.T) {
 	// Frozen pre-extraction checkpoint layout; don't build the oracle with the

@@ -1,0 +1,40 @@
+{
+  "packages": [
+    {
+      "log": "baseline",
+      "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+      "top_pass": 211,
+      "pass_including_subtests": 1225,
+      "skipped": [
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestShortInputProbeInspect",
+        "TestOrcaWorkspaceStartupLive"
+      ],
+      "failed": 0,
+      "result": "pass",
+      "seconds": 162.443
+    },
+    {
+      "log": "candidate",
+      "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+      "top_pass": 212,
+      "pass_including_subtests": 1230,
+      "skipped": [
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestShortInputProbeInspect",
+        "TestOrcaWorkspaceStartupLive"
+      ],
+      "failed": 0,
+      "result": "pass",
+      "seconds": 120.118
+    }
+  ],
+  "public_recovery": {
+    "test": "TestSRResourceCreationRecovery",
+    "exit_code": 0,
+    "scenario_count": 1,
+    "subcases": 7,
+    "finished_at": "2026-11-05T10:35:53.6615827Z",
+    "writer_sha256": "F2070FB59A3B3E3BC68F50E45E1E25781CEF863A6CABF14DDF4C715F65ECB390"
+  }
+}

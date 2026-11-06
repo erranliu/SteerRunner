@@ -114,6 +114,14 @@ func TestStructuredWorkspaceRecoversOriginalOwnerOutput(t *testing.T) {
 				recovered.Process.WorktreeID != f.workspace["id"] || string(recovered.Operation.Receipt) != string(first.Operation.Receipt) {
 				t.Fatal("did not recover the exact original workspace binding", recovered, err)
 			}
+			if recovered.Workspace == nil || recovered.Target == nil || recovered.Workspace.Repository != s.Session.ProjectID || recovered.Workspace.Worktree != f.workspace["path"] || recovered.Workspace.Base != s.WorkspacePlan.BaseCommit || recovered.Workspace.Head != f.workspace["head"] || recovered.Workspace.InspectionScope != "revision" || recovered.Workspace.Qualified || recovered.Workspace.Dirty || recovered.Workspace.Tree != "" || recovered.Workspace.CheckedAt.IsZero() {
+				t.Fatal("structured creation workspace facts changed", recovered.Workspace)
+			}
+			wantTarget := s.Ref.Target
+			wantTarget.WorktreeID, wantTarget.Branch, wantTarget.BaseRevision = f.workspace["id"].(string), recovered.Workspace.Branch, s.WorkspacePlan.BaseCommit
+			if *recovered.Target != wantTarget || recovered.State.RuntimeID != "runtime" || recovered.State.WorktreeID != f.workspace["id"] || recovered.State.SessionID != "" || recovered.State.SessionAvailable || recovered.State.WorkerLive {
+				t.Fatal("structured target/state ownership changed", recovered.Target, recovered.State)
+			}
 			if launches != 1 || creationCount(f, "worktree create") != 1 || creationCount(f, "worktree list") != 0 ||
 				creationCount(f, "repo list")+creationCount(f, "status --json") != discovery ||
 				creationCount(f, "terminal create") != 0 || creationCount(f, "terminal send") != 0 {
