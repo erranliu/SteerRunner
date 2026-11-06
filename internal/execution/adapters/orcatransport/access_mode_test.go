@@ -20,7 +20,7 @@ func TestOriginalTerminalOwnerNeverInfersMissingBundleFromCurrentBuild(t *testin
 		t.Fatal("original frozen bundle rejected")
 	}
 	c.BundleSHA256 = ""
-	owner.ExtensionSHA256 = TerminalExtensionDigest()
+	owner.ExtensionSHA256 = historicalTerminalBundleDigest(t)
 	if l.terminalOwnerBinding(owner) {
 		t.Fatal("missing original bundle silently inferred from current build")
 	}

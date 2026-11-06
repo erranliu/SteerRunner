@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"strings"
-	"sync"
 	"time"
 )
 
@@ -63,29 +62,6 @@ var ErrStateIdentityChanged = errors.New("Orca native state identity changed")
 
 func stateIdentityError(message string) error {
 	return fmt.Errorf("%w: %s", ErrStateIdentityChanged, message)
-}
-
-type SampleKind string
-
-const (
-	SampleInitial      SampleKind = "initial"
-	SampleNotification SampleKind = "notification"
-	SampleQuery        SampleKind = "query"
-)
-
-// StateSample is transient receive metadata, never part of the native wire or
-// persisted execution proof. Receive time is fixed before buffering.
-type StateSample struct {
-	AgentState
-	ReceivedAt time.Time  `json:"-"`
-	Kind       SampleKind `json:"-"`
-}
-
-type StateFeed interface {
-	Initial() StateSample
-	Drain() ([]StateSample, error)
-	Query(context.Context) (StateSample, error)
-	Close()
 }
 
 func DecodeOriginalState(raw json.RawMessage, p StateResource) (AgentState, error) {
@@ -159,79 +135,6 @@ func DecodeOriginalAgent(raw json.RawMessage, worktree, pane string) (AgentState
 	return AgentState{}, errors.New("Orca query original worktree absent from current page")
 }
 
-type nativeStateFeed struct {
-	environment string
-	process     StateResource
-	initial     StateSample
-	sub         *StateSubscription
-	cancel      context.CancelFunc
-	once        sync.Once
-	mu          sync.Mutex
-	updates     []StateSample
-	err         error
-}
-
-func OpenStateFeed(ctx context.Context, environment string, p StateResource) (StateFeed, error) {
-	if environment == "" {
-		return openLocalQueryFeed(ctx, p)
-	}
-	sub, raw, err := SubscribeState(ctx, environment, p.RuntimeID, "id:"+p.WorktreeID)
-	if err != nil {
-		return nil, err
-	}
-	initial, err := DecodeOriginalState(raw, p)
-	if err != nil {
-		sub.Close()
-		return nil, err
-	}
-	watch, cancel := context.WithCancel(context.Background())
-	sample := StateSample{AgentState: initial, ReceivedAt: time.Now().UTC(), Kind: SampleInitial}
-	f := &nativeStateFeed{environment: environment, process: p, initial: sample, sub: sub, cancel: cancel, updates: []StateSample{sample}}
-	go func() {
-		defer sub.Close()
-		for {
-			raw, err := sub.Next(watch)
-			var s AgentState
-			if err == nil {
-				s, err = DecodeOriginalState(raw, p)
-			}
-			sample := StateSample{AgentState: s, ReceivedAt: time.Now().UTC(), Kind: SampleNotification}
-			f.mu.Lock()
-			if err != nil {
-				if watch.Err() == nil {
-					f.err = err
-				}
-				f.mu.Unlock()
-				return
-			}
-			if len(f.updates) >= 64 {
-				f.err = errors.New("Orca native state observation gap")
-				f.mu.Unlock()
-				return
-			}
-			f.updates = append(f.updates, sample)
-			f.mu.Unlock()
-		}
-	}()
-	return f, nil
-}
-func (f *nativeStateFeed) Initial() StateSample { return f.initial }
-func (f *nativeStateFeed) Drain() ([]StateSample, error) {
-	f.mu.Lock()
-	defer f.mu.Unlock()
-	updates := f.updates
-	f.updates = nil
-	return updates, f.err
-}
-func (f *nativeStateFeed) Query(ctx context.Context) (StateSample, error) {
-	return QueryOriginalSample(ctx, f.environment, f.process, f.initial.PaneKey)
-}
-
-func QueryOriginalSample(ctx context.Context, environment string, process StateResource, pane string) (StateSample, error) {
-	s, err := QueryOriginalAgent(ctx, environment, process, pane)
-	return StateSample{AgentState: s, ReceivedAt: time.Now().UTC(), Kind: SampleQuery}, err
-}
-
 // A bounded independent read remains available when the notification stream is
 // disconnected. The caller supplies the exact native resource identity.
 func QueryOriginalAgent(ctx context.Context, environment string, process StateResource, pane string) (AgentState, error) {
@@ -287,4 +190,3 @@ func QueryOriginalAgent(ctx context.Context, environment string, process StateRe
 	}
 	return s, nil
 }
-func (f *nativeStateFeed) Close() { f.once.Do(func() { f.cancel(); f.sub.Close() }) }

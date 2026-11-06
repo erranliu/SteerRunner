@@ -1,0 +1,46 @@
+import gzip,hashlib,json,pathlib,re,subprocess,zipfile
+root=pathlib.Path.cwd();base=root/'.evidence/retirement-audit';out=base/'reaudit'
+baseline=json.loads((base/'baseline/source-sha256.json').read_text());final=json.loads((base/'b-final/source-sha256.json').read_text())
+current={p:hashlib.sha256((root/p).read_bytes()).hexdigest() for p in final}
+assert current==final,'source or tests changed after B verification'
+allowed={'internal/execution/adapters/protocol/orca/'+s for s in ['state_feed.go','state_query_feed.go','state_stream_test.go','state_query_feed_windows_test.go']}
+allowed|={'internal/execution/adapters/orcatransport/'+s for s in ['terminal_runtime.go','terminal_assets_test.go','access_mode_test.go','terminal_receipt_test.go']}
+changes={p for p in baseline.keys()|current.keys() if baseline.get(p)!=current.get(p)}
+assert changes==allowed,(changes,allowed)
+before=zipfile.ZipFile(base/'baseline/source.zip')
+symbols=['OpenStateFeed','QueryOriginalSample','StateSample','SampleKind','StateFeed','nativeStateFeed','localQueryFeed','SampleInitial','SampleNotification','SampleQuery','TerminalRuntimeMetadata','TerminalMetadata','TerminalExtensionDigest','terminalAssets']
+references={}
+for symbol in symbols:
+ pattern=re.compile(r'\b'+symbol+r'\b');hits=[]
+ for name in baseline:
+  if not name.endswith('.go'):continue
+  text=before.read(name).decode('utf-8-sig')
+  for line,value in enumerate(text.splitlines(),1):
+   if pattern.search(value):hits.append({'file':name,'line':line,'text':value.strip()})
+ references[symbol]=hits
+ assert not any(pattern.search((root/name).read_text(encoding='utf-8-sig')) for name in current if name.endswith('.go')),symbol
+tests_before={p for p in baseline if p.endswith('_test.go')};tests_after={p for p in current if p.endswith('_test.go')}
+assert not tests_before-tests_after,'deleted whole test files'
+test_changes=sorted(p for p in tests_before&tests_after if baseline[p]!=current[p])
+assert len(test_changes)==4
+node=(out/'node.tap').read_text(encoding='utf-8-sig');counts={k:int(re.search(r'^# '+k+r' (\d+)$',node,re.M)[1]) for k in ['tests','pass','fail','cancelled','skipped','todo']}
+assert (out/'node-exit.txt').read_text()=='0' and counts['tests']==counts['pass']==21
+assert counts['fail']==counts['cancelled']==counts['skipped']==0 and len(re.findall(r'^ok \d+ - ',node,re.M))==21
+events=[json.loads(s) for s in (out/'components.jsonl').read_text(encoding='utf-8-sig').splitlines() if s.startswith('{')]
+tests={};results={}
+for e in events:
+ if e.get('Action') not in ['pass','fail','skip']:continue
+ p=e['Package'];a=e['Action'];tests.setdefault(p,{'top_pass':0,'top_fail':0,'top_skip':0,'all_pass':0,'all_fail':0,'all_skip':0,'skipped':[]})
+ if not e.get('Test'):results[p]=a;continue
+ tests[p]['all_'+a]+=1
+ if '/' not in e['Test']:tests[p]['top_'+a]+=1
+ if a=='skip':tests[p]['skipped'].append(e['Test'])
+assert len(results)==2 and all(v=='pass' for v in results.values())
+for stage in ['a','b']:
+ report=json.loads((base/(stage+'-controlled')/'result.json').read_text());assert report['exit_code']==0 and report['scenario_count']==3
+ identity=json.loads((base/stage/'steerrunner.exe.build.json').read_text())
+ assert identity['sha256']==hashlib.sha256((base/stage/'steerrunner.exe').read_bytes()).hexdigest()
+ assert all(v['passed'] for v in report['controlled_cases']['TestSRRestartPreservesAuthorization'])
+data={'base_commit':subprocess.check_output(['git','rev-parse','origin/main'],text=True).strip(),'source_and_test_files_identical_to_B':len(current),'source_manifest_sha256':hashlib.sha256((base/'b-final/source-sha256.json').read_bytes()).hexdigest(),'changed_source_files_relative_to_main':sorted(changes),'deleted_whole_test_files':sorted(tests_before-tests_after),'changed_existing_test_files':test_changes,'retained_existing_test_files':len(tests_before),'new_test_helper':sorted(tests_after-tests_before),'baseline_references':references,'new_component_results':tests,'new_node_counts':counts,'reused_evidence':['B application 103 top-level tests; source and tests identical','B shared components 135 top-level tests; source and tests identical','B live driver/helpers compilation; inputs identical','A/B original serialized bytes and asset hashes; declarations identical','B final formal EXE controlled 3 tests / restart 4 cases; identical frozen source and EXE hashes'],'production_findings':[]}
+(out/'audit.json').write_text(json.dumps(data,indent=2,ensure_ascii=False),encoding='utf-8')
+print(json.dumps({k:v for k,v in data.items() if k!='baseline_references'},indent=2,ensure_ascii=False))

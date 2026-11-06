@@ -52,6 +52,12 @@ Agent 在执行读取这些变量的脚本前，将绑定解析为现有文件�
 
 同日[实现复审](acceptance/orca-stop-reader-reaudit.md)未确认生产缺陷；补强原输入不变和在线/离线 scope 边界测试，原合法入口、错误优先级及格式保持。最新产物与实际定向资格以复审记录为准。
 
+2026-11-06 原始状态与历史资产继续分离：无产品入口的 StateFeed 双实现/采样队列已退役；SubscribeState/Next/Close、QueryState/QueryWorktreeAgents/QueryOriginalAgent 和原 AgentState/Observation 编解码保持。原始订阅仍有 stability probe/network 预检消费者，其通知、独立初始化 context、查询并存和取消/断开由真实协议测试保留；不恢复 Feed 兼容壳，见 [A 验收](acceptance/orca-state-feed-retirement.md)。
+
+后续独立的 B 删除旧 helper 元数据/命令生成，四资产 embed/摘要仅供测试装配。TerminalConfig/owner/receipt 和原冻结证明读取不变，不从当前 bundle/EXE 推导原 hash。五个 JS、Node TAP 入口和旧 Pi 诊断 probe 保持原字节；该 probe 不成为当前结构化资格。持久格式及现行执行、恢复、停止不变，两批独立构建和实际资格见 [B 验收](acceptance/orca-helper-producer-retirement.md)，不追认完整级别或真机结果。
+
+同日[实现复审](acceptance/orca-feed-helper-reaudit.md)未发现删除闭包越界或新的生产缺陷。原始查询/订阅、共享历史与当前执行夹具、Node/诊断及持久格式保持；新跑完整协议/adapter 与原 Node TAP 通过，其余原应用/公开受控资格在源和产物一致后明确复用，不虚记重新执行。
+
 ## 会话停止与已接受限制
 
 **Orca 链路不保证全部派生进程或额外主机资源正确清理。这个限制不成为正常业务链路的额外门禁。** 对本机及配对远端已启用原会话结算的结构化会话，停止资格是精确绑定原 session 的 close 成功回执，不是主机级资源清场。`working=false`、回合结束、观察断线或界面消失均不能替代该回执。

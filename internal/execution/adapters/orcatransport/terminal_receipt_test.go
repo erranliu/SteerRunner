@@ -20,9 +20,9 @@ func TestExtensionStateKeepsPreparationSeparateFromCodexProof(t *testing.T) {
 			l.setup.Snapshot = s
 			l.profile.Terminal = &TerminalConfig{Agent: agent, ExecutionID: s.Session.ExecutionID, SessionID: "native-original", AccessMode: "full_access", ReceiptVersion: 4}
 			file, source, tools := "pi-evidence.mjs", "pi-extension-v1", []string{"read", "write", "edit", "powershell"}
-			body, _ := terminalAssets.ReadFile("extensions/" + file)
+			body := historicalTerminalAsset(t, file)
 			l.profile.Terminal.EvidenceSHA256 = fmt.Sprintf("%x", sha256.Sum256(body))
-			l.profile.Terminal.BundleSHA256 = TerminalExtensionDigest()
+			l.profile.Terminal.BundleSHA256 = historicalTerminalBundleDigest(t)
 			ready := TerminalReceipt{Version: 4, Source: source, SourceSHA256: fmt.Sprintf("%x", sha256.Sum256(body)), RunID: s.Session.ExecutionID, SessionID: "native-original", NativeSessionID: "native-original", InstanceID: "original-load", ReasoningEffort: "low", PID: 1234, ProcessStartedAt: time.Now().UTC(), Mode: "tui", Tools: tools, Stage: "ready", Preparation: TerminalPreparation{Verified: true, Contract: terminaltools.Contract, AccessMode: "full_access", ProviderEnvironmentAbsent: true}}
 			state := State{Process: s.Ref.External, TerminalReadiness: &ready, TerminalOwner: &TerminalOwner{}}
 			turn := Turn{Command: strings.Repeat("a", 32), Prompt: "original\r\ninput\r\n", InputDigest: digest([]byte("original\r\ninput\r\n")), WireFormat: extensionWireCommand, Native: NativeProof{Agent: agent}}
@@ -97,9 +97,9 @@ func TestManagedReadinessRequiresEffectiveThinkingForNewSources(t *testing.T) {
 		l, _, s := frozenFixture(t)
 		l.profile.Terminal = &TerminalConfig{Agent: agent, ReceiptVersion: 4, ExecutionID: s.Session.ExecutionID, SessionID: "native-original", AccessMode: "full_access", ReasoningEffort: "high"}
 		kind, file, tools := "pi-extension-v1", "pi-evidence.mjs", []string{"read", "write", "edit", "powershell"}
-		source, _ := terminalAssets.ReadFile("extensions/" + file)
+		source := historicalTerminalAsset(t, file)
 		l.profile.Terminal.EvidenceSHA256 = fmt.Sprintf("%x", sha256.Sum256(source))
-		l.profile.Terminal.BundleSHA256 = TerminalExtensionDigest()
+		l.profile.Terminal.BundleSHA256 = historicalTerminalBundleDigest(t)
 		ready := TerminalReceipt{Version: 4, Source: kind, SourceSHA256: fmt.Sprintf("%x", sha256.Sum256(source)), RunID: s.Session.ExecutionID, SessionID: "native-original", NativeSessionID: "native-original", InstanceID: "load", PID: 1234, ProcessStartedAt: time.Now(), Mode: "tui", Tools: tools, Stage: "ready", Preparation: TerminalPreparation{Verified: true, Contract: terminaltools.Contract, AccessMode: "full_access", ProviderEnvironmentAbsent: true}}
 		for _, effort := range []string{"", "low", "high"} {
 			ready.ReasoningEffort = effort

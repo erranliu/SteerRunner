@@ -1,0 +1,21 @@
+import hashlib,json,pathlib,re
+base=pathlib.Path('.evidence/retirement-audit');before=json.loads((base/'a-final/source-sha256.json').read_text());after=json.loads((base/'b-final/source-sha256.json').read_text())
+protocol=[p for p in before if p.startswith('internal/execution/adapters/protocol/orca/')];assert all(before[p]==after[p] for p in protocol)
+raw=(base/'b-node-final.tap').read_text(encoding='utf-8-sig');counts={k:int(re.search(r'^# '+k+r' (\d+)$',raw,re.M)[1]) for k in ('tests','pass','fail','cancelled','skipped','todo')}
+assert (base/'b-node-final-exit.txt').read_text()=='0';assert counts['tests']>0 and counts['fail']==counts['cancelled']==counts['skipped']==0
+assert counts['tests']==counts['pass']==len(re.findall(r'^ok \d+ - ',raw,re.M))
+assert not re.search(r'^not ok ',raw,re.M)
+package=json.loads((base/'b-go-list.json').read_text(encoding='utf-8-sig'));assert not package.get('EmbedFiles') and not package.get('EmbedPatterns')
+expected=['extensions/'+n for n in ['pi-evidence.mjs','pi-managed.mjs','terminal-tools.mjs','receipt.mjs']]
+assert sorted(package['TestEmbedPatterns'])==sorted(expected)
+scripts=['scripts/probe-orca-pi.ps1','scripts/test-prerequisite-contract.ps1']
+assert all(before[p]==after[p] for p in scripts)
+js=[p for p in before if p.startswith('internal/execution/adapters/orcatransport/extensions/')];assert len(js)==5 and all(before[p]==after[p] for p in js)
+imports={}
+for name in js:
+ text=pathlib.Path(name).read_text(encoding='utf-8');refs=re.findall(r'''(?:from\s*|import\s*)["'](\.[^"']+)["']''',text)
+ for ref in refs:assert (pathlib.Path(name).parent/ref).is_file(),(name,ref)
+ imports[name]=refs
+original=json.loads((base/'b-before-assets.json').read_text());current=json.loads((base/'b-after-assets.json').read_text());assert original==current
+value={'protocol_source_and_tests_unchanged':len(protocol),'protocol_result':'explicitly reuse A complete protocol result; no B rerun','node_exit_code':0,'node_counts':counts,'relative_imports':imports,'production_embed_patterns':package.get('EmbedPatterns',[]),'test_embed_patterns':package['TestEmbedPatterns'],'old_production_and_new_test_asset_digests':current,'scripts_and_five_js_unchanged':True,'model_probe':'not executed','sdk_install':'not executed'}
+(base/'b-retention.json').write_text(json.dumps(value,indent=2),encoding='utf-8');print(json.dumps(value,indent=2))

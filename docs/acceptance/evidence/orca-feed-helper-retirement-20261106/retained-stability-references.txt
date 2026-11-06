@@ -1,0 +1,8 @@
+tests/helpers/stability/main.go:120:		_, err = native.QueryState(ctx, m.Execution.Target.Environment, m.RemoteRuntimeID, *worktree)
+tests/helpers/stability/main.go:125:	case "probe-subscribe":
+tests/helpers/stability/main.go:127:		sub, _, err := native.SubscribeState(ctx, m.Execution.Target.Environment, m.RemoteRuntimeID, *worktree)
+tests/native/stability_test.go:198:	raw, err := orca.QueryState(ctx, s.m.Execution.Target.Environment, s.m.RemoteRuntimeID, "id:"+s.process.WorktreeID)
+tests/native/stability_test.go:207:	state, err := orca.QueryOriginalAgent(ctx, s.m.Execution.Target.Environment, resource, initial.PaneKey)
+tests/native/stability_test.go:554:		s.networkPreflight()
+tests/native/stability_test.go:913:func (s *stabilityRun) networkPreflight() {
+tests/native/stability_test.go:950:	cmd := exec.Command(s.m.Stability.Helper.Path, "probe-subscribe", "-manifest", *manifestFlag, "-worktree", "id:"+mainID)

@@ -1,0 +1,128 @@
+{
+  "stage": "b",
+  "tests": {
+    "b-adapter.jsonl": {
+      "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport": {
+        "top_pass": 81,
+        "top_fail": 0,
+        "top_skip": 0,
+        "all_pass": 351,
+        "all_fail": 0,
+        "all_skip": 0,
+        "skip_names": [],
+        "result": "pass"
+      }
+    },
+    "b-components.jsonl": {
+      "github.com/erranliu/SteerRunner/internal/usage/collect": {
+        "top_pass": 23,
+        "top_fail": 0,
+        "top_skip": 3,
+        "all_pass": 34,
+        "all_fail": 0,
+        "all_skip": 3,
+        "skip_names": [
+          "TestUsageExistingNativeEvidence",
+          "TestUsageRemoteCodexCleanupLive",
+          "TestUsageRemoteCodexLive"
+        ],
+        "result": "pass"
+      },
+      "github.com/erranliu/SteerRunner/internal/host": {
+        "top_pass": 18,
+        "top_fail": 0,
+        "top_skip": 0,
+        "all_pass": 251,
+        "all_fail": 0,
+        "all_skip": 0,
+        "skip_names": [],
+        "result": "pass"
+      },
+      "github.com/erranliu/SteerRunner/internal/storage": {
+        "top_pass": 20,
+        "top_fail": 0,
+        "top_skip": 0,
+        "all_pass": 27,
+        "all_fail": 0,
+        "all_skip": 0,
+        "skip_names": [],
+        "result": "pass"
+      },
+      "github.com/erranliu/SteerRunner/internal/contracts": {
+        "top_pass": 25,
+        "top_fail": 0,
+        "top_skip": 0,
+        "all_pass": 119,
+        "all_fail": 0,
+        "all_skip": 0,
+        "skip_names": [],
+        "result": "pass"
+      },
+      "github.com/erranliu/SteerRunner/internal/testkit/livetest": {
+        "top_pass": 49,
+        "top_fail": 0,
+        "top_skip": 0,
+        "all_pass": 323,
+        "all_fail": 0,
+        "all_skip": 0,
+        "skip_names": [],
+        "result": "pass"
+      }
+    },
+    "b-application.jsonl": {
+      "github.com/erranliu/SteerRunner/internal/application": {
+        "top_pass": 103,
+        "top_fail": 0,
+        "top_skip": 0,
+        "all_pass": 255,
+        "all_fail": 0,
+        "all_skip": 0,
+        "skip_names": [],
+        "result": "pass"
+      }
+    }
+  },
+  "controlled": {
+    "controlled_cases": {
+      "TestSRRestartPreservesAuthorization": [
+        {
+          "id": "graceful",
+          "passed": true,
+          "duration_seconds": 15.9499411
+        },
+        {
+          "id": "kill",
+          "passed": true,
+          "duration_seconds": 16.3922764
+        },
+        {
+          "id": "creation_receipt",
+          "passed": true,
+          "duration_seconds": 12.4025094
+        },
+        {
+          "id": "pending_stop",
+          "passed": true,
+          "duration_seconds": 11.1425308
+        }
+      ]
+    },
+    "exe": "C:\\Users\\lmas1\\.codex\\worktrees\\cdc6\\SteerRunner\\.evidence\\retirement-audit\\b\\steerrunner.exe",
+    "exit_code": 0,
+    "finished_at": "2026-11-06T09:27:45.8365665Z",
+    "scenario_count": 3
+  },
+  "build": {
+    "schema": "steerrunner-build/v1",
+    "component": "runner",
+    "source_digest": "bc865f625d72a5c61aa9d898c9bc5b09ec1e63472e4b22805042221839efb378",
+    "version": "0.2.0-dev.4",
+    "source_commit": "da78847856bcba21774c84b68b4b7fc84f52d131",
+    "source_dirty": true,
+    "protocol": "steerrunner-cli/v1",
+    "platform": "windows/amd64",
+    "sha256": "ba4b32d2048b65140f8a3004c3b45bc3c9de9b4358dd5c8cbe898d52008d85f3"
+  },
+  "source_manifest_sha256": "b1f21951b3117386d254a49e0eae7fe6c4426a21f0619d26be1ca0fd18807474",
+  "source_archive_sha256": "54d91a711176e719b7b2f7243c03f67cc83dbb6a81db3be5196d8ef5a129eeda"
+}

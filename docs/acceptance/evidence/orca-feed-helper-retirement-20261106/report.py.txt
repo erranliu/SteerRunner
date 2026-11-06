@@ -1,0 +1,32 @@
+import gzip,hashlib,json,pathlib,shutil,sys
+stage=sys.argv[1];src=pathlib.Path('.evidence/retirement-audit');out=pathlib.Path('docs/acceptance/evidence/orca-feed-helper-retirement-20261106');out.mkdir(parents=True,exist_ok=True)
+def read_events(name):return [json.loads(s) for s in (src/name).read_text(encoding='utf-8-sig').splitlines() if s.startswith('{')]
+names={'a':['a-protocol-final.jsonl','a-components.jsonl','a-livetest.jsonl','a-application.jsonl'],'b':['b-adapter.jsonl','b-components.jsonl','b-application.jsonl']}[stage]
+summary={'stage':stage,'tests':{},'controlled':json.loads((src/(stage+'-controlled')/'result.json').read_text()),'build':json.loads((src/stage/'steerrunner.exe.build.json').read_text()),'source_manifest_sha256':hashlib.sha256((src/(stage+'-final')/'source-sha256.json').read_bytes()).hexdigest(),'source_archive_sha256':hashlib.sha256((src/(stage+'-final')/'source.zip').read_bytes()).hexdigest()}
+for name in names:
+ events=read_events(name);pkgs={}
+ for e in events:
+  p=e.get('Package',e.get('ImportPath',''));a=e['Action'];r=pkgs.setdefault(p,{'top_pass':0,'top_fail':0,'top_skip':0,'all_pass':0,'all_fail':0,'all_skip':0,'skip_names':[]})
+  if a in ('pass','fail','skip'):
+   if e.get('Test'):
+    r['all_'+a]+=1
+    if '/' not in e['Test']:r['top_'+a]+=1
+    if a=='skip':r['skip_names'].append(e['Test'])
+   else:r['result']=a
+ summary['tests'][name]=pkgs
+ with gzip.open(out/(name+'.gz'),'wb') as f:f.write((src/name).read_bytes())
+for name in [stage+'-declaration-diff.json',stage+'-file-diff.json']:
+ shutil.copyfile(src/name,out/name)
+for name in [stage+'-wire.json',stage+'-frozen.json']:
+ with gzip.open(out/(name+'.gz'),'wb') as f:f.write((src/name).read_bytes())
+for name in ['result.json','integration.log','source-identity.json','unit-foundation.log']:
+ shutil.copyfile(src/(stage+'-controlled')/name,out/(stage+'-controlled-'+name))
+shutil.copyfile(src/stage/'steerrunner.exe.build.json',out/(stage+'-build.json'))
+shutil.copyfile(src/(stage+'-final')/'source-sha256.json',out/(stage+'-source-sha256.json'))
+shutil.copyfile(src/'wire.go',out/'wire.go.txt');shutil.copyfile(src/'declarations.go',out/'declarations.go.txt')
+for name in ['summarize.py','compare_files.py','snapshot.py','report.py','implement_a.py','implement_b.py','capture_assets.py','check_b.py']:
+ shutil.copyfile(src/name,out/(name+'.txt'))
+(out/(stage+'-summary.json')).write_text(json.dumps(summary,indent=2,ensure_ascii=False),encoding='utf-8')
+assert summary['controlled']['exit_code']==0 and summary['controlled']['scenario_count']==3
+assert all(c['passed'] for c in summary['controlled']['controlled_cases']['TestSRRestartPreservesAuthorization'])
+print(json.dumps(summary,indent=2,ensure_ascii=False))
