@@ -1,0 +1,22 @@
+local-development dfc2856f89a67a8453f93e858604331c C:\Users\lmas1\.codex\worktrees\d634\SteerRunner\.evidence\orca-progress-host-pr\.evidence\progress-host\live\local-development-09ba43dd
+local-development ('queued', 'execution_wait', None)
+local-development ('queued', 'prepare_workspace', None)
+local-development ('running', 'prepare_session', None)
+local-development ('reconciling', 'operation_outcome_unknown', 'Original structured input/turn not yet verified; read-only reconciliation required.')
+local-development ('running', 'observing', None)
+local-development new progress observed while result pending
+local-development ('waiting_input', 'result_committed', 'FILES_DONE_LOCAL\nδ���')
+local-development ('waiting_input', 'stop_execution', 'pending', 'FILES_DONE_LOCAL\nδ���')
+local-development ('stopped', 'stopped', 'stopped', 'Closed the original Orca session; detached processes and additional resource cleanup are not verified.')
+PASS local-development dfc2856f89a67a8453f93e858604331c
+remote-development 4814c858bb4bd4862bd5e3ff8306e4fa C:\Users\lmas1\.codex\worktrees\d634\SteerRunner\.evidence\orca-progress-host-pr\.evidence\progress-host\live\remote-development-ca598758
+remote-development ('queued', 'execution_wait', None)
+remote-development ('queued', 'prepare_workspace', None)
+remote-development ('running', 'prepare_session', None)
+remote-development ('reconciling', 'operation_outcome_unknown', 'Original structured input/turn not yet verified; read-only reconciliation required.')
+remote-development ('running', 'observing', None)
+remote-development new progress observed while result pending
+remote-development ('waiting_input', 'result_committed', 'FILES_DONE_REMOTE\nδ���')
+remote-development ('waiting_input', 'stop_execution', 'pending', 'FILES_DONE_REMOTE\nδ���')
+remote-development ('stopped', 'stopped', 'stopped', 'Closed the original Orca session; detached processes and additional resource cleanup are not verified.')
+PASS remote-development 4814c858bb4bd4862bd5e3ff8306e4fa

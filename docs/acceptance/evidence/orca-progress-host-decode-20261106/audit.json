@@ -1,0 +1,41 @@
+{
+  "base_commit": "6dd4360a42314e65b427627508ffd2ee3e4287da",
+  "source_digest": "9bca4d6c84ddb7542497b7ffbe6ec15f55e1da55d16e969e525ffd92fc075a46",
+  "executed_harness_equals_archive": true,
+  "original_test_log_hashes_verified": true,
+  "baseline_progress_equals_git_show": true,
+  "both_original_exe_hashes_verified": true,
+  "both_original_turn_and_close_bindings_verified": true,
+  "local_host_and_remote_frozen_pairing_host_verified": true,
+  "active_progress_pending_result_then_stop_and_seal_order_verified": true,
+  "steerline_audit_commit": "01356834e4c791aba9c94064d5dfcb75f0d6b487",
+  "steerline_runnerclient_diff_from_original_acceptance_empty": true,
+  "both_original_directories_unchanged": true,
+  "runtime_and_test_changes_during_review": false,
+  "native_business_reexecuted_during_review": false,
+  "protected_tests_verified": [
+    "TestWorkspaceFilesUseTheVerifiedPairingSnapshot",
+    "TestResultFileRPCUsesOriginalSelectorAndIndependentPath",
+    "TestResultFileOriginalIPCBoundaries",
+    "TestFrozenReaderHasNoExecutionAndRejectsMutation",
+    "TestRetiredExecutionFactoryKeepsFrozenProof"
+  ],
+  "log_artifacts": {
+    "formal-live.log": {
+      "raw_sha256": "3b8f76bbc11719accb565b0a739aec36068722e79ae3b2d17f4abadb7dff7bf1",
+      "archived_sha256": "4fc0c027fb357a7c076706ab76d636ea75619ed8ff9f9cee3f2844d97ff9b8d1",
+      "archive_newlines": "LF"
+    },
+    "upgrade-gate.log": {
+      "raw_sha256": "608c7cea480a196402bfd643cb9cdbed24361302d2f7354669f7125e1a109762",
+      "archived_sha256": "608c7cea480a196402bfd643cb9cdbed24361302d2f7354669f7125e1a109762",
+      "archive_newlines": "LF"
+    },
+    "upgrade-audit.log": {
+      "raw_sha256": "f87dffe860f90af1081d6a5a93572a727a6a73a62f4f886b878efb546fb934e3",
+      "archived_sha256": "f87dffe860f90af1081d6a5a93572a727a6a73a62f4f886b878efb546fb934e3",
+      "archive_newlines": "LF"
+    }
+  },
+  "upgrade_audit_raw_log_sha256": "f87dffe860f90af1081d6a5a93572a727a6a73a62f4f886b878efb546fb934e3"
+}

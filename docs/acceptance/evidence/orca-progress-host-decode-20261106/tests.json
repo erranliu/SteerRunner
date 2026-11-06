@@ -1,0 +1,116 @@
+{
+  "baseline": {
+    "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport": {
+      "log_sha256": "8ad06acdf71fdb6a9afe9f51ad832bae7f6e5510e41f37b016b00672c3934778",
+      "status": "passed",
+      "elapsed_seconds": 57.455,
+      "top_passed": 76,
+      "leaf_passed": 284,
+      "pass_events": 328,
+      "failed": 0,
+      "skipped": [],
+      "top_tests": null
+    },
+    "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca": {
+      "log_sha256": "8ad06acdf71fdb6a9afe9f51ad832bae7f6e5510e41f37b016b00672c3934778",
+      "status": "passed",
+      "elapsed_seconds": 23.867,
+      "top_passed": 62,
+      "leaf_passed": 321,
+      "pass_events": 359,
+      "failed": 0,
+      "skipped": [
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestOrcaLocalIPCNativeProbe",
+        "TestOrcaTerminalQueryLive",
+        "TestUsageLocalAcceptanceRepoCleanupLive"
+      ],
+      "top_tests": null
+    }
+  },
+  "baseline-equivalence": {
+    "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport": {
+      "log_sha256": "ff2270e0b5694e3912a8bc9a9bdd789d66d2ea28eaf6b386b625c3e6a2a5dd1f",
+      "status": "passed",
+      "elapsed_seconds": 1.85,
+      "top_passed": 4,
+      "leaf_passed": 28,
+      "pass_events": 31,
+      "failed": 0,
+      "skipped": [],
+      "top_tests": [
+        "TestStructuredConstructorFacts",
+        "TestStructuredConstructorFaultPriority",
+        "TestProgressHostLegacyRouting",
+        "TestProgressHostRejectsStructuredAccessBeforeReturningLocal"
+      ]
+    }
+  },
+  "candidate": {
+    "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport": {
+      "log_sha256": "b9c0abd65a4f32a596dd4cefff2582a64226595a2601b554a0add93504d32cc6",
+      "status": "passed",
+      "elapsed_seconds": 55.619,
+      "top_passed": 78,
+      "leaf_passed": 291,
+      "pass_events": 336,
+      "failed": 0,
+      "skipped": [],
+      "top_tests": null
+    },
+    "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca": {
+      "log_sha256": "b9c0abd65a4f32a596dd4cefff2582a64226595a2601b554a0add93504d32cc6",
+      "status": "passed",
+      "elapsed_seconds": 24.171,
+      "top_passed": 62,
+      "leaf_passed": 321,
+      "pass_events": 359,
+      "failed": 0,
+      "skipped": [
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestOrcaLocalIPCNativeProbe",
+        "TestOrcaTerminalQueryLive",
+        "TestUsageLocalAcceptanceRepoCleanupLive"
+      ],
+      "top_tests": null
+    }
+  },
+  "application": {
+    "github.com/erranliu/SteerRunner/internal/application": {
+      "log_sha256": "7d59e2bc8b02cd17103726b326d3a01607cbc424ea66c9c75b9d7e84b0729fa0",
+      "status": "passed",
+      "elapsed_seconds": 38.599,
+      "top_passed": 24,
+      "leaf_passed": 42,
+      "pass_events": 48,
+      "failed": 0,
+      "skipped": [],
+      "top_tests": [
+        "TestProgressClosedObservationIsNotReopened",
+        "TestProgressTerminalShutdownFinishesClosed",
+        "TestProgressActiveAndResumedObserversDetachOnShutdown",
+        "TestProgressTerminalPendingFinalizationStillStarts",
+        "TestProgressIndependentVersionSurvivesBusinessCloneAndRestart",
+        "TestProgressStopBeforeInitializationHasNoInventedSnapshot",
+        "TestProgressInitializationRecoveryReadsChangedSeedWithoutRewriting",
+        "TestProgressOrcaRoutingDoesNotRequireBusinessWorker",
+        "TestResultFilePendingUntilWholeExecutionStops",
+        "TestResultFileFinalBytesAtomicReplacementAndSealOnce",
+        "TestResultFileFailureSealsAndPreservesProgress",
+        "TestResultFileStaleAggregateAndLatePublication",
+        "TestResultFileBindingAndResumeFence",
+        "TestResultFileInitializationRecoveryAndNoStopCreation",
+        "TestResultFilePreparationFailureStillPreparesPeer",
+        "TestResultFileNormalCompletionRequiresStoppedProducer",
+        "TestResultFileBoundedReadAndFailedPersistence",
+        "TestResultFileShutdownDeadlineAndOriginalRecovery",
+        "TestSingleExecutionClosesWithoutPublicationAndSealsOriginalResult",
+        "TestSingleExecutionUnreportedOutcomeClosesWithVerifiedFinal",
+        "TestSingleExecutionRejectsReplyAndResumeIncludingAfterStop",
+        "TestSingleExecutionNativeQuestionClosesAndRetainsOriginalStop",
+        "TestSingleExecutionLateFinalPreservesOriginalStop",
+        "TestSingleExecutionOrcaFinalUsesNormalizedIdentityAndRetainsNativeSource"
+      ]
+    }
+  }
+}
