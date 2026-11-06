@@ -47,7 +47,10 @@ func structuredClient(run livetest.StructuredRun) orca.AgentSessionClient {
 	if run.Profile.Transport.Environment != "" {
 		return orca.NewRemoteAgentSessionClient(run.Profile.Transport.Environment, run.Binding.RuntimeID, run.Profile.PairingHostID)
 	}
-	return orca.NewLocalPiAgentSessionClient(run.Binding.RuntimeID)
+	if run.Agent == "pi" {
+		return orca.NewLocalPiAgentSessionClient(run.Binding.RuntimeID)
+	}
+	return orca.NewLocalAgentSessionClient(run.Binding.RuntimeID)
 }
 func structuredNativeState(m livetest.Manifest, view contracts.RunView) (livetest.StructuredRun, livetest.StructuredHistory, error) {
 	_, run, err := originalStructuredRecord(m, view)

@@ -42,6 +42,7 @@ type StructuredBinding struct {
 }
 
 type StructuredRun struct {
+	Agent   string                      `json:"agent"`
 	Binding StructuredBinding           `json:"binding"`
 	Profile adapter.AgentSessionProfile `json:"profile"`
 	Inputs  []StructuredBinding         `json:"inputs"`
@@ -58,6 +59,7 @@ func ReadStructuredRun(m Manifest, view contracts.RunView, record *runstate.Reco
 		return result, errors.New("original Run unavailable")
 	}
 	s := record.Snapshot
+	result.Agent = s.Ref.Agent.Name
 	runtime, err := m.OrcaRuntimeID()
 	var settings contracts.OrcaSettings
 	if err != nil || contracts.DecodeStrict(m.Execution.Settings, &settings) != nil ||

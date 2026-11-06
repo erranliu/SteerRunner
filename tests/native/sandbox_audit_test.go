@@ -29,7 +29,20 @@ func auditWorkerSandbox(t *testing.T, m livetest.Manifest, run contracts.RunView
 		if run.Profile.AccessMode != "full_access" || len(history.Tail.ActionablePromptIDs) > 0 || history.Inputs < 2 {
 			t.Fatal("structured full-access business turns unverified")
 		}
-		save(t, "structured-native-audit.json", map[string]any{"original": run, "history": history, "configured_access_mode": run.Profile.AccessMode, "host_authentication": "existing", "helper_calls": 0})
+		counts, callErr := candidateCallAudit(m, run.Binding.SessionID)
+		if callErr != nil {
+			t.Fatal(callErr)
+		}
+		if structuredPipe != nil {
+			rows, err := structuredPipe.Calls(run.Binding.SessionID)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if err := livetest.VerifyStructuredInputCalls(rows, run); err != nil {
+				t.Fatal(err)
+			}
+		}
+		save(t, "structured-native-audit.json", map[string]any{"original": run, "history": history, "configured_access_mode": run.Profile.AccessMode, "host_authentication": "existing", "helper_calls": 0, "calls": counts, "wire_audit": structuredPipe != nil})
 		return
 	}
 	var settings contracts.CodexSettings
