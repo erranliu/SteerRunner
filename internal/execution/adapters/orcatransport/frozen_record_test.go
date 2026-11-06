@@ -45,7 +45,7 @@ func TestFrozenReaderKeepsConstructorFaultPriority(t *testing.T) {
 		{"profile", "invalid terminal profile codec"},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			l, _, _ := fixture(t)
+			l, _, _ := frozenFixture(t)
 			setup := l.setup.Clone()
 			setup.ProfileData[0].CodecVersion = -1
 			if tc.name == "agent" {

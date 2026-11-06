@@ -13,7 +13,6 @@ import (
 	"strconv"
 	"strings"
 	"sync"
-	"testing"
 	"time"
 )
 
@@ -190,30 +189,6 @@ func (f *fakeHost) OutputCommand(_ context.Context, c b.LaunchCommand) ([]byte, 
 	return json.Marshal(map[string]any{"ok": true, "result": result, "_meta": map[string]any{"runtimeId": "runtime"}})
 }
 
-func fixture(t *testing.T) (*Lifecycle, *fakeHost, b.LifecycleSnapshot) { return fixtureOn(t, "") }
-func fixtureOn(t *testing.T, environment string) (*Lifecycle, *fakeHost, b.LifecycleSnapshot) {
-	t.Helper()
-	f := &fakeHost{root: t.TempDir(), incarnation: "original-incarnation"}
-	if environment != "" {
-		f.nativePath = "/srv/owned-worker"
-	}
-	p := Profile{Executable: "orca.exe", WaitTimeout: "1s", Environment: environment}
-	raw, _ := json.Marshal(p)
-	s := b.LifecycleSnapshot{Ref: b.ExecutionRef{Backend: b.BackendOrca, Protocol: b.ProtocolOrcaTerminalV3, Target: p.Target(), Agent: b.AgentSpec{Name: "codex"}, RunID: strings.Repeat("d", 32), AttemptID: strings.Repeat("b", 32)}, Session: b.SessionContext{ProjectID: "project", ExecutionID: strings.Repeat("a", 32), AttemptID: strings.Repeat("b", 32), WorkflowRunID: strings.Repeat("d", 32), CorrelationID: "1", NamePrefix: "sr"}, ConfigurationDigest: "config", ResourceGeneration: "generation", WorkspacePlan: b.WorkspaceIntent{BaseCommit: strings.Repeat("e", 40)}}
-	version := ProfileVersion
-	if environment != "" {
-		version = NativeRemoteProfileVersion
-	}
-	data, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{CodecVersion: version, Purpose: b.ImplementationConfigPurpose, ImplementationKey: ProfileKey, ProjectID: "project", ProfileID: "profile", AcceptedConfigVersion: "accepted"}, raw)
-	if err != nil {
-		t.Fatal(err)
-	}
-	port, err := frozenFixtureLifecycle(b.LifecycleSetup{Snapshot: s, ProfileData: []b.ImplementationDataEnvelope{data}, ProfileID: "profile", AcceptedConfigVersion: "accepted", ProcessHost: f, RepositoryPath: f.root, RunDirectory: t.TempDir()})
-	if err != nil {
-		t.Fatal(err)
-	}
-	return port, f, s
-}
 func request(s b.LifecycleSnapshot, action b.LifecycleAction, input b.LifecycleInput) b.LifecycleRequest {
 	ref := s.Ref
 	return b.LifecycleRequest{Snapshot: s, Input: input, Operation: b.Operation{Version: 1, ID: "original-operation-" + string(action), Action: string(action), PayloadDigest: "digest", Ref: &ref, LifecycleIdentity: &b.LifecycleOperationIdentity{ProjectID: s.Session.ProjectID, ExecutionID: s.Session.ExecutionID, ConfigurationDigest: s.ConfigurationDigest, ResourceGeneration: s.ResourceGeneration, InputBindingDigest: b.LifecycleBindingDigest(s), Ref: ref}}}

@@ -1,0 +1,488 @@
+{
+  "operation": {
+    "Snapshot": {
+      "Ref": {
+        "version": 0,
+        "backend": "orca",
+        "protocol": "orca_terminal_v3",
+        "target": {
+          "id": "orca-terminal:ac53f263390334435cf23d8b",
+          "execution_host": "local"
+        },
+        "agent": {
+          "name": "codex"
+        },
+        "run_id": "dddddddddddddddddddddddddddddddd",
+        "attempt_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "workspace_path": "C:/format/worker",
+        "workspace_branch": "worker",
+        "external": {
+          "kind": "orca_terminal",
+          "executable": "orca.exe",
+          "terminal": "terminal",
+          "runtime_id": "runtime",
+          "incarnation": "original-incarnation",
+          "execution_host": "local",
+          "worktree_id": "repo::C:/format/worker"
+        }
+      },
+      "Session": {
+        "ProjectID": "project",
+        "CorrelationID": "1",
+        "NamePrefix": "sr",
+        "WorkflowRunID": "dddddddddddddddddddddddddddddddd",
+        "ExecutionID": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "AttemptID": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "Agent": {
+          "name": ""
+        },
+        "Target": {},
+        "SessionID": "orca-terminal:runtime:terminal:original-incarnation",
+        "Generation": "original-incarnation",
+        "CurrentTurnID": "",
+        "PendingTurnID": "",
+        "LastStoppedTurnID": "",
+        "CurrentCommandID": "",
+        "PendingCommandID": "",
+        "AttemptNumber": 0
+      },
+      "ResourcesFinalized": false,
+      "ConfigurationDigest": "config",
+      "ResourceGeneration": "generation",
+      "Implementation": [
+        {
+          "version": 1,
+          "codec_version": 8,
+          "purpose": "execution-resources",
+          "implementation_key": "orca.terminal-state",
+          "project_id": "project",
+          "execution_id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "attempt_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "generation": "generation",
+          "config_digest": "config",
+          "digest": "9ca3651312471b4917cf40e85ef1e62d8a0b783801a0bea8c8357602727eb010",
+          "payload": {
+            "process": {
+              "kind": "orca_terminal",
+              "executable": "orca.exe",
+              "terminal": "terminal",
+              "runtime_id": "runtime",
+              "incarnation": "original-incarnation",
+              "execution_host": "local",
+              "worktree_id": "repo::C:/format/worker"
+            },
+            "turns": null
+          }
+        }
+      ],
+      "PolicyResources": null,
+      "Operations": null,
+      "Workspace": {
+        "path": "C:/format/worker",
+        "branch": "worker",
+        "base_commit": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+      },
+      "WorkspaceDirty": false,
+      "WorkspacePlan": {
+        "path": "",
+        "branch": "",
+        "base_commit": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+      },
+      "PendingTurn": null,
+      "QuestionRoute": null,
+      "OutputCursor": "",
+      "PendingDeliveryID": "",
+      "KnownQuestionIDs": null,
+      "PendingQuestions": null,
+      "PreparationProbe": null,
+      "OriginalHost": null,
+      "HostAuthorization": null
+    },
+    "Operation": {
+      "version": 1,
+      "id": "original-operation-stop_execution",
+      "run_id": "",
+      "attempt_id": "",
+      "backend": "",
+      "protocol": "",
+      "target": {},
+      "action": "stop_execution",
+      "payload_digest": "digest",
+      "status": "",
+      "started_at": "0001-01-01T00:00:00Z",
+      "updated_at": "0001-01-01T00:00:00Z",
+      "ref": {
+        "version": 0,
+        "backend": "orca",
+        "protocol": "orca_terminal_v3",
+        "target": {
+          "id": "orca-terminal:ac53f263390334435cf23d8b",
+          "execution_host": "local"
+        },
+        "agent": {
+          "name": "codex"
+        },
+        "run_id": "dddddddddddddddddddddddddddddddd",
+        "attempt_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "workspace_path": "C:/format/worker",
+        "workspace_branch": "worker",
+        "external": {
+          "kind": "orca_terminal",
+          "executable": "orca.exe",
+          "terminal": "terminal",
+          "runtime_id": "runtime",
+          "incarnation": "original-incarnation",
+          "execution_host": "local",
+          "worktree_id": "repo::C:/format/worker"
+        }
+      },
+      "lifecycle_identity": {
+        "project_id": "project",
+        "execution_id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "configuration_digest": "config",
+        "resource_generation": "generation",
+        "input_binding_digest": "6af1d14434ff565d8fbe33292ffa2a58ef1b163ecc05b7d5d7970b31ee1c5423",
+        "ref": {
+          "version": 0,
+          "backend": "orca",
+          "protocol": "orca_terminal_v3",
+          "target": {
+            "id": "orca-terminal:ac53f263390334435cf23d8b",
+            "execution_host": "local"
+          },
+          "agent": {
+            "name": "codex"
+          },
+          "run_id": "dddddddddddddddddddddddddddddddd",
+          "attempt_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "workspace_path": "C:/format/worker",
+          "workspace_branch": "worker",
+          "external": {
+            "kind": "orca_terminal",
+            "executable": "orca.exe",
+            "terminal": "terminal",
+            "runtime_id": "runtime",
+            "incarnation": "original-incarnation",
+            "execution_host": "local",
+            "worktree_id": "repo::C:/format/worker"
+          }
+        }
+      }
+    },
+    "Input": {}
+  },
+  "profile": {
+    "executable": "orca.exe",
+    "wait_timeout": "1s"
+  },
+  "profile_envelopes": [
+    {
+      "version": 1,
+      "codec_version": 6,
+      "purpose": "profile-config",
+      "implementation_key": "orca.terminal-profile",
+      "project_id": "project",
+      "profile_id": "profile",
+      "accepted_config_version": "accepted",
+      "digest": "09fb7062807f66b95ed34b9b9d2085acd8b618fa900e1e8d5af74f3147e85b45",
+      "payload": {
+        "executable": "orca.exe",
+        "wait_timeout": "1s"
+      }
+    }
+  ],
+  "record": {
+    "stop_evidence_scope": "orca_terminal",
+    "observation_deadline": "0001-01-01T00:00:00Z",
+    "pr_clue_probe_at": "0001-01-01T00:00:00Z",
+    "native_started": false,
+    "native_managed": false,
+    "preparation_deadline": "0001-01-01T00:00:00Z",
+    "submit_command_id": "",
+    "command_states": null,
+    "prompt_bodies": null,
+    "id": "dddddddddddddddddddddddddddddddd",
+    "revision": 0,
+    "request": {
+      "title": "",
+      "workflow": {
+        "id": "",
+        "version": 0
+      },
+      "execution": {
+        "adapter": "",
+        "target": {
+          "kind": ""
+        },
+        "settings": null
+      }
+    },
+    "input_digest": "",
+    "resource_digest": "",
+    "materials": null,
+    "repository_path": "",
+    "repository_common": "",
+    "status": "",
+    "phase": "",
+    "new_inputs_allowed": true,
+    "resume_required": false,
+    "snapshot": {
+      "Ref": {
+        "version": 0,
+        "backend": "orca",
+        "protocol": "orca_terminal_v3",
+        "target": {
+          "id": "orca-terminal:ac53f263390334435cf23d8b",
+          "execution_host": "local"
+        },
+        "agent": {
+          "name": "codex"
+        },
+        "run_id": "dddddddddddddddddddddddddddddddd",
+        "attempt_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "workspace_path": "C:/format/worker",
+        "workspace_branch": "worker",
+        "external": {
+          "kind": "orca_terminal",
+          "executable": "orca.exe",
+          "terminal": "terminal",
+          "runtime_id": "runtime",
+          "incarnation": "original-incarnation",
+          "execution_host": "local",
+          "worktree_id": "repo::C:/format/worker"
+        }
+      },
+      "Session": {
+        "ProjectID": "project",
+        "CorrelationID": "1",
+        "NamePrefix": "sr",
+        "WorkflowRunID": "dddddddddddddddddddddddddddddddd",
+        "ExecutionID": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "AttemptID": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "Agent": {
+          "name": ""
+        },
+        "Target": {},
+        "SessionID": "orca-terminal:runtime:terminal:original-incarnation",
+        "Generation": "original-incarnation",
+        "CurrentTurnID": "",
+        "PendingTurnID": "",
+        "LastStoppedTurnID": "",
+        "CurrentCommandID": "",
+        "PendingCommandID": "",
+        "AttemptNumber": 0
+      },
+      "ResourcesFinalized": false,
+      "ConfigurationDigest": "config",
+      "ResourceGeneration": "generation",
+      "Implementation": [
+        {
+          "version": 1,
+          "codec_version": 8,
+          "purpose": "execution-resources",
+          "implementation_key": "orca.terminal-state",
+          "project_id": "project",
+          "execution_id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "attempt_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "generation": "generation",
+          "config_digest": "config",
+          "digest": "9ca3651312471b4917cf40e85ef1e62d8a0b783801a0bea8c8357602727eb010",
+          "payload": {
+            "process": {
+              "kind": "orca_terminal",
+              "executable": "orca.exe",
+              "terminal": "terminal",
+              "runtime_id": "runtime",
+              "incarnation": "original-incarnation",
+              "execution_host": "local",
+              "worktree_id": "repo::C:/format/worker"
+            },
+            "turns": null
+          }
+        }
+      ],
+      "PolicyResources": null,
+      "Operations": null,
+      "Workspace": {
+        "path": "C:/format/worker",
+        "branch": "worker",
+        "base_commit": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+      },
+      "WorkspaceDirty": false,
+      "WorkspacePlan": {
+        "path": "",
+        "branch": "",
+        "base_commit": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+      },
+      "PendingTurn": null,
+      "QuestionRoute": null,
+      "OutputCursor": "",
+      "PendingDeliveryID": "",
+      "KnownQuestionIDs": null,
+      "PendingQuestions": null,
+      "PreparationProbe": null,
+      "OriginalHost": null,
+      "HostAuthorization": null
+    },
+    "profile": null,
+    "workflow": {
+      "config": null,
+      "StepID": "",
+      "PRURL": "",
+      "StageInputs": null,
+      "StageResults": null
+    },
+    "intents": null,
+    "created_at": "0001-01-01T00:00:00Z",
+    "updated_at": "0001-01-01T00:00:00Z"
+  },
+  "state": {
+    "process": {
+      "kind": "orca_terminal",
+      "executable": "orca.exe",
+      "terminal": "terminal",
+      "runtime_id": "runtime",
+      "incarnation": "original-incarnation",
+      "execution_host": "local",
+      "worktree_id": "repo::C:/format/worker"
+    },
+    "turns": [
+      {
+        "receipt_queried_at": "0001-01-01T00:00:00Z",
+        "native": {
+          "agent": "codex",
+          "pane": "",
+          "last_signal": "0001-01-01T00:00:00Z",
+          "last_query": "0001-01-01T00:00:00Z",
+          "waiting": "original proof missing"
+        },
+        "command": "cccccccccccccccccccccccccccccccc",
+        "input_digest": "74f593019878c636cabfab3d84653690e65c22c3001c8a3bb7e2161d8b96537d",
+        "attempted": false,
+        "accepted": false,
+        "started": false,
+        "settled": false,
+        "prompt": "original\r\n中文😀"
+      }
+    ]
+  },
+  "state_envelopes": [
+    {
+      "version": 1,
+      "codec_version": 8,
+      "purpose": "execution-resources",
+      "implementation_key": "orca.terminal-state",
+      "project_id": "project",
+      "execution_id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "attempt_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "generation": "generation",
+      "config_digest": "config",
+      "digest": "37f4f353c05d545c3f5c936e810726174e8d46764e62914ce2f5969510ae39cb",
+      "payload": {
+        "process": {
+          "kind": "orca_terminal",
+          "executable": "orca.exe",
+          "terminal": "terminal",
+          "runtime_id": "runtime",
+          "incarnation": "original-incarnation",
+          "execution_host": "local",
+          "worktree_id": "repo::C:/format/worker"
+        },
+        "turns": [
+          {
+            "receipt_queried_at": "0001-01-01T00:00:00Z",
+            "native": {
+              "agent": "codex",
+              "pane": "",
+              "last_signal": "0001-01-01T00:00:00Z",
+              "last_query": "0001-01-01T00:00:00Z",
+              "waiting": "original proof missing"
+            },
+            "command": "cccccccccccccccccccccccccccccccc",
+            "input_digest": "74f593019878c636cabfab3d84653690e65c22c3001c8a3bb7e2161d8b96537d",
+            "attempted": false,
+            "accepted": false,
+            "started": false,
+            "settled": false,
+            "prompt": "original\r\n中文😀"
+          }
+        ]
+      }
+    }
+  ],
+  "structured_envelopes": [
+    {
+      "version": 1,
+      "codec_version": 1,
+      "purpose": "execution-resources",
+      "implementation_key": "orca.agent-session-state",
+      "project_id": "project",
+      "execution_id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "attempt_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "generation": "generation",
+      "config_digest": "config",
+      "digest": "9381df2acdad248eca7f3a70704a436d7808fba55ba1d9a6a0bca1be38f4d879",
+      "payload": {
+        "runtime_id": "original-runtime",
+        "worktree": {
+          "id": "worktree",
+          "instanceId": "original-instance",
+          "repoId": "",
+          "path": "original-workspace",
+          "head": "",
+          "branch": "",
+          "baseRef": "",
+          "displayName": ""
+        },
+        "session_id": "oas_39caa87421452e92ab7382419d0808d3",
+        "command_id": "cccccccccccccccccccccccccccccccc",
+        "input_digest": "254e0a856fb353aec9851f7a639a424e83d1dfec7e723f69940541aea57716ec",
+        "body_fingerprint": "65da335413b98bdfb77010a986aec7957f602d6cfe68fe85be1a8b196f1faf1d",
+        "create_id": "1793680000000-112233445566778899aabbccddeeff00",
+        "message_id": "1793680000000-00112233445566778899aabbccddeeff",
+        "runtime_fence": 7
+      }
+    }
+  ],
+  "structured_profile": [
+    {
+      "version": 1,
+      "codec_version": 1,
+      "purpose": "profile-config",
+      "implementation_key": "orca.agent-session-profile",
+      "project_id": "project",
+      "profile_id": "profile",
+      "accepted_config_version": "accepted",
+      "digest": "71dac92d4710adbb2f7338944df2b443dce3d691c360612ecce4ab6aaf1e13ac",
+      "payload": {
+        "transport": {
+          "executable": "orca.exe",
+          "wait_timeout": "1s"
+        },
+        "model": "requested-model",
+        "reasoning_effort": "medium",
+        "access_mode": "full_access"
+      }
+    }
+  ],
+  "structured_state": {
+    "runtime_id": "original-runtime",
+    "worktree": {
+      "id": "worktree",
+      "instanceId": "original-instance",
+      "repoId": "",
+      "path": "original-workspace",
+      "head": "",
+      "branch": "",
+      "baseRef": "",
+      "displayName": ""
+    },
+    "session_id": "oas_39caa87421452e92ab7382419d0808d3",
+    "command_id": "cccccccccccccccccccccccccccccccc",
+    "input_digest": "254e0a856fb353aec9851f7a639a424e83d1dfec7e723f69940541aea57716ec",
+    "body_fingerprint": "65da335413b98bdfb77010a986aec7957f602d6cfe68fe85be1a8b196f1faf1d",
+    "create_id": "1793680000000-112233445566778899aabbccddeeff00",
+    "message_id": "1793680000000-00112233445566778899aabbccddeeff",
+    "runtime_fence": 7
+  }
+}

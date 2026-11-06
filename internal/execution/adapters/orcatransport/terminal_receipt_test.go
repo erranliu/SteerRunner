@@ -14,7 +14,7 @@ import (
 func TestExtensionStateKeepsPreparationSeparateFromCodexProof(t *testing.T) {
 	for _, agent := range []string{"pi"} {
 		t.Run(agent, func(t *testing.T) {
-			l, _, s := fixture(t)
+			l, _, s := frozenFixture(t)
 			s.Ref.Agent.Name = agent
 			s.Session.Agent.Name = agent
 			l.setup.Snapshot = s
@@ -94,7 +94,7 @@ func TestTerminalReceiptRejectsMissingUnboundedAndUnknownFields(t *testing.T) {
 
 func TestManagedReadinessRequiresEffectiveThinkingForNewSources(t *testing.T) {
 	for _, agent := range []string{"pi"} {
-		l, _, s := fixture(t)
+		l, _, s := frozenFixture(t)
 		l.profile.Terminal = &TerminalConfig{Agent: agent, ReceiptVersion: 4, ExecutionID: s.Session.ExecutionID, SessionID: "native-original", AccessMode: "full_access", ReasoningEffort: "high"}
 		kind, file, tools := "pi-extension-v1", "pi-evidence.mjs", []string{"read", "write", "edit", "powershell"}
 		source, _ := terminalAssets.ReadFile("extensions/" + file)

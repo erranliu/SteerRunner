@@ -16,9 +16,9 @@ type fixedControlFixture struct {
 	ready codex.RemoteReadiness
 }
 
-func fixtureFixedControl(t *testing.T) (*Lifecycle, *fakeHost, b.LifecycleSnapshot, *fixedControlFixture) {
+func fixtureFixedControl(t *testing.T) (*frozenRecord, *fakeHost, b.LifecycleSnapshot, *fixedControlFixture) {
 	t.Helper()
-	l, f, s := fixture(t)
+	l, f, s := frozenFixture(t)
 	f.nativePath = filepath.Join(t.TempDir(), "local-owned-workspace")
 	s = frozenWorkspaceFixture(t, l, f, s)
 	l.profile.RuntimeExecutable, l.profile.RuntimeSHA256, l.profile.RuntimeConfigurationDigest = "C:/runtime/helper.exe", strings.Repeat("b", 64), strings.Repeat("a", 64)
@@ -31,7 +31,7 @@ func fixtureFixedControl(t *testing.T) (*Lifecycle, *fakeHost, b.LifecycleSnapsh
 	l.probeProcess = func(*b.ProcessIdentity) b.ProcessProbeFacts { return b.ProcessProbeFacts{State: "absent"} }
 	return l, f, s, c
 }
-func prepareFixedControl(t *testing.T, l *Lifecycle, s b.LifecycleSnapshot, c *fixedControlFixture) b.LifecycleSnapshot {
+func prepareFixedControl(t *testing.T, l *frozenRecord, s b.LifecycleSnapshot, c *fixedControlFixture) b.LifecycleSnapshot {
 	t.Helper()
 	state, err := l.state(s)
 	if err != nil {

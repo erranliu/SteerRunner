@@ -15,10 +15,10 @@ import (
 func TestOrcaCLICommandEncodingAndConsumers(t *testing.T) {
 	for _, environment := range []string{"", "paired host"} {
 		t.Run(environment, func(t *testing.T) {
-			l, fake, s := fixtureOn(t, environment)
-			profile := l.profile
+			reader, fake, s := frozenFixtureOn(t, environment)
+			profile := reader.profile
 			profile.Executable, profile.Args = os.Args[0], []string{"prefix", "with space"}
-			setup := l.setup.Clone()
+			setup := reader.setup.Clone()
 			setup.Snapshot.Ref.Target = profile.Target()
 			var commands []b.LaunchCommand
 			host := &creationTestHost{ManagedProcessHost: fake, output: func(_ context.Context, command b.LaunchCommand) ([]byte, error) {
@@ -33,11 +33,11 @@ func TestOrcaCLICommandEncodingAndConsumers(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			port, err := frozenFixtureLifecycle(setup)
+			port, err := capabilityFixtureLifecycle(setup)
 			if err != nil {
 				t.Fatal(err)
 			}
-			l = port
+			l := port
 			args := []string{"terminal", "create", "--worktree", "id:repo::C:/my workspace", "--command", "Write-Output '中文'", "--json"}
 			_, err = l.client.MetaCallWithTimeout(context.Background(), 40*time.Second, args...)
 			if err != nil {

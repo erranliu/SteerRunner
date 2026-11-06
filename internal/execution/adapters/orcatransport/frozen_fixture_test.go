@@ -1,6 +1,7 @@
 package orcatransport
 
 import (
+	"encoding/json"
 	"testing"
 	"time"
 
@@ -8,20 +9,33 @@ import (
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
 
-// Historical reader fixtures start from saved facts, never a second legacy
-// executor. Its Lifecycle methods accept only the current structured protocol.
-func frozenFixtureLifecycle(setup b.LifecycleSetup) (*Lifecycle, error) {
+// Capability fixtures retain only the original-terminal RPC and shared CLI/
+// creation tests. They are not current execution or generic historical readers.
+func capabilityFixtureLifecycle(setup b.LifecycleSetup) (*Lifecycle, error) {
 	r, err := decodeFrozenRecord(setup)
 	if err != nil {
 		return nil, err
 	}
-	l := &Lifecycle{setup: r.setup, profile: r.profile, profileVersion: r.profileVersion, agentDevelopment: r.agentDevelopment, agentHostID: r.agentHostID, probeProcess: r.probeProcess, clock: func() time.Time { return time.Now().UTC() }}
+	l := &Lifecycle{setup: r.setup, profile: r.profile, profileVersion: r.profileVersion, agentDevelopment: r.agentDevelopment, agentHostID: r.agentHostID, agentAudited: r.agentAudited, probeProcess: r.probeProcess, clock: func() time.Time { return time.Now().UTC() }}
 	l.client = native.New(native.Config{CommandTimeout: "40s", Output: orcaCLIOutput(r.setup, r.profile, r.agentHostID, func() bool { return false })})
 	return l, nil
 }
 
+// Only test code can encode an old terminal state; production retains decoding.
+func (r *frozenRecord) envelope(s b.LifecycleSnapshot, state State) ([]b.ImplementationDataEnvelope, error) {
+	raw, err := json.Marshal(state)
+	if err != nil {
+		return nil, err
+	}
+	e, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{CodecVersion: r.stateVersion(), Purpose: b.ImplementationResourcePurpose, ImplementationKey: StateKey, ProjectID: s.Session.ProjectID, ExecutionID: s.Session.ExecutionID, AttemptID: s.Session.AttemptID, Generation: s.ResourceGeneration, ConfigDigest: s.ConfigurationDigest}, raw)
+	if err != nil {
+		return nil, err
+	}
+	return []b.ImplementationDataEnvelope{e}, nil
+}
+
 // Frozen facts committed by the original workspace preparation, without startup.
-func frozenWorkspaceFixture(t *testing.T, l *Lifecycle, f *fakeHost, s b.LifecycleSnapshot) b.LifecycleSnapshot {
+func frozenWorkspaceFixture(t *testing.T, l *frozenRecord, f *fakeHost, s b.LifecycleSnapshot) b.LifecycleSnapshot {
 	t.Helper()
 	path := f.root
 	if f.nativePath != "" {

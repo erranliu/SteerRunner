@@ -13,14 +13,4 @@ type ControlTerminal struct {
 	Ready   *codex.RemoteControlSetup `json:"ready,omitempty"`
 }
 
-func (l *Lifecycle) usesControl() bool { return l.frozenRecord().usesControl() }
-
-func (l *Lifecycle) controlSetup(s b.LifecycleSnapshot, state State) codex.RemoteControlSetup {
-	return l.frozenRecord().controlSetup(s, state)
-}
-
-func (l *Lifecycle) validateControl(s b.LifecycleSnapshot, state State, ready bool) error {
-	return l.frozenRecord().validateControl(s, state, ready)
-}
-
 // Polling sleeps stay cancellable; the fixed actor owns any in-flight query.

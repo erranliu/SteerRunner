@@ -13,7 +13,7 @@ import (
 func TestPreparationReadRecoveryRetainsBudget(t *testing.T) {
 	for _, mode := range []string{"expired", "attempts", "backoff", "clock-rollback"} {
 		t.Run(mode, func(t *testing.T) {
-			l, _, _ := fixture(t)
+			l, _, _ := structuredFixtureOn(t, "")
 			now := time.Now().UTC()
 			q := b.PreparationQuery{Visible: false, Wait: b.ExecutionWait{Contract: b.ExecutionWaitContract, OperationID: "original", Query: "runtime_status", StartedAt: now.Add(-time.Minute), UpdatedAt: now, DeadlineAt: now.Add(time.Second), CallsStarted: 3, MaxCalls: 5, Stage: "queue", ReasonCode: "orca_cli_busy"}}
 			if mode == "expired" {

@@ -10,7 +10,7 @@ import (
 )
 
 func TestOriginalTerminalOwnerNeverInfersMissingBundleFromCurrentBuild(t *testing.T) {
-	l, _, _ := fixture(t)
+	l, _, _ := frozenFixture(t)
 	c := &TerminalConfig{Agent: "pi", ExecutionID: "run", SessionID: "original", ConfigurationDigest: "configuration", AccessMode: "full_access", BundleSHA256: strings.Repeat("a", 64)}
 	l.profile.Terminal = c
 	l.profile.RuntimeExecutable, l.profile.RuntimeSHA256 = filepath.Join(t.TempDir(), "original-helper.exe"), strings.Repeat("b", 64)

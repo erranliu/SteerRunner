@@ -1,0 +1,1190 @@
+{
+  "stage": "B",
+  "integrated_base_commit": "458185030c2b43cb93045c546956a79a898cc9ab",
+  "source_manifest_sha256": "d479d9f29bcfed51acc56b6b33aaedf154574171d86aa5d667434b24bb0e03b4",
+  "tests": {
+    "b-adapter": {
+      "top_level": {
+        "pass": 81
+      },
+      "tests": [
+        {
+          "name": "TestOriginalTerminalOwnerNeverInfersMissingBundleFromCurrentBuild",
+          "status": "pass"
+        },
+        {
+          "name": "TestPreparationVersionsRejectMixedFieldsIncludingNull",
+          "status": "pass"
+        },
+        {
+          "name": "TestStructuredDevelopmentFollowUp",
+          "status": "pass"
+        },
+        {
+          "name": "TestStructuredRunningActivityUsesOriginalTurn",
+          "status": "pass"
+        },
+        {
+          "name": "TestStructuredObserverProjectsAndDeduplicatesActivity",
+          "status": "pass"
+        },
+        {
+          "name": "TestStructuredAtomicCreateAndReadOnlyRecovery",
+          "status": "pass"
+        },
+        {
+          "name": "TestStructuredRemoteStopRetainsOriginalTurnAndReusesReceipt",
+          "status": "pass"
+        },
+        {
+          "name": "TestStructuredHistoryFailsClosed",
+          "status": "pass"
+        },
+        {
+          "name": "TestStructuredLostCloseRemainsUnknownWithoutReplay",
+          "status": "pass"
+        },
+        {
+          "name": "TestStructuredObserverBindsDelayedNativeStart",
+          "status": "pass"
+        },
+        {
+          "name": "TestStructuredObserverKeepsOriginalDiagnosticBindingDuringHistoryGap",
+          "status": "pass"
+        },
+        {
+          "name": "TestStructuredServiceShutdownOnlyDetaches",
+          "status": "pass"
+        },
+        {
+          "name": "TestStructuredRecordedPublicResults",
+          "status": "pass"
+        },
+        {
+          "name": "TestStructuredCloseAcknowledgementSettlesOnlySessionScope",
+          "status": "pass"
+        },
+        {
+          "name": "TestStructuredDurableCloseReceiptReconcilesWithoutReplay",
+          "status": "pass"
+        },
+        {
+          "name": "TestStructuredInvalidCloseResponseDoesNotSettle",
+          "status": "pass"
+        },
+        {
+          "name": "TestStructuredStopBeforeCreateDoesNotInventCloseReceipt",
+          "status": "pass"
+        },
+        {
+          "name": "TestStructuredSavedCloseRejectsChangedResource",
+          "status": "pass"
+        },
+        {
+          "name": "TestStructuredUsageBindsExactOriginalInputAndNativeSource",
+          "status": "pass"
+        },
+        {
+          "name": "TestOrcaCLICommandEncodingAndConsumers",
+          "status": "pass"
+        },
+        {
+          "name": "TestStructuredWorkspaceRecoversOriginalOwnerOutput",
+          "status": "pass"
+        },
+        {
+          "name": "TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch",
+          "status": "pass"
+        },
+        {
+          "name": "TestCreationOwnerIncompleteLaunchClaimNeverRetries",
+          "status": "pass"
+        },
+        {
+          "name": "TestCreationOwnerStartupUsesOriginalDeadline",
+          "status": "pass"
+        },
+        {
+          "name": "TestRetiredExecutionFactoryKeepsFrozenProof",
+          "status": "pass"
+        },
+        {
+          "name": "TestCurrentFixtureUsesIsolatedHostWithInvalidPairingStore",
+          "status": "pass"
+        },
+        {
+          "name": "TestFrozenReaderHasNoExecutionAndRejectsMutation",
+          "status": "pass"
+        },
+        {
+          "name": "TestFrozenReaderKeepsConstructorFaultPriority",
+          "status": "pass"
+        },
+        {
+          "name": "TestLocalCodexStoppedRootsAndInventory",
+          "status": "pass"
+        },
+        {
+          "name": "TestWorkspaceNamePrefixCreationAndRecovery",
+          "status": "pass"
+        },
+        {
+          "name": "TestLocalNativeProbeCensusKeepsOriginalHostScope",
+          "status": "pass"
+        },
+        {
+          "name": "TestPreparationReadRecoveryRetainsBudget",
+          "status": "pass"
+        },
+        {
+          "name": "TestPreparationTransientEligibility",
+          "status": "pass"
+        },
+        {
+          "name": "TestPreparationRevokedBeforeOwnerClaimSettlesWithoutDispatch",
+          "status": "pass"
+        },
+        {
+          "name": "TestStructuredConstructorFacts",
+          "status": "pass"
+        },
+        {
+          "name": "TestStructuredConstructorFaultPriority",
+          "status": "pass"
+        },
+        {
+          "name": "TestProgressHostLegacyRouting",
+          "status": "pass"
+        },
+        {
+          "name": "TestProgressHostRejectsStructuredAccessBeforeReturningLocal",
+          "status": "pass"
+        },
+        {
+          "name": "TestResultFileRPCUsesOriginalSelectorAndIndependentPath",
+          "status": "pass"
+        },
+        {
+          "name": "TestRuntimeArtifactStagingScope",
+          "status": "pass"
+        },
+        {
+          "name": "TestReadonlyCloseStaleDisconnectedCardUsesOriginalInventory",
+          "status": "pass"
+        },
+        {
+          "name": "TestNativeReceiptPublicationAcrossWindowsReaders",
+          "status": "pass"
+        },
+        {
+          "name": "TestRecoveryProfileQualificationMatchesConstructorWithoutNativeCapabilities",
+          "status": "pass"
+        },
+        {
+          "name": "TestRepositoryCacheConflictClassification",
+          "status": "pass"
+        },
+        {
+          "name": "TestRepositoryQueryRetryBudget",
+          "status": "pass"
+        },
+        {
+          "name": "TestRepositoryCacheRetryNeverReplaysMutations",
+          "status": "pass"
+        },
+        {
+          "name": "TestRepositoryQueryScopeRevocationPreventsCreation",
+          "status": "pass"
+        },
+        {
+          "name": "TestWorkspaceRepositoryFollowsProject",
+          "status": "pass"
+        },
+        {
+          "name": "TestRemoteRepositoryDiscoveryRejectsBeforeCreation",
+          "status": "pass"
+        },
+        {
+          "name": "TestRemoteRepositoryCreationRetainsReceiptOnMismatch",
+          "status": "pass"
+        },
+        {
+          "name": "TestWorkspaceCreationFacts",
+          "status": "pass"
+        },
+        {
+          "name": "TestWorkspaceCreationCodecPreservesCheckpoint",
+          "status": "pass"
+        },
+        {
+          "name": "TestWorkspaceCreationBindsCLIResult",
+          "status": "pass"
+        },
+        {
+          "name": "TestResultFileOriginalIPCBoundaries",
+          "status": "pass"
+        },
+        {
+          "name": "TestSharedNativeProfileAndScope",
+          "status": "pass"
+        },
+        {
+          "name": "TestSharedNativeProfileCodecIsolation",
+          "status": "pass"
+        },
+        {
+          "name": "TestHostNativeStateCodecRejectsRetiredAndAmbiguousFields",
+          "status": "pass"
+        },
+        {
+          "name": "TestHostNativeStateCodecRoundTripRetainsOriginalBinding",
+          "status": "pass"
+        },
+        {
+          "name": "TestHostNativeStateCodecRetainsWaitingWithoutRecomputing",
+          "status": "pass"
+        },
+        {
+          "name": "TestStopContractMarkersPreserveOriginalClassification",
+          "status": "pass"
+        },
+        {
+          "name": "TestConfirmedStopDiagnosticUsesSavedScope",
+          "status": "pass"
+        },
+        {
+          "name": "TestTerminalStoppedRequiresCompleteOriginalHost",
+          "status": "pass"
+        },
+        {
+          "name": "TestTerminalsStoppedUseOneCompleteOriginalInventory",
+          "status": "pass"
+        },
+        {
+          "name": "TestOriginalTerminalConcurrency",
+          "status": "pass"
+        },
+        {
+          "name": "TestExtensionStateKeepsPreparationSeparateFromCodexProof",
+          "status": "pass"
+        },
+        {
+          "name": "TestTerminalReceiptRejectsMissingUnboundedAndUnknownFields",
+          "status": "pass"
+        },
+        {
+          "name": "TestManagedReadinessRequiresEffectiveThinkingForNewSources",
+          "status": "pass"
+        },
+        {
+          "name": "TestTerminalResourceErrorMapping",
+          "status": "pass"
+        },
+        {
+          "name": "TestUsagePreparedLocalCodexInitialization",
+          "status": "pass"
+        },
+        {
+          "name": "TestUsageFullAccessTerminalProfileVersions",
+          "status": "pass"
+        },
+        {
+          "name": "TestUsageHistoricalBindingDoesNotGrantLaunchQualification",
+          "status": "pass"
+        },
+        {
+          "name": "TestUsageRecordedCodexIDsUseOriginalTurnAndWireDigest",
+          "status": "pass"
+        },
+        {
+          "name": "TestUsageHistoricalCodexWireAndInitialization",
+          "status": "pass"
+        },
+        {
+          "name": "TestUsageScopedReadinessUsesItsOwnWireDigest",
+          "status": "pass"
+        },
+        {
+          "name": "TestUsageTeaWrappedCodexInitialization",
+          "status": "pass"
+        },
+        {
+          "name": "TestUsageProgressAndShellWrappedInitialization",
+          "status": "pass"
+        },
+        {
+          "name": "TestCodexStoppedRequiresNativeExitProofBeyondPTY",
+          "status": "pass"
+        },
+        {
+          "name": "TestLocalCodexStoppedUsesRegisteredResources",
+          "status": "pass"
+        },
+        {
+          "name": "TestHostNativeReadinessRejectsRetiredFullAccessContract",
+          "status": "pass"
+        },
+        {
+          "name": "TestStructuredWorkspaceAuditReadsOriginalChangedTree",
+          "status": "pass"
+        },
+        {
+          "name": "TestWorkspaceCreationUsesConfiguredTimeout",
+          "status": "pass"
+        }
+      ]
+    },
+    "b-application": {
+      "top_level": {
+        "pass": 75
+      },
+      "tests": [
+        {
+          "name": "TestR2CollectCommitFailureAndRestartReplay",
+          "status": "pass"
+        },
+        {
+          "name": "TestR2CollectionSerializesStopAndRejectsConcurrentRevision",
+          "status": "pass"
+        },
+        {
+          "name": "TestR2QueryRejectsChangedWorkspaceButAllowsStop",
+          "status": "pass"
+        },
+        {
+          "name": "TestContentMaterialReadSerializesPublicStopAtOriginalCommit",
+          "status": "pass"
+        },
+        {
+          "name": "TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope",
+          "status": "pass"
+        },
+        {
+          "name": "TestSRExecutionWaitStopKeepsControlPriority",
+          "status": "pass"
+        },
+        {
+          "name": "TestSRExecutionWaitResumeClearsExhaustionWithoutResettingBudget",
+          "status": "pass"
+        },
+        {
+          "name": "TestFrozenBudgetMissingDoesNotGateOriginalResults",
+          "status": "pass"
+        },
+        {
+          "name": "TestFrozenBudgetLegalWorkflowEntries",
+          "status": "pass"
+        },
+        {
+          "name": "TestFrozenBudgetSuccessorsAndDraftResume",
+          "status": "pass"
+        },
+        {
+          "name": "TestFrozenBudgetReadsSavedLegacySources",
+          "status": "pass"
+        },
+        {
+          "name": "TestFrozenBudgetCopyRequiresOriginalUnsentBinding",
+          "status": "pass"
+        },
+        {
+          "name": "TestFrozenBudgetUnknownReconcileAndStopDoNotRepair",
+          "status": "pass"
+        },
+        {
+          "name": "TestFrozenBudgetFirstRenderCommitFailureDoesNotPublish",
+          "status": "pass"
+        },
+        {
+          "name": "TestServiceGenerationControlScopeRetainsOnlyOriginalQuestionAndSource",
+          "status": "pass"
+        },
+        {
+          "name": "TestBudgetCallerOwnershipAndFeedback",
+          "status": "pass"
+        },
+        {
+          "name": "TestBudgetFileGuidesIsolation",
+          "status": "pass"
+        },
+        {
+          "name": "TestBudgetParserOverflowRetainsReportAndLongFinal",
+          "status": "pass"
+        },
+        {
+          "name": "TestBudgetAuditedFilesRemainUsable",
+          "status": "pass"
+        },
+        {
+          "name": "TestBudgetLegacyDefinitionKeepsTextButNotRoutingChanges",
+          "status": "pass"
+        },
+        {
+          "name": "TestLocalCodexStopLostReceiptCommitOnlyReconciles",
+          "status": "pass"
+        },
+        {
+          "name": "TestLocalCodexStopCommittedWithoutReceiptOnlyReconciles",
+          "status": "pass"
+        },
+        {
+          "name": "TestLocalCodexStopNewRequestCannotReplacePendingStop",
+          "status": "pass"
+        },
+        {
+          "name": "TestLocalCodexStopPreservesOtherRunsOriginalResource",
+          "status": "pass"
+        },
+        {
+          "name": "TestLocalCodexOfflineStoppedWithoutResourceRejectsUnknownCreation",
+          "status": "pass"
+        },
+        {
+          "name": "TestSRManualReconciliationStopWinsDuringRead",
+          "status": "pass"
+        },
+        {
+          "name": "TestSRManualReconciliationCommitFailureAndRestart",
+          "status": "pass"
+        },
+        {
+          "name": "TestNativeCompletionProofWaitsAtResultCommitAndPreservesStop",
+          "status": "pass"
+        },
+        {
+          "name": "TestSRStopSerializesWithNativeDispatch",
+          "status": "pass"
+        },
+        {
+          "name": "TestSRStopBindingCommitFailureDoesNotDispatch",
+          "status": "pass"
+        },
+        {
+          "name": "TestSRFreezeOrcaStructuredAudited",
+          "status": "pass"
+        },
+        {
+          "name": "TestSRFreezeOrcaStructuredExecuteOnly",
+          "status": "pass"
+        },
+        {
+          "name": "TestStructuredFileEnvironmentBindings",
+          "status": "pass"
+        },
+        {
+          "name": "TestSRFreezeRemoteStructuredExecutePinsHostAndSealContract",
+          "status": "pass"
+        },
+        {
+          "name": "TestStructuredAuditedRequiresUniqueResult",
+          "status": "pass"
+        },
+        {
+          "name": "TestSRPreparationQueryStopAuthorization",
+          "status": "pass"
+        },
+        {
+          "name": "TestSRPreparationQueryStopSettlesOriginalOperation",
+          "status": "pass"
+        },
+        {
+          "name": "TestProgressIndependentVersionSurvivesBusinessCloneAndRestart",
+          "status": "pass"
+        },
+        {
+          "name": "TestProgressStopBeforeInitializationHasNoInventedSnapshot",
+          "status": "pass"
+        },
+        {
+          "name": "TestProjectPoliciesBudgetAndFrozenInput",
+          "status": "pass"
+        },
+        {
+          "name": "TestProjectPoliciesAuditedStepsBudget",
+          "status": "pass"
+        },
+        {
+          "name": "TestProjectPoliciesProducerGuidesRespectExistingBudget",
+          "status": "pass"
+        },
+        {
+          "name": "TestSRPreparationDeadlinePreservesQueuedOrcaBudgetAcrossReload",
+          "status": "pass"
+        },
+        {
+          "name": "TestRABudgetReportOnce",
+          "status": "pass"
+        },
+        {
+          "name": "TestResultFilePendingUntilWholeExecutionStops",
+          "status": "pass"
+        },
+        {
+          "name": "TestResultFileFinalBytesAtomicReplacementAndSealOnce",
+          "status": "pass"
+        },
+        {
+          "name": "TestResultFileFailureSealsAndPreservesProgress",
+          "status": "pass"
+        },
+        {
+          "name": "TestResultFileInitializationRecoveryAndNoStopCreation",
+          "status": "pass"
+        },
+        {
+          "name": "TestResultFileNormalCompletionRequiresStoppedProducer",
+          "status": "pass"
+        },
+        {
+          "name": "TestSingleExecutionClosesWithoutPublicationAndSealsOriginalResult",
+          "status": "pass"
+        },
+        {
+          "name": "TestSingleExecutionUnreportedOutcomeClosesWithVerifiedFinal",
+          "status": "pass"
+        },
+        {
+          "name": "TestSingleExecutionRejectsReplyAndResumeIncludingAfterStop",
+          "status": "pass"
+        },
+        {
+          "name": "TestSingleExecutionNativeQuestionClosesAndRetainsOriginalStop",
+          "status": "pass"
+        },
+        {
+          "name": "TestSingleExecutionLateFinalPreservesOriginalStop",
+          "status": "pass"
+        },
+        {
+          "name": "TestSingleExecutionOrcaFinalUsesNormalizedIdentityAndRetainsNativeSource",
+          "status": "pass"
+        },
+        {
+          "name": "TestResultSnapshotCollectsBusinessResultWithUnknownStop",
+          "status": "pass"
+        },
+        {
+          "name": "TestResultSnapshotRetainsNativeStopResultWithoutStageAuthority",
+          "status": "pass"
+        },
+        {
+          "name": "TestResultSnapshotStopUnknownClosesCollectionWithoutChangingResult",
+          "status": "pass"
+        },
+        {
+          "name": "TestResultSnapshotDetachDoesNotStartAndRecoveryKeepsOriginalWindow",
+          "status": "pass"
+        },
+        {
+          "name": "TestStructuredDevelopmentConfirmedStopRevokesResume",
+          "status": "pass"
+        },
+        {
+          "name": "TestDevelopmentRunMessageStopCancelsOnlyUnsentInput",
+          "status": "pass"
+        },
+        {
+          "name": "TestDevelopmentRunMessagesRetainOriginalWorkflow",
+          "status": "pass"
+        },
+        {
+          "name": "TestRuntimeFilesStopDuringIO",
+          "status": "pass"
+        },
+        {
+          "name": "TestRuntimeFilesLostMarkerRestartOnlyReads",
+          "status": "pass"
+        },
+        {
+          "name": "TestSharedNativeBlockedRunRetainsFirstStopAuthority",
+          "status": "pass"
+        },
+        {
+          "name": "TestStopContractKeepsWorkflowAndSavedScopeRules",
+          "status": "pass"
+        },
+        {
+          "name": "TestStructuredDevelopmentStopBeforeResourceKeepsAdmissionOrder",
+          "status": "pass"
+        },
+        {
+          "name": "TestSRStopRecoversLateCreationFactsUnderOriginalIntent",
+          "status": "pass"
+        },
+        {
+          "name": "TestSRStopTransportQueueBudgetRemainsBoundedAndCancellable",
+          "status": "pass"
+        },
+        {
+          "name": "TestRemoteStopBudgetCanCompleteAnOriginalCLICall",
+          "status": "pass"
+        },
+        {
+          "name": "TestSRUnreachableStopKeepsRevisionStableWithoutLosingProgress",
+          "status": "pass"
+        },
+        {
+          "name": "TestSRStopProgressSurvivesStorageReloadUnderOriginalOperation",
+          "status": "pass"
+        },
+        {
+          "name": "TestTextAcquisitionOtherRunProgressAndStops",
+          "status": "pass"
+        },
+        {
+          "name": "TestTextAcquisitionRestartRecomputesUncommitted",
+          "status": "pass"
+        },
+        {
+          "name": "TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence",
+          "status": "pass"
+        }
+      ]
+    },
+    "b-components": {
+      "top_level": {
+        "pass": 118
+      },
+      "tests": [
+        {
+          "name": "TestBrokerPreservesDisabledPrivilegesAndRejectsMissingRights",
+          "status": "pass"
+        },
+        {
+          "name": "TestUsagePartialFieldsStillValidateKnownRelations",
+          "status": "pass"
+        },
+        {
+          "name": "TestUsageDedupMetadataEnrichment",
+          "status": "pass"
+        },
+        {
+          "name": "TestUsageAvailability",
+          "status": "pass"
+        },
+        {
+          "name": "TestUsageDedupInitializationPhase",
+          "status": "pass"
+        },
+        {
+          "name": "TestUsageIncompleteFieldsAndNoImplicitWaiting",
+          "status": "pass"
+        },
+        {
+          "name": "TestUsageMetadataConflictRemainsUnknownAfterReplay",
+          "status": "pass"
+        },
+        {
+          "name": "TestDevelopmentPermissionsRequireExplicitFullAccess",
+          "status": "pass"
+        },
+        {
+          "name": "TestContentRepositoryAdmission",
+          "status": "pass"
+        },
+        {
+          "name": "TestContentAdmission",
+          "status": "pass"
+        },
+        {
+          "name": "TestSRCLIContract",
+          "status": "pass"
+        },
+        {
+          "name": "TestExecutionConfigurationIdentityAndDerivation",
+          "status": "pass"
+        },
+        {
+          "name": "TestExecutionConfigurationComposePreservesTrustedPrograms",
+          "status": "pass"
+        },
+        {
+          "name": "TestExecutionConfigurationComposePreferencesKeepOrcaIdentity",
+          "status": "pass"
+        },
+        {
+          "name": "TestExecutionConfigurationRejectsAmbiguityAndRetiredSources",
+          "status": "pass"
+        },
+        {
+          "name": "TestNativeCatalogUsesTrustedExecutionContext",
+          "status": "pass"
+        },
+        {
+          "name": "TestExecutionConfigurationSourceDigestPreservesExplicitFields",
+          "status": "pass"
+        },
+        {
+          "name": "TestGenerateFileMaterialContract",
+          "status": "pass"
+        },
+        {
+          "name": "TestStrictJSONNativeDeadline",
+          "status": "pass"
+        },
+        {
+          "name": "TestNativeCatalogStrictInput",
+          "status": "pass"
+        },
+        {
+          "name": "TestOrcaAgentSettings",
+          "status": "pass"
+        },
+        {
+          "name": "TestProgressInputOpaqueBytesAndSupportedRoutes",
+          "status": "pass"
+        },
+        {
+          "name": "TestPendingStopsStrictOriginalEnvelope",
+          "status": "pass"
+        },
+        {
+          "name": "TestLocalOrcaAuditedModelsUseStructuredRuntime",
+          "status": "pass"
+        },
+        {
+          "name": "TestTerminalAgentsCannotUseCodexAuditModels",
+          "status": "pass"
+        },
+        {
+          "name": "TestGitHubAppConfigurationRejectedBeforeRun",
+          "status": "pass"
+        },
+        {
+          "name": "TestNativeRemoteAuditAndRetiredAppAreRejectedPurely",
+          "status": "pass"
+        },
+        {
+          "name": "TestRAPublicContract",
+          "status": "pass"
+        },
+        {
+          "name": "TestResultFileAdmissionAndOpaqueByteBounds",
+          "status": "pass"
+        },
+        {
+          "name": "TestSingleExecutionAdmissionWithoutPublication",
+          "status": "pass"
+        },
+        {
+          "name": "TestUsageAuthorizationFenceInput",
+          "status": "pass"
+        },
+        {
+          "name": "TestSRWorkflowSelection",
+          "status": "pass"
+        },
+        {
+          "name": "TestSREndpointPublicationWithDiscoveryReader",
+          "status": "pass"
+        },
+        {
+          "name": "TestSRStartupIntent",
+          "status": "pass"
+        },
+        {
+          "name": "TestOfflineInspectionMatchesResidentAndOriginalResponseShape",
+          "status": "pass"
+        },
+        {
+          "name": "TestDevelopmentAcquisitionNativeAssertions",
+          "status": "pass"
+        },
+        {
+          "name": "TestDevelopmentAcquisitionRetainsQuestionHistory",
+          "status": "pass"
+        },
+        {
+          "name": "TestNativeAuditStoppedProbeBoundary",
+          "status": "pass"
+        },
+        {
+          "name": "TestNativeAuditCountsImplicitTerminalCreationAndFencesReceipts",
+          "status": "pass"
+        },
+        {
+          "name": "TestRegistryPreservesReliabilityAndBindsControlledEdges",
+          "status": "pass"
+        },
+        {
+          "name": "TestLiveRegistryHasCompleteL3Cases",
+          "status": "pass"
+        },
+        {
+          "name": "TestConsolidatedSmokeAndParserContracts",
+          "status": "pass"
+        },
+        {
+          "name": "TestStabilityResultCannotPassMissingOrMismatchedEvidence",
+          "status": "pass"
+        },
+        {
+          "name": "TestRetiredPermissionDuplicatesAreNotAliases",
+          "status": "pass"
+        },
+        {
+          "name": "TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit",
+          "status": "pass"
+        },
+        {
+          "name": "TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts",
+          "status": "pass"
+        },
+        {
+          "name": "TestSRIndependentTestConfiguration",
+          "status": "pass"
+        },
+        {
+          "name": "TestSRBaselineConstraintsAndGateReasons",
+          "status": "pass"
+        },
+        {
+          "name": "TestSRAllLiveCasesHaveRequirements",
+          "status": "pass"
+        },
+        {
+          "name": "TestSRRunAuthenticationAvailability",
+          "status": "pass"
+        },
+        {
+          "name": "TestSRNativePreparationReferencesAreStaticConstraints",
+          "status": "pass"
+        },
+        {
+          "name": "TestOfflineInspectionPreservesDecodeAndQueryFailureBoundaries",
+          "status": "pass"
+        },
+        {
+          "name": "TestRetiredStateFormatsRefusedWithoutChangingOriginalResources",
+          "status": "pass"
+        },
+        {
+          "name": "TestSRTestConfigOuterSchemaMatchesParser",
+          "status": "pass"
+        },
+        {
+          "name": "TestFailedObservationRequiresLaterOriginalRead",
+          "status": "pass"
+        },
+        {
+          "name": "TestFixedControlNativeAudit",
+          "status": "pass"
+        },
+        {
+          "name": "TestFreshStateHasOnlySupportedRunResources",
+          "status": "pass"
+        },
+        {
+          "name": "TestOfflineInspectionRejectsExecutionBindingsAndExpiredContext",
+          "status": "pass"
+        },
+        {
+          "name": "TestSRObservationSnapshotPaging",
+          "status": "pass"
+        },
+        {
+          "name": "TestOfflineInspectPreservesOriginalSnapshotWithoutStarting",
+          "status": "pass"
+        },
+        {
+          "name": "TestOfflineInspectRejectsInvalidSelectorsAndForeignState",
+          "status": "pass"
+        },
+        {
+          "name": "TestInspectRejectsRetiredWireOption",
+          "status": "pass"
+        },
+        {
+          "name": "TestSRExpectedInstanceFencesReplacement",
+          "status": "pass"
+        },
+        {
+          "name": "TestSRObservationConcurrentCommits",
+          "status": "pass"
+        },
+        {
+          "name": "TestSROfflineReaderDoesNotCreateOrWrite",
+          "status": "pass"
+        },
+        {
+          "name": "TestRAVersion",
+          "status": "pass"
+        },
+        {
+          "name": "TestSRRunAtomicCommit",
+          "status": "pass"
+        },
+        {
+          "name": "TestSRShutdownReceipt",
+          "status": "pass"
+        },
+        {
+          "name": "TestDiagnosticReadNeverReplaysMutation",
+          "status": "pass"
+        },
+        {
+          "name": "TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory",
+          "status": "pass"
+        },
+        {
+          "name": "TestSRUnsupportedStorage",
+          "status": "pass"
+        },
+        {
+          "name": "TestStabilityEvidenceRejectsFlagOnlySuccess",
+          "status": "pass"
+        },
+        {
+          "name": "TestInitializationAgentFaultPreservesOriginalEnvelope",
+          "status": "pass"
+        },
+        {
+          "name": "TestWorkflowTransitionsAreAtomicHistoricalFacts",
+          "status": "pass"
+        },
+        {
+          "name": "TestVerifyStoppedRejectsRetiredStateWithoutHidingResources",
+          "status": "pass"
+        },
+        {
+          "name": "TestManifestRejectsChangedInputsAndUnsafeTargets",
+          "status": "pass"
+        },
+        {
+          "name": "TestArtifactRejectsStaleAndForgedEvidence",
+          "status": "pass"
+        },
+        {
+          "name": "TestMergeGuardRejectsForeignAndUnverifiedPR",
+          "status": "pass"
+        },
+        {
+          "name": "TestNativeAuditPairsOriginalPasteAndEnter",
+          "status": "pass"
+        },
+        {
+          "name": "TestCheckPlatformPRBindsOriginalHeadAndRequiresMergeEvidence",
+          "status": "pass"
+        },
+        {
+          "name": "TestPublicationPreSendRetryEvidence",
+          "status": "pass"
+        },
+        {
+          "name": "TestUsageStopFencesLateObservation",
+          "status": "pass"
+        },
+        {
+          "name": "TestUsageInitialProjectionDoesNotInventEnabledWait",
+          "status": "pass"
+        },
+        {
+          "name": "TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation",
+          "status": "pass"
+        },
+        {
+          "name": "TestProgressObservationRecoversRetainedSnapshot",
+          "status": "pass"
+        },
+        {
+          "name": "TestProgressObservationRejectsPersistentOrLateRecovery",
+          "status": "pass"
+        },
+        {
+          "name": "TestProgressObservationRejectsChangedSnapshotDuringGap",
+          "status": "pass"
+        },
+        {
+          "name": "TestProgressObservationRejectsBindingAndTerminalFailures",
+          "status": "pass"
+        },
+        {
+          "name": "TestRemoteReceiptAuditIncludesDisabledFileChannels",
+          "status": "pass"
+        },
+        {
+          "name": "TestRemotePermissionAuditBindsReceiptAndClosesOnlyInspector",
+          "status": "pass"
+        },
+        {
+          "name": "TestSRFullBindingRejectsBeforeEffects",
+          "status": "pass"
+        },
+        {
+          "name": "TestUsageSnapshotRevision",
+          "status": "pass"
+        },
+        {
+          "name": "TestSRFullBindingStopAdmissionOrder",
+          "status": "pass"
+        },
+        {
+          "name": "TestUsageIsolationAndConflict",
+          "status": "pass"
+        },
+        {
+          "name": "TestSRShutdownProofRequiresReleasedWriter",
+          "status": "pass"
+        },
+        {
+          "name": "TestPendingStopsRetainOriginalRequestsAcrossUnknownStartup",
+          "status": "pass"
+        },
+        {
+          "name": "TestUsageConflictEvidenceIsAtomicAndDurable",
+          "status": "pass"
+        },
+        {
+          "name": "TestRemoteWorkspaceCleanupRequiresAuthoritativeEmptyInventory",
+          "status": "pass"
+        },
+        {
+          "name": "TestUsageCrossRunConflictSurvivesCachedObservation",
+          "status": "pass"
+        },
+        {
+          "name": "TestLegacyOrcaStateRejectsStartupWithoutLosingOfflineEvidence",
+          "status": "pass"
+        },
+        {
+          "name": "TestFrozenNativeRuntimeRejectsChangedMissingAndEscapingFiles",
+          "status": "pass"
+        },
+        {
+          "name": "TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence",
+          "status": "pass"
+        },
+        {
+          "name": "TestUsageTransactionRollback",
+          "status": "pass"
+        },
+        {
+          "name": "TestNativeCandidateManifestIsolation",
+          "status": "pass"
+        },
+        {
+          "name": "TestStructuredCLIAuditRequiresOriginalCalls",
+          "status": "pass"
+        },
+        {
+          "name": "TestStartupCompatibilityAllowsStructuredOrcaAndDirectCodex",
+          "status": "pass"
+        },
+        {
+          "name": "TestUsageReadOnlyLifecycleProjection",
+          "status": "pass"
+        },
+        {
+          "name": "TestStructuredPipeForwardsOriginalAndDropsOnlyRealReceipt",
+          "status": "pass"
+        },
+        {
+          "name": "TestStructuredInputCallsBindActualTargetAndEnvelope",
+          "status": "pass"
+        },
+        {
+          "name": "TestStructuredRunRequiresOriginalEnvelopeAndPublicIdentity",
+          "status": "pass"
+        },
+        {
+          "name": "TestStructuredHistoryRequiresCompleteOriginalInputs",
+          "status": "pass"
+        },
+        {
+          "name": "TestStructuredMergeGuardBindsRunAttemptAndAgent",
+          "status": "pass"
+        },
+        {
+          "name": "TestUsageAuthorizationFenceFailedStartup",
+          "status": "pass"
+        },
+        {
+          "name": "TestStructuredRunKeepsOriginalCommittedInputProof",
+          "status": "pass"
+        },
+        {
+          "name": "TestStructuredRunAcceptsOnlyProvedNotCreatedStop",
+          "status": "pass"
+        },
+        {
+          "name": "TestNativeInputFingerprintRejectsEmptyAndTracksOriginalSends",
+          "status": "pass"
+        },
+        {
+          "name": "TestUsageStructuredProjectionRetainsOnlyOriginalInputAndEndFacts",
+          "status": "pass"
+        },
+        {
+          "name": "TestUsageAccessRequirementsBelongToImmutableSnapshot",
+          "status": "pass"
+        }
+      ]
+    }
+  },
+  "format": {
+    "bytes": 15528,
+    "sha256": "06034f8e8ccba2233eac1518a29ac706ae48f6273993da21cc6a69f233f16d62",
+    "identical_to_original_base_and_a": true
+  },
+  "controlled_first": {
+    "controlled_cases": {
+      "TestSRRestartPreservesAuthorization": [
+        {
+          "id": "graceful",
+          "passed": true,
+          "duration_seconds": 14.7237132
+        },
+        {
+          "id": "kill",
+          "passed": true,
+          "duration_seconds": 14.9391125
+        },
+        {
+          "id": "creation_receipt",
+          "passed": true,
+          "duration_seconds": 12.0602243
+        },
+        {
+          "id": "pending_stop",
+          "passed": true,
+          "duration_seconds": 12.5332939
+        }
+      ]
+    },
+    "exe": "C:\\Users\\lmas1\\.codex\\worktrees\\cdc6\\SteerRunner\\.evidence\\orca-stop-reader\\b\\steerrunner.exe",
+    "exit_code": 1,
+    "finished_at": "2026-11-06T08:15:13.5438457Z",
+    "scenario_count": 4
+  },
+  "controlled_recheck": {
+    "controlled_cases": {
+      "TestSRRestartPreservesAuthorization": [
+        {
+          "id": "graceful",
+          "passed": true,
+          "duration_seconds": 15.8113666
+        },
+        {
+          "id": "kill",
+          "passed": true,
+          "duration_seconds": 16.4321895
+        },
+        {
+          "id": "creation_receipt",
+          "passed": true,
+          "duration_seconds": 12.0778254
+        },
+        {
+          "id": "pending_stop",
+          "passed": true,
+          "duration_seconds": 10.583827
+        }
+      ]
+    },
+    "exe": "C:\\Users\\lmas1\\.codex\\worktrees\\cdc6\\SteerRunner\\.evidence\\orca-stop-reader\\b\\steerrunner.exe",
+    "exit_code": 0,
+    "finished_at": "2026-11-06T08:20:38.1751876Z",
+    "scenario_count": 4
+  },
+  "note": "First controlled run failed while reading the creation fixture identity; cause unestablished. Original failure retained. Same EXE and unchanged public tests passed all four scenarios in a new directory."
+}

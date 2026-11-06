@@ -1,0 +1,40 @@
+internal/execution/adapters/orcatransport\access_mode_test.go:13:	l, _, _ := fixture(t)
+internal/execution/adapters/orcatransport\agent_session_test.go:69:	l, _, s := fixture(t)
+internal/execution/adapters/orcatransport\cli_command_test.go:18:			l, fake, s := fixtureOn(t, environment)
+internal/execution/adapters/orcatransport\cli_command_test.go:36:			port, err := frozenFixtureLifecycle(setup)
+internal/execution/adapters/orcatransport\control_terminal_test.go:21:	l, f, s := fixture(t)
+internal/execution/adapters/orcatransport\control_terminal.go:16:func (l *Lifecycle) usesControl() bool { return l.frozenRecord().usesControl() }
+internal/execution/adapters/orcatransport\control_terminal.go:18:func (l *Lifecycle) controlSetup(s b.LifecycleSnapshot, state State) codex.RemoteControlSetup {
+internal/execution/adapters/orcatransport\control_terminal.go:22:func (l *Lifecycle) validateControl(s b.LifecycleSnapshot, state State, ready bool) error {
+internal/execution/adapters/orcatransport\frozen_record_test.go:48:			l, _, _ := fixture(t)
+internal/execution/adapters/orcatransport\lifecycle_test.go:193:func fixture(t *testing.T) (*Lifecycle, *fakeHost, b.LifecycleSnapshot) { return fixtureOn(t, "") }
+internal/execution/adapters/orcatransport\lifecycle_test.go:194:func fixtureOn(t *testing.T, environment string) (*Lifecycle, *fakeHost, b.LifecycleSnapshot) {
+internal/execution/adapters/orcatransport\lifecycle_test.go:211:	port, err := frozenFixtureLifecycle(b.LifecycleSetup{Snapshot: s, ProfileData: []b.ImplementationDataEnvelope{data}, ProfileID: "profile", AcceptedConfigVersion: "accepted", ProcessHost: f, RepositoryPath: f.root, RunDirectory: t.TempDir()})
+internal/execution/adapters/orcatransport\lifecycle.go:96:func (l *Lifecycle) resourceState(s b.LifecycleSnapshot) (State, error) {
+internal/execution/adapters/orcatransport\lifecycle.go:100:func (l *Lifecycle) state(s b.LifecycleSnapshot) (State, error) { return l.frozenRecord().state(s) }
+internal/execution/adapters/orcatransport\lifecycle.go:102:func (l *Lifecycle) stateVersion() int { return l.frozenRecord().stateVersion() }
+internal/execution/adapters/orcatransport\lifecycle.go:104:func (l *Lifecycle) envelope(s b.LifecycleSnapshot, state State) ([]b.ImplementationDataEnvelope, error) {
+internal/execution/adapters/orcatransport\frozen_fixture_test.go:13:func frozenFixtureLifecycle(setup b.LifecycleSetup) (*Lifecycle, error) {
+internal/execution/adapters/orcatransport\local_codex_stop.go:23:func (l *Lifecycle) localCodexScope() bool { return l.frozenRecord().localCodexScope() }
+internal/execution/adapters/orcatransport\local_codex_stop.go:25:func (l *Lifecycle) localStopObjects(s b.LifecycleSnapshot, state State) ([]b.ProcessIdentity, []b.ProcessIdentity, error) {
+internal/execution/adapters/orcatransport\local_codex_stop.go:29:func (l *Lifecycle) verifyLocalCodexStopped(ctx context.Context, s b.LifecycleSnapshot) error {
+internal/execution/adapters/orcatransport\terminal_query_windows_test.go:148:	l, host, s := fixture(t)
+internal/execution/adapters/orcatransport\terminal_query_windows_test.go:153:	port, err := frozenFixtureLifecycle(setup) // read the original frozen terminal through native RPC
+internal/execution/adapters/orcatransport\shared_native_test.go:13:	legacy, host, snapshot := fixtureOn(t, environment)
+internal/execution/adapters/orcatransport\shared_native_test.go:25:	port, err := frozenFixtureLifecycle(setup)
+internal/execution/adapters/orcatransport\state_codec_test.go:27:	l, host, s := fixture(t)
+internal/execution/adapters/orcatransport\terminal_receipt_test.go:17:			l, _, s := fixture(t)
+internal/execution/adapters/orcatransport\terminal_receipt_test.go:97:		l, _, s := fixture(t)
+internal/execution/adapters/orcatransport\terminal_receipt.go:118:func (l *Lifecycle) validateTerminalReceipt(r TerminalReceipt) error {
+internal/execution/adapters/orcatransport\terminal_receipt.go:122:func (l *Lifecycle) readTerminalOwner() (TerminalOwner, error) {
+internal/execution/adapters/orcatransport\terminal_receipt.go:126:func (l *Lifecycle) terminalOwnerBinding(owner TerminalOwner) bool {
+internal/execution/adapters/orcatransport\terminal_receipt.go:140:func (l *Lifecycle) terminalExitVerified(owner TerminalOwner) bool {
+internal/execution/adapters/orcatransport\terminal_receipt.go:154:func (l *Lifecycle) validateTerminalTurn(state State, turn *Turn) error {
+internal/execution/adapters/orcatransport\verify_stopped.go:25:func (l *Lifecycle) verifyStopped(ctx context.Context, s b.LifecycleSnapshot) error {
+internal/execution/adapters/orcatransport\verify_stopped.go:29:func (l *Lifecycle) codexReadiness(state State, workspace string) (codex.RemoteReadiness, error) {
+internal/execution/adapters/orcatransport\verify_stopped_test.go:22:			l, host, s := fixtureOn(t, environment)
+internal/execution/adapters/orcatransport\progress_host_test.go:40:			l, native, _ := fixtureOn(t, tc.environment)
+internal/execution/adapters/orcatransport\preparation_retry_test.go:16:			l, _, _ := fixture(t)
+internal/execution/adapters/orcatransport\recovery_compatibility_test.go:13:			l, host, _ := fixtureOn(t, environment)
+internal/execution/adapters/orcatransport\progress_windows_test.go:15:	l, f, s := fixture(t)
+internal/execution/adapters/orcatransport\workspace_fixture_test.go:17:	l, f, s := fixtureOn(t, environment)

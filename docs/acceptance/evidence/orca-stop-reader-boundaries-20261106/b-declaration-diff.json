@@ -1,0 +1,28 @@
+{
+  "added": [],
+  "changed_or_deleted_types": [],
+  "deleted": [
+    "internal/execution/adapters/orcatransport/control_terminal.go:func *Lifecycle.controlSetup",
+    "internal/execution/adapters/orcatransport/control_terminal.go:func *Lifecycle.usesControl",
+    "internal/execution/adapters/orcatransport/control_terminal.go:func *Lifecycle.validateControl",
+    "internal/execution/adapters/orcatransport/lifecycle.go:func *Lifecycle.envelope",
+    "internal/execution/adapters/orcatransport/lifecycle.go:func *Lifecycle.resourceState",
+    "internal/execution/adapters/orcatransport/lifecycle.go:func *Lifecycle.state",
+    "internal/execution/adapters/orcatransport/lifecycle.go:func *Lifecycle.stateVersion",
+    "internal/execution/adapters/orcatransport/local_codex_stop.go:func *Lifecycle.localCodexScope",
+    "internal/execution/adapters/orcatransport/local_codex_stop.go:func *Lifecycle.localStopObjects",
+    "internal/execution/adapters/orcatransport/local_codex_stop.go:func *Lifecycle.verifyLocalCodexStopped",
+    "internal/execution/adapters/orcatransport/terminal_receipt.go:func *Lifecycle.readTerminalOwner",
+    "internal/execution/adapters/orcatransport/terminal_receipt.go:func *Lifecycle.terminalExitVerified",
+    "internal/execution/adapters/orcatransport/terminal_receipt.go:func *Lifecycle.terminalOwnerBinding",
+    "internal/execution/adapters/orcatransport/terminal_receipt.go:func *Lifecycle.validateTerminalReceipt",
+    "internal/execution/adapters/orcatransport/terminal_receipt.go:func *Lifecycle.validateTerminalTurn",
+    "internal/execution/adapters/orcatransport/verify_stopped.go:func *Lifecycle.codexReadiness",
+    "internal/execution/adapters/orcatransport/verify_stopped.go:func *Lifecycle.verifyStopped"
+  ],
+  "identical": 2276,
+  "modified": [
+    "internal/execution/adapters/orcatransport/lifecycle.go:func *Lifecycle.original"
+  ],
+  "stage": "b"
+}

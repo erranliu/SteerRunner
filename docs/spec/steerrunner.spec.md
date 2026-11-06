@@ -169,6 +169,14 @@ B0–B6 已完成能力迁移、生产接线、正式合同与保留例外同步
 
 同日[实现再审计](../acceptance/content-inspection-reaudit.md)未确认生产缺陷，新增真实stop入口的原提交边界回归；46项应用定向、74项组件通过，原4个现场opt-in跳过。351个既有内部测试字节、原持久编码及执行/恢复/停止保持；Runner/受控驱动/原生夹具SHA与初轮相同，三项公开受控沿原同产物证据，不虚记本次重跑。按用户追加授权提交提PR。
 
+### 现行职责收口：Orca 停止合同与历史读取夹具
+
+2026-11-06 按 [A Spec](orca-stop-contract-boundary.spec.md)/[Plan](orca-stop-contract-boundary.plan.md)实施停止合同私有解释收口，独立[验收](../acceptance/orca-stop-contract-boundary.md)后，再按 [B Spec](orca-reader-fixture-boundary.spec.md)/[Plan](orca-reader-fixture-boundary.plan.md)分离历史读取与当前结构化测试装配。业务侧保留 Workflow、授权、停止受理和提交边界；adapter 解释原 profile 标记、冻结 scope 要求及成功诊断，不新增解码/证明门槛。历史 reader 保留原校验，Lifecycle 删除 17 个旧方法，旧 State encoder 仅留测试侧；原终端读取/并发及共享 CLI/creation 等实际消费者保留。
+
+两批 15,528 字节代表持久编码与原基线一致，全部原生产格式类型/tag/codec 不变，PC-R01–R10 及 #125 原会话消息、恢复和停止撤销保持。A 三项同 EXE 公开受控通过；B 四项同 EXE 公开受控复验通过，首轮 owner-crash 的 fixture 读取失败根因未确立，原失败单列，不改记通过，见 [B 验收](../acceptance/orca-reader-fixture-boundary.md)。收益为私有知识归属和测试装配/生产方法依赖减少，不宣称提速或全局净删；未部署，不授予完整 L1/Controlled、L2/L3 或真实模型资格。
+
+同日[实现复审](../acceptance/orca-stop-reader-reaudit.md)未确认生产缺陷，修复输入不变测试的 Payload 浅拷贝并补实际在线/离线 scope 与首错回归；所有生产文件原字节保持，完整 adapter 81、应用定向 76 及最终 EXE 四公开受控场景通过。原历史失败不追认，最新产物和实际资格以复审记录为准；后续按用户追加授权提 PR，不自动合并或部署。
+
 ### 文档分工与维护规则
 
 - 本节是能力及可靠性承诺的长期总入口。CLI 字段/退出码、Workflow 和专项 Spec 细化机制；[可靠性交付链路](../reliable-delivery.md)解释运行路径；[操作指南](../cli-guide.md)描述如何使用；acceptance 保存具体构建的验证事实。

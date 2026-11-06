@@ -3,7 +3,6 @@ package orcatransport
 import (
 	"context"
 
-	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
 
@@ -20,12 +19,4 @@ func VerifyStopped(ctx context.Context, setup b.LifecycleSetup) error {
 		return l.verifyAgentSessionStopped(setup.Snapshot)
 	}
 	return l.verifyStopped(ctx, setup.Snapshot)
-}
-
-func (l *Lifecycle) verifyStopped(ctx context.Context, s b.LifecycleSnapshot) error {
-	return l.frozenRecord().verifyStopped(ctx, s)
-}
-
-func (l *Lifecycle) codexReadiness(state State, workspace string) (codex.RemoteReadiness, error) {
-	return l.frozenRecord().codexReadiness(state, workspace)
 }

@@ -1,0 +1,30 @@
+{
+  "controlled_cases": {
+    "TestSRRestartPreservesAuthorization": [
+      {
+        "id": "graceful",
+        "passed": true,
+        "duration_seconds": 14.7237132
+      },
+      {
+        "id": "kill",
+        "passed": true,
+        "duration_seconds": 14.9391125
+      },
+      {
+        "id": "creation_receipt",
+        "passed": true,
+        "duration_seconds": 12.0602243
+      },
+      {
+        "id": "pending_stop",
+        "passed": true,
+        "duration_seconds": 12.5332939
+      }
+    ]
+  },
+  "exe": "C:\\Users\\lmas1\\.codex\\worktrees\\cdc6\\SteerRunner\\.evidence\\orca-stop-reader\\b\\steerrunner.exe",
+  "exit_code": 1,
+  "finished_at": "2026-11-06T08:15:13.5438457Z",
+  "scenario_count": 4
+}

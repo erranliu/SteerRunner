@@ -12,7 +12,7 @@ import (
 )
 
 func TestResultFileRPCUsesOriginalSelectorAndIndependentPath(t *testing.T) {
-	l, f, s := fixture(t)
+	l, f, s := frozenFixture(t)
 	s = frozenWorkspaceFixture(t, l, f, s)
 	setup := l.setup
 	setup.Snapshot = s

@@ -115,18 +115,6 @@ func readTerminalFile(directory, name string, value any) error {
 	return b.DecodeStrictJSON(raw, value, "trailing native receipt")
 }
 
-func (l *Lifecycle) validateTerminalReceipt(r TerminalReceipt) error {
-	return l.frozenRecord().validateTerminalReceipt(r)
-}
-
-func (l *Lifecycle) readTerminalOwner() (TerminalOwner, error) {
-	return l.frozenRecord().readTerminalOwner()
-}
-
-func (l *Lifecycle) terminalOwnerBinding(owner TerminalOwner) bool {
-	return l.frozenRecord().terminalOwnerBinding(owner)
-}
-
 var errTerminalStartupExiting = errors.New("original native terminal helper is still exiting")
 
 // Only the bound helper's verified pre-worker exit can reject an accepted
@@ -137,10 +125,6 @@ func (e *terminalStartupError) Error() string {
 	return "Native terminal startup failed: " + e.reason + "; no business input sent"
 }
 
-func (l *Lifecycle) terminalExitVerified(owner TerminalOwner) bool {
-	return l.frozenRecord().terminalExitVerified(owner)
-}
-
 // This native fact explains a failed initializer before a readiness receipt
 // exists. It never establishes readiness, completion, or resource settlement.
 
@@ -149,10 +133,6 @@ func (l *Lifecycle) terminalExitVerified(owner TerminalOwner) bool {
 // an explicit model/effort setting.
 func sameTerminalInstance(a, b TerminalReceipt) bool {
 	return a.InstanceID == b.InstanceID && a.PID == b.PID && a.ProcessStartedAt == b.ProcessStartedAt && a.SessionID == b.SessionID && a.NativeSessionID == b.NativeSessionID && a.Model == b.Model && a.ReasoningEffort == b.ReasoningEffort && reflect.DeepEqual(a.Preparation, b.Preparation)
-}
-
-func (l *Lifecycle) validateTerminalTurn(state State, turn *Turn) error {
-	return l.frozenRecord().validateTerminalTurn(state, turn)
 }
 
 func validTerminalPreparation(p TerminalPreparation, version int) bool {
