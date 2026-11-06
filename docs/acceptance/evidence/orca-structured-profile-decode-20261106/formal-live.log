@@ -1,0 +1,19 @@
+local-execute run 69fc3182df7e39e068b32ebdd87edb60 C:\Users\lmas1\.codex\worktrees\d634\SteerRunner\.evidence\orca-profile-decode-pr\.evidence\profile-decode\live\local-execute-fe59cc42
+local-execute ('queued', 'execution_wait', None, None)
+local-execute ('queued', 'prepare_workspace', None, None)
+local-execute ('running', 'input_queued', None, None)
+local-execute ('running', 'prepare_session', None, None)
+local-execute ('reconciling', 'operation_outcome_unknown', None, 'Original structured input/turn not yet verified; read-only reconciliation required.')
+local-execute ('running', 'observing', None, None)
+local-execute ('completed', 'closed', 'stopped', 'Closed the original Orca session; detached processes and additional resource cleanup are not verified.')
+PASS local-execute 69fc3182df7e39e068b32ebdd87edb60
+remote-execute run dab25227b610f14c391c6ce2dc55f11d C:\Users\lmas1\.codex\worktrees\d634\SteerRunner\.evidence\orca-profile-decode-pr\.evidence\profile-decode\live\remote-execute-75ad10da
+remote-execute ('queued', 'execution_wait', None, None)
+remote-execute ('queued', 'prepare_workspace', None, None)
+remote-execute ('running', 'prepare_session', None, None)
+remote-execute ('running', 'start_turn', None, None)
+remote-execute ('reconciling', 'operation_outcome_unknown', None, 'Original structured input/turn not yet verified; read-only reconciliation required.')
+remote-execute ('running', 'observing', None, None)
+remote-execute ('settling', 'stop_execution', 'pending', None)
+remote-execute ('completed', 'closed', 'stopped', 'Closed the original Orca session; detached processes and additional resource cleanup are not verified.')
+PASS remote-execute dab25227b610f14c391c6ce2dc55f11d

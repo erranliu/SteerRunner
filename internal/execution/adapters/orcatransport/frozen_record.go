@@ -27,6 +27,7 @@ type frozenRecord struct {
 	probeProcess     func(*b.ProcessIdentity) b.ProcessProbeFacts
 	agentHostID      string
 	agentDevelopment bool
+	agentAudited     bool
 }
 
 func decodeFrozenRecord(setup b.LifecycleSetup) (*frozenRecord, error) {
@@ -37,11 +38,7 @@ func decodeFrozenRecord(setup b.LifecycleSetup) (*frozenRecord, error) {
 	if setup.ProcessHost == nil {
 		return nil, errors.New("unsupported Orca terminal lifecycle")
 	}
-	p, version, err := decodeLifecycleProfile(setup)
-	if err != nil {
-		return nil, err
-	}
-	r := &frozenRecord{setup: setup, profile: p, profileVersion: version, probeProcess: process.NewServiceFacts().Probe}
+	r := &frozenRecord{setup: setup, probeProcess: process.NewServiceFacts().Probe}
 	if r.structured() {
 		p, err := decodeAgentSessionProfile(setup)
 		if err != nil {
@@ -49,6 +46,16 @@ func decodeFrozenRecord(setup b.LifecycleSetup) (*frozenRecord, error) {
 		}
 		r.agentHostID = p.PairingHostID
 		r.agentDevelopment = p.Development
+		r.agentAudited = p.Audited
+		r.profile = p.Transport
+		r.profileVersion = p.version
+	} else {
+		p, version, err := decodeLifecycleProfile(setup)
+		if err != nil {
+			return nil, err
+		}
+		r.profile = p
+		r.profileVersion = version
 	}
 	return r, nil
 }
@@ -71,7 +78,7 @@ func newFrozenReader(setup b.LifecycleSetup) (*frozenRecord, error) {
 // Runtime views share the exact decoder/validation with offline proofs without
 // giving the frozen reader an execution owner or state-feed dependency.
 func (l *Lifecycle) frozenRecord() *frozenRecord {
-	return &frozenRecord{setup: l.setup, profile: l.profile, profileVersion: l.profileVersion, client: l.client, probeProcess: l.probeProcess, agentHostID: l.agentHostID, agentDevelopment: l.agentDevelopment}
+	return &frozenRecord{setup: l.setup, profile: l.profile, profileVersion: l.profileVersion, client: l.client, probeProcess: l.probeProcess, agentHostID: l.agentHostID, agentDevelopment: l.agentDevelopment, agentAudited: l.agentAudited}
 }
 
 func orcaCLIOutput(setup b.LifecycleSetup, p Profile, host string, nativeAccess func() bool) func(context.Context, time.Duration, ...string) ([]byte, error) {

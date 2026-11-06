@@ -1,0 +1,22 @@
+{
+  "baseline": {
+    "status": "passed",
+    "log_sha256": "196851a01e798af4459e04e453494d9ed34b6254a22d3e6880d214db03f66502",
+    "top_passed": 5,
+    "leaf_passed": 35,
+    "pass_events": 39,
+    "failed": 0,
+    "skipped": 0,
+    "elapsed_seconds": 4.822
+  },
+  "package": {
+    "status": "passed",
+    "log_sha256": "8bc7fb026a13e97582858d107ce6633f6cb01773ab5083e5a955c2fa3cfcada7",
+    "top_passed": 76,
+    "leaf_passed": 283,
+    "pass_events": 327,
+    "failed": 0,
+    "skipped": 0,
+    "elapsed_seconds": 58.696
+  }
+}
