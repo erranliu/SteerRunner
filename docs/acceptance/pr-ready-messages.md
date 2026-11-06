@@ -33,3 +33,5 @@ SteerLine 正式产品的真实 PR 冲突联合验收在其对应记录登记；
 SteerLine `smoke.local-codex` 正式入口：`./scripts/test-live-delivery.ps1 -SteerRunnerExe C:/SteerlineDebug/pr-conflict-5c27/bin/steerrunner-merged.exe -OutDir C:/SteerlineDebug/pr-conflict-5c27/live-06`，summary.json passed=true、cleanup_complete=true，336.5 秒。本地 codex-app-server / gpt-6-luna medium / full_access / development/2。正式产品命令两次向原 Run 投递，第一次由 Agent 解决真实文本冲突并推送更新原 PR，第二次无冲突正常结束；Run/session/worktree/分支/PR 均保持。驱动只准备自有 base 和查证结果，随后沿既有显式测试合并/交付/停止路径清理。
 
 最后在原消息 owner 中补齐普通/审计开发两种流程的原生问题→正式 reply→原路答案一次发送→本轮结束→第二条 message，断言原 question route/turn、串行门禁与 question/answer 历史。`go test ./internal/application -run '^TestDevelopmentRunMessagesRetainOriginalWorkflow$' -count=1` 通过（0.554 秒）；差异只在测试，不改变以上固定 EXE。独立只读 reviewer 复审通过。真实冲突 Agent 未提问，实机问答不据此宣称通过。
+
+SteerLine 最终 smoke 夹具修订后再次运行相同命令，OutDir=`C:/SteerlineDebug/pr-conflict-5c27/live-07`，316.9 秒通过且清理完成；同一固定 Runner EXE，真实 PR 779 两轮均沿原资源完成，第二轮未新增提交。仅此本地组合有真实联验声明。
