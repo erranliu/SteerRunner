@@ -70,7 +70,7 @@ func TestManifestRejectsChangedInputsAndUnsafeTargets(t *testing.T) {
 	local := m
 	local.Level, local.Scenario = "L3", "orca-local.smoke"
 	local.LocalRuntimeID, local.LocalRepositoryPath = "local-original", repo
-	local.Execution = contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "local"}, Settings: json.RawMessage(`{"access_mode":"full_access","agent_launch":{"runtime_executable":"C:/trusted/agent.exe","runtime_sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}}`)}
+	local.Execution = contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "local"}, Settings: json.RawMessage(`{"access_mode":"full_access","transport":{"executable":"C:/trusted/orca.exe"}}`)}
 	preparation, _ := json.Marshal(map[string]any{"fixture_id": local.ID, "status": "ready", "orca_runtime_id": "local-original", "orca_repository_path": repo})
 	if err := os.WriteFile(filepath.Join(root, "preparation.json"), preparation, 0600); err != nil {
 		t.Fatal(err)
@@ -120,7 +120,7 @@ func TestManifestRejectsChangedInputsAndUnsafeTargets(t *testing.T) {
 	}
 	full := m
 	full.Scenario, full.Level, full.RemoteRuntimeID = "orca-remote.smoke", "L3", "paired-runtime"
-	full.Execution = contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "orca_environment", Environment: "paired-environment"}, Settings: json.RawMessage(`{"access_mode":"full_access"}`)}
+	full.Execution = contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "orca_environment", Environment: "paired-environment"}, Settings: json.RawMessage(`{"access_mode":"full_access","transport":{"executable":"C:/trusted/orca.exe"}}`)}
 	if err := full.Validate(); err != nil {
 		t.Fatal("explicit remote full-access fixture rejected", err)
 	}

@@ -15,7 +15,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"strings"
 	"time"
 )
 
@@ -36,6 +35,9 @@ func appendCall(m livetest.Manifest, entry map[string]any) {
 	}
 }
 func main() {
+	if original := os.Getenv("SR_ORCA_AUDIT_ORIGINAL_USER_DATA"); original != "" {
+		_ = os.Setenv("ORCA_USER_DATA_PATH", original)
+	}
 	if len(os.Args) < 2 {
 		fatal(fmt.Errorf("mode required"))
 	}
@@ -204,26 +206,6 @@ func main() {
 					fatal(e)
 				}
 				delivered = filtered
-			}
-		}
-		// Test-only response loss: the installed Orca has executed and returned
-		// its real receipt. Only this caller's response is withheld; never replay.
-		if mode == "local-audit" && err == nil && len(args) > 1 && args[0] == "terminal" && args[1] == "send" {
-			text := ""
-			for i, arg := range args {
-				if arg == "--text" && i+1 < len(args) {
-					text = args[i+1]
-				}
-			}
-			if strings.HasPrefix(strings.TrimPrefix(text, "\x1b[200~"), "[SteerRunner command=") {
-				marker := filepath.Join(m.Root, "evidence", "drop-next-native-send")
-				if e := os.Rename(marker, marker+".consumed"); e == nil {
-					fact, _ := json.Marshal(map[string]any{"call_id": callID, "args": args, "response": json.RawMessage(out.Bytes())})
-					if e = os.WriteFile(filepath.Join(m.Root, "evidence", "withheld-native-send.json"), fact, 0600); e != nil {
-						fatal(e)
-					}
-					fatal(fmt.Errorf("injected native send response loss after actual Orca receipt"))
-				}
 			}
 		}
 		_, _ = os.Stdout.Write(delivered)

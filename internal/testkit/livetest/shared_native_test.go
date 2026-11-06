@@ -39,6 +39,32 @@ func TestNativeCandidateManifestIsolation(t *testing.T) {
 	if err := m.Validate(); err != nil {
 		t.Fatal("valid native fixture rejected", err)
 	}
+	for _, name := range []string{"orca-local.codex", "orca-local.pi"} {
+		t.Run(name, func(t *testing.T) {
+			current := m
+			current.NativeCLI, current.AuditTransport = nil, nil
+			scenario, _, err := Lookup(name, "default")
+			if err != nil {
+				t.Fatal(err)
+			}
+			current.Scenario, current.Driver = name, scenario.Driver
+			selected := settings
+			if scenario.Agent == "pi" {
+				selected.Agent = "pi"
+			}
+
+			current.Execution.Settings, _ = json.Marshal(selected)
+			if err := current.Validate(); err != nil {
+				t.Fatal("helper-free current manifest rejected", err)
+			}
+			selected.AgentLaunch.RuntimeExecutable = "C:/retired.exe"
+			selected.AgentLaunch.RuntimeSHA256 = strings.Repeat("a", 64)
+			current.Execution.Settings, _ = json.Marshal(selected)
+			if current.Validate() == nil {
+				t.Fatal("retired helper admitted")
+			}
+		})
+	}
 	t.Run("forward-slash-cli", func(t *testing.T) {
 		portable := m
 		cli := native

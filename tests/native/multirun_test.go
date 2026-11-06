@@ -50,7 +50,7 @@ func developmentMultipleRuns(t *testing.T, m livetest.Manifest) {
 			res, err := command(m, dir, []string{"service", "status"}, nil)
 			if err == nil && res.Data.(map[string]any)["status"] == "not_running" {
 				r.ServiceStopped = true
-				if m.Execution.Adapter == "orca-terminal" && m.Execution.Target.Kind == "orca_environment" {
+				if m.Execution.Adapter == "orca-terminal" {
 					proof, err := verifyNativeStoppedScope(m, dir, ids[0])
 					save(t, "offline-stopped.json", proof)
 					if err != nil {
@@ -61,7 +61,7 @@ func developmentMultipleRuns(t *testing.T, m livetest.Manifest) {
 					for _, id := range ids {
 						found := false
 						for _, item := range proof.Runs {
-							if item.RunID == id && item.ResourcesSettled && item.StopEvidenceScope == "orca_terminal" {
+							if item.RunID == id && item.ResourcesSettled && item.StopEvidenceScope == "orca_agent_session" {
 								found = true
 							}
 						}
