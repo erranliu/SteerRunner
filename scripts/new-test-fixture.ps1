@@ -103,8 +103,8 @@ if ($taskStability) {
     $taskExecution.settings.transport.executable = $taskHelper
     $taskExecution.settings.transport['args'] = @('audit','-manifest',(Join-Path $taskRoot 'manifest.json'),'--')
 }
-# A test-only forwarding CLI records actual local sends for all agents and can
-# withhold one real business-send receipt. It never replaces Orca execution.
+# The forwarding CLI records workspace and auxiliary terminal calls. Current
+# structured mutations use IPC/paired RPC; the native driver audits them separately.
 if ($taskScenario.target -eq 'orca-local' -or ($taskScenario.target -eq 'orca-environment' -and -not $taskStability)) {
     $taskLocalAudit = Join-Path $taskRoot 'bin/local-audit.exe'
     Push-Location $taskRepo

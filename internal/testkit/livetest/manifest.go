@@ -104,6 +104,17 @@ func (m Manifest) RunWorkflow(overrides map[string]string) (contracts.Workflow, 
 }
 
 func (m Manifest) Validate() error {
+	if m.Execution.Adapter == "orca-terminal" {
+		var transport contracts.OrcaSettings
+		if contracts.DecodeStrict(m.Execution.Settings, &transport) != nil || !filepath.IsAbs(transport.Transport.Executable) {
+			return errors.New("Orca fixture requires an absolute transport")
+		}
+		selection, err := m.RunWorkflow(nil)
+		raw, _ := json.Marshal(contracts.RunConfiguration{Execution: m.Execution, Workflow: selection})
+		if err != nil || contracts.ValidateRunConfiguration(raw) != nil {
+			return errors.New("Orca fixture violates the current structured configuration contract")
+		}
+	}
 	if m.Driver != "native-capability-runner" && (m.NativeCLI != nil || m.AuditTransport != nil) {
 		return errors.New("native candidate tools require their registered driver")
 	}
@@ -250,8 +261,8 @@ func (m Manifest) Validate() error {
 				if contracts.DecodeStrict(m.Execution.Settings, &settings) != nil {
 					return errors.New("invalid local Orca settings")
 				}
-				if settings.AccessMode != mode || m.Driver != "native-capability-runner" && (settings.AgentLaunch.RuntimeExecutable == "" || len(settings.AgentLaunch.RuntimeSHA256) != 64) {
-					return errors.New("local Orca requires its frozen native runtime and case access mode")
+				if settings.AccessMode != mode {
+					return errors.New("local Orca requires its explicit case access mode")
 				}
 				if scenario.Agent != "" && settings.AgentName() != scenario.Agent {
 					return errors.New("local Orca fixture agent differs from registered case")
@@ -373,6 +384,9 @@ func ValidateArtifact(body []byte, earliest, latest time.Time) (time.Time, error
 
 // CheckPR is a fail-closed guard immediately before a real merge.
 func CheckPR(m Manifest, view contracts.RunView) error {
+	if (m.RemoteRuntimeID != "" || m.LocalRuntimeID != "") && m.Execution.Adapter != "orca-terminal" {
+		return errors.New("Orca runtime requires its original structured adapter")
+	}
 	p := view.PR
 	if view.Status != "pr_ready" || p == nil || p.Repository != Repository || p.HeadRepository != Repository || p.BaseBranch != m.BaseBranch || p.HeadBranch == "" || p.HeadBranch != view.Execution.Branch || !revisionPattern.MatchString(p.HeadRevision) || p.Number <= 0 || p.URL != fmt.Sprintf("https://github.com/%s/pull/%d", Repository, p.Number) || p.State != "open" || p.Merged {
 		return errors.New("PR is not a verified open PR on this fixture's exact repository/base/head")
@@ -381,19 +395,10 @@ func CheckPR(m Manifest, view contracts.RunView) error {
 	if f == nil || !f.Verified || f.Source == "" || f.ItemID == "" || f.SessionID == "" || f.SessionID != view.Execution.SessionID || f.AttemptID != view.Execution.AttemptID || f.CommandID == "" || f.TurnID == "" || f.TurnID != view.Execution.TurnID {
 		return errors.New("original native final provenance is incomplete")
 	}
-	if runtime, err := m.OrcaRuntimeID(); err == nil && runtime != "" && !strings.HasPrefix(f.SessionID, "orca-terminal:"+runtime+":") {
-		return errors.New("native session belongs to a different Orca runtime")
-	}
 	if m.Execution.Adapter == "orca-terminal" {
 		var settings contracts.OrcaSettings
-		if contracts.DecodeStrict(m.Execution.Settings, &settings) != nil || view.Execution.Agent != settings.AgentName() {
-			return errors.New("native result belongs to a different terminal agent")
-		}
-	}
-	if m.Execution.Adapter == "orca-terminal" && m.Execution.Target.Kind == "local" {
-		runtime, err := m.OrcaRuntimeID()
-		if err != nil || !strings.HasPrefix(f.SessionID, "orca-terminal:"+runtime+":") {
-			return errors.New("native session belongs to a different local Orca runtime")
+		if _, err := m.OrcaRuntimeID(); err != nil || contracts.DecodeStrict(m.Execution.Settings, &settings) != nil || view.Execution.Agent != settings.AgentName() || view.RunID == "" || view.Execution.Protocol != "orca_agent_session_v1" || f.SessionID != StructuredSessionID(view.RunID, view.Execution.AttemptID) {
+			return errors.New("native result lacks its original structured Run/Attempt/agent binding")
 		}
 	}
 	return nil

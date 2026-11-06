@@ -1,5 +1,7 @@
 # SteerRunner L1–L4 测试指南
 
+2026-11-06 当前结构化真机接线：已注册的 Orca feedback、smoke/multirun 与 native-development/native-active-stop 使用原结构化 session、完整历史和 `orca_agent_session` close 证明，不再要求旧 helper/readiness/Job。本机测试侧 IPC 转发记录实际 create/send/close 并注入原回执丢失；远端保留原配对 host key，以完整历史和原操作核对业务输入，不冒充重复 wire 次数证明。close 后不强求宿主继续提供历史；以已取得历史、原输入集、撤销和原 close 回执结算。本机 Orca audited 产品组合尚无注册真机场景，execution-stability 的旧终端故障夹具也未随本批迁完，不能继承当前结构化资格。实现及实际验证范围见[独立验收](acceptance/orca-structured-qualification-proof-cleanup.md)。
+
 2026-11-05：旧 Orca TUI/helper 输入专项及执行探针已退役，原 `test-native-input.ps1` 明确拒绝，不再作为当前资格入口；下文旧构建记录不变。当前结构化执行、共享创建与历史只读证明的保留范围及实际验证见[验收](acceptance/orca-reader-execution-boundary.md)。
 
 2026-11-05 配置边界增量新增 Controlled `TestSRExecutionConfigurationPublicCLI`，完整集合为29个顶层测试；三操作、严格输入/来源、无服务副作用和原生目录可信execution上下文见[专项](acceptance/native-execution-configuration-boundary.md)。后文旧日期数量只代表其原版本。

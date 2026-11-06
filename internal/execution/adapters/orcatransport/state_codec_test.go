@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"strings"
 	"testing"
-	"time"
 
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
@@ -42,10 +41,10 @@ func TestHostNativeStateCodecRoundTripRetainsOriginalBinding(t *testing.T) {
 	if err != nil || restored.Process != state.Process || restored.Turns[0].Prompt != input.Prompt {
 		t.Fatal("current state lost original identity", err)
 	}
-	end := fixtureState(100, input.Prompt, "done")
-	end.LastAssistantMessage = "valid-looking later reply"
-	if restored.Turns[0].Native.query(end, &restored.Turns[0], time.Now(), false, nil) {
-		t.Fatal("upgrade cleared ambiguous historical rejection")
+	// The current reader preserves the frozen rejection; there is no legacy
+	// execution/query calculator to authorize a valid-looking later end.
+	if restored.Turns[0].Native != state.Turns[0].Native {
+		t.Fatal("roundtrip changed the saved original rejection")
 	}
 	current, err := l.envelope(s, restored)
 	if err != nil || current[0].CodecVersion != LocalStateVersion {
@@ -59,5 +58,23 @@ func TestHostNativeStateCodecRoundTripRetainsOriginalBinding(t *testing.T) {
 	s.Ref.RunID = s.Session.ExecutionID // The older lifecycle fixture uses different IDs.
 	if _, _, usageState, err := UsageBinding(l.setup.ProfileData, s); err != nil || usageState.Turns[0].Native.Conflict == "" {
 		t.Fatal("usage reader diverged from execution decoder", err)
+	}
+}
+
+func TestHostNativeStateCodecRetainsWaitingWithoutRecomputing(t *testing.T) {
+	for _, version := range []int{StateVersion, LocalStateVersion, NativeStateVersion} {
+		original := State{Turns: []Turn{{Command: "original-command", Native: NativeProof{Agent: "codex", Pane: "original-pane", Provider: "original-provider", Waiting: "Original evidence missing", BaseRootAt: 17, Outcome: "unreported"}}}}
+		raw, err := json.Marshal(original)
+		if err != nil {
+			t.Fatal(err)
+		}
+		decoded, err := decodeState(raw, version)
+		if err != nil || len(decoded.Turns) != 1 || decoded.Turns[0].Native != original.Turns[0].Native {
+			t.Fatal("saved waiting or unknown outcome changed", version, err)
+		}
+		after, err := json.Marshal(decoded)
+		if err != nil || string(after) != string(raw) {
+			t.Fatal("legacy wire bytes changed", version, err)
+		}
 	}
 }

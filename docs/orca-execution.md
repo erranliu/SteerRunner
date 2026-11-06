@@ -1,5 +1,7 @@
 # Orca 执行链路设计
 
+2026-11-06 实现收口：旧 `NativeProof` 仅保留原格式、历史严格解码及真实只读消费者，旧 hook/输入归属/完成补证计算器已移除；当前执行仍只走结构化协议。真机 driver 的当前接线及未取得资格的范围见[独立验收](acceptance/orca-structured-qualification-proof-cleanup.md)，不改变本页的执行、恢复和停止承诺。
+
 本文维护 Orca 链路的长期设计、责任边界与已接受限制。实现范围以当前构建 capabilities 为准；具体变更由 Spec/Plan 描述，真实结果保存在独立验收记录，历史证据不随新设计改写。2026-11-03 用户确认的停止边界及对应修复见[本次验收](acceptance/orca-session-result-settlement.md)。
 
 ## 目标与职责
