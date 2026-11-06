@@ -1,8 +1,8 @@
 # Orca 执行链路设计
 
-2026-11-06 实现收口：旧 `NativeProof` 仅保留原格式、历史严格解码及真实只读消费者，旧 hook/输入归属/完成补证计算器已移除；当前执行仍只走结构化协议。真机 driver 的当前接线及未取得资格的范围见[独立验收](acceptance/orca-structured-qualification-proof-cleanup.md)，不改变本页的执行、恢复和停止承诺。
+2026-11-06 实现收口：旧 `NativeProof` 仅保留原格式、历史严格解码及真实只读消费者，旧 hook/输入归属/完成补证计算器已移除；当前执行仍只走结构化协议。真机 driver 的当前接线及未取得资格的范围见[独立验收](archive/2026-11/implementation/acceptance/orca-structured-qualification-proof-cleanup.md)，不改变本页的执行、恢复和停止承诺。
 
-本文维护 Orca 链路的长期设计、责任边界与已接受限制。实现范围以当前构建 capabilities 为准；具体变更由 Spec/Plan 描述，真实结果保存在独立验收记录，历史证据不随新设计改写。2026-11-03 用户确认的停止边界及对应修复见[本次验收](acceptance/orca-session-result-settlement.md)。
+本文维护 Orca 链路的长期设计、责任边界与已接受限制。实现范围以当前构建 capabilities 为准；具体变更由 Spec/Plan 描述，真实结果保存在独立验收记录，历史证据不随新设计改写。2026-11-03 用户确认的停止边界及对应修复见[本次验收](archive/2026-11/implementation/acceptance/orca-session-result-settlement.md)。
 
 ## 目标与职责
 
@@ -20,7 +20,7 @@ Orca 提供已有的会话、终端、工作区及执行主机能力。Runner �
 | 新本机 Codex development-audited/2 | 结构化原会话多轮；保留逐轮实际模型、工作区/审计 HEAD 和发布来源核验 | `orca_agent_session`：原 session 关闭确认；结果按原有快照合同封存 |
 | 新本机 Pi execute/1、development/2 | 结构化原会话、现有宿主工具及原回合结果；Pi usage 未核实仍报告不可用 | `orca_agent_session`：原 session 关闭确认；保留 Pi 原有单次文件快照窗口 |
 
-上表只列当前新 Run 的合法组合。旧 `agent_launch` executable、非空 args、helper 路径/摘要在受理前拒绝；传输端 Orca executable/args 与模型设置仍按现行配置契约处理，不把传输参数误作旧 Agent 启动入口。远端 Pi、远端 audited 和 DSH 不因此取得资格。依据[已实施 helper 退役](spec/orca-helper-retirement.spec.md)及[验收](acceptance/orca-helper-retirement.md)。
+上表只列当前新 Run 的合法组合。旧 `agent_launch` executable、非空 args、helper 路径/摘要在受理前拒绝；传输端 Orca executable/args 与模型设置仍按现行配置契约处理，不把传输参数误作旧 Agent 启动入口。远端 Pi、远端 audited 和 DSH 不因此取得资格。依据[已实施 helper 退役](archive/2026-11/implementation/spec/orca-helper-retirement.spec.md)及[验收](archive/2026-11/implementation/acceptance/orca-helper-retirement.md)。
 
 旧冻结终端配置不再是当前构建的执行选项：服务启动及执行 port 均拒绝旧协议。旧 Run 必须由原构建完成/停止并排空，新构建不接管或重发原输入；保留当前格式旧记录的离线 inspect、既有只读 scope/停止证明和严格解码，不能删除证据或按新 scope 重释。历史 `orca_terminal`、`orca_local_codex_resources` 的含义仍分别是原终端、登记终端及 helper/app-server 根范围；保留这些解码/证明不意味着恢复旧执行能力。公共终端、直接 Codex 和 parser 沿各自原入口，不能随 Orca Agent 写链一起删除。
 
@@ -44,13 +44,13 @@ Agent 在执行读取这些变量的脚本前，将绑定解析为现有文件�
 
 当前 `Lifecycle` 只装配结构化 Agent Session 执行。scope、离线停止核验、usage 和工作区文件绑定读取复用包内冻结记录校验，不通过执行工厂获得这些读取能力；只读证明不派发 create/send/close，也不创建 observer、state feed 或 helper owner。
 
-旧 terminal/helper 的派发、TUI 输入/观察、控制 actor 和主动停止分支已退役。原配置/状态/receipt 格式及严格历史解码保留，公共终端读取和当前结构化工作区创建/原回执对账仍有实际消费者。保留旧 scope 是为了解释原证明，不能据此恢复旧执行或扩大停止范围。实施范围与证据见 [A/B 验收](acceptance/orca-reader-execution-boundary.md)。
+旧 terminal/helper 的派发、TUI 输入/观察、控制 actor 和主动停止分支已退役。原配置/状态/receipt 格式及严格历史解码保留，公共终端读取和当前结构化工作区创建/原回执对账仍有实际消费者。保留旧 scope 是为了解释原证明，不能据此恢复旧执行或扩大停止范围。实施范围与证据见 [A/B 验收](archive/2026-11/implementation/acceptance/orca-reader-execution-boundary.md)。
 
-2026-11-06 职责进一步收口：application 的开发关闭合同标记、后端冻结 scope 要求及成功 scope 诊断由 adapter 统一解释，业务侧保留 Workflow、授权、相等比较及原事务边界。标记分类不增加严格解码门槛，也不代替停止证明；见 [A 验收](acceptance/orca-stop-contract-boundary.md)。
+2026-11-06 职责进一步收口：application 的开发关闭合同标记、后端冻结 scope 要求及成功 scope 诊断由 adapter 统一解释，业务侧保留 Workflow、授权、相等比较及原事务边界。标记分类不增加严格解码门槛，也不代替停止证明；见 [A 验收](archive/2026-11/implementation/acceptance/orca-stop-contract-boundary.md)。
 
-历史读取测试直接消费 frozenRecord，当前结构化夹具经合法 NewLifecycle 构造后注入隔离传输；生产 Lifecycle 删除 17 个由旧测试维持的方法，旧 State encoder 仅留测试侧。原终端 original/boundTerminal、并发及共享 CLI/creation、旧快照关闭拒绝等真实消费者保留。格式及执行、恢复、停止承诺不变；[B 验收](acceptance/orca-reader-fixture-boundary.md)单列首轮公开 fixture 读取失败和同 EXE 四项复验，不授予完整级别或真机资格。
+历史读取测试直接消费 frozenRecord，当前结构化夹具经合法 NewLifecycle 构造后注入隔离传输；生产 Lifecycle 删除 17 个由旧测试维持的方法，旧 State encoder 仅留测试侧。原终端 original/boundTerminal、并发及共享 CLI/creation、旧快照关闭拒绝等真实消费者保留。格式及执行、恢复、停止承诺不变；[B 验收](archive/2026-11/implementation/acceptance/orca-reader-fixture-boundary.md)单列首轮公开 fixture 读取失败和同 EXE 四项复验，不授予完整级别或真机资格。
 
-同日[实现复审](acceptance/orca-stop-reader-reaudit.md)未确认生产缺陷；补强原输入不变和在线/离线 scope 边界测试，原合法入口、错误优先级及格式保持。最新产物与实际定向资格以复审记录为准。
+同日[实现复审](archive/2026-11/implementation/acceptance/orca-stop-reader-reaudit.md)未确认生产缺陷；补强原输入不变和在线/离线 scope 边界测试，原合法入口、错误优先级及格式保持。最新产物与实际定向资格以复审记录为准。
 
 ## 会话停止与已接受限制
 
@@ -70,7 +70,7 @@ Agent 在执行读取这些变量的脚本前，将绑定解析为现有文件�
 
 ## 对 SteerLine 各链路的影响
 
-环境检测消费原最终报告和原会话停止事实；会话关闭确认后可正常完成，不因额外清理缺少保证继续显示检测中。SteerLine 继续要求 stopped、原封存合同、原生成功和匹配报告。新远端停止与 v1 封存的复验及远端环境检测的发布条件见[解阻验收](acceptance/orca-structured-prompt-input-p1-unblock.md)。普通执行、结果发布和取消同样遵守各自业务条件。默认普通开发的多轮停止和排空见 [P2 验收](acceptance/orca-structured-development-p2.md)。
+环境检测消费原最终报告和原会话停止事实；会话关闭确认后可正常完成，不因额外清理缺少保证继续显示检测中。SteerLine 继续要求 stopped、原封存合同、原生成功和匹配报告。新远端停止与 v1 封存的复验及远端环境检测的发布条件见[解阻验收](archive/2026-11/implementation/acceptance/orca-structured-prompt-input-p1-unblock.md)。普通执行、结果发布和取消同样遵守各自业务条件。默认普通开发的多轮停止和排空见 [P2 验收](archive/2026-11/implementation/acceptance/orca-structured-development-p2.md)。
 
 服务停止仅代表 Runner writer 退出，不代表活动 session 已关闭。重启核对原身份及原操作，不重发输入。换构建部署仍要求原 writer 已退出、业务与未完成控制已经收尾、各 Run 满足其冻结停止 scope；原 session 已确认关闭时，额外资源清理未知不单独阻断部署。close 自身未知仍按原停止边界处理，不用换目录或删库绕过。
 
@@ -80,4 +80,4 @@ SteerLine 不复制 Orca 私有状态机、不直接读取其数据库，也不�
 
 变更会话选择、输入、文件接线、结果、停止或恢复时，同一 PR 更新本设计、公开能力与受影响合同，记录实际固定提示词差异/字节数及验证。回归至少覆盖：关闭成功后结果封存；额外清理失败不阻断；丢响应不重放；错误身份/回执拒绝；离线及重启复用原回执；脚本读取真实环境变量并生成可核验报告。
 
-本文件描述当前设计决策，不以历史验收代替本次资格。结构化迁移的历史范围与限制见[原实施记录](acceptance/orca-structured-agent-session-mvp.md)；终端双端资格见[B6 验收](acceptance/orca-native-rollout.md)；能力层分工见[能力层设计](spec/orca-capability-layer.spec.md)。
+本文件描述当前设计决策，不以历史验收代替本次资格。结构化迁移的历史范围与限制见[原实施记录](archive/2026-11/implementation/acceptance/orca-structured-agent-session-mvp.md)；终端双端资格见[B6 验收](archive/2026-11/implementation/acceptance/orca-native-rollout.md)；能力层分工见[能力层设计](spec/orca-capability-layer.spec.md)。

@@ -1,12 +1,12 @@
 # P0 实测：去掉远端 helper 后的 Orca 能力
 
-> 历史归档（2026-10-21）：保留原构建、设计与验收事实；当前规则或汇总结论见[当前入口](../../../acceptance/orca-remote-native.md)。归档原因及范围见[归档索引](../../README.md)。
+> 历史归档（2026-10-21）：保留原构建、设计与验收事实；当前规则或汇总结论见[当前入口](../../2026-11/acceptance/orca-remote-native.md)。归档原因及范围见[归档索引](../../README.md)。
 
 > 后续状态：查询漏项已修复；用户明确参数只承诺按配置传递。P0 按收敛范围通过，见[补验报告](orca-remote-native-p0-query-fix-20261019.md)。以下保留首轮原始结论、失败与未覆盖范围。
 
 日期：2026-10-19。首轮结论：**无 helper 的核心执行链路可行，但 P0 不记为全部通过，P1 删除尚未开始。** 本轮只执行独立探针和本机证据回放；没有修改生产代码、部署/调用远端 SteerRunner helper，也没有操作原故障 Run。
 
-依据 [Spec](../../../spec/orca-remote-native.spec.md)、[Plan P0](../../../spec/orca-remote-native.plan.md#2-p0先核验真实-orca-能力再删除生产接线)。可复核材料在 [证据目录](../../../acceptance/evidence/orca-remote-native-p0-20261019/identity.json)；完整原始材料路径及 SHA256 在 [manifest](../../../acceptance/evidence/orca-remote-native-p0-20261019/raw-evidence-manifest.json)。
+依据 [Spec](../../2026-11/spec/orca-remote-native.spec.md)、[Plan P0](../../2026-11/spec/orca-remote-native.plan.md#2-p0先核验真实-orca-能力再删除生产接线)。可复核材料在 [证据目录](../../../acceptance/evidence/orca-remote-native-p0-20261019/identity.json)；完整原始材料路径及 SHA256 在 [manifest](../../../acceptance/evidence/orca-remote-native-p0-20261019/raw-evidence-manifest.json)。
 
 ## 1. 固定现场与方法
 

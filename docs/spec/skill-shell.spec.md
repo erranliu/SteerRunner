@@ -1,8 +1,8 @@
 # Spec：独立使用的双 Skill 薄壳
 
-> 2026-11-01 当前边界：以[个人执行器简化 Spec](personal-executor-simplification.spec.md) / [Plan](personal-executor-simplification.plan.md)为准。当前为 state/v7、user_version=7，默认 `%LOCALAPPDATA%/SteerRunner-v7`；拒绝 v6 及更旧目录，不迁移或代替原版本收尾。同构建服务重启接回原资源；升级先由原版本排空原生资源和未完成操作/控制，pr_ready 不等于排空。verify-takeover、跨构建活动任务接管及资源重建已删除。未知操作有界查询后转人工，显式 resume 最多 30 秒只读对账原操作，不重发输入、不创建替代资源，业务等待及 stop/close 保持。未来格式/契约兼容且已排空时可继续原目录并查询历史，不因 EXE 变化强制换目录。下文旧格式、接管矩阵及恢复资源条款仅供历史溯源，不覆盖此边界；原验收证据保持原构建结论。
+> 适用范围：当前状态目录、升级前排空与人工只读对账统一见[CLI 指南](../cli-guide.md#人工对账与资源丢失)及[长期承诺](steerrunner.spec.md#长期产品承诺)。本文按日期标注的旧版本、旧机制和验收事实仅按原记录时点阅读，不覆盖现行契约。
 
-日期：2026-10-23。状态：已实施，已完成本次受控验证及本机 Codex / 一个 Orca environment 的真实闭环；具体资格与未验边界见[验收记录](../acceptance/skill-shell.md)。源码调查基线：`1cfe2f9a065830ab62d540d3de4c0011ed603b56`。实施见 [Plan](skill-shell.plan.md)。
+日期：2026-10-23。状态：已实施，已完成本次受控验证及本机 Codex / 一个 Orca environment 的真实闭环；具体资格与未验边界见[验收记录](../archive/2026-11/implementation/acceptance/skill-shell.md)。源码调查基线：`1cfe2f9a065830ab62d540d3de4c0011ed603b56`。实施见 [Plan](../archive/2026-11/implementation/spec/skill-shell.plan.md)。
 
 ## 1. 目标与范围
 
@@ -241,4 +241,4 @@ Viewer 首版每 2 秒在后台枚举并读取快照，无文件监听、CLI 查
 | SS-13 | 1 秒采样/变化发布、5 秒心跳、2 秒读取周期和 15 秒期限符合第 7 节；14 秒旧快照只剩 1 秒，同序列恢复读取不续期；覆盖原子替换/损坏/删除/未知版本/序列/时间/睡眠/换代，过期不被假刷新 |
 | SS-14 | 慢读不冻结窗口/其它来源/过期计时；导出失败不改变执行/受理/资源结算，慢写超时不等于收尾，旧导出者不越过 lease 释放迟写；关闭聊天/Viewer 不影响服务，服务结束不伪造 stopped，无新增采集进程或后台服务 |
 
-实施状态与真实证据另登验收，不因本文建立而标为已实现。依据：[独立配置](independent-configuration.spec.md)、[产品与 CLI](steerrunner.spec.md)、[可靠性交付](../reliable-delivery.md)、[完整绑定与 observe](reliability-simplification.plan.md)、[Orca 本机/远程](orca-local-remote.spec.md)、[原生远端](orca-remote-native.spec.md)。
+实施状态与真实证据另登验收，不因本文建立而标为已实现。依据：[独立配置](independent-configuration.spec.md)、[产品与 CLI](steerrunner.spec.md)、[可靠性交付](../reliable-delivery.md)、[完整绑定与 observe](../archive/2026-11/implementation/spec/reliability-simplification.plan.md)、[Orca 本机/远程](../archive/2026-11/implementation/spec/orca-local-remote.spec.md)、[原生远端](../archive/2026-11/spec/orca-remote-native.spec.md)。

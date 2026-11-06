@@ -2,7 +2,7 @@
 
 > 历史归档（2026-10-21）：保留原构建、设计与验收事实；当前规则或汇总结论见[当前入口](../../../README.md)。归档原因及范围见[归档索引](../../README.md)。
 
-日期：2026-10-14。本文件登记实际来源和迁移边界；行为见 [Spec](../../../spec/steerrunner.spec.md)，步骤见 [Plan](../spec/steerrunner.plan.md)，实时验证见[验收](../../../acceptance/steerrunner.md)。
+日期：2026-10-14。本文件登记实际来源和迁移边界；行为见 [Spec](../../../spec/steerrunner.spec.md)，步骤见 [Plan](../spec/steerrunner.plan.md)，实时验证见[验收](../../2026-11/implementation/acceptance/steerrunner.md)。
 
 ## 固定基线
 

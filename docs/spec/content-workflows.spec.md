@@ -1,12 +1,12 @@
 # conversation/1 与 generate/1
 
-> 2026-11-01 当前边界：以[个人执行器简化 Spec](personal-executor-simplification.spec.md) / [Plan](personal-executor-simplification.plan.md)为准。当前为 state/v7、user_version=7，默认 `%LOCALAPPDATA%/SteerRunner-v7`；拒绝 v6 及更旧目录，不迁移或代替原版本收尾。同构建服务重启接回原资源；升级先由原版本排空原生资源和未完成操作/控制，pr_ready 不等于排空。verify-takeover、跨构建活动任务接管及资源重建已删除。未知操作有界查询后转人工，显式 resume 最多 30 秒只读对账原操作，不重发输入、不创建替代资源，业务等待及 stop/close 保持。未来格式/契约兼容且已排空时可继续原目录并查询历史，不因 EXE 变化强制换目录。下文旧格式、接管矩阵及恢复资源条款仅供历史溯源，不覆盖此边界；原验收证据保持原构建结论。
+> 适用范围：当前状态目录、升级前排空与人工只读对账统一见[CLI 指南](../cli-guide.md#人工对账与资源丢失)及[长期承诺](steerrunner.spec.md#长期产品承诺)。本文按日期标注的旧版本、旧机制和验收事实仅按原记录时点阅读，不覆盖现行契约。
 
 日期：2026-10-19。普通开发授权；不修改 SteerLine、不部署、不进入 roadmap。
 
 ## 边界与调查
 
-设计调查时基线为 development/2、development-audited/2 和 state/v3。当前持久格式为 state/v7；普通重启及人工对账按[个人执行器 Spec](personal-executor-simplification.spec.md)，两种内容流程仍使用 conversation/1、generate/1。
+设计调查时基线为 development/2、development-audited/2 和 state/v3。当前持久格式为 state/v7；普通重启及人工对账按[个人执行器 Spec](../archive/2026-11/implementation/spec/personal-executor-simplification.spec.md)，两种内容流程仍使用 conversation/1、generate/1。
 当前 RunRequest 强制仓库、Spec/Plan、publication；freeze 创建 Git 副本；queueInput 注入开发材料；
 Route 负责补报/发布。不能将这些开发前置用于内容流程。现有 Record/Commit、operation、
 reliable.Next/NormalizeResult、Codex ExecutionLifecycle、原生问答路由、原资源只读资格核验、owned Job 停止是复用边界，不另建运行时、账本或调度器。
@@ -41,7 +41,7 @@ conversation：execute → input，显式 message → 同一原生 thread execut
 永久拒绝后续消息。一个 Run 至多一个活动轮，原问答只答原轮。
 内容流程不冻结或使用开发结果 parser 配置，接管不要求该不适用的配置；原材料、workflow 执行语义、implementation codec 和原生身份校验继续适用。开发流程仍要求有效的原结果获取配置。
 
-兼容服务换代沿[共同恢复契约](service-generation-recovery.spec.md)保留原授权与原 owner/native，
+兼容服务换代沿[共同恢复契约](../archive/2026-11/spec/service-generation-recovery.spec.md)保留原授权与原 owner/native，
 空闲仍等待显式 message；已接受但尚未冻结的 message 绑定原执行范围，核验原会话/目录后仅冻结一次。
 已建立副作用意图的输入只对账，不创建替代 thread 或重放历史；无法核实即未核实。
 原暂停/撤销门槛保持，适用的显式 resume 仍须核验原会话及旧 writer。close/stop 结算尚未派发的请求。

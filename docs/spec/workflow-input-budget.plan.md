@@ -2,7 +2,7 @@
 
 日期：2026-10-28。当前修订：取消 C/T 正文额度，只约束 R≤1000B；原执行记录保留其历史含义。状态：P1–P3 已实现，P4 受控验证通过，真实后续完成确认有缺口。依据 [Spec](workflow-input-budget.spec.md)；用户已明确授权本 Plan 与实施。仅 Runner，不部署、不恢复原 Run、不运行 MagicPotion/Unity 或 SteerLine 业务测试。
 
-后续状态：原真实失败保留；按追加授权修正 Orca 合法初始零值的恢复资格，受影响包受控回归、270 次关键场景及一次新的真实完整零值恢复路径通过。见[专项验收](../acceptance/native-completion-confirmation.md)末节，不追认原失败已修复。
+后续状态：原真实失败保留；按追加授权修正 Orca 合法初始零值的恢复资格，受影响包受控回归、270 次关键场景及一次新的真实完整零值恢复路径通过。见[专项验收](../archive/2026-11/acceptance/native-completion-confirmation.md)末节，不追认原失败已修复。
 
 ## P1 公共预算与输入事实
 
