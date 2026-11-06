@@ -12,4 +12,4 @@ audit-experiment.test.exe -test.run=^TestAuditJSONOutputExperiment$ -test.v -tes
 
 选择 shell 路径并在本试验进程的 PATH 前置其目录，是为了避免 detached 宿主选到 WindowsApps 的 MSIX 别名，不修改系统 PATH、权限或认证。原生日志会包含试验材料，只用于本次隔离证据。
 
-本入口是限定能力试验，不进入普通 L1，不计为真实 Run、发布或跨构建接管资格。通过也不能单独证明全后端默认可改；结果与默认决策登记在[可靠性交付简化验收](../../docs/acceptance/reliable-delivery-simplification.md)。失败/中断批次保留，修夹具须用新目录，不能覆盖旧结果。
+本入口是限定能力试验，不进入普通 L1，不计为真实 Run、发布或跨构建接管资格。通过也不能单独证明全后端默认可改；结果与默认决策登记在[可靠性交付简化验收](../../docs/archive/2026-11/implementation/acceptance/reliable-delivery-simplification.md)。失败/中断批次保留，修夹具须用新目录，不能覆盖旧结果。

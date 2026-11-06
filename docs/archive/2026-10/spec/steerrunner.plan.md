@@ -2,14 +2,14 @@
 
 > 历史归档（2026-10-21）：保留原构建、设计与验收事实；当前规则或汇总结论见[当前入口](../../../README.md)。归档原因及范围见[归档索引](../../README.md)。
 
-接受前 Git 缓存目标分支刷新修复单独见[分支刷新 Plan](../../../spec/repository-base-refresh.plan.md)及其测试计划，不扩大本计划历史 live/恢复结果。
+接受前 Git 缓存目标分支刷新修复单独见[分支刷新 Plan](../../2026-11/implementation/spec/repository-base-refresh.plan.md)及其测试计划，不扩大本计划历史 live/恢复结果。
 
 > 2026-10-15 独立三级测试更新：当前定义与实施入口以 [独立测试说明](../../../testing.md) 为准。
 > L1=规则/组件；Controlled=L2/L3 前置；L2=本机 Codex + SteerlineTest 真实创建/合入 PR；
 > L3=可持续扩展的真机真实环境测试集，包含远端 Orca。以下首版历史入口中的 L1/L2
 > 曾是 live 场景编号，旧取消范围和 SteerLine 测试依赖不再作为本项目测试目标。
 
-日期：2026-10-14。用户已授权实施本计划。[Spec](../../../spec/steerrunner.spec.md)为行为依据，自动/人工验收及实时结果统一登记在[专属验收](../../../acceptance/steerrunner.md)。P0–P7 是跨仓交付检查点，不是 roadmap Task 或新的执行聊天。原调查基线保留下表；实施来源与主干交接事实见 [source-map](../extraction/source-map.md)。
+日期：2026-10-14。用户已授权实施本计划。[Spec](../../../spec/steerrunner.spec.md)为行为依据，自动/人工验收及实时结果统一登记在[专属验收](../../2026-11/implementation/acceptance/steerrunner.md)。P0–P7 是跨仓交付检查点，不是 roadmap Task 或新的执行聊天。原调查基线保留下表；实施来源与主干交接事实见 [source-map](../extraction/source-map.md)。
 
 ## 1. 调查版本、交接与前置
 
@@ -137,7 +137,7 @@ SteerLine 的保留/替换安排：
 
 ## 5. 测试计划
 
-全部自动项 [SR-A01–SR-A12](../../../acceptance/steerrunner.md#2-自动验收项)如下映射。Runner尚无分级runner，本次使用unit/controlled/live的定向Go入口；SteerLine沿用其定向集成和L3入口，不复制一套完整测试调度框架。
+全部自动项 [SR-A01–SR-A12](../../2026-11/implementation/acceptance/steerrunner.md#2-自动验收项)如下映射。Runner尚无分级runner，本次使用unit/controlled/live的定向Go入口；SteerLine沿用其定向集成和L3入口，不复制一套完整测试调度框架。
 
 ### 5.1 入口建设及执行约定
 
@@ -174,7 +174,7 @@ live测试使用 `//go:build live`，只有显式 `-tags=live` 和完整manifest
 
 ### 5.2 人工窗口
 
-[SR-M01](../../../acceptance/steerrunner.md#3-人工验收)安排在独立CLI和SteerLine接入可用之后，参与者/时间/主机待定，可后置，不作为无关步骤前置。实际执行、归属或恢复失败仍阻塞对应自动项，不因人工窗口后置而豁免。
+[SR-M01](../../2026-11/implementation/acceptance/steerrunner.md#3-人工验收)安排在独立CLI和SteerLine接入可用之后，参与者/时间/主机待定，可后置，不作为无关步骤前置。实际执行、归属或恢复失败仍阻塞对应自动项，不因人工窗口后置而豁免。
 
 ## 6. 交付与停止条件
 
@@ -195,7 +195,7 @@ Spec/Plan不维护实时运行结果。实施源版本、命令、结果和限�
 
 审计补充（SR-A06，测试计划）：本机隔离 SQLite/受控原生端口，在本轮修复后、PR 推送前运行 `go test ./internal/application ./internal/execution/adapters/codex -run '^(TestSRNativeAnswerRejectsAmbiguityBeforeIntent|TestAsyncQuestionNativeIdentityOptionsReplayAndFinal|TestAsyncQuestionObserverUsesNewInputCommand|TestAsyncQuestionObserveSteerAndReconcile)$' -count=1 -timeout=2m -v`。原题集精确匹配，重复键/额外题目/固定选项额外答案/空回答/未提供选项须在保存原生意图前拒绝，合法选项 ID 映射为标签；现有原问题路由、原回合和恢复零重发场景不得退化。证据登记至专属验收 §9 与 `.evidence/audit-answer-native.log`。不因这次输入校验变更重跑已通过的完整 workflow/live 矩阵。
 
-安装启动补充测试计划（[WB-A01–WB-A04](../../../acceptance/windows-broker-install.md)）：
+安装启动补充测试计划（[WB-A01–WB-A04](../../2026-11/implementation/acceptance/windows-broker-install.md)）：
 
 | 级别/场景 | 环境与命令 | 时点、通过条件 | 证据 |
 | --- | --- | --- | --- |
@@ -207,4 +207,4 @@ Spec/Plan不维护实时运行结果。实施源版本、命令、结果和限�
 
 ## 执行可见性增量
 
-用户授权的流程/状态展示及最后消息查询独立见 [Plan](../../../spec/execution-observability.plan.md) / [验收](../../../acceptance/execution-observability.md)。保持单写事务和原恢复规则，不作为原生真机验收通过证据。
+用户授权的流程/状态展示及最后消息查询独立见 [Plan](../../2026-11/implementation/spec/execution-observability.plan.md) / [验收](../../2026-11/implementation/acceptance/execution-observability.md)。保持单写事务和原恢复规则，不作为原生真机验收通过证据。

@@ -1,6 +1,6 @@
 # Runner 输入预算与提示词收敛验收
 
-后续规则修订：调用方 2000B 与总量 3000B 正文预算已取消，仅保留 Runner 1000B，见[取消调用方预算验收](caller-input-unlimited.md)。下列大小与结论仍对应原冻结版本，不因本次放宽重新判定历史失败或未知投递。
+后续规则修订：调用方 2000B 与总量 3000B 正文预算已取消，仅保留 Runner 1000B，见[取消调用方预算验收](../archive/2026-11/implementation/acceptance/caller-input-unlimited.md)。下列大小与结论仍对应原冻结版本，不因本次放宽重新判定历史失败或未知投递。
 
 日期：2026-10-28。依据 [Spec](../spec/workflow-input-budget.spec.md) 与 [Plan](../spec/workflow-input-budget.plan.md)。预算和提示词整改已实现，受控功能验证通过；真实最小链路的第二次 Runner 完成确认未通过。本报告不代表发布缺陷已修复、完整原生矩阵合格或业务链重新验收。未部署、创建 PR、恢复原 Run，未运行 MagicPotion/Unity 或 SteerLine 业务测试。
 
@@ -71,6 +71,6 @@ Windows 完整转义 argv 独立检查 32767 个 UTF-16 单元（含 NUL），�
 
 用户追问后，未重跑真实模型或业务链。`TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput` 与 `TestThinOriginalQueryCompletesThroughNativeLifecycle` 各以 `-count=10` 运行，20 次顶层测试全部通过，见 `controlled-tests/completion-repeat.log`。它们验证给定受控元数据的恢复，尚未覆盖本次真实触发条件。现有真实入口的 `short-sequence` 只有一次失败样本，不能称为稳定复现；该样本未保存每次 observer 内部诊断/状态更新，尚不足以直接固化成确定失败的回归序列。
 
-后续按用户授权补做[带原生状态与 observer 诊断的最小探针及受控回归](native-completion-confirmation.md)。新真实多行和单行均完成；捕获数据组合已稳定证明“无 started 回执 + 完整 generation=0 元数据、无其他合格证明”阻塞恢复入口。该轮没有重新复现真实持续超时，不能追认原超时或原发布草稿的根因；生产完成条件未放宽。
+后续按用户授权补做[带原生状态与 observer 诊断的最小探针及受控回归](../archive/2026-11/acceptance/native-completion-confirmation.md)。新真实多行和单行均完成；捕获数据组合已稳定证明“无 started 回执 + 完整 generation=0 元数据、无其他合格证明”阻塞恢复入口。该轮没有重新复现真实持续超时，不能追认原超时或原发布草稿的根因；生产完成条件未放宽。
 
 其后核实 Orca 1.4.242 的初始 incarnation=0 为合法值，并按授权修正 Runner 的解码和恢复资格判断。两个受影响包的完整受控回归、270 次关键场景及一次新的真实完整零值恢复路径均通过，详见上述报告末节。缺失/null 与零的区别和原输入/完成归属要求保留；这不追认本报告原超时或发布草稿的历史原因。

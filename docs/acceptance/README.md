@@ -1,71 +1,23 @@
-# 验收记录索引
+# 当前验收与未结事项
 
-核对日期：2026-11-03。每份报告只证明其固定源码、EXE、配置和场景；阅读报告开头的范围修订及最终记录。归档不改变原通过、失败、取消或未验结论。
+核对日期：2026-11-06。固定构建报告已批量移入[实施与验收历史](../archive/2026-11/implementation/README.md)。本目录保留当前仍承担契约说明、未结验收或本轮工作记录职责的报告；原始证据仍位于 [evidence/](evidence/)，路径与字节保持。
 
-| 范围 | 记录与适用边界 |
+| 当前保留 | 原因与边界 |
 | --- | --- |
-| 本机 Orca Codex execute/1 实施 | [实施与验收](orca-structured-agent-session-mvp.md) / [提 PR 前质量审计](orca-structured-agent-session-mvp-quality-audit.md)：原子首消息、复杂回合完整结果、活动 stop 和资源未核实边界；DSH 执行及专用历史/用量移除；其它链路回归范围单列 |
-| 本机 Orca Codex execute/1 与 DSH 退役设计（历史轮次） | [一轮设计复审](orca-structured-agent-session-mvp-design-audit.md)：首 PR 限单组合结构化输入/完整结果和停止请求，缺资源证据明确未核实；DSH 执行及专用历史/用量一并移除。只改文档，未实现/运行测试，不授予新资格 |
-| Orca Codex/Pi 结构化会话 P0 | [现场核验](orca-structured-agent-session.md) / [阻断再调查](orca-structured-agent-session-blocker-review.md)：三组合短探针；Runner 可复用授权围栏和本机 Git/checkpoint，原会话资源结算与逐回合实际模型公开事实仍缺；远端 Pi 仅环境阻断，未安装；未改运行代码，无正式 Runner 资格 |
-| Orca 能力层 B0 原生可行性 | [验收](orca-native-capability-baseline.md)：双端同源同 EXE 各两轮无 helper 原生输入及原终端清理通过；独立审计唯一 P2 已修复并复核，修复后 30 个新增、原 132 个回归子例通过；不授予 B5 开发资格 |
-| Orca 能力层 B1 原终端查询 | [验收](orca-terminal-query-capability.md)：自有身份查询接入业务和控制终端，双端无模型现场及受控回归通过；双页四处围栏替换拒绝和 CLI 队列验证通过；独立审计通过 |
-| Orca 能力层 B2a 公共命令构造 | [验收](orca-cli-construction-capability.md)：3 根/13 个新增子例、21 根/35 个回归子例和依赖守卫通过；共用构造/解码，旧字节及派发边界保持；独立审计通过 |
-| Orca 能力层 B2b 终端发送 | [验收](orca-terminal-send-capability.md)：4 根/71 个字段范围子例、37 根/222 个消费方子例、基础协议及依赖守卫通过（有重叠不相加）；独立审计通过 |
-| Orca 能力层 B2c 终端读取 | [验收](orca-terminal-read-capability.md)：4 根/64 个新能力/接线子例、22 根/149 个原消费者子例及依赖守卫通过（有重叠）；独立审计通过 |
-| Orca 能力层 B2d 终端等待 | [验收](orca-terminal-wait-capability.md)：2 根/22 个新增子例、14 根/103 个回归子例及依赖守卫通过；wait 的预算/围栏及就绪与业务状态区别保持；独立审计通过 |
-| Orca 能力层 B3 状态与会话读取 | [验收](orca-state-session-capability.md)：16 根/181 个定向子节点、223 根/1024 个全集子节点及最终 reader 13 叶例通过；7 opt-in skip，持久/证明/范围保持；独立审计通过 |
+| [用量与计费职责](billing-ownership.md) | 同时承担现行公开用量和费用职责说明；固定构建验证按正文范围理解 |
+| [输入预算](workflow-input-budget.md) | 真实后续输入已接受，但完成确认及原失败根因未裁定；归档整理不关闭这些缺口 |
+| [Orca CLI 等待](orca-cli-wait-retry.md) | 保留原安全告警和完整 Controlled/原生资格未完成的阻断，不因已合并代码宣称通过 |
+| [首批文档归档](docs-archive-20261106.md) | 本轮未提交的第一阶段记录，反映当时整理结果 |
+| [文档精简合并](docs-consolidation-20261106.md) | 本轮未提交的第二阶段记录，反映当时整理结果 |
+| [Spec 与验收目录收敛](docs-retention-20261106.md) | 本批迁移、保留理由、引用与完整性检查 |
 
-| 权限资源与原完成证明职责收口 | [专项验收](native-proof-boundaries.md) / [再审计](native-proof-reaudit.md)：原编码/提交/执行/恢复/停止及共享夹具保持；初轮448组件/57定向/3公开场景，最终整合38定向及3公开场景通过；初轮失败/时限边界保留，预算旧夹具随上游修复后通过 |
-| 新意图写入边界与展示残留清尾 | [专项验收](new-intent-boundary-cleanup.md) / [再审计](new-intent-boundary-reaudit.md)：四类新构造拒绝，历史/原对账/停止、持久格式及共享夹具保持，净减26行；初轮498顶层及3公开场景，再审计27定向及最新主线3公开场景通过；失败/skip/计时边界单列 |
-| 零消费者生产入口与孤立夹具清尾 | [专项验收](orphan-entry-cleanup.md) / [实现再审计](orphan-entry-reaudit.md)：设计先行，生产净减201行、孤立夹具净减333行；共享夹具/断言、持久格式及保留链路未改，496个组件/application顶层与3个公开场景通过，再审计25个定向通过；首轮沙箱失败/超时及skip单列 |
-| 单事件确认与旧环境分支收口 | [专项验收](event-ack-cleanup.md) / [实现再审计](event-ack-reaudit.md)：原提交/可选消息/owner journal边界保持，492个组件/application顶层和3个公开场景通过；持久格式不变，生产净减105行；新夹具首轮失败/skip单列 |
-| Orca 能力层 B4a 仓库与工作区查询 | [验收](orca-resource-query-capability.md)：1 根/17 个能力子节点、24 根/77 个原消费者子节点及依赖守卫通过；独立审计通过 |
-| Orca 能力层 B4b 资源创建 | [验收](orca-resource-create-capability.md)：2 根/25 新子节点、34 根/141 原回归子节点和依赖守卫通过；独立审计通过 |
-| Orca 能力层 B4c 受限文件 | [验收](orca-scoped-files-capability.md)：最终 5 根/24 子节点、52 根/131 原回归子节点、WS/守卫/生产与 live-tag 编译通过；独立审计通过 |
-| Orca 能力层 B6 正式合同与收口 | [验收](orca-native-rollout.md)：公开合同/保留例外和升级排空同步，最终集成构建双端开发/反馈/未合并 PR #756/#757、活动停止和真实离线四场通过；164文件与实施后独立审计 clean |
-| Orca 能力层 B5 双端原生 Runner 候选 | [验收](orca-shared-native-runner.md)：最终同源码/构建双端开发、原会话反馈、未合并 PR #754/#755、活动停止及真实离线闭环；424 文件证据和独立审计通过，限 Codex/development/2 与 orca_terminal |
-| Orca 能力层 B4d 关闭与完整清单 | [验收](orca-close-inventory-capability.md)：协议无执行依赖、一次 close/完整清单和执行结算分离；两包全集及原停止/离线回归通过，独立审计唯一 P2 已修复并关闭 |
-| 旧历史采集支线与 Orca Backend 清理 | [专项验收](history-adapter-cleanup.md) / [实现再审计](history-adapter-reaudit.md)：设计审计后实施，phase/恢复夹具共享遗漏已修正；生产净减 986 行，持久格式不变，490 个组件/application 顶层及两个公开场景通过；失败/skip/同产物关联单列 |
-| 旧规则与 Lifecycle 接口清理 | [专项验收](dormant-lifecycle-cleanup.md) / [实现再审计](dormant-lifecycle-reaudit.md)：设计审计后实施；生产净减 688 行，486 个组件/application 顶层及 3 个公开场景通过，编码不变；skip/首轮编译失败单列，无新增真机资格 |
-| 退出证明生产端与旧预算重建清尾（state/v8） | [初轮验收](exit-proof-budget-cleanup.md) / [实现再审计](exit-proof-budget-reaudit.md)：修正合法受理夹具、补九个原结果回归；专属 exit 文件 I/O 和三类预算反推删除；原 Job/reader、直接签名、历史读取及 unknown/stop 保持，净减 186 行；未部署/发布 |
-| 本机 Orca Codex 停止条件收敛（state/v8） | [初轮验收](orca-local-codex-stop-simplification.md) / [实现再审计](orca-local-codex-stop-reaudit.md)：登记原终端/helper/根身份，删除签名退出及控制关闭证明门禁；受影响组件、3 项公开受控、客户端合同和一条真实停止探针通过；不证明全部后代退出，不授予完整 L2/L3 |
-| 个人执行器 P1 快速定向验证 | [独立验收](personal-executor-p1.md)：26 项 focused 合同、75 项前置复用合同及相邻回归；本机正式定向 1/1、185.85 秒，完整前置启动为 0，完整 L2 资格为 false；该报告仅记录当时 P1；后续 P2/P3 见下，P4 未推进 |
-| 验证链路解耦与 L2 前置复用 | [实施历史](validation-reuse.md)、[实现审计与最终资格](validation-reuse-audit.md)：75 项合同、完整默认前置和真实 L2 分别登记；L3/L4 不开放复用 |
-| Parser 内存文本任务解耦 | [实施与验证](parser-decoupling.md)：复用现有 Codex 登录/CLI，工具和进程管理仅在 parser 内；无原生操作/owner/停止取证耦合，保留 state/v6；先前 API 方向见 [历史](parser-decoupling-p1.md) |
-| 开发宿主认证（state/v6） | [实施及验证范围](host-native-auth.md)、[审计与本机 L2](host-native-auth-audit-l2.md)：删除 broker/CA/socket/租期，保留只读、parser、原生远端与精确停止；真机缺口单列 |
-| 开发统一 full_access | [实施与验证](development-full-access.md)、[实施后审计与修复](development-full-access-audit.md)：开发 sandbox 退役、read_only 与认证保留；最终构建回归与真实后端未验范围单列 |
-| 取消调用方正文预算 | [变更及受控验收](caller-input-unlimited.md)：取消 C=2000/T=3000 拒绝线；保留 Runner 1000B、计量冻结及传输保护 |
-| Runner 输入契约与字节预算 | [预算及提示词收敛](workflow-input-budget.md)：受控测试与软目标取舍；原配置新现场的后续 144B 输入公开接受，但 Runner 完成确认超时，原投递缺陷未宣称修复 |
-| 后续输入完成确认 | [原生状态与 observer 诊断及合法零值修复](native-completion-confirmation.md)：保留修复前证据；270 次受控断言及一次真实完整零值恢复路径通过，原输入/完成归属要求保留，原失败未追认 |
-| PR67 必要修复整合 | [选择性整合验收](pr67-integration.md)：预算内草稿折行重绘与同 owner 恢复、260 次受控断言及实际重绘路径；保留失败/预检退出，不迁入实验开关或通用诊断层 |
-| 双 skill 薄壳与独立 Viewer | [专项验收](skill-shell.md)：原 ID 调用、只读 JSON、刷新/过期、独立安装、本机 / 一个 Orca environment 的真实 PR 与停止范围 |
-| 当前公开读取与受理边界 | [完整绑定及原子 observe](reliability-simplification.md) |
-| Run token 与独立费用 | [用量、归属去重及授权撤销](run-usage-and-cost.md)；本机三组合、远端 Codex 的主会话现场单列，远端 Pi/DSH 生产绑定仍不支持 |
-| 默认审计提示与交付简化 | [默认提示及跨构建冻结](reliable-delivery-simplification.md) |
-| 内部执行职责整理 | [执行边界收敛](execution-boundary-refactor.md) |
-| 服务换代与原执行接管 | [恢复专项](service-generation-recovery.md)、[近期 PR 补测](pr-test-gaps-20261020.md)、[创建执行器修复复验](pr38-review-20261020.md)；后两项补充原历史矩阵，真实后端及调用方资格仍独立判断 |
-| 内容工作流与接管 | [生成/对话](content-workflows.md)、[内容接管](content-takeover.md) |
-| 固定 commit 的只读代码调查与多文档 | [GEN-REPO 验证](generate-repository.md)：受控停止/未知/重启与真实本机 Codex 调查分别记录 |
-| 结果提取与 parser | [结果获取](result-acquisition.md) |
-| R2 证据与 Git 查询 | [R2 专项](run-evidence-r2.md) |
-| 运行时单文件汇报 | [PR #55 审计及当前构建验收](runtime-progress-pr55-review.md) / [主线整合验收](runtime-progress-integration.md) / [原始专项与失败历史](runtime-progress.md)；本地、Orca 本地/远端、恢复、多 Run 与实际并行分别登记 |
-| 独立配置及测试体系 | [配置](independent-configuration.md)、[测试分层](test-levels.md)、[首批稳定性](l3-execution-stability.md)；旧整轮结果不代替当前全集资格 |
-| 本机认证 | [沙箱认证](sandbox-authentication.md)、[个人多机与 gh-only](personal-runner-gh-only-20261019.md) |
-| 旧 Check 退役 | [删除契约、消费者和验证](check-retirement.md) |
-| Orca CLI 等待/读取重试 | [专项实施与独立验收](orca-cli-wait-retry.md)；local/remote 分目标、保留失败与清理证据 |
-| PR73再审计 | [查询接线与证据范围修正](orca-native-submit-reaudit.md)：生产构造器本机原输入查询、7170次矩阵/L1及新源双端各3场；无helper本机真实与远端实际模型均未独立核验 |
-| 先前Orca原生输入保真 | [最新验收与原始证据](orca-native-submit-integrity.md)：统一CR传输编译、原生模型桥128MiB上限及正式开始凭据；同源双端各3/3、7050次稳定回归，L1与最终独立复审通过，边界按报告登记；历史失败不改判 |
-| Orca 当前路径 | [连接统一](orca-local-remote.md)、[远端原生](orca-remote-native.md)、[通用 Agent](orca-generic-agent.md)；旧 helper 结果不证明新远端能力 |
-| 停止及资源范围 | [初始化停止](initialization-stop.md)、[Orca 停止取证](orca-shutdown-verification.md)、[停止验证](shutdown-verification.md) |
-| 原会话与进度查看 | [原会话查看](native-session-viewer.md)、[执行可见性](execution-observability.md) |
-| Git、命名与发布 | [基线刷新](repository-base-refresh.md)、[工作区前缀](worktree-name-prefix.md)、[PR 元数据](pr-merge-metadata.md)、[L2 发布及 Git 锁](l2-production-publication.md) |
-| 构建、启动及首次接入 | [运行配置发布](run-configuration-publication.md)、[Windows 启动](windows-broker-install.md)、[首版独立化](steerrunner.md)；首版记录保留当时范围 |
-| 历史设计与旧构建复测 | [归档目录与替代入口](../archive/README.md) |
+## 查阅历史
 
-原始证据继续位于 [evidence/](evidence/)。新结果追加到对应专项，登记固定构建和实际范围；不得把旧失败改记为通过，或把受控结果记作真机资格。
+- [全部归档入口](../archive/README.md)按批次查阅；[本批清单](../archive/2026-11/implementation/README.md)逐项列出迁出的 122 份报告和 129 份专项 Spec/Plan。
+- [旧路径映射](../archive/path-map.json)可按原文件名、任务名或旧路径搜索，也包括此前归档的短导引。
+- 原始证据和运行诊断固定引用的旧报告保留必要短导引，其余旧入口移除；日常引用直接指向历史正文。原始证据内部不改路径或源码摘要。
+- 当前测试范围与接线缺口见[测试清单](../test-catalog.md)，产品/执行边界见[领域契约](../spec/README.md)和[Orca 指南](../orca-execution.md)。报告已归档不代表所述机制失效，也不授予当前构建资格。
 
-- [个人执行器 P2：观测解耦](personal-executor-p2.md)：P2 独立验收通过；Orca local 健康/故障及完整 L1 已补齐，收益与历史失败分开记账；该报告记录原 v6 构建，后续状态见 P3。
+## 记录规则
 
-- [个人执行器 P3：恢复/兼容删除与人工对账](personal-executor-p3.md)：state/v7、生产净减少 558 行；完整 L1 720 测试、Controlled 26/26、三条真实最小链路通过，P4 未推进。
-
-- [个人执行器 P4：问答输入职责收口](personal-executor-p4.md)：私有选择入口 2→1，净增 23 行的窄能力取代跨层重复；145 项组件、25 项 application 定向及 3 项公开受控通过，无协议变化，不重跑全后端。
+普通修复仍在本目录保存独立验收记录；文件列表和搜索是完整记录入口，中央索引只按导航需要维护。固定批次结束后迁入历史区，保留源码/EXE/配置、通过、失败、取消、未验及当时 PR/部署状态，不跨构建拼接结果。定向/完整、受控/真机、合并前/合并后分别登记；测试入口与资格遵循[测试指南](../testing.md)。

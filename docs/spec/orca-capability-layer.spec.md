@@ -1,6 +1,6 @@
 # Orca 能力层长期设计
 
-> 2026-11-03 后继最小 PR（已实施，资格见实施记录）：[结构化会话 Spec](orca-structured-agent-session.spec.md) / [Plan](orca-structured-agent-session.plan.md) 仅迁本机 Codex 新 execute/1；停止缺证据明确未核实，同时移除 DSH 执行和专用历史/用量支持。不修改 Orca；其它 Codex/Pi、terminal 与非 Orca 保持，完整迁移/旧 helper 退役留后续。B0–B6 结论和历史证据不重写，新方案不继承其资格。
+> 2026-11-03 后继最小 PR（已实施，资格见实施记录）：[结构化会话 Spec](../archive/2026-11/implementation/spec/orca-structured-agent-session.spec.md) / [Plan](../archive/2026-11/implementation/spec/orca-structured-agent-session.plan.md) 仅迁本机 Codex 新 execute/1；停止缺证据明确未核实，同时移除 DSH 执行和专用历史/用量支持。不修改 Orca；其它 Codex/Pi、terminal 与非 Orca 保持，完整迁移/旧 helper 退役留后续。B0–B6 结论和历史证据不重写，新方案不继承其资格。
 
 维护日期：2026-11-03。设计核对基线：`efa871cfffb950505bf2f0a325ec7751fb4be7f3`。
 
@@ -8,7 +8,7 @@
 
 统一交付：[SteerRunner PR #93](https://github.com/erranliu/SteerRunner/pull/93)，分支 `codex/orca-capability-layer`。各批提交、独立修复及验收分别保留；未合并或部署。
 
-后续完整回归发现的只读usage绑定、原生夹具和目录门禁回归，以及基线工作流目录断言，已修复并通过正式完整L1/Controlled；范围和历史失败见[B6补验记录](../acceptance/orca-native-rollout.md#2026-11-03-pr-93-完整回归修复)。原现场资格仍绑定其原构建。
+后续完整回归发现的只读usage绑定、原生夹具和目录门禁回归，以及基线工作流目录断言，已修复并通过正式完整L1/Controlled；范围和历史失败见[B6补验记录](../archive/2026-11/implementation/acceptance/orca-native-rollout.md#2026-11-03-pr-93-完整回归修复)。原现场资格仍绑定其原构建。
 
 ## 1. 设计目标与范围
 
@@ -132,19 +132,19 @@ Agent 的提示词包装、输入预算、逻辑正文规范化、Codex 终端�
 
 | 批次 | 状态 | 抽象与接入 | 同批收敛收益 | 完成条件 |
 | --- | --- | --- | --- | --- |
-| B0 原生可行性核验 | 已完成 | [Spec](orca-native-capability-baseline.spec.md) / [Plan](orca-native-capability-baseline.plan.md) / [验收](../acceptance/orca-native-capability-baseline.md)；双端无 helper 的两轮原输入、完整 final、同会话后续及原终端清理通过 | 取得共同底层能力及合同差距，生产不变 | 独立审计完成，未知创建记录缺口已修复；不签收开发业务资格 |
-| B1 原终端查询 | 已完成 | [Spec](orca-terminal-query-capability.spec.md) / [Plan](orca-terminal-query-capability.plan.md) / [验收](../acceptance/orca-terminal-query-capability.md)；使用 Orca 身份/结果类型，业务终端及本机控制终端共用查询入口 | 控制每页两次 CLI show 已删除，原身份围栏保持 | 双端无模型查询、受控分页/替换/取消及原回归通过；独立审计通过 |
-| B2a 公共命令构造 | 已完成 | [Spec](orca-cli-construction-capability.spec.md) / [Plan](orca-cli-construction-capability.plan.md) / [验收](../acceptance/orca-cli-construction-capability.md)；共用路由、环境屏蔽、参数编译和基础 envelope 解码，接入日常调用及 creation owner 的对应构造/校验 | 三处专属拼接及 owner 专属基础结果解码已删除，原命令和创建计划编码保持 | 旧命令字节/摘要、唯一派发、回调及定向回归通过；独立审计通过 |
-| B2b Terminal 发送 | 已完成 | [Spec](orca-terminal-send-capability.spec.md) / [Plan](orca-terminal-send-capability.plan.md) / [验收](../acceptance/orca-terminal-send-capability.md)；业务/agent-start/control 共用原生发送 | 三处对应命令/身份解码重复已删除，正文与阶段意义仍属消费方 | 原参数、接受/开始区别、字段范围及未知恢复验证通过；独立审计通过 |
-| B2c Terminal 读取 | 已完成 | [Spec](orca-terminal-read-capability.spec.md) / [Plan](orca-terminal-read-capability.plan.md) / [验收](../acceptance/orca-terminal-read-capability.md)；readiness/control 共用单页 read | 两处参数/结构重复已删除，原字段范围、窗口及回执用途保持 | cursor、完整行、取消、分页身份围栏及原消费者回归通过；独立审计通过 |
-| B2d Terminal 等待 | 已完成 | [Spec](orca-terminal-wait-capability.spec.md) / [Plan](orca-terminal-wait-capability.plan.md) / [验收](../acceptance/orca-terminal-wait-capability.md)；原双端 composer 共用原生 wait | 唯一旧 wait 参数/结构已删除，等待不承担业务完成证明 | 原参数/期限、前后身份及负面等待/取消/原输入回归通过；独立审计通过 |
-| B3 状态与会话读取 | 已完成 | [Spec](orca-state-session-capability.spec.md) / [Plan](orca-state-session-capability.plan.md) / [验收](../acceptance/orca-state-session-capability.md)；原生消息/状态与执行认领分离，双端接入一份策略 | 协议状态已移除执行身份/原输入证明，原策略迁至执行侧 | 多用户原样读取、错误归属拒绝、原围栏/来源及两包全集通过；独立审计通过 |
-| B4a 仓库与工作区查询 | 已完成 | [Spec](orca-resource-query-capability.spec.md) / [Plan](orca-resource-query-capability.plan.md) / [验收](../acceptance/orca-resource-query-capability.md)；共用实际 repo list/worktree show 原生查询 | 目标 selector 选择留给消费方，删除对应查询/解析 | 原主机、仓库身份、基线和歧义拒绝保持 |
-| B4b 资源创建 | 已完成 | [Spec](orca-resource-create-capability.spec.md) / [Plan](orca-resource-create-capability.plan.md) / [验收](../acceptance/orca-resource-create-capability.md)；组合 B2a 与 worktree/terminal 创建、回执操作，接入原 creation owner | 原 owner 保留首次资格及对账，删除创建专属协议拼装/解析 | 未知零重发，原命令/摘要/编码及资源归属保持 |
-| B4c 受限文件操作 | 已完成 | [Spec](orca-scoped-files-capability.spec.md) / [Plan](orca-scoped-files-capability.plan.md) / [验收](../acceptance/orca-scoped-files-capability.md)；按 §4.3 分离原生文件能力、Run 路径生成及用途策略 | progress/result/staging 消费公共读写，能力层不解释 Run | 路径范围、原主机、分块、限额和完整性保持；业务路径/限额由消费方显式提供 |
-| B4d 关闭与完整清单 | 已完成 | [Spec](orca-close-inventory-capability.spec.md) / [Plan](orca-close-inventory-capability.plan.md) / [验收](../acceptance/orca-close-inventory-capability.md)；共用原终端 close 和完整清单读取，接入双端停止/只读核验 | 删除重复协议处理，停止合同仍归执行层；完成能力包依赖与语义检查 | 关闭未知零重发、原 incarnation/host 范围保持，不扩大当前 stop scope |
-| B5 候选生产接线与业务资格 | 已完成，独立审计通过 | [Spec](orca-shared-native-runner.spec.md) / [Plan](orca-shared-native-runner.plan.md)；实现选定组合的完整候选生产接线，在隔离 Runner 构建/状态目录中经真实入口验证双端开发、持久结果和停止结算| 为 B6 提供已实现、可受理并可完整结算的新 Run 路径 | 按 §6.2–§6.3 通过真实 Runner 受理/冻结/执行/发布/stop/离线核验、零旧链调用及停止负例；能力测试装配不单独签收 |
-| B6 最终启用并退役旧链 | 已完成，独立审计通过 | [Spec](orca-native-rollout.spec.md) / [Plan](orca-native-rollout.plan.md) / [验收](../acceptance/orca-native-rollout.md)；公开合同与保留消费者同步，删除不可达重复 guard | 两端只留连接、目标解析及确有必要的轻流程差异 | 最终构建复验受删除/启用影响的真实 Runner 资格与停止负例；原升级/旧记录规则保持，不首次补齐 B5 所需接线 |
+| B0 原生可行性核验 | 已完成 | [Spec](../archive/2026-11/implementation/spec/orca-native-capability-baseline.spec.md) / [Plan](../archive/2026-11/implementation/spec/orca-native-capability-baseline.plan.md) / [验收](../archive/2026-11/implementation/acceptance/orca-native-capability-baseline.md)；双端无 helper 的两轮原输入、完整 final、同会话后续及原终端清理通过 | 取得共同底层能力及合同差距，生产不变 | 独立审计完成，未知创建记录缺口已修复；不签收开发业务资格 |
+| B1 原终端查询 | 已完成 | [Spec](../archive/2026-11/implementation/spec/orca-terminal-query-capability.spec.md) / [Plan](../archive/2026-11/implementation/spec/orca-terminal-query-capability.plan.md) / [验收](../archive/2026-11/implementation/acceptance/orca-terminal-query-capability.md)；使用 Orca 身份/结果类型，业务终端及本机控制终端共用查询入口 | 控制每页两次 CLI show 已删除，原身份围栏保持 | 双端无模型查询、受控分页/替换/取消及原回归通过；独立审计通过 |
+| B2a 公共命令构造 | 已完成 | [Spec](../archive/2026-11/implementation/spec/orca-cli-construction-capability.spec.md) / [Plan](../archive/2026-11/implementation/spec/orca-cli-construction-capability.plan.md) / [验收](../archive/2026-11/implementation/acceptance/orca-cli-construction-capability.md)；共用路由、环境屏蔽、参数编译和基础 envelope 解码，接入日常调用及 creation owner 的对应构造/校验 | 三处专属拼接及 owner 专属基础结果解码已删除，原命令和创建计划编码保持 | 旧命令字节/摘要、唯一派发、回调及定向回归通过；独立审计通过 |
+| B2b Terminal 发送 | 已完成 | [Spec](../archive/2026-11/implementation/spec/orca-terminal-send-capability.spec.md) / [Plan](../archive/2026-11/implementation/spec/orca-terminal-send-capability.plan.md) / [验收](../archive/2026-11/implementation/acceptance/orca-terminal-send-capability.md)；业务/agent-start/control 共用原生发送 | 三处对应命令/身份解码重复已删除，正文与阶段意义仍属消费方 | 原参数、接受/开始区别、字段范围及未知恢复验证通过；独立审计通过 |
+| B2c Terminal 读取 | 已完成 | [Spec](../archive/2026-11/implementation/spec/orca-terminal-read-capability.spec.md) / [Plan](../archive/2026-11/implementation/spec/orca-terminal-read-capability.plan.md) / [验收](../archive/2026-11/implementation/acceptance/orca-terminal-read-capability.md)；readiness/control 共用单页 read | 两处参数/结构重复已删除，原字段范围、窗口及回执用途保持 | cursor、完整行、取消、分页身份围栏及原消费者回归通过；独立审计通过 |
+| B2d Terminal 等待 | 已完成 | [Spec](../archive/2026-11/implementation/spec/orca-terminal-wait-capability.spec.md) / [Plan](../archive/2026-11/implementation/spec/orca-terminal-wait-capability.plan.md) / [验收](../archive/2026-11/implementation/acceptance/orca-terminal-wait-capability.md)；原双端 composer 共用原生 wait | 唯一旧 wait 参数/结构已删除，等待不承担业务完成证明 | 原参数/期限、前后身份及负面等待/取消/原输入回归通过；独立审计通过 |
+| B3 状态与会话读取 | 已完成 | [Spec](../archive/2026-11/implementation/spec/orca-state-session-capability.spec.md) / [Plan](../archive/2026-11/implementation/spec/orca-state-session-capability.plan.md) / [验收](../archive/2026-11/implementation/acceptance/orca-state-session-capability.md)；原生消息/状态与执行认领分离，双端接入一份策略 | 协议状态已移除执行身份/原输入证明，原策略迁至执行侧 | 多用户原样读取、错误归属拒绝、原围栏/来源及两包全集通过；独立审计通过 |
+| B4a 仓库与工作区查询 | 已完成 | [Spec](../archive/2026-11/implementation/spec/orca-resource-query-capability.spec.md) / [Plan](../archive/2026-11/implementation/spec/orca-resource-query-capability.plan.md) / [验收](../archive/2026-11/implementation/acceptance/orca-resource-query-capability.md)；共用实际 repo list/worktree show 原生查询 | 目标 selector 选择留给消费方，删除对应查询/解析 | 原主机、仓库身份、基线和歧义拒绝保持 |
+| B4b 资源创建 | 已完成 | [Spec](../archive/2026-11/implementation/spec/orca-resource-create-capability.spec.md) / [Plan](../archive/2026-11/implementation/spec/orca-resource-create-capability.plan.md) / [验收](../archive/2026-11/implementation/acceptance/orca-resource-create-capability.md)；组合 B2a 与 worktree/terminal 创建、回执操作，接入原 creation owner | 原 owner 保留首次资格及对账，删除创建专属协议拼装/解析 | 未知零重发，原命令/摘要/编码及资源归属保持 |
+| B4c 受限文件操作 | 已完成 | [Spec](../archive/2026-11/implementation/spec/orca-scoped-files-capability.spec.md) / [Plan](../archive/2026-11/implementation/spec/orca-scoped-files-capability.plan.md) / [验收](../archive/2026-11/implementation/acceptance/orca-scoped-files-capability.md)；按 §4.3 分离原生文件能力、Run 路径生成及用途策略 | progress/result/staging 消费公共读写，能力层不解释 Run | 路径范围、原主机、分块、限额和完整性保持；业务路径/限额由消费方显式提供 |
+| B4d 关闭与完整清单 | 已完成 | [Spec](../archive/2026-11/implementation/spec/orca-close-inventory-capability.spec.md) / [Plan](../archive/2026-11/implementation/spec/orca-close-inventory-capability.plan.md) / [验收](../archive/2026-11/implementation/acceptance/orca-close-inventory-capability.md)；共用原终端 close 和完整清单读取，接入双端停止/只读核验 | 删除重复协议处理，停止合同仍归执行层；完成能力包依赖与语义检查 | 关闭未知零重发、原 incarnation/host 范围保持，不扩大当前 stop scope |
+| B5 候选生产接线与业务资格 | 已完成，独立审计通过 | [Spec](../archive/2026-11/implementation/spec/orca-shared-native-runner.spec.md) / [Plan](../archive/2026-11/implementation/spec/orca-shared-native-runner.plan.md)；实现选定组合的完整候选生产接线，在隔离 Runner 构建/状态目录中经真实入口验证双端开发、持久结果和停止结算| 为 B6 提供已实现、可受理并可完整结算的新 Run 路径 | 按 §6.2–§6.3 通过真实 Runner 受理/冻结/执行/发布/stop/离线核验、零旧链调用及停止负例；能力测试装配不单独签收 |
+| B6 最终启用并退役旧链 | 已完成，独立审计通过 | [Spec](../archive/2026-11/implementation/spec/orca-native-rollout.spec.md) / [Plan](../archive/2026-11/implementation/spec/orca-native-rollout.plan.md) / [验收](../archive/2026-11/implementation/acceptance/orca-native-rollout.md)；公开合同与保留消费者同步，删除不可达重复 guard | 两端只留连接、目标解析及确有必要的轻流程差异 | 最终构建复验受删除/启用影响的真实 Runner 资格与停止负例；原升级/旧记录规则保持，不首次补齐 B5 所需接线 |
 
 B0 无能力层重构前置，复用当前真实 Orca 协议即可。B1 和 B2a 有独立收益，可在 B0 未结束时先行；B3 必须先有 B0 对拟统一组合的可行性与差距结论，不能先完成复杂取证抽离再验证方向。B0 失败或环境阻断时，相关统一目标保持待核验，先明确范围/设计调整，不自动回退 helper 取得“原生通过”。
 
@@ -225,8 +225,8 @@ B4d/B5 的停止反例可复用 `TestRemoteStopPreservesUninvokedCloseAndCancels
 | 文档 | 与本文的分工 |
 | --- | --- |
 | [产品承诺](steerrunner.spec.md#长期产品承诺) | 能力、可靠性、停止范围及升级的长期合同；B5 明确候选变化，B6 正式启用时同步 |
-| [执行边界](execution-boundary-refactor.spec.md) | 保持 Workflow → reliable → adapter 方向；本文细化 Orca 对接能力边界 |
-| [本机/远端连接](orca-local-remote.spec.md) | 当前路由、认证、查询与订阅语义；结构收敛继续遵守其有效规则 |
-| [远端原生](orca-remote-native.spec.md) | 当前无远端 helper 的执行和停止合同；是共享原生链路的可行基础 |
-| [通用提交](orca-native-submit.spec.md) | 当前输入冻结、编译、接受/开始及原输入证明；不因抽象放宽 |
-| [本机停止收敛](orca-local-codex-stop-simplification.spec.md) | 当前登记资源及 scope；B0–B4 不改当前合同，B5 候选合同单独冻结和验收，已部署合同在 B6 前保持 |
+| [执行边界](../archive/2026-11/implementation/spec/execution-boundary-refactor.spec.md) | 保持 Workflow → reliable → adapter 方向；本文细化 Orca 对接能力边界 |
+| [本机/远端连接](../archive/2026-11/implementation/spec/orca-local-remote.spec.md) | 当前路由、认证、查询与订阅语义；结构收敛继续遵守其有效规则 |
+| [远端原生](../archive/2026-11/spec/orca-remote-native.spec.md) | 当前无远端 helper 的执行和停止合同；是共享原生链路的可行基础 |
+| [通用提交](../archive/2026-11/spec/orca-native-submit.spec.md) | 当前输入冻结、编译、接受/开始及原输入证明；不因抽象放宽 |
+| [本机停止收敛](../archive/2026-11/implementation/spec/orca-local-codex-stop-simplification.spec.md) | 当前登记资源及 scope；B0–B4 不改当前合同，B5 候选合同单独冻结和验收，已部署合同在 B6 前保持 |

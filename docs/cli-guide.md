@@ -4,7 +4,7 @@
 
 `steerrunner execution-config --input - --json` 从裸 stdin JSON 执行 describe、derive 或 compose，无 state-dir/服务/Run。构建的 capabilities.execution_configuration 同源提供自包含 schema、有限编辑字段与按 Agent 的 effort 选择；组合沿既有 capability_catalog。源配置、权限与目标必须明确；compose 仅接受可信 base/default 与逻辑 selection/unset，不接受任意程序路径/patch，缺审计模型不代选。
 
-identity 只用于配置等价与源摘要绑定，不是 ready 或安装探测。只在 identity 投影省略去掉偏好后的空 agent_launch；原 execution 不改，目标/Agent/权限/程序仍参与上下文。单次输入/输出各1 MiB、含stdin处理总30秒。完整字段和错误见[Spec](spec/native-execution-configuration-boundary.spec.md)，固定构建与验收见[专属记录](acceptance/native-execution-configuration-boundary.md)。
+identity 只用于配置等价与源摘要绑定，不是 ready 或安装探测。只在 identity 投影省略去掉偏好后的空 agent_launch；原 execution 不改，目标/Agent/权限/程序仍参与上下文。单次输入/输出各1 MiB、含stdin处理总30秒。完整字段和错误见[Spec](archive/2026-11/implementation/spec/native-execution-configuration-boundary.spec.md)，固定构建与验收见[专属记录](archive/2026-11/implementation/acceptance/native-execution-configuration-boundary.md)。
 
 
 Orca 原会话关闭与额外资源清理分别处理：关闭成功后允许业务收尾及按冻结 scope 核验，额外清理不保证且不构成新门禁；关闭本身未知仍保持未知。现行责任、文件变量绑定和重启/部署规则统一见[Orca 执行链路设计](orca-execution.md)。
@@ -50,7 +50,7 @@ Windows 自动启动先验证挂起子进程的 Job 隔离；原生 breakaway �
 
 本机 Codex 可额外提供 `executable`，由可信调用宿主选择；请求不接受目录、凭据、endpoint、pipe 或 RPC 方法。不得附加 `--state-dir`、实例绑定或 Run 选择器。成功使用原 v1 信封且 `request_id=null`；`data.source` 包含实际 EXE SHA256、version、resource_digest，以及可核实的原生版本/runtime。`ready/complete=true` 表示本次完整目录，`loading/complete=false` 表示原生仍在生成。发现 Agent 不表示当前执行支持；原生时间与 `observed_at` 分开保留，`context_unverified` 不构成账号或项目资格证明。
 
-请求限 64 KiB，原生累计与公开输出各限 1 MiB，总查询 30 秒、额外清理 5 秒。输入错误/未实现组合分别退出 2/3；不可达、超时、清理未核实退出 4，安全错误码分别为 `native_catalog_unavailable`、`native_catalog_timeout`、`native_catalog_cleanup_unverified`。目录与执行/停止契约互相独立。完整定义和验收见[Spec](spec/native-catalog-boundary.spec.md)及[专属验收](acceptance/native-catalog-boundary.md)。
+请求限 64 KiB，原生累计与公开输出各限 1 MiB，总查询 30 秒、额外清理 5 秒。输入错误/未实现组合分别退出 2/3；不可达、超时、清理未核实退出 4，安全错误码分别为 `native_catalog_unavailable`、`native_catalog_timeout`、`native_catalog_cleanup_unverified`。目录与执行/停止契约互相独立。完整定义和验收见[Spec](archive/2026-11/implementation/spec/native-catalog-boundary.spec.md)及[专属验收](archive/2026-11/implementation/acceptance/native-catalog-boundary.md)。
 
 ## 提交与查看执行
 
@@ -62,10 +62,10 @@ GitHub App 支持已移除，旧 `execution.settings.github_auth`（包括 null�
 升级前须用旧版本停止、核实并收尾已有 App Run/Check；新版本不迁移其身份或接管旧 App 凭据。
 固定 approval never，失败不会回退自动审核发布。
 新 Orca Run 使用 Orca 原生结构化会话。配置支持模型选择，显式 `agent_launch.executable`、非空 `args`、`runtime_executable` 和 `runtime_sha256` 在受理前拒绝。旧终端 Run 由原 Runner 构建排空。配对远端继续使用已有 Orca/Codex/Git/gh 登录。
-个人多机边界、App 移除和本次验证见[专项记录](acceptance/personal-runner-gh-only-20261019.md)。
+个人多机边界、App 移除和本次验证见[专项记录](archive/2026-11/acceptance/personal-runner-gh-only-20261019.md)。
 同服务多 Run 保留原工作区、会话、事件、PR 与停止隔离。原生远端不支持有来源证明的双模型审计；原 helper 构建的历史验证范围见
 [Orca 扩展验收](archive/2026-10/acceptance/orca-remote-extensions-20261018.md)。
-设置、外部前置及受控/真实验收边界见[测试指南](testing.md)和[专属记录](acceptance/sandbox-authentication.md)。
+设置、外部前置及受控/真实验收边界见[测试指南](testing.md)和[专属记录](archive/2026-11/acceptance/sandbox-authentication.md)。
 
 把[契约示例](spec/steerrunner.spec.md)中的仓库、完整 commit、材料、adapter 和 publication 改为自己的环境，保存为 UTF-8 `request.json`：
 
@@ -96,9 +96,9 @@ Orca 远端 Codex 的 SessionStart 可能清空输入预览并改变显示回合
 
 ## 选择 workflow 与审计模型
 
-当前持久格式为 state/v8、资源版本 3；开发流程使用 development/2 或 development-audited/2，内容流程使用 conversation/1 或 generate/1。旧格式整体拒绝，不迁移、不兼容读取。先由原版本结算全部旧资源并保留证据，再使用新独立状态目录；v8 保留同构建原资源重启重连；不重建丢失资源，不支持混合构建活动所有权。删除后的契约与客户端配套要求见[退役记录](acceptance/check-retirement.md)。
+当前持久格式为 state/v8、资源版本 3；开发流程使用 development/2 或 development-audited/2，内容流程使用 conversation/1 或 generate/1。旧格式整体拒绝，不迁移、不兼容读取。先由原版本结算全部旧资源并保留证据，再使用新独立状态目录；v8 保留同构建原资源重启重连；不重建丢失资源，不支持混合构建活动所有权。删除后的契约与客户端配套要求见[退役记录](archive/2026-11/implementation/acceptance/check-retirement.md)。
 
-独立解析采用显式开启的 Windows / Codex >= 0.159.2 受限 exec：原生只读权限、独立会话和工具事件事后拒收；不承诺空工具面或零隐式上下文。支持程序提取与一次原 agent 报告；审计可选独立解析，明确获取失败且资源结算后转一次原审计补报。可选 Runner 配置在 `<state-dir>/service/result-acquisition.json`，不增加 SteerLine 配置；启用配置也不会绕过原生门槛。[实施与验收记录](acceptance/result-acquisition.md)。
+独立解析采用显式开启的 Windows / Codex >= 0.159.2 受限 exec：原生只读权限、独立会话和工具事件事后拒收；不承诺空工具面或零隐式上下文。支持程序提取与一次原 agent 报告；审计可选独立解析，明确获取失败且资源结算后转一次原审计补报。可选 Runner 配置在 `<state-dir>/service/result-acquisition.json`，不增加 SteerLine 配置；启用配置也不会绕过原生门槛。[实施与验收记录](archive/2026-11/implementation/acceptance/result-acquisition.md)。
 
 服务启动后，`capabilities` 的 `workflows` 返回可选流程、允许覆盖的提示词步骤及模型要求。submit 继续通过 RunRequest 的 `workflow.id/version` 选择：
 
@@ -127,11 +127,11 @@ Orca 远端 Codex 的 SessionStart 可能清空输入预览并改变显示回合
 
 `inspect.audit` 显示当前实施结果、原审计来源、实际修复数量与逐项内容，`execution.requested_model/requested_reasoning_effort` 表示冻结的轮次请求参数。仍有 P0–P2 未解决或验证未完成时不发布；P3 建议不计修复数。补报最多一次，坏 JSON 不当作通过。提示词和模型接受后冻结，修改需新 Run。暂不支持外部 workflow 装载。
 
-新 Run 的默认 audit.code 提示优先要求最终输出已有审计 JSON 契约，以减少 parse/补报；这只是提示文本，不增加原生 schema 强约束。旧 Run 和显式提示覆盖保持原文，格式不足继续沿原有界后备；[原生对比及旧提示接管验证](acceptance/reliable-delivery-simplification.md)已登记。
+新 Run 的默认 audit.code 提示优先要求最终输出已有审计 JSON 契约，以减少 parse/补报；这只是提示文本，不增加原生 schema 强约束。旧 Run 和显式提示覆盖保持原文，格式不足继续沿原有界后备；[原生对比及旧提示接管验证](archive/2026-11/implementation/acceptance/reliable-delivery-simplification.md)已登记。
 
 同构建服务重启保留原冻结输入、流程语义、授权和资源身份。升级前必须由原版本排空全部原生资源及未完成操作/控制；pr_ready 不等于排空。新 v8 非破坏拒绝 v7 及更早格式，不运行迁移器、不把旧记录伪投影为只读。以后执行契约兼容且已排空时可继续原目录查询历史；不增加逐 Run SHA 构建门禁。
 
-远端 Orca Codex 断线后若结束快照的输入预览为空，Runner 可通过独立查询核验保留的 `turnStartedAt` 与原可信 working 起点一致，再沿原结果路径收尾，过程不重发输入。缺失/变化的回合标记或已有归属冲突继续显示未核实；原生 done 不代表业务任务完成。规则与验证见[原生结束归属](spec/orca-last-message.spec.md#52-允许空结束-prompt-的充分条件)。
+远端 Orca Codex 断线后若结束快照的输入预览为空，Runner 可通过独立查询核验保留的 `turnStartedAt` 与原可信 working 起点一致，再沿原结果路径收尾，过程不重发输入。缺失/变化的回合标记或已有归属冲突继续显示未核实；原生 done 不代表业务任务完成。规则与验证见[原生结束归属](archive/2026-11/implementation/spec/orca-last-message.spec.md#52-允许空结束-prompt-的充分条件)。
 
 ## 停服及回执
 
@@ -168,7 +168,7 @@ worker 的 common Git 目录只属于该 Run。开发 full_access 不再编译�
 
 默认的新状态目录为 `%LOCALAPPDATA%/SteerRunner-v8`。已保存的客户端 state_dir 与实例绑定不会自动改写；旧目录明确返回 unsupported_schema，需使用全新目录重新绑定，不迁移旧记录。
 
-当前只接受 state/v8（SQLite user_version=8），拒绝 v7 及更旧目录，不迁移、不删除旧记录，也不替旧版本结算资源。同构建重启可接回原 owner/session；升级须先由原版本排空，再停止旧 writer、启用新版本。排空包括业务不再待输入/继续、原生资源已结算、无未完成副作用或控制命令，不能只看 pr_ready 或 service stop。`service verify-takeover --candidate` 已删除，返回普通未知命令 exit 2；不再提供跨构建活动任务接管。此次 v7→v8 使用新目录；未来格式/执行契约兼容且已排空时，可继续原目录并查询历史，不因 EXE 字节或路径变化强制换目录。详见[现行升级契约](spec/personal-executor-simplification.spec.md#41-升级约定及状态目录)及[P3 验收](acceptance/personal-executor-p3.md)。
+当前只接受 state/v8（SQLite user_version=8），拒绝 v7 及更旧目录，不迁移、不删除旧记录，也不替旧版本结算资源。同构建重启可接回原 owner/session；升级须先由原版本排空，再停止旧 writer、启用新版本。排空包括业务不再待输入/继续、原生资源已结算、无未完成副作用或控制命令，不能只看 pr_ready 或 service stop。`service verify-takeover --candidate` 已删除，返回普通未知命令 exit 2；不再提供跨构建活动任务接管。此次 v7→v8 使用新目录；未来格式/执行契约兼容且已排空时，可继续原目录并查询历史，不因 EXE 字节或路径变化强制换目录。详见[现行升级契约](archive/2026-11/implementation/spec/personal-executor-simplification.spec.md#41-升级约定及状态目录)及[P3 验收](archive/2026-11/implementation/acceptance/personal-executor-p3.md)。
 
 ## 定向验证
 
@@ -177,7 +177,7 @@ L1–L4 定义、维护规则和执行入口见[测试指南](testing.md)，具�
 L2 为最小核心 smoke，L3 为尽量正交、可并行的不同流程及核心可靠性测试，L4 为更复杂
 边界或确实无法并行的测试。调用方退出、断连、服务换代、停止撤销和发布对账保留在 L3。
 当前注册数量以[当前清单与资格边界](test-catalog.md#当前清单与资格边界)及 JSON 目录为准；DSH 专用及 Pi/DSH mixed 场景已退役。受控前置已纳入审计及多 Run，支持有界并行与 L4 独占；L2 直接执行最小交付路径，不读取反馈资格文件。真实后端并行资格及远端原生范围分别登记，逐项内容见清单。
-历史实际结果见[稳定性验收](acceptance/l3-execution-stability.md)，
+历史实际结果见[稳定性验收](archive/2026-11/implementation/acceptance/l3-execution-stability.md)，
 该受测套件完整资格为同构建连续三轮。
 历史[主线复测](archive/2026-10/acceptance/l3-rebase-20261016.md)及[不可达撤销修复复测](archive/2026-10/acceptance/l3-revocation-fix-20261016.md)保留当时构建结果与认证阻断；
 原构建 Orca 十项通过记录见[扩展验收](archive/2026-10/acceptance/orca-remote-extensions-20261018.md)，
@@ -190,7 +190,7 @@ L2 为最小核心 smoke，L3 为尽量正交、可并行的不同流程及核�
 go test ./internal/application -run '^(TestSRFreezeBaseBranchRefresh|TestSRRepositoryCacheWithLongBranchPath|TestSRCompactCacheCanPublishLinkedWorktree)$' -count=1 -timeout=4m -v
 ```
 
-场景、故障反例及结果见[分支刷新测试计划](spec/repository-base-refresh.plan.md)和[验收记录](acceptance/repository-base-refresh.md)。
+场景、故障反例及结果见[分支刷新测试计划](archive/2026-11/implementation/spec/repository-base-refresh.plan.md)和[验收记录](archive/2026-11/implementation/acceptance/repository-base-refresh.md)。
 
 ```powershell
 go test ./internal/contracts ./internal/cli ./internal/storage -run '^(TestSRCLIContract|TestSRShutdownReceipt|TestSRUnsupportedStorage)$' -count=1 -timeout=2m -v
@@ -207,7 +207,7 @@ go test ./internal/contracts ./internal/cli ./internal/storage -run '^(TestSRCLI
 
 ## 结构化结果获取与 Workflow 定义
 
-已实现：[结构化结果获取 Spec](spec/result-acquisition.spec.md) · [Plan](spec/result-acquisition.plan.md) · [专属验收](acceptance/result-acquisition.md)。按步骤组合程序提取、独立解析和原 agent 报告；保留业务顺序与 PR 核验，Runner 独立配置。原生权限保证、行为约定和事后检测分别记录，当前构建的实际资格及未通过项见专属验收。
+已实现：[结构化结果获取 Spec](spec/result-acquisition.spec.md) · [Plan](archive/2026-11/implementation/spec/result-acquisition.plan.md) · [专属验收](archive/2026-11/implementation/acceptance/result-acquisition.md)。按步骤组合程序提取、独立解析和原 agent 报告；保留业务顺序与 PR 核验，Runner 独立配置。原生权限保证、行为约定和事后检测分别记录，当前构建的实际资格及未通过项见专属验收。
 
 Workflow 能力/状态机定义：[统一能力与边界](workflows/README.md) · [普通开发流程](workflows/development.md) · [带审计开发流程](workflows/development-audited.md)。每份定义列出状态、转移核验、提示词和预算；执行 agent 切阶段统一执行定义提示词，结果由现有内置函数核验，当前不提供定制脚本端口或宿主。两份开发定义共用状态与结果机制；development 不调用 parser，审计流程仅审计结果可解析。完整验证及未完项以专属验收记录为准。
 
@@ -230,7 +230,7 @@ Workflow 能力/状态机定义：[统一能力与边界](workflows/README.md) �
 
 旧版本中的已有提交继续由原 EXE/state-dir 按原 request_id 查询、对账和收尾；原冻结 Request、digest、Attempt、PR 及证据不变。当前 v8 在 worker/owner/外部调用前拒绝 v7 及更旧目录，不提供旧 Run 的只读投影或精确 stop 兼容适配。退役不等于原 worker 已停止：原 owner 中的在途回合可能继续运行。停止不支持或证据缺失时保留原 EXE、目录和未结算事实，由用户与原版本处理；不要重建会话或把旧 Run 改为 full_access。
 
-本次 v7→v8 升级顺序：旧版本停收新任务→用原版本完成或精确停止旧 Run→核实原生资源及全部未完成操作/控制已结算→停止旧 writer→更新产品/helper/扩展与可编辑配置→明确选择新 v8 目录并重新绑定实例→检查新构建 capabilities 与配置→提交新任务。无法确认排空时保留原版本和目录，不尝试携带活动任务升级。`service stop` 不等于 Run 结算，仍在用的原版本文件不能覆盖或删除；用户显式 state-dir 不会被静默改写。新建 read_only 内容、独立 parser 与原生远端链路保持。当前规则见[个人执行器 Spec](spec/personal-executor-simplification.spec.md)，宿主认证的历史实施见[认证 Spec](spec/host-native-auth.spec.md)。
+本次 v7→v8 升级顺序：旧版本停收新任务→用原版本完成或精确停止旧 Run→核实原生资源及全部未完成操作/控制已结算→停止旧 writer→更新产品/helper/扩展与可编辑配置→明确选择新 v8 目录并重新绑定实例→检查新构建 capabilities 与配置→提交新任务。无法确认排空时保留原版本和目录，不尝试携带活动任务升级。`service stop` 不等于 Run 结算，仍在用的原版本文件不能覆盖或删除；用户显式 state-dir 不会被静默改写。新建 read_only 内容、独立 parser 与原生远端链路保持。当前规则见[个人执行器 Spec](archive/2026-11/implementation/spec/personal-executor-simplification.spec.md)，宿主认证的历史实施见[认证 Spec](archive/2026-11/implementation/spec/host-native-auth.spec.md)。
 
 
 ## 人工对账与资源丢失
@@ -245,6 +245,6 @@ Workflow 能力/状态机定义：[统一能力与边界](workflows/README.md) �
 
 本机受管 Codex 的 `stop_evidence_scope=orca_local_codex_resources` 包括原业务/控制终端、helper 与 app-server 原根进程。保留原 helper 的协作停止、Job 清理及精确身份核验；签名退出文件、control Closed 和 pending reader 响应不再决定停止成功。该范围不证明全部后代进程退出，也不撤销宿主登录。部分资源仍活或身份未知时保持 unknown；原 stop 可能已调用后只读对账，不重复 close，也不接受新 request_id 替换未解决的 stop。
 
-普通 service stop 只脱离观察。离线 verify-stopped 不把 stopped 标签当作资源证明：orca_terminal 范围可使用既有、已持久化且绑定原 Run/input、attempt/generation、runtime/worktree/terminal/incarnation 的 confirmed 停止回执（Stopped、WorkerAbsent 与 confirmed progress 均须齐全）。该原终端的停止事实不因后续 Orca 重启、断线或工作区移除失效；停止对账也只重放原确认，不再次关闭终端。缺失、accepted/unknown、身份不符或未完成操作仍须查询原资源；不写 DB 或原 shutdown 回执，不把缺失工作区本身当作停止证明。直接 Codex、Pi 与原生远端的证明范围保持，不扩展为后台进程或凭据已清理。当前源码的实现、验证与外部集成限制见[专项验收](acceptance/orca-local-codex-stop-simplification.md)。
+普通 service stop 只脱离观察。离线 verify-stopped 不把 stopped 标签当作资源证明：orca_terminal 范围可使用既有、已持久化且绑定原 Run/input、attempt/generation、runtime/worktree/terminal/incarnation 的 confirmed 停止回执（Stopped、WorkerAbsent 与 confirmed progress 均须齐全）。该原终端的停止事实不因后续 Orca 重启、断线或工作区移除失效；停止对账也只重放原确认，不再次关闭终端。缺失、accepted/unknown、身份不符或未完成操作仍须查询原资源；不写 DB 或原 shutdown 回执，不把缺失工作区本身当作停止证明。直接 Codex、Pi 与原生远端的证明范围保持，不扩展为后台进程或凭据已清理。当前源码的实现、验证与外部集成限制见[专项验收](archive/2026-11/implementation/acceptance/orca-local-codex-stop-simplification.md)。
 
-本机 Orca Codex execute/1 使用原子结构化首消息；`orca_agent_session` 以原 session 关闭成功回执确认停止范围，允许结果封存及正常流程。它不证明完整资源清理，也不因缺少额外清理保证阻断；close 自身失败或丢回执仍保持 unknown。离线核验读取绑定原身份的已持久回执，不以 terminal 缺席代替会话关闭，详见[长期设计](orca-execution.md)与[本次验收](acceptance/orca-session-result-settlement.md)。
+本机 Orca Codex execute/1 使用原子结构化首消息；`orca_agent_session` 以原 session 关闭成功回执确认停止范围，允许结果封存及正常流程。它不证明完整资源清理，也不因缺少额外清理保证阻断；close 自身失败或丢回执仍保持 unknown。离线核验读取绑定原身份的已持久回执，不以 terminal 缺席代替会话关闭，详见[长期设计](orca-execution.md)与[本次验收](archive/2026-11/implementation/acceptance/orca-session-result-settlement.md)。

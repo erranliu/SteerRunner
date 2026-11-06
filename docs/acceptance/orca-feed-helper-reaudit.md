@@ -40,6 +40,12 @@ PC-R01–R10 的保留实现均不在生产修改范围：原受理/提交、unk
 
 提交后再从 Git blob 核对证据时确认一处保存问题：默认 `* text=auto eol=lf` 归一化了初轮15个文件及复审 audit.json 的行尾，而原 SHA 清单绑定工作区原字节。初次工作区 SHA 核对未覆盖这个提交转换。按仓库现有证据约定，为本批两个目录补 `.gitattributes` 的 `-text -whitespace`，重新保存原证据，不修改旧输出或重算成“通过”的替代摘要；直接验证 staged index 和最终 commit blob 的所有清单项。修复只涉及证据保存规则，不影响848个生产/测试/脚本输入或既有构建/公开结果；未因此额外重跑产品测试。[Git blob 核验入口](evidence/orca-feed-helper-reaudit-20261106/git-blobs.py.txt)。原首个提交保留，以后续修复提交纠正，不改写历史。
 
+## 创建 PR 前整合主线
+
+最终刷新发现 main 新增 `70249a34`（#128，文档归档与活动指南收敛）。按 AGENTS 在独立 worktree 执行 merge，两个长期文档自动合并，无未解决内容冲突；保留主线的归档路径和指南结构，并将新 B Spec 的旧 helper Spec 链接改到对应归档正文。未改写两项已有提交。
+
+主线在 cmd/internal/scripts/go.mod/go.sum 没有变化，tests 中仅 experiments/README.md 更新。整合前后生产/测试 Git blob 相同，保留所有本批实现与夹具；独立 worktree 的4个原文件仅出现 checkout 行尾变化，不是源内容或上游实现差异。实际合并影响为文档链接和证据原字节规则，因此按影响复核新文档链接、全部证据 Git blob SHA 和源码差异，不把未重跑的产品测试记为新通过。上文“848个输入与 B 相同”描述整合前复审点；最终主工作副本仅 experiments/README.md 这一文档输入随主线变化，其他847项仍与原 B 字节相同，构建生产输入及执行/恢复/停止测试不变。原构建和应用/公开受控结果继续按原身份明确复用。
+
 ## 交付边界
 
 按用户追加授权提交并提 PR；目标分支创建 PR 前再次刷新，GitHub 实际内容合并状态以该 PR 为准。优先 Squash and merge，不因 Rebase 按钮提示改写已验历史，不自动合并或部署。新验证与复用验证均为合并前定向结果；未运行完整 L1/Controlled、L2/L3、真实模型或合并后回归，不授予完整交付或真机资格。

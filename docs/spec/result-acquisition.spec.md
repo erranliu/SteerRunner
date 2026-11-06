@@ -2,11 +2,11 @@
 
 > 2026-11-05 实施结果收敛：`implement.execute` 和 `implement.report` 共用纯文本成功标记 `实施及必要验证已完成`，仅匹配当前轮可信最终回复的最后一个非空行。执行末行 `未完成` 直接等待输入，执行结论不明时最多补报一次，补报未命中则保留说明并等待输入。下文的结构化实施字段仅用于解释历史契约。发布及审计继续使用各自的获取契约。详见 [development](../workflows/development.md) 和 [development-audited](../workflows/development-audited.md)。
 
-> 2026-11-01 当前边界：以[个人执行器简化 Spec](personal-executor-simplification.spec.md) / [Plan](personal-executor-simplification.plan.md)为准。当前为 state/v7、user_version=7，默认 `%LOCALAPPDATA%/SteerRunner-v7`；拒绝 v6 及更旧目录，不迁移或代替原版本收尾。同构建服务重启接回原资源；升级先由原版本排空原生资源和未完成操作/控制，pr_ready 不等于排空。verify-takeover、跨构建活动任务接管及资源重建已删除。未知操作有界查询后转人工，显式 resume 最多 30 秒只读对账原操作，不重发输入、不创建替代资源，业务等待及 stop/close 保持。未来格式/契约兼容且已排空时可继续原目录并查询历史，不因 EXE 变化强制换目录。下文旧格式、接管矩阵及恢复资源条款仅供历史溯源，不覆盖此边界；原验收证据保持原构建结论。
+> 适用范围：当前状态目录、升级前排空与人工只读对账统一见[CLI 指南](../cli-guide.md#人工对账与资源丢失)及[长期承诺](steerrunner.spec.md#长期产品承诺)。本文按日期标注的旧版本、旧机制和验收事实仅按原记录时点阅读，不覆盖现行契约。
 
 > 2026-10-31 parser 增补：独立解析已改为复用 Codex 登录/CLI 的内存文本任务；旧 parser operation、owner 接管、工具权限及停止取证条款由 [Parser 解耦 Spec](parser-decoupling.spec.md) 取代。工具禁用和进程清理只在 parser 内；其余主执行契约与历史证据结论保持。
 
-2026-10-21 当前适用范围：本文维护 workflow/2 与结果获取；当时升级 state/v2→v3 的章节为历史实施范围，当前 v5 格式及旧格式拒绝规则见[服务换代 Spec](service-generation-recovery.spec.md)。开发 Spec/Plan/参考材料只引用固定基线 worktree 内的相对路径，Runner 不再准备或验证独立文档快照；内容 inline 材料、parser 冻结材料包和结果来源核验继续沿各自契约。
+2026-10-21 当前适用范围：本文维护 workflow/2 与结果获取；当时升级 state/v2→v3 的章节为历史实施范围，当前 v5 格式及旧格式拒绝规则见[服务换代 Spec](../archive/2026-11/spec/service-generation-recovery.spec.md)。开发 Spec/Plan/参考材料只引用固定基线 worktree 内的相对路径，Runner 不再准备或验证独立文档快照；内容 inline 材料、parser 冻结材料包和结果来源核验继续沿各自契约。
 
 > 2026-10-19 主线接入已完成：rebase 到 `2aa17cc`，干净源码 `bb84ea8` 完整 L1 385 Go/29 Node、Controlled16、原生 workflow3 通过；测试修正 `51792ee` 后，复用相同生产源码/冻结 EXE 的停止探针2通过；签名原生退出、reader 结算与固定控制边界已组合核验。初始化创建身份未知仍阻塞，四项管理员变体未执行；不继承历史构建资格。见[最终证据](../acceptance/evidence/rebase-control-20261019/README.md)。SteerLine/Orca 不改。
 
@@ -14,8 +14,8 @@
 
 > 上述旧批次通过绑定212ebee；当时推送后发现新主线的冲突，未验证组合源码。原冲突事实保留为[历史记录](../acceptance/evidence/fixed-control-20261019/checks/integration-status.json)，不代表本轮最终状态。
 
-> 实施状态（2026-10-18）：已按确认的最小边界实现并完成必要验证。原生权限、行为约定和事后检测见总 Spec §6；当前支持 Windows / Codex >= 0.159.2，默认关闭独立解析。实际支持范围、失败修正及最终证据见[验收登记](../acceptance/result-acquisition.md)。历史“仅设计”说明指此前设计轮次。
-日期：2026-10-18（首次调查 2026-10-16）。状态：三方式及本期两定义已实现，必要验收通过。普通需求，不创建 Task/roadmap 调度项。[Plan](result-acquisition.plan.md) · [专属验收](../acceptance/result-acquisition.md) · [调查与原生能力记录](../acceptance/evidence/result-acquisition-design-20261016.md)。
+> 实施状态（2026-10-18）：已按确认的最小边界实现并完成必要验证。原生权限、行为约定和事后检测见总 Spec §6；当前支持 Windows / Codex >= 0.159.2，默认关闭独立解析。实际支持范围、失败修正及最终证据见[验收登记](../archive/2026-11/implementation/acceptance/result-acquisition.md)。历史“仅设计”说明指此前设计轮次。
+日期：2026-10-18（首次调查 2026-10-16）。状态：三方式及本期两定义已实现，必要验收通过。普通需求，不创建 Task/roadmap 调度项。[Plan](../archive/2026-11/implementation/spec/result-acquisition.plan.md) · [专属验收](../archive/2026-11/implementation/acceptance/result-acquisition.md) · [调查与原生能力记录](../acceptance/evidence/result-acquisition-design-20261016.md)。
 
 本轮收敛：只实现两个内置 Workflow、三种结果获取方式、同一结果模型及必要的来源/恢复接线。统一机制与具体定义分开，agent 阶段动作统一发送定义中的提示词。首期只用内置核验函数，不建设定制脚本端口或执行宿主。可读定义先交付确认稿：[统一能力](../workflows/README.md) · [development](../workflows/development.md) · [development-audited](../workflows/development-audited.md)。下文原生解析设计继续适用；具体定义文档已按本轮选择更新，本期三方式与两定义已实现；支持范围以本页实施状态和 §6 为准。
 
@@ -273,7 +273,7 @@ Codex 自己登录、读取原生 credential store 并续期，Runner 只管理�
 
 ### 7.1 固定原生控制终端（2026-10-19 确认增量）
 
-主线签名退出增量沿 [Orca 停止取证 Plan](orca-shutdown-verification.plan.md#正向退出证明补齐2026-10-19) 维护，不复制其状态机。固定控制查询须完整保留主线原 reader 的 `reader_writers_absent`，失败查询的资源结算与业务结果分离；在原 readiness/owner/公钥/输入及 reader 退出核实前，不允许新请求覆盖该回执。原请求不确定时仍只对账原请求。原生准备沿主线 readiness v3，内部 Orca state codec6/profile3，无旧格式兼容迁移。
+主线签名退出增量沿 [Orca 停止取证 Plan](../archive/2026-11/implementation/spec/orca-shutdown-verification.plan.md#正向退出证明补齐2026-10-19) 维护，不复制其状态机。固定控制查询须完整保留主线原 reader 的 `reader_writers_absent`，失败查询的资源结算与业务结果分离；在原 readiness/owner/公钥/输入及 reader 退出核实前，不允许新请求覆盖该回执。原请求不确定时仍只对账原请求。原生准备沿主线 readiness v3，内部 Orca state codec6/profile3，无旧格式兼容迁移。
 
 停止认证对账后，必须先通过主线已有 artifact 通道取得并验签原 helper 的退出凭据，确认原 app-server/tools/TUI Job 与认证结算，才能关闭业务 PTY；缺该凭据时保留原 helper，不以 PTY 清单或认证报告替代。原控制认证/关闭仍独立核验；被动服务停止仅释放观察并读取已有证明，无法核实停止时不宣称 stopped。具体接线、测试与证据见 Plan §6。
 

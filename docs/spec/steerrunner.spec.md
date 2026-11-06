@@ -1,6 +1,6 @@
 # Spec：SteerRunner 产品与 CLI 契约
 
-> Orca 停止范围增量（2026-11-03）：原 session close 的成功回执可确认 `orca_agent_session` 范围结算；额外清理没有保证，不额外阻断结果、检测、Workflow、重启或部署。PC-R06/PC-R10 的“停止/排空”按对应 scope 解释，不扩大为全进程清场。close 自身失败或未知仍保留未知。统一设计见[Orca 执行链路设计](../orca-execution.md)，实际资格见[专项验收](../acceptance/orca-session-result-settlement.md)。
+> Orca 停止范围增量（2026-11-03）：原 session close 的成功回执可确认 `orca_agent_session` 范围结算；额外清理没有保证，不额外阻断结果、检测、Workflow、重启或部署。PC-R06/PC-R10 的“停止/排空”按对应 scope 解释，不扩大为全进程清场。close 自身失败或未知仍保留未知。统一设计见[Orca 执行链路设计](../orca-execution.md)，实际资格见[专项验收](../archive/2026-11/implementation/acceptance/orca-session-result-settlement.md)。
 
 维护日期：2026-11-05；本次核对代码基线：`f6a389c` 加内容结果锁/离线读取职责收口工作树差异；既往专项基线保留在各节。本文长期维护 Runner 的能力、可靠性承诺和 CLI 契约，不随某一批实施结束而归档。
 
@@ -26,7 +26,7 @@ SteerRunner 是面向个人、运行在本人管理和信任的本机及多台�
 | PC-C06 执行权限 | 开发使用执行账号已有权限及 Git/gh/SSH 登录 | 必须显式 full_access；worktree 用于任务组织，不提供 OS 隔离，不承诺单仓库凭据、凭据退出失效或抵御恶意 Agent |
 | PC-C07 可见性 | 服务可用且查询合法时，按公开契约查询已提交的 Run 状态、受理回执、操作结果、停止状态及已保存结果；查询失败明确报错 | 核心查询返回已提交事实，不保证外部状态已实时刷新；消息摘要、文件进度、日志采集、用量和 Viewer 实时性等可选观测尽力提供 |
 
-开发权限采用[宿主认证](host-native-auth.spec.md)和[统一 full_access](development-full-access.spec.md)，不再创建 broker、CA、socket 或认证租期。内容流程的 read_only 和 parser 自身工具禁用机制继续保留；个人信任环境的定位不等于这些现行机制已删除，也不取消基本输入校验、凭据脱敏或精确资源身份核对。
+开发权限采用[宿主认证](../archive/2026-11/implementation/spec/host-native-auth.spec.md)和[统一 full_access](../archive/2026-11/implementation/spec/development-full-access.spec.md)，不再创建 broker、CA、socket 或认证租期。内容流程的 read_only 和 parser 自身工具禁用机制继续保留；个人信任环境的定位不等于这些现行机制已删除，也不取消基本输入校验、凭据脱敏或精确资源身份核对。
 
 核心状态及回执查询不适用“可选观测尽力提供”的降级约定：无法查询时返回明确错误，不能伪造成功、空结果或终态。已提交快照与外部实时事实分别表达；外部查询失败时保留的旧事实沿现有契约带观察时间和诊断，不冒充最新状态。可选通道缺失、过期或采集失败只表示可见性缺口，不证明任务失败、完成或停止；不承诺逐 token 可见、断线期间实时更新或费用统计绝对准确。
 
@@ -53,7 +53,7 @@ SteerRunner 是面向个人、运行在本人管理和信任的本机及多台�
 | PC-R09 并行任务 | 各 Run 的工作区、会话、输入、结果和停止目标分别绑定；只操作精确归属的资源 | 不提供主机级资源配额或 OS 安全隔离；后端串行通道、排队及资源不足可能限制并发 |
 | PC-R10 升级 | 原版本先排空原生资源和未完成操作/控制，再升级；兼容且已排空时允许保留目录和历史 | 不跨构建接管活动任务，不维护退役私有格式矩阵；pr_ready 或 service stop 均不能代替排空 |
 
-当前有界人工对账、普通服务重启及升级规则见[个人执行器简化 Spec §4](personal-executor-simplification.spec.md#4-恢复与升级收缩pes-02)和[操作指南](../cli-guide.md#人工对账与资源丢失)。服务重启不等于执行主机重启后仍保证资源存活。
+当前有界人工对账、普通服务重启及升级规则见[个人执行器简化 Spec §4](../archive/2026-11/implementation/spec/personal-executor-simplification.spec.md#4-恢复与升级收缩pes-02)和[操作指南](../cli-guide.md#人工对账与资源丢失)。服务重启不等于执行主机重启后仍保证资源存活。
 
 **独立 parser 的可靠性例外与代价：** parser 是内存文本任务，未提交的结果可能因服务中断丢失。服务重启或显式恢复后，仅在当前业务源及推进资格仍满足时，允许按当时的 parser 配置重新分析，可能重复推理和收费；不保证跨重启的总调用次数、总费用、相同模型或相同输出，也不恢复原 parser 操作或继承其预算。该取舍仅适用于独立文本分析，不允许重发原实施、审计、发布或其他业务执行。取消、结果采纳及 fallback 仍沿[parser 契约](parser-decoupling.spec.md)，不是在同一等待状态无限自动重算。
 
@@ -72,12 +72,12 @@ SteerRunner 是面向个人、运行在本人管理和信任的本机及多台�
 
 Workflow 完成条件按具体定义解释，不能把 `pr_ready` 的资源边界套用到全部流程。内容结果状态与 cleanup/stop 状态分别报告；generate 成功结果已取得但清理失败时保留这两个事实，不能以结果成功覆盖未结算状态。conversation 的一轮结束也不自动关闭会话，close/stop 沿其显式控制契约。详见[内容流程契约](content-workflows.spec.md)。
 
-当前新 Orca Agent Run 统一使用结构化会话：双端 Codex execute/1、development/2，本机 Codex development-audited/2 与本机 Pi execute/1、development/2。新 Run 的 `orca_agent_session` 按原 session close 的成功回执或原创建未派发结算；close 自身未知仍不报告 stopped。旧 Agent executable/非空 args/helper 配置受理前拒绝，旧终端协议不能由当前服务启动或接管。旧 Run 由原构建完成/停止及排空；当前构建保留离线读取与原冻结 scope 的只读证明，历史 `orca_terminal`、`orca_local_codex_resources` 不被升级成新执行入口，也不按新 scope 重释。直接 Codex、公共终端、独立 parser 保持；DSH 已退役，远端 Pi/远端 audited 不扩大支持。详细组合和既有资格见[Orca 长期设计](../orca-execution.md)及[helper 退役](orca-helper-retirement.spec.md)。PC-R06 不将任何 scope 扩大为主机级清场。
+当前新 Orca Agent Run 统一使用结构化会话：双端 Codex execute/1、development/2，本机 Codex development-audited/2 与本机 Pi execute/1、development/2。新 Run 的 `orca_agent_session` 按原 session close 的成功回执或原创建未派发结算；close 自身未知仍不报告 stopped。旧 Agent executable/非空 args/helper 配置受理前拒绝，旧终端协议不能由当前服务启动或接管。旧 Run 由原构建完成/停止及排空；当前构建保留离线读取与原冻结 scope 的只读证明，历史 `orca_terminal`、`orca_local_codex_resources` 不被升级成新执行入口，也不按新 scope 重释。直接 Codex、公共终端、独立 parser 保持；DSH 已退役，远端 Pi/远端 audited 不扩大支持。详细组合和既有资格见[Orca 长期设计](../orca-execution.md)及[helper 退役](../archive/2026-11/implementation/spec/orca-helper-retirement.spec.md)。PC-R06 不将任何 scope 扩大为主机级清场。
 
 <a id="待实施的承诺收敛本机-orca-codex-停止"></a>
 ### 现行停止范围：本机 Orca Codex
 
-状态：2026-11-01 已实施并完成专项最小验收，尚未部署或发布。见[Spec](orca-local-codex-stop-simplification.spec.md)、[Plan](orca-local-codex-stop-simplification.plan.md)和[验收](../acceptance/orca-local-codex-stop-simplification.md)。旧标题锚点仅保留链接兼容，不表示仍待实施。
+状态：2026-11-01 已实施并完成专项最小验收，尚未部署或发布。见[Spec](../archive/2026-11/implementation/spec/orca-local-codex-stop-simplification.spec.md)、[Plan](../archive/2026-11/implementation/spec/orca-local-codex-stop-simplification.plan.md)和[验收](../archive/2026-11/implementation/acceptance/orca-local-codex-stop-simplification.md)。旧标题锚点仅保留链接兼容，不表示仍待实施。
 
 本机受管 Codex 按新 scope 终止并核实登记的原业务终端、控制终端、helper 和 app-server 原根进程。保留最多 15 秒的原停止预算、最多 2 秒的协作停止、原 helper 的 Job/工具实际清理、精确身份及停止后零新业务输入。删除签名退出文件和 control Closed/pending reader 响应作为该范围结算门禁；同一判据用于显式停止、服务关闭中的核验和离线 verify-stopped，后者即使已有 stopped 也重新查询原资源。
 
@@ -85,11 +85,11 @@ Workflow 完成条件按具体定义解释，不能把 `pr_ready` 的资源边�
 
 scope 在新 Run 受理时冻结，公开为可选 `stop_evidence_scope`。state/v8、user_version=8 和新默认目录明确隔离 v7 旧承诺；不回填旧 Run、不按新 EXE 重释原停止保证。原版本先排空，旧历史仍由原版本读取，显式目录和客户端绑定不自动迁移。
 
-确定收益是删除两类停止专属证明规则；adapter 生产代码净减少 10 行，包含格式、投影及客户端后生产代码净增加 22 行。未测得可比耗时加速，不承诺正常任务提速或全局净删。专项仅取得受影响组件、3 项公开受控及一条真实本机停止探针资格，不继承为完整 L2/L3。停止入口与业务证据的剩余耦合已在[再审计](../acceptance/orca-local-codex-stop-reaudit.md)修正，最终构建与验证以该报告为准。
+确定收益是删除两类停止专属证明规则；adapter 生产代码净减少 10 行，包含格式、投影及客户端后生产代码净增加 22 行。未测得可比耗时加速，不承诺正常任务提速或全局净删。专项仅取得受影响组件、3 项公开受控及一条真实本机停止探针资格，不继承为完整 L2/L3。停止入口与业务证据的剩余耦合已在[再审计](../archive/2026-11/implementation/acceptance/orca-local-codex-stop-reaudit.md)修正，最终构建与验证以该报告为准。
 
 ### 现行实现清尾：退出证明产出与旧预算重建
 
-状态：2026-11-01 已实施；见 [Spec](exit-proof-budget-cleanup.spec.md)、[Plan](exit-proof-budget-cleanup.plan.md)、[初轮验收](../acceptance/exit-proof-budget-cleanup.md)及[实现再审计](../acceptance/exit-proof-budget-reaudit.md)，最终构建/验证以再审计报告为准。本机 Orca Codex 不再预开、签名、写入或 Sync 专属 exit.json，也不保留其专用 verifier/读取包装。公钥形状、readiness 编码和原停止请求地址/完整匹配、Git exclude、实际 Job/reader 清理及直接 Codex owner/checkpoint 签名保持。
+状态：2026-11-01 已实施；见 [Spec](../archive/2026-11/implementation/spec/exit-proof-budget-cleanup.spec.md)、[Plan](../archive/2026-11/implementation/spec/exit-proof-budget-cleanup.plan.md)、[初轮验收](../archive/2026-11/implementation/acceptance/exit-proof-budget-cleanup.md)及[实现再审计](../archive/2026-11/implementation/acceptance/exit-proof-budget-reaudit.md)，最终构建/验证以再审计报告为准。本机 Orca Codex 不再预开、签名、写入或 Sync 专属 exit.json，也不保留其专用 verifier/读取包装。公钥形状、readiness 编码和原停止请求地址/完整匹配、Git exclude、实际 Job/reader 清理及直接 Codex owner/checkpoint 签名保持。
 
 已冻结阶段输入的新派发只接受已有合法 Budget，不再从旧提示词、材料或反馈反推来源。仅 PendingTurn 副本缺失时，可在原命令、步骤、版本、Attempt、正文及模型等绑定一致、尚无该输入的持久外发意图时复制原 StageInput 的合法 Budget，并先提交再继续。尚未渲染草稿仍正常首次冻结，已有预算（包括旧来源标签）继续校验。
 
@@ -97,43 +97,43 @@ scope 在新 Run 受理时冻结，公开为可选 `stop_evidence_scope`。state
 
 ### 现行实现清理：旧规则与 Lifecycle 接口
 
-2026-11-01 已按[Spec](dormant-lifecycle-cleanup.spec.md)、[Plan](dormant-lifecycle-cleanup.plan.md)实施并完成[专项验收](../acceptance/dormant-lifecycle-cleanup.md)。删除无生产入口的旧准备/回合/恢复模型、三类未调用 Lifecycle 方法和六个无读取能力字段。实际继续资格、受理/开始区分、原操作对账、观察、结果/预算、owner/Job/reader、权限和停止仍由现有生产入口执行。
+2026-11-01 已按[Spec](../archive/2026-11/implementation/spec/dormant-lifecycle-cleanup.spec.md)、[Plan](../archive/2026-11/implementation/spec/dormant-lifecycle-cleanup.plan.md)实施并完成[专项验收](../archive/2026-11/implementation/acceptance/dormant-lifecycle-cleanup.md)。删除无生产入口的旧准备/回合/恢复模型、三类未调用 Lifecycle 方法和六个无读取能力字段。实际继续资格、受理/开始区分、原操作对账、观察、结果/预算、owner/Job/reader、权限和停止仍由现有生产入口执行。
 
 保留 state/v8 的全部持久字段和动作/解码，以及 Intents/Snapshot.Operations 表示；公开 capabilities、资源摘要和编码未变。生产净减 688 行，收益为规则与维护面减少；未测同条件耗时，不承诺提速。该批取得受影响组件和三项公开受控资格，未部署/发布，不增加真实模型或完整 L1/L2/L3 资格。
 
-2026-11-02 [实现再审计](../acceptance/dormant-lifecycle-reaudit.md)复核全部保留声明和实际入口，确认持久格式及原执行、恢复、停止承诺保持；完整组件组与补充恢复/停止测试通过，无新增生产修复。
+2026-11-02 [实现再审计](../archive/2026-11/implementation/acceptance/dormant-lifecycle-reaudit.md)复核全部保留声明和实际入口，确认持久格式及原执行、恢复、停止承诺保持；完整组件组与补充恢复/停止测试通过，无新增生产修复。
 
 ### 现行实现清理：旧历史采集与 Orca Backend
 
-2026-11-02 已按 [Spec](history-adapter-cleanup.spec.md) / [Plan](history-adapter-cleanup.plan.md) 实施并完成[专项验收](../acceptance/history-adapter-cleanup.md)。删除无生产装配的 Codex 历史分页采集/旧事件模型和未构造的 Orca Backend 包装、三个旧接口及其私有能力报告。真实 history binding 文件/编码、原 thread 恢复、完整 final、公开消息和当前 conversation Workflow 保留；共享 MessagePhase、64 KiB 原读取常量及恢复测试夹具迁址保留。
+2026-11-02 已按 [Spec](../archive/2026-11/implementation/spec/history-adapter-cleanup.spec.md) / [Plan](../archive/2026-11/implementation/spec/history-adapter-cleanup.plan.md) 实施并完成[专项验收](../archive/2026-11/implementation/acceptance/history-adapter-cleanup.md)。删除无生产装配的 Codex 历史分页采集/旧事件模型和未构造的 Orca Backend 包装、三个旧接口及其私有能力报告。真实 history binding 文件/编码、原 thread 恢复、完整 final、公开消息和当前 conversation Workflow 保留；共享 MessagePhase、64 KiB 原读取常量及恢复测试夹具迁址保留。
 
 生产净减 986 行；state/v8、持久字段/动作解码、双操作表示、公开 capabilities/资源摘要和原执行/恢复/停止承诺不变。最小验收包含 490 个组件/application 顶层和两个公开受控场景；8 项 skip/3 个无测试包、两次编译遗漏与修复均单列。维护面减少不等于任务提速；未部署/发布，无新增真实模型或完整 L1/L2/L3 资格。
 
-同日[实现再审计](../acceptance/history-adapter-reaudit.md)重新核对全部保留声明、真实消费者及共享恢复夹具，未发现新增确认缺陷；持久格式和原执行/恢复/停止承诺保持，44个补充定向顶层通过。生产/测试源码与初轮最终验收一致，最新资格以该再审计报告为准。
+同日[实现再审计](../archive/2026-11/implementation/acceptance/history-adapter-reaudit.md)重新核对全部保留声明、真实消费者及共享恢复夹具，未发现新增确认缺陷；持久格式和原执行/恢复/停止承诺保持，44个补充定向顶层通过。生产/测试源码与初轮最终验收一致，最新资格以该再审计报告为准。
 
 ### 现行实现收口：单事件确认与旧环境分支
 
-2026-11-02 已按 [Spec](event-ack-cleanup.spec.md) / [Plan](event-ack-cleanup.plan.md) 实施并完成[专项验收](../acceptance/event-ack-cleanup.md)。通用事件仅保留原 Persisted 单确认：持久事实仍在原 acceptEvent/commitLocked 返回后回复同一错误；重复/可选消息不被迫新增事务，独立 owner 的确认沿原生 journal 已落盘后的原 drain 点，不代表中心事务提交。错误/取消不自动补成功确认，原观察、消息采样、未知只读恢复与停止机制保持。
+2026-11-02 已按 [Spec](../archive/2026-11/implementation/spec/event-ack-cleanup.spec.md) / [Plan](../archive/2026-11/implementation/spec/event-ack-cleanup.plan.md) 实施并完成[专项验收](../archive/2026-11/implementation/acceptance/event-ack-cleanup.md)。通用事件仅保留原 Persisted 单确认：持久事实仍在原 acceptEvent/commitLocked 返回后回复同一错误；重复/可选消息不被迫新增事务，独立 owner 的确认沿原生 journal 已落盘后的原 drain 点，不代表中心事务提交。错误/取消不自动补成功确认，原观察、消息采样、未知只读恢复与停止机制保持。
 
 同时删除无消费者的通用事件字段、无赋值入口的 BindingSnapshot 环境分支及旧声明；真实短输入 trace 和底层 Codex 问答测试消费者保留。state/v8、持久字段/动作解码、双操作表示、公开能力/资源摘要和长期承诺均不变。生产净减105行，492个组件/application顶层及三个公开受控场景通过；skip/首轮新夹具失败单列。只减少重复协调与维护面，不宣称任务提速；未部署或发布，无新增真实模型或完整 L1/L2/L3 资格。
 
-同日[实现再审计](../acceptance/event-ack-reaudit.md)对 worker、owner 和 Orca observe 做精确变换复核，确认原单次回复位置、三类确认语义及错误/取消处理保持；9份共享夹具和持久格式复核通过，无新增确认缺陷。生产/测试源码未再改，33个补充定向顶层通过；最新资格以该报告为准。
+同日[实现再审计](../archive/2026-11/implementation/acceptance/event-ack-reaudit.md)对 worker、owner 和 Orca observe 做精确变换复核，确认原单次回复位置、三类确认语义及错误/取消处理保持；9份共享夹具和持久格式复核通过，无新增确认缺陷。生产/测试源码未再改，33个补充定向顶层通过；最新资格以该报告为准。
 
 ### 现行实现清尾：零消费者生产入口与孤立夹具
 
-2026-11-02 已按 [Spec](orphan-entry-cleanup.spec.md) / [Plan](orphan-entry-cleanup.plan.md) 先设计审计再实施，完成[专项验收](../acceptance/orphan-entry-cleanup.md)。删除17个无实际消费者的旧生产函数及独占声明，生产净减201行；另删孤立FakeTerminal及两个无调用平台锁文件，测试支撑净减333行。真实MockAppServer/StagedBusiness/historyFixtureBinding和正式创建探针及原断言保持，未修改实际执行、恢复、单确认或停止规则。
+2026-11-02 已按 [Spec](../archive/2026-11/implementation/spec/orphan-entry-cleanup.spec.md) / [Plan](../archive/2026-11/implementation/spec/orphan-entry-cleanup.plan.md) 先设计审计再实施，完成[专项验收](../archive/2026-11/implementation/acceptance/orphan-entry-cleanup.md)。删除17个无实际消费者的旧生产函数及独占声明，生产净减201行；另删孤立FakeTerminal及两个无调用平台锁文件，测试支撑净减333行。真实MockAppServer/StagedBusiness/historyFixtureBinding和正式创建探针及原断言保持，未修改实际执行、恢复、单确认或停止规则。
 
 state/v8、全部持久字段/动作/解码、双操作表示和公开能力不变；建议C及持久格式退役未实施。100个保留声明和777项其余源/配置保持，编码相同；最终496个组件/application顶层和3个公开受控场景通过，原skip及首轮沙箱失败/超时另记。收益为维护面减少，不宣称提速。未提交、部署或发布，无新增真实模型或完整L1/L2/L3资格。
 
-同日[实现再审计](../acceptance/orphan-entry-reaudit.md)未发现产品缺陷，修复证据目录Git原字节保护遗漏；删除符号无外部入口，18个关键消费者及全部原测试/共享夹具保持，重新编码一致，25个定向顶层通过。初轮交付状态见上，后续按用户授权提交并提PR，不合并、部署或发布。
+同日[实现再审计](../archive/2026-11/implementation/acceptance/orphan-entry-reaudit.md)未发现产品缺陷，修复证据目录Git原字节保护遗漏；删除符号无外部入口，18个关键消费者及全部原测试/共享夹具保持，重新编码一致，25个定向顶层通过。初轮交付状态见上，后续按用户授权提交并提PR，不合并、部署或发布。
 
 ### 现行实现清尾：新意图写入与展示残留
 
-2026-11-02 已按[Spec](new-intent-boundary-cleanup.spec.md)/[Plan](new-intent-boundary-cleanup.plan.md)先设计审计后实施并完成[专项验收](../acceptance/new-intent-boundary-cleanup.md)。仅InputValue新构造不再接受四类无生产候选旧动作，删除空PreparationFacts.Cleanup步骤；历史字段/动作/校验/解码、原Request对账、owner和停止保持。submit_input及全部保留构造仍在，不把新写入限制加到原请求恢复。
+2026-11-02 已按[Spec](../archive/2026-11/implementation/spec/new-intent-boundary-cleanup.spec.md)/[Plan](../archive/2026-11/implementation/spec/new-intent-boundary-cleanup.plan.md)先设计审计后实施并完成[专项验收](../archive/2026-11/implementation/acceptance/new-intent-boundary-cleanup.md)。仅InputValue新构造不再接受四类无生产候选旧动作，删除空PreparationFacts.Cleanup步骤；历史字段/动作/校验/解码、原Request对账、owner和停止保持。submit_input及全部保留构造仍在，不把新写入限制加到原请求恢复。
 
 另删无消费者Display及底层事件Summary/Title，保留Kind/Status真实问答消费者、原生journal与单确认。state/v8及全部持久编码/公开能力不变，原测试和共享夹具不改。A/B生产净减11/15行，仅减少少量维护面，不宣称提速。最终498个组件/application顶层及三个公开受控场景通过；新夹具失败、既有skip和Controlled计时导入资格单列。未提交、部署或发布，无新增真实模型或完整L1/L2/L3资格。
 
-同日[实现再审计](../acceptance/new-intent-boundary-reaudit.md)未发现产品缺陷；快进main66cc0ac的上游测试更新后，原解码/对账、共享夹具、编码及停止承诺保持，27个定向和新主线最终EXE的三个公开场景通过。原文件夹具初始化失败与复验记录另存，不更改生产或原断言。上段为初轮资格/交付状态；后续按用户授权提交并提PR，不合并或部署。
+同日[实现再审计](../archive/2026-11/implementation/acceptance/new-intent-boundary-reaudit.md)未发现产品缺陷；快进main66cc0ac的上游测试更新后，原解码/对账、共享夹具、编码及停止承诺保持，27个定向和新主线最终EXE的三个公开场景通过。原文件夹具初始化失败与复验记录另存，不更改生产或原断言。上段为初轮资格/交付状态；后续按用户授权提交并提PR，不合并或部署。
 
 ### 现行结构与分批收口：Orca 能力层
 
@@ -141,41 +141,41 @@ Orca 对接按[能力层长期设计](orca-capability-layer.spec.md)逐批收敛
 
 复杂取证抽离以前先核验无 helper 原生路径的可行性；能力迁移同时检查依赖和业务语义归属。B5 先实现完整候选生产接线，经真实 Runner CLI/API 验证受理、冻结、执行、发布、持久结果、在线 stop 和离线 verify-stopped，另覆盖活动停止与未知关闭结果；B6 在已验接线上最终启用并退役旧链。资格要求零旧链调用，能力测试装配、短文本会话及现有 managed 探针均不能代替。
 
-B0–B6 已完成能力迁移、生产接线、正式合同与保留例外同步；最终集成构建的双端开发及活动停止、真实离线核验和独立审计均通过，见[B6 验收](../acceptance/orca-native-rollout.md)。当前选定原生合同及未验证边界见[Orca 双端执行合同](../orca-execution.md)。显式 managed/audited、Pi/DSH 与旧记录仍有消费者，保持原 scope/资格，不能把首轮原生通过扩大到这些组合。
+B0–B6 已完成能力迁移、生产接线、正式合同与保留例外同步；最终集成构建的双端开发及活动停止、真实离线核验和独立审计均通过，见[B6 验收](../archive/2026-11/implementation/acceptance/orca-native-rollout.md)。当前选定原生合同及未验证边界见[Orca 双端执行合同](../orca-execution.md)。显式 managed/audited、Pi/DSH 与旧记录仍有消费者，保持原 scope/资格，不能把首轮原生通过扩大到这些组合。
 
 ### 本机 Orca Codex execute/1 结构化执行与 DSH 退役
 
-2026-11-03 用户确认首 PR 收窄为 [Spec](orca-structured-agent-session.spec.md) / [Plan](orca-structured-agent-session.plan.md)：仅本机 Orca Codex 新 execute/1 从 native session 创建开始使用结构化单消息正文，取得原 turn 完整结果；本 PR 同时移除 DSH 执行、专用历史/用量与恢复支持。其它 Orca Codex Workflow、Pi/远端、公共 terminal、非 Orca codex-app-server 和独立 parser 保持原合同。不修改或要求修改 Orca，不依赖未来上游能力。
+2026-11-03 用户确认首 PR 收窄为 [Spec](../archive/2026-11/implementation/spec/orca-structured-agent-session.spec.md) / [Plan](../archive/2026-11/implementation/spec/orca-structured-agent-session.plan.md)：仅本机 Orca Codex 新 execute/1 从 native session 创建开始使用结构化单消息正文，取得原 turn 完整结果；本 PR 同时移除 DSH 执行、专用历史/用量与恢复支持。其它 Orca Codex Workflow、Pi/远端、公共 terminal、非 Orca codex-app-server 和独立 parser 保持原合同。不修改或要求修改 Orca，不依赖未来上游能力。
 
 用户接受 Orca 全部额外资源清理不保证。该协议 `orca_agent_session` scope 以原 close 的明确成功回执确认原会话停止，允许正常结果封存与业务收尾；不证明任意派生进程、主机资源或凭据清理，额外清理未保证不成为流程门禁。close 自身未知仍为 unknown，不能伪造回执或重放 close。其它组合按其原 scope 核验，不把 terminal/helper 证明套给结构化会话。当前统一规则和验证入口见[长期设计](../orca-execution.md)。DSH 旧记录必要时明确 unsupported，不物理删除用户数据或历史 evidence。
 
-上述结构化执行已实现；历史[设计复审](../acceptance/orca-structured-agent-session-mvp-design-audit.md)不代表代码/当前能力已改变。最终 Codex/Pi 全量结构化及 helper/TUI 退役仍是后续方向；audited 实际模型、完整资源结算和远端 Pi 的未验/环境缺口不追认通过。
+上述结构化执行已实现；历史[设计复审](../archive/2026-11/implementation/acceptance/orca-structured-agent-session-mvp-design-audit.md)不代表代码/当前能力已改变。最终 Codex/Pi 全量结构化及 helper/TUI 退役仍是后续方向；audited 实际模型、完整资源结算和远端 Pi 的未验/环境缺口不追认通过。
 
 ### 现行职责收口：权限资源与原完成证明
 
-2026-11-02 已按 [Spec](native-proof-boundaries.spec.md) / [Plan](native-proof-boundaries.plan.md)先设计审计后实施，见[验收](../acceptance/native-proof-boundaries.md)。Codex adapter 统一解释原权限包与冻结 profile 的匹配，application 不再扫描原生 sandbox 参数；adapter 负责原 owner 完成证明的适用性和读取，业务侧只接收事实并保留仓库/审计来源核验。要求原证明但缺失/无效时仍等待，不能用缓存或当前 HEAD 代替。
+2026-11-02 已按 [Spec](../archive/2026-11/implementation/spec/native-proof-boundaries.spec.md) / [Plan](../archive/2026-11/implementation/spec/native-proof-boundaries.plan.md)先设计审计后实施，见[验收](../archive/2026-11/implementation/acceptance/native-proof-boundaries.md)。Codex adapter 统一解释原权限包与冻结 profile 的匹配，application 不再扫描原生 sandbox 参数；adapter 负责原 owner 完成证明的适用性和读取，业务侧只接收事实并保留仓库/审计来源核验。要求原证明但缺失/无效时仍等待，不能用缓存或当前 HEAD 代替。
 
 原签名读写、Git/common-dir 实际用途、持久格式、350 个既有测试文件及执行/恢复/停止/原提交承诺保持。仅修改两个原协调函数，新增三个窄函数，生产净增15行；收益为私有知识归属，非净删或提速。448 个组件、57 个定向应用顶层及最终 EXE 三公开场景通过；8 个既有 skip 和完整应用组的基线缺 Budget 夹具失败/总时限耗尽单列。未提交或部署，无新增完整 L1/L2/L3 或真实模型资格。
 
-同日[实现再审计](../acceptance/native-proof-reaudit.md)未发现产品缺陷；新增实际结果提交/停止先到回归，同步 main `da8155e` 测试接线后，351 个既有测试文件、原持久/执行/恢复/停止保持，33 个定向及最终 EXE 三个公开场景通过。上段为初轮状态，后续按新增授权提交提 PR；初轮基线失败/时限边界不改记通过，不自动合并或部署。
+同日[实现再审计](../archive/2026-11/implementation/acceptance/native-proof-reaudit.md)未发现产品缺陷；新增实际结果提交/停止先到回归，同步 main `da8155e` 测试接线后，351 个既有测试文件、原持久/执行/恢复/停止保持，33 个定向及最终 EXE 三个公开场景通过。上段为初轮状态，后续按新增授权提交提 PR；初轮基线失败/时限边界不改记通过，不自动合并或部署。
 
 提交前进一步整合 main `efa871c` 的文件材料及夹具修复；353 个既有测试文件无本批改动，38 个定向及同最终 EXE 三公开场景通过，原缺预算测试随上游修复后定向通过。与该 main 原源码捕获相比，145494 字节编码完全相同；与初轮捕获的差异仅是上游 capabilities/resource_digest。A/B 没有改变持久格式或长期承诺，最新产物与资格见再审计报告 §4。
 
 ### 现行职责收口：内容结果校验与离线读取
 
-2026-11-05 按两份独立 [A Spec](content-result-lock-boundary.spec.md)/[Plan](content-result-lock-boundary.plan.md)、[B Spec](offline-inspection-boundary.spec.md)/[Plan](offline-inspection-boundary.plan.md)先设计审计，再实施 A、验证后实施 B，见[专项记录](../acceptance/content-inspection-boundaries.md)。内容结果的原材料校验移出 Engine.mu，保留同 Run 派发锁，重锁复核原 revision 后仍沿原结果事务提交；停止后的原 final 可收录但不恢复授权。离线 inspect 直接读取全部严格解码的持久 Run 和原命令，与驻留查询共用投影，不再构造执行 Engine、身份和 workers。
+2026-11-05 按两份独立 [A Spec](../archive/2026-11/implementation/spec/content-result-lock-boundary.spec.md)/[Plan](../archive/2026-11/implementation/spec/content-result-lock-boundary.plan.md)、[B Spec](../archive/2026-11/implementation/spec/offline-inspection-boundary.spec.md)/[Plan](../archive/2026-11/implementation/spec/offline-inspection-boundary.plan.md)先设计审计，再实施 A、验证后实施 B，见[专项记录](../archive/2026-11/implementation/acceptance/content-inspection-boundaries.md)。内容结果的原材料校验移出 Engine.mu，保留同 Run 派发锁，重锁复核原 revision 后仍沿原结果事务提交；停止后的原 final 可收录但不恢复授权。离线 inspect 直接读取全部严格解码的持久 Run 和原命令，与驻留查询共用投影，不再构造执行 Engine、身份和 workers。
 
 材料/仓库/路径核验、输入与恢复门、全量读取的错误顺序、三 selector 的 null/未找到/查询错误、writer lease/bootstrap/当前格式护栏均保持。SQLite 原只读路径的临时 WAL/SHM 行为保持，DB 原字节与持久/执行文件不变。state/v8、持久声明和编解码、现行后端的执行/恢复/停止及 PC-R01–R06/R08/R09 不变；不新增后台框架、持久校验票据或跨回合缓存。收益是解除跨 Run 材料 I/O 与提交锁、离线读取与执行构造的两处依赖，不以净删或未测量提速为承诺；实际构建和验证资格以专项记录为准。
 
-同日[实现再审计](../acceptance/content-inspection-reaudit.md)未确认生产缺陷，新增真实stop入口的原提交边界回归；46项应用定向、74项组件通过，原4个现场opt-in跳过。351个既有内部测试字节、原持久编码及执行/恢复/停止保持；Runner/受控驱动/原生夹具SHA与初轮相同，三项公开受控沿原同产物证据，不虚记本次重跑。按用户追加授权提交提PR。
+同日[实现再审计](../archive/2026-11/implementation/acceptance/content-inspection-reaudit.md)未确认生产缺陷，新增真实stop入口的原提交边界回归；46项应用定向、74项组件通过，原4个现场opt-in跳过。351个既有内部测试字节、原持久编码及执行/恢复/停止保持；Runner/受控驱动/原生夹具SHA与初轮相同，三项公开受控沿原同产物证据，不虚记本次重跑。按用户追加授权提交提PR。
 
 ### 现行职责收口：Orca 停止合同与历史读取夹具
 
-2026-11-06 按 [A Spec](orca-stop-contract-boundary.spec.md)/[Plan](orca-stop-contract-boundary.plan.md)实施停止合同私有解释收口，独立[验收](../acceptance/orca-stop-contract-boundary.md)后，再按 [B Spec](orca-reader-fixture-boundary.spec.md)/[Plan](orca-reader-fixture-boundary.plan.md)分离历史读取与当前结构化测试装配。业务侧保留 Workflow、授权、停止受理和提交边界；adapter 解释原 profile 标记、冻结 scope 要求及成功诊断，不新增解码/证明门槛。历史 reader 保留原校验，Lifecycle 删除 17 个旧方法，旧 State encoder 仅留测试侧；原终端读取/并发及共享 CLI/creation 等实际消费者保留。
+2026-11-06 按 [A Spec](../archive/2026-11/implementation/spec/orca-stop-contract-boundary.spec.md)/[Plan](../archive/2026-11/implementation/spec/orca-stop-contract-boundary.plan.md)实施停止合同私有解释收口，独立[验收](../archive/2026-11/implementation/acceptance/orca-stop-contract-boundary.md)后，再按 [B Spec](../archive/2026-11/implementation/spec/orca-reader-fixture-boundary.spec.md)/[Plan](../archive/2026-11/implementation/spec/orca-reader-fixture-boundary.plan.md)分离历史读取与当前结构化测试装配。业务侧保留 Workflow、授权、停止受理和提交边界；adapter 解释原 profile 标记、冻结 scope 要求及成功诊断，不新增解码/证明门槛。历史 reader 保留原校验，Lifecycle 删除 17 个旧方法，旧 State encoder 仅留测试侧；原终端读取/并发及共享 CLI/creation 等实际消费者保留。
 
-两批 15,528 字节代表持久编码与原基线一致，全部原生产格式类型/tag/codec 不变，PC-R01–R10 及 #125 原会话消息、恢复和停止撤销保持。A 三项同 EXE 公开受控通过；B 四项同 EXE 公开受控复验通过，首轮 owner-crash 的 fixture 读取失败根因未确立，原失败单列，不改记通过，见 [B 验收](../acceptance/orca-reader-fixture-boundary.md)。收益为私有知识归属和测试装配/生产方法依赖减少，不宣称提速或全局净删；未部署，不授予完整 L1/Controlled、L2/L3 或真实模型资格。
+两批 15,528 字节代表持久编码与原基线一致，全部原生产格式类型/tag/codec 不变，PC-R01–R10 及 #125 原会话消息、恢复和停止撤销保持。A 三项同 EXE 公开受控通过；B 四项同 EXE 公开受控复验通过，首轮 owner-crash 的 fixture 读取失败根因未确立，原失败单列，不改记通过，见 [B 验收](../archive/2026-11/implementation/acceptance/orca-reader-fixture-boundary.md)。收益为私有知识归属和测试装配/生产方法依赖减少，不宣称提速或全局净删；未部署，不授予完整 L1/Controlled、L2/L3 或真实模型资格。
 
-同日[实现复审](../acceptance/orca-stop-reader-reaudit.md)未确认生产缺陷，修复输入不变测试的 Payload 浅拷贝并补实际在线/离线 scope 与首错回归；所有生产文件原字节保持，完整 adapter 81、应用定向 76 及最终 EXE 四公开受控场景通过。原历史失败不追认，最新产物和实际资格以复审记录为准；后续按用户追加授权提 PR，不自动合并或部署。
+同日[实现复审](../archive/2026-11/implementation/acceptance/orca-stop-reader-reaudit.md)未确认生产缺陷，修复输入不变测试的 Payload 浅拷贝并补实际在线/离线 scope 与首错回归；所有生产文件原字节保持，完整 adapter 81、应用定向 76 及最终 EXE 四公开受控场景通过。原历史失败不追认，最新产物和实际资格以复审记录为准；后续按用户追加授权提 PR，不自动合并或部署。
 
 ### 现行职责收口：原始状态与历史 helper 资产
 
@@ -196,11 +196,11 @@ A 验收和源码归档后，再按 [B Spec](orca-helper-producer-retirement.spe
 
 ## 当前实现基线与历史说明
 
-当前使用 `steerrunner-cli/v1`、state/v8、SQLite user_version=8，默认 `%LOCALAPPDATA%/SteerRunner-v8`；拒绝 v7 及更旧目录，不迁移或代替原版本收尾。verify-takeover、跨构建活动任务接管、资源重建和旧 Check 已删除。开发权限与认证见上述现行承诺；恢复/升级详见[个人执行器简化 Spec](personal-executor-simplification.spec.md) / [Plan](personal-executor-simplification.plan.md)。
+当前使用 `steerrunner-cli/v1`、state/v8、SQLite user_version=8，默认 `%LOCALAPPDATA%/SteerRunner-v8`；拒绝 v7 及更旧目录，不迁移或代替原版本收尾。verify-takeover、跨构建活动任务接管、资源重建和旧 Check 已删除。开发权限与认证见上述现行承诺；恢复/升级详见[个人执行器简化 Spec](../archive/2026-11/implementation/spec/personal-executor-simplification.spec.md) / [Plan](../archive/2026-11/implementation/spec/personal-executor-simplification.plan.md)。
 
 当前 Workflow 与结果获取见[能力解耦及结果获取 Spec](result-acquisition.spec.md)和[Workflow 定义](../workflows/README.md)；它们取代 workflow/1 的固定报告、双审计及发布后反馈返工。下文首版目标、旧版本、旧权限/认证及恢复描述只在未被取代的范围适用；不恢复 broker/sandbox、旧 decoder 或资源重建要求。
 
-下文首版独立化调查日期为 2026-10-14，原[实施 Plan](../archive/2026-10/spec/steerrunner.plan.md)及[专属验收](../acceptance/steerrunner.md)保留其历史范围。2026-10-15 的本机限定验收、此前取消的 Orca 验收不改写，也不否定后续构建的专项结果。当前支持及缺口从[文档索引](../README.md)和对应验收查阅，不以首版记录推导当前全部资格。
+下文首版独立化调查日期为 2026-10-14，原[实施 Plan](../archive/2026-10/spec/steerrunner.plan.md)及[专属验收](../archive/2026-11/implementation/acceptance/steerrunner.md)保留其历史范围。2026-10-15 的本机限定验收、此前取消的 Orca 验收不改写，也不否定后续构建的专项结果。当前支持及缺口从[文档索引](../README.md)和对应验收查阅，不以首版记录推导当前全部资格。
 
 ## 1. 目标、依据与首版范围
 
@@ -271,13 +271,13 @@ Windows 实现先以原生 breakaway 挂起创建并检查 Job。创建被禁止
 
 CLI 或 SteerLine 退出、IPC 断连不会自动停止已接受的 Run。首次输入明确接受后，正常服务实例可继续既定 workflow；客户端进程是否存在不改变其授权。服务停机后的规则见第 8 节。
 
-`service stop` 是服务生命周期命令，`stop` 是指定 Run 的执行命令。停服请求携带 status 返回的 expected_instance_id，核验后才能作用于该实例；新请求不得停止已经换代的服务。停服接受回执不能证明所有原生执行已经停止；必须保存各 Run 的已确认/未核实处理事实。本机 Codex 的独立 owner 保留原生连接和 Job/工具树，服务只脱离观察；显式 Run stop 才停止原树，不撤销宿主登录。Orca 保留原观察脱离规则。相关契约和当前资格见[个人执行器简化 Spec](personal-executor-simplification.spec.md)；[旧服务换代 Spec](service-generation-recovery.spec.md)保留历史说明。Windows 系统服务注册与开机自启动另行设计。
+`service stop` 是服务生命周期命令，`stop` 是指定 Run 的执行命令。停服请求携带 status 返回的 expected_instance_id，核验后才能作用于该实例；新请求不得停止已经换代的服务。停服接受回执不能证明所有原生执行已经停止；必须保存各 Run 的已确认/未核实处理事实。本机 Codex 的独立 owner 保留原生连接和 Job/工具树，服务只脱离观察；显式 Run stop 才停止原树，不撤销宿主登录。Orca 保留原观察脱离规则。相关契约和当前资格见[个人执行器简化 Spec](../archive/2026-11/implementation/spec/personal-executor-simplification.spec.md)；[旧服务换代 Spec](../archive/2026-11/spec/service-generation-recovery.spec.md)保留历史说明。Windows 系统服务注册与开机自启动另行设计。
 
 服务在所有 worker 退出并读取持久化停止事实后、释放写锁前发布最终结算。`service status` 仅在写锁空闲且无未核实启动时公开 `last_shutdown`，绑定 `instance_id/request_id/state_dir/executable_sha256`，分别返回 `resources_settled` 和诊断；不读取或推导私有执行库。只有全部 Run 已持久化 stopped 且关闭无错误才标为 true；未知、unsupported、观察脱离、缺失证据不等于已停止。新写者获得写锁后首先移除旧结算，防止启动失败或异常退出后继续使用上一代证明。无记录不伪造成功。
 
 显式 `service verify-stopped` 为停机后的独立只读取证入口：取得既有 writer.lock、拒绝未核实启动后，只读当前格式库，按逐 Run 冻结身份和范围返回结论。缺目录、锁、库、不支持格式、身份/权限未知、资源仍活动、清单不完整或未知创建均不能成功；不初始化服务/observer，不创建资源、不保存 stopped、不改原命令或 shutdown 回执。调用方只消费公开 CLI，不读取私有库。
 
-Orca 查询原 runtime/worktree 的新鲜完整终端清单，计数须一致、未截断，原 local host 未省略；原 handle/incarnation 已退出或确实缺席才成立。不能用调用端 PID 推断远端。原生远端仅报告 `orca_terminal`；本机受管 Codex 按上文 scope 另查 helper 与 app-server 原根身份，即使已保存 stopped 也不跳过；签名退出文件和 control 关闭检查点均不作门禁。正常 history/Git 查询仍要求原 reader 及来源证据。直接 Codex 的 managed owner/精确 root 和 Pi/DSH 原生 helper 沿各自原证明，不能混用新 scope。普通停服完成观察清理后可按同一读取判据记录资源结论，不自动关闭业务或续发输入。历史全树停止取证设计见[旧 Plan](orca-shutdown-verification.plan.md)，新范围及验证以[本次验收](../acceptance/orca-local-codex-stop-simplification.md)为准。
+Orca 查询原 runtime/worktree 的新鲜完整终端清单，计数须一致、未截断，原 local host 未省略；原 handle/incarnation 已退出或确实缺席才成立。不能用调用端 PID 推断远端。原生远端仅报告 `orca_terminal`；本机受管 Codex 按上文 scope 另查 helper 与 app-server 原根身份，即使已保存 stopped 也不跳过；签名退出文件和 control 关闭检查点均不作门禁。正常 history/Git 查询仍要求原 reader 及来源证据。直接 Codex 的 managed owner/精确 root 和 Pi/DSH 原生 helper 沿各自原证明，不能混用新 scope。普通停服完成观察清理后可按同一读取判据记录资源结论，不自动关闭业务或续发输入。历史全树停止取证设计见[旧 Plan](../archive/2026-11/implementation/spec/orca-shutdown-verification.plan.md)，新范围及验证以[本次验收](../archive/2026-11/implementation/acceptance/orca-local-codex-stop-simplification.md)为准。
 
 ## 4. 状态目录、内嵌资源与环境依赖
 
@@ -402,7 +402,7 @@ request_id 是调用方生成的非空不透明字符串，以规范化状态目
 
 base_revision 为完整 40 或 64 位 Git commit ID，不能仅保存可移动分支。local_path 是入口而非结果工作区；Runner 验证其 remote 与固定 url/目标一致，再为本 Run 准备独立工作区。保留调用方仓库未提交文件，不能 reset 用户现场。publication.base_branch 必须与 repository.base_branch 一致，provider 仓库与 Git remote 身份必须匹配。
 
-接受新提交前，Runner 在私有缓存中从固定 remote 显式刷新 base_branch，再验证原 base_revision 属于该目标分支；local_path 的本地分支和已有缓存引用不作为最新远端事实。刷新失败则在接受前报告环境不可用，不能使用旧引用放行；远端前进不改变冻结基线，远端回退排除该基线时仍拒绝。此规则不重新解析已接受 Run 的固定输入，验证见[分支刷新 Plan](repository-base-refresh.plan.md)。
+接受新提交前，Runner 在私有缓存中从固定 remote 显式刷新 base_branch，再验证原 base_revision 属于该目标分支；local_path 的本地分支和已有缓存引用不作为最新远端事实。刷新失败则在接受前报告环境不可用，不能使用旧引用放行；远端前进不改变冻结基线，远端回退排除该基线时仍拒绝。此规则不重新解析已接受 Run 的固定输入，验证见[分支刷新 Plan](../archive/2026-11/implementation/spec/repository-base-refresh.plan.md)。
 
 开发流程的每份文档只需提供安全的仓库相对 `path`，例如 `{"path":"docs/spec/task.spec.md"}`。spec/plan 的 path 必须不同；references 可引用验收或公共约束，不要求固定命名或目录。拒绝绝对路径及越界路径，此为输入形状校验，不检查实际文件或链接目标。
 
@@ -508,7 +508,7 @@ stopped/failed 的后续 resume 仅在上列资格满足且仍有原会话时可
 
 ## 9. PR 成果与 SteerLine 协作
 
-开发工作流必须显式选择 `full_access`，采用执行主机已有的 Git/gh/SSH 登录；不提供默认开发 sandbox、单仓库认证代理或认证租期。原生权限参数及启动条件仍按具体后端核验，不以模型声明代替已有程序检查。内容流程的 read_only 和 parser 自身约束不随开发权限简化而取消。现行规则见[统一权限](development-full-access.spec.md)、[宿主认证](host-native-auth.spec.md)及本文 PC-C06；旧[sandbox 认证设计](sandbox-authentication.spec.md)只供历史追溯。
+开发工作流必须显式选择 `full_access`，采用执行主机已有的 Git/gh/SSH 登录；不提供默认开发 sandbox、单仓库认证代理或认证租期。原生权限参数及启动条件仍按具体后端核验，不以模型声明代替已有程序检查。内容流程的 read_only 和 parser 自身约束不随开发权限简化而取消。现行规则见[统一权限](../archive/2026-11/implementation/spec/development-full-access.spec.md)、[宿主认证](../archive/2026-11/implementation/spec/host-native-auth.spec.md)及本文 PC-C06；旧[sandbox 认证设计](../archive/2026-11/spec/sandbox-authentication.spec.md)只供历史追溯。
 
 原生依赖的会话历史、缓存和临时目录不成为 Runner 恢复权威；Runner 自身状态、日志及冻结材料归 state-dir。未知发布继续核实原操作，不因权限放宽而重新推送或创建 PR。
 
@@ -540,7 +540,7 @@ SteerRunner 内部分工为公共 CLI/DTO、服务与存储、Workflow、Reliabl
 
 ## 11. 验收与本次文档交付
 
-自动验收 SR-A01–SR-A12 与人工项 SR-M01 统一见[专属验收](../acceptance/steerrunner.md)。只验证本次独立化及实际支持能力；受控/native/live 证据分开，旧 SteerLine 验收不搬成 Runner 通过结果。不默认跑 Full 或完整真实模型矩阵。
+自动验收 SR-A01–SR-A12 与人工项 SR-M01 统一见[专属验收](../archive/2026-11/implementation/acceptance/steerrunner.md)。只验证本次独立化及实际支持能力；受控/native/live 证据分开，旧 SteerLine 验收不搬成 Runner 通过结果。不默认跑 Full 或完整真实模型矩阵。
 
 当前文档阶段交付 README、此 Spec、实施 Plan 和专属验收文档，并核对链接、示例 JSON 和覆盖关系；不复制源码、不运行服务或真实模型、不创建/合并 PR、不修改 SteerLine 或安装环境。运行验收入口尚未存在，Plan 标明待建设的真实场景/命令、建设步骤与执行时点；先落实能力，再执行并登记结果。
 
@@ -548,13 +548,13 @@ SteerRunner 内部分工为公共 CLI/DTO、服务与存储、Workflow、Reliabl
 
 `workflow_changed` 事件在 Run 提交事务内比较前后值，仅 workflow stage/status/diagnostic 发生变化时追加。`transition.from/to` 各含 `workflow_stage`、`workflow_status`、可选 `diagnostic`；外层保留原 event_id、Run/Attempt、revision、created_at。初次提交 from 为空。不用当前 Run 重画缺少 transition 的历史。
 
-`last-message` 返回的 `observed_at` 为原生样本被本机观察源收到的 UTC 时间，不是调用该 CLI 的时间；同一摘要重复读取时间不变。采样本地 Codex completed agentMessage、固定工具标签，以及远端原生 Orca Codex 的可归属公开 assistant 字段；Orca 后台查询样本使用本机收到时间，不冒充远端消息创建时间。不暴露 reasoning、工具参数/命令/输出或用户输入。Run/Attempt/Session.Generation/Session/Turn 验证与脱敏后，每 Run 只保存一条 1200 UTF-8 字节加省略号的摘要。乱序/过期样本丢弃，不推进 revision/events。服务重启缓存清空，仅由之后的正常合法观察产生新样本；空值与读取错误都不能用来判断失败、卡死或恢复资格。Orca 字段发布时机属于最佳努力，不保证中途或逐 token 消息，具体来源及空结束 prompt 约束见[专项 Spec](orca-last-message.spec.md)。
+`last-message` 返回的 `observed_at` 为原生样本被本机观察源收到的 UTC 时间，不是调用该 CLI 的时间；同一摘要重复读取时间不变。采样本地 Codex completed agentMessage、固定工具标签，以及远端原生 Orca Codex 的可归属公开 assistant 字段；Orca 后台查询样本使用本机收到时间，不冒充远端消息创建时间。不暴露 reasoning、工具参数/命令/输出或用户输入。Run/Attempt/Session.Generation/Session/Turn 验证与脱敏后，每 Run 只保存一条 1200 UTF-8 字节加省略号的摘要。乱序/过期样本丢弃，不推进 revision/events。服务重启缓存清空，仅由之后的正常合法观察产生新样本；空值与读取错误都不能用来判断失败、卡死或恢复资格。Orca 字段发布时机属于最佳努力，不保证中途或逐 token 消息，具体来源及空结束 prompt 约束见[专项 Spec](../archive/2026-11/implementation/spec/orca-last-message.spec.md)。
 
-客户端按当前显示的执行按需查询；SteerLine 在页面可见且在线时每 3 秒读取，后台/切换/离开时停止。具体边界与最小验证见[增量 Plan](execution-observability.plan.md)和[验收](../acceptance/execution-observability.md)。
+客户端按当前显示的执行按需查询；SteerLine 在页面可见且在线时每 3 秒读取，后台/切换/离开时停止。具体边界与最小验证见[增量 Plan](../archive/2026-11/implementation/spec/execution-observability.plan.md)和[验收](../archive/2026-11/implementation/acceptance/execution-observability.md)。
 
 
 ### Orca 原生缺失 outcome 的结果契约
 
-按 [远端原生 Spec](orca-remote-native.spec.md) 的用户确认增量，native_outcome 现有字符串扩展 unreported（接口未提供）。仅原请求正常结束、完整来源成立且无 Failure 时可进入既有业务核验；它不等于原生 succeeded。显式 unknown/failed/cancelled 和未知输入继续阻断，历史 unknown 不重新解释、不自动推进。CLI v1 结构、工作流/审计/PR 与停止部署门不变。
+按 [远端原生 Spec](../archive/2026-11/spec/orca-remote-native.spec.md) 的用户确认增量，native_outcome 现有字符串扩展 unreported（接口未提供）。仅原请求正常结束、完整来源成立且无 Failure 时可进入既有业务核验；它不等于原生 succeeded。显式 unknown/failed/cancelled 和未知输入继续阻断，历史 unknown 不重新解释、不自动推进。CLI v1 结构、工作流/审计/PR 与停止部署门不变。
 
 单次执行的完成回执与业务成功判定分开。对于 `execute/1`，原回合已核实结束且最终回复来源完整时，缺失原生分类的 `unreported` 可以进入关闭和停止结算。Runner 保留该分类并在停止核实后公开 `closed`。调用方校验其正式结果并决定业务是否通过。详见[单次执行的完成回执](../workflows/README.md#单次执行的完成回执)。

@@ -1,10 +1,10 @@
 # Spec：SteerRunner 可靠执行中间层模块化重构
 
-> 历史归档（2026-10-21）：保留原构建、设计与验收事实；当前规则或汇总结论见[当前入口](../../../spec/execution-boundary-refactor.spec.md)。归档原因及范围见[归档索引](../../README.md)。
+> 历史归档（2026-10-21）：保留原构建、设计与验收事实；当前规则或汇总结论见[当前入口](../../2026-11/implementation/spec/execution-boundary-refactor.spec.md)。归档原因及范围见[归档索引](../../README.md)。
 
 日期：2026-10-15。状态：本次范围 RM-P0–RM-P3 及后续审计修复均已完成并复验，含 operation 提取及其余职责的 RM-P2 最小整理。范围和结果见 [Plan](reliable-modularization.plan.md)、[收尾证据](../../../acceptance/evidence/reliable-modularization-20261015.md)及[后续审计修复](../../../acceptance/evidence/reliable-modularization-audit-20261015.md)。
 
-本 Spec 细化 [SteerRunner 产品契约](../../../spec/steerrunner.spec.md)的内部职责边界。公开行为仍以产品契约为准；[首版验收](../../../acceptance/steerrunner.md)的历史结果不计为本次重构通过证据。
+本 Spec 细化 [SteerRunner 产品契约](../../../spec/steerrunner.spec.md)的内部职责边界。公开行为仍以产品契约为准；[首版验收](../../2026-11/implementation/acceptance/steerrunner.md)的历史结果不计为本次重构通过证据。
 
 ## 1. 问题、基线与交付目标
 

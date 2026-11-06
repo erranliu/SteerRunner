@@ -1,6 +1,6 @@
 # Plan：SteerRunner 可靠执行中间层模块化重构
 
-> 历史归档（2026-10-21）：保留原构建、设计与验收事实；当前规则或汇总结论见[当前入口](../../../spec/execution-boundary-refactor.plan.md)。归档原因及范围见[归档索引](../../README.md)。
+> 历史归档（2026-10-21）：保留原构建、设计与验收事实；当前规则或汇总结论见[当前入口](../../2026-11/implementation/spec/execution-boundary-refactor.plan.md)。归档原因及范围见[归档索引](../../README.md)。
 
 日期：2026-10-15。状态：本次范围 RM-P0–RM-P3 及后续审计修复均已完成并复验，含 RM-P2 所选整理。行为依据 [Spec](reliable-modularization.spec.md)，实际结果见 §6、[收尾证据](../../../acceptance/evidence/reliable-modularization-20261015.md)及[审计记录](../../../acceptance/evidence/reliable-modularization-audit-20261015.md)。不要求五项职责全部成为独立包，但要逐项核对收尾。
 
@@ -8,7 +8,7 @@
 
 源码调查基线为 `af545563c58171c584bd35d098166cf39012e699`。实施前核实实际源码/文档版本、工作树差异及与基线的变化；不修改他人在途代码或用户状态目录。
 
-保持现有 Engine、Run Record、Store.Commit、锁/gate、CLI 和 v2 SQL/JSON 读写行为。首版历史验收见[原验收文档](../../../acceptance/steerrunner.md)，不计入本次实现通过证据。
+保持现有 Engine、Run Record、Store.Commit、锁/gate、CLI 和 v2 SQL/JSON 读写行为。首版历史验收见[原验收文档](../../2026-11/implementation/acceptance/steerrunner.md)，不计入本次实现通过证据。
 
 不建设统一 View/Change/Decision、资格注入框架、操作投影重建/加载修复、通用停止/清理策略或旧二进制读回测试平台。复用现有类型和测试，只增加实际边界需要的函数、类型与反例。
 

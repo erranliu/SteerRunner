@@ -1,6 +1,6 @@
 # Spec B：退役旧 helper 生产端并隔离测试资产
 
-日期：2026-11-06。状态：已实施并完成合并前定向验收。调查基线 main `dda9a82727b6e7ac88e687a250750e8bbae236dc`；实施基线为 [A](orca-state-feed-retirement.spec.md)/[Plan](orca-state-feed-retirement.plan.md) 的独立通过点。配套 [B Plan](orca-helper-producer-retirement.plan.md)，依据[长期产品契约](steerrunner.spec.md#长期产品承诺)、[Orca 长期设计](../orca-execution.md)及[已实施 helper 退役](orca-helper-retirement.spec.md)。本项不是再次删除旧执行链，也不改变历史读取合同。
+日期：2026-11-06。状态：已实施并完成合并前定向验收。调查基线 main `dda9a82727b6e7ac88e687a250750e8bbae236dc`；实施基线为 [A](orca-state-feed-retirement.spec.md)/[Plan](orca-state-feed-retirement.plan.md) 的独立通过点。配套 [B Plan](orca-helper-producer-retirement.plan.md)，依据[长期产品契约](steerrunner.spec.md#长期产品承诺)、[Orca 长期设计](../orca-execution.md)及[已实施 helper 退役](../archive/2026-11/implementation/spec/orca-helper-retirement.spec.md)。本项不是再次删除旧执行链，也不改变历史读取合同。
 
 ## 目标与消费者审计
 
