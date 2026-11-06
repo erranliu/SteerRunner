@@ -24,6 +24,20 @@ func (e *Engine) feedbackValue(id string, w *worker, p b.LifecyclePort, answer *
 		e.block(id, "fresh_feedback_required", errors.New("Saved feedback does not match the original execution and business source"), false)
 		return false
 	}
+	if r.DevelopmentMessage() {
+		if err := queueInput(r, workflow.StageInput{StepID: workflow.StepPRReady, FeedbackDecisionID: answer.CommandID}, answer.Text); err != nil {
+			e.failControl(id, answer.CommandID, err)
+			return false
+		}
+		r.PendingFeedback = nil
+		r.CommandStates[answer.CommandID] = "running"
+		e.mu.Lock()
+		defer e.mu.Unlock()
+		if e.runs[id].Revision != r.Revision {
+			return false
+		}
+		return e.commitLocked(r, nil, "message_frozen") == nil
+	}
 	if r.Request.Workflow.ID == "conversation" {
 		return e.contentMessage(id, w, p, r, answer)
 	}

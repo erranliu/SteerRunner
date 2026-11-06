@@ -168,7 +168,8 @@ func (r *Record) View() contracts.RunView {
 			unresolved = true
 		}
 	}
-	v.Controls = contracts.Controls{CanReply: r.Allowed && !r.ResumeRequired && !unresolved && (r.Question != nil || r.Status == "pr_ready" || r.Status == "blocked"), CanResume: r.ResumeRequired && (!unresolved || r.ManualPause != nil) && !r.Closed && r.PendingStop == "" && r.PendingResume == "", CanStop: r.StopStatus != "stopped", Reason: r.Diagnostic}
+	v.Controls = contracts.Controls{CanReply: r.Allowed && !r.ResumeRequired && !unresolved && (r.Question != nil || r.Status == "blocked"), CanResume: r.ResumeRequired && (!unresolved || r.ManualPause != nil) && !r.Closed && r.PendingStop == "" && r.PendingResume == "", CanStop: r.StopStatus != "stopped", Reason: r.Diagnostic}
+	v.Controls.CanMessage = r.DevelopmentMessage() && r.Status == "pr_ready" && r.Allowed && !r.ResumeRequired && !unresolved && !r.Closed && r.PendingStop == "" && r.StopStatus == "" && r.PendingResume == "" && r.PendingFeedback == nil && r.PendingAnswer == nil && r.Question == nil && r.Snapshot.PendingTurn == nil
 	if workflow.Content(r.Request.Workflow.ID) {
 		v.RepositorySource = r.RepositorySource
 		v.Closed, v.ContentResult = r.Closed, r.ContentResult
@@ -194,4 +195,9 @@ func (r *Record) View() contracts.RunView {
 		v.Controls.CanClose = false
 	}
 	return v
+}
+
+// DevelopmentMessage identifies the completed development cursor, not a new workflow.
+func (r *Record) DevelopmentMessage() bool {
+	return (r.Request.Workflow.ID == "development" || r.Request.Workflow.ID == "development-audited") && r.Workflow.StepID == workflow.StepPRReady
 }

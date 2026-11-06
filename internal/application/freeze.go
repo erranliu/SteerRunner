@@ -413,6 +413,9 @@ func queueInput(r *runstate.Record, input workflow.StageInput, feedback string) 
 	if err := validateWorkflow(r); err != nil {
 		return err
 	}
+	if input.StepID == workflow.StepPRReady && r.DevelopmentMessage() && input.FeedbackDecisionID != "" {
+		return queueRunMessage(r, input, feedback)
+	}
 	state, defined := r.Workflow.State(input.StepID)
 	if state.Contract == "publication" && !workflow.AuditsPassed(r.Workflow) {
 		return errors.New("publication requires current audits")
@@ -590,5 +593,38 @@ func queueInput(r *runstate.Record, input workflow.StageInput, feedback string) 
 	r.Status, r.Phase = "running", "input_queued"
 	r.Result = nil
 	r.NativeStarted = false
+	return nil
+}
+
+// queueRunMessage freezes only caller text, retaining the completed workflow and original resources.
+func queueRunMessage(r *runstate.Record, input workflow.StageInput, text string) error {
+	if text == "" {
+		return errors.New("message text is required")
+	}
+	var err error
+	input.Prompt, input.Budget, err = m.FreezeInput(m.InputPart{Source: "caller.message", Owner: m.CallerInput, Text: text})
+	if err != nil {
+		return err
+	}
+	input.CommandID, input.AttemptID, input.Version = contracts.NewID(), r.Snapshot.Session.AttemptID, uint64(len(r.Workflow.StageInputs)+1)
+	if r.Workflow.ExecutionModel != nil {
+		input.Model, input.ReasoningEffort = r.Workflow.ExecutionModel.Model, r.Workflow.ExecutionModel.ReasoningEffort
+	}
+	r.Workflow.StageInputs = append(r.Workflow.StageInputs, input)
+	r.History = append(r.History, contracts.HistoryEntry{RequestCommandID: input.FeedbackDecisionID, CommandID: input.CommandID, SessionID: r.Snapshot.Session.SessionID, Role: "user", Text: text})
+	// Acceptance already records the user entry, so bind it instead of duplicating it.
+	for i := 0; i < len(r.History)-1; i++ {
+		if h := &r.History[i]; h.Role == "user" && h.CommandID == "" && h.RequestCommandID == input.FeedbackDecisionID {
+			h.CommandID, h.SessionID = input.CommandID, r.Snapshot.Session.SessionID
+			r.History = r.History[:len(r.History)-1]
+			break
+		}
+	}
+	r.Snapshot.PendingTurn = &b.TurnInput{Budget: input.Budget.Clone(), StepID: input.StepID, InputVersion: input.Version, CommandID: input.CommandID, Prompt: input.Prompt, Purpose: "message", LinkedWorktreePaths: append([]string(nil), r.LinkedGitPaths...), Model: input.Model, ReasoningEffort: input.ReasoningEffort}
+	r.Snapshot.Session.PendingCommandID, r.Snapshot.Session.PendingTurnID = input.CommandID, ""
+	r.Status, r.Phase = "running", "input_queued"
+	r.Result, r.LastFinal = nil, nil
+	r.NativeStarted = false
+	r.PreparationDeadline = time.Time{}
 	return nil
 }

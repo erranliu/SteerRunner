@@ -81,6 +81,7 @@ type agentSessionState struct {
 	TurnItemID        string              `json:"turn_item_id,omitempty"`
 	ProviderItemID    string              `json:"provider_item_id,omitempty"`
 	Epoch             string              `json:"epoch,omitempty"`
+	RuntimeFence      int64               `json:"runtime_fence,omitempty"`
 	Attempted         bool                `json:"attempted,omitempty"`
 	CloseAttempted    bool                `json:"close_attempted,omitempty"`
 	CloseReceipt      json.RawMessage     `json:"close_receipt,omitempty"`
@@ -170,8 +171,10 @@ func (l *Lifecycle) structuredPreparation(ctx context.Context, s b.LifecycleSnap
 	if err != nil {
 		return b.PreparationFacts{}, err
 	}
-	if err = l.originalAgentWorkspace(ctx, state); err != nil {
-		return b.PreparationFacts{}, err
+	if s.PendingTurn == nil || s.PendingTurn.Purpose != "message" {
+		if err = l.originalAgentWorkspace(ctx, state); err != nil {
+			return b.PreparationFacts{}, err
+		}
 	}
 	gate := b.GateUnverified
 	if s.PendingTurn != nil {
@@ -508,6 +511,7 @@ func (l *Lifecycle) verifyAgentActivity(s b.LifecycleSnapshot, state agentSessio
 		return receipt, nil, errors.New("original native turn identity changed")
 	}
 	state.TurnID, state.TurnItemID, state.ProviderItemID, state.Epoch = turn.TurnID, turnItem, submission.ProviderItemID, page.Epoch
+	state.RuntimeFence = page.Fence
 	var err error
 	receipt.Implementation, err = l.agentEnvelope(s, state)
 	if err != nil {
@@ -573,8 +577,11 @@ func (l *Lifecycle) verifyAgentActivity(s b.LifecycleSnapshot, state agentSessio
 	}
 	result := strings.Join(messages, "\n\n")
 	origin := "native_turn_assistant_messages"
-	if l.agentAudited && outcome == "succeeded" {
-		input := originalAuditedInput(s, state)
+	var input *b.TurnInput
+	if l.agentAudited {
+		input = originalAuditedInput(s, state)
+	}
+	if l.agentAudited && outcome == "succeeded" && (input == nil || input.Purpose != "message") {
 		if input == nil {
 			return receipt, nil, errors.New("original audited result input is unavailable")
 		}

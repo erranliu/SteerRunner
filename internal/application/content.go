@@ -180,7 +180,7 @@ func finishContent(r *runstate.Record, input workflow.StageInput, value b.TurnEv
 				content.Text, content.JSON = "", data
 			}
 		}
-	} else if r.Request.Workflow.ID == workflow.SingleExecution && result.NativeOutcome == "unreported" {
+	} else if (r.Request.Workflow.ID == workflow.SingleExecution || r.DevelopmentMessage()) && result.NativeOutcome == "unreported" {
 		// The original turn and final are verified. The provider left its outcome unclassified.
 		content.Status, content.Text = "closed", result.Content
 	} else if result.NativeOutcome == "cancelled" {
@@ -190,7 +190,9 @@ func finishContent(r *runstate.Record, input workflow.StageInput, value b.TurnEv
 	}
 	r.Workflow.StageResults = append(r.Workflow.StageResults, workflow.StageResult{SessionID: value.SessionID, CommandID: input.CommandID, AttemptID: input.AttemptID, StepID: input.StepID, InputVersion: input.Version, TurnID: value.TurnID, Outcome: result.NativeOutcome, Succeeded: result.Succeeded, FinalVerified: result.ContentVerified, Final: result.Content, Failure: result.Failure, FinalDiagnostic: result.Diagnostic})
 	r.Result, r.LastFinal, r.ContentResult = &value, &final, content
-	markResultSnapshotEnd(r, "result:"+input.CommandID+":"+value.TurnID)
+	if !r.DevelopmentMessage() {
+		markResultSnapshotEnd(r, "result:"+input.CommandID+":"+value.TurnID)
+	}
 	r.History = append(r.History, contracts.HistoryEntry{CommandID: input.CommandID, SessionID: value.SessionID, TurnID: value.TurnID, Role: "assistant", Text: result.Content, Result: content})
 	for i := range r.History {
 		if r.History[i].CommandID == input.CommandID {
@@ -209,6 +211,11 @@ func finishContent(r *runstate.Record, input workflow.StageInput, value b.TurnEv
 		r.PendingInterrupt = ""
 	}
 	r.Diagnostic = content.Diagnostic
+	if r.DevelopmentMessage() {
+		r.ContentResult = nil
+		r.Status, r.Phase = "pr_ready", "turn_completed"
+		return
+	}
 	state, _ := r.Workflow.State(input.StepID)
 	if state.Next == "closed" {
 		closeContent(r, "generate:"+input.CommandID)
