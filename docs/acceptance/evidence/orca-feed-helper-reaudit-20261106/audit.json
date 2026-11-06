@@ -478,5 +478,12 @@
     "A/B original serialized bytes and asset hashes; declarations identical",
     "B final formal EXE controlled 3 tests / restart 4 cases; identical frozen source and EXE hashes"
   ],
-  "production_findings": []
+  "production_findings": [],
+  "delivery_findings": [
+    {
+      "finding": "Git text normalization changed 15 initial evidence blobs and reaudit audit.json relative to raw-byte SHA manifests",
+      "fix": "Scoped -text -whitespace attributes for the two evidence directories; preserve original bytes and verify staged/final Git blobs",
+      "production_or_test_changes": false
+    }
+  ]
 }

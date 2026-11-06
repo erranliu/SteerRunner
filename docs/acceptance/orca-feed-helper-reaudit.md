@@ -36,7 +36,9 @@ PC-R01–R10 的保留实现均不在生产修改范围：原受理/提交、unk
 
 复用构建 source_digest=`bc865f625d72a5c61aa9d898c9bc5b09ec1e63472e4b22805042221839efb378`，EXE SHA256=`ba4b32d2048b65140f8a3004c3b45bc3c9de9b4358dd5c8cbe898d52008d85f3`。其原 source_commit=`da788478`、source_dirty=true 保持，不因新建 PR 分支、后续提交或文档更新重写为新 commit。旧产物对应的源码归档及清单可还原；本轮生产和测试未变化，分支切换不是新构建或新公开资格。
 
-原 A 的沙箱连接失败、错误 livetest 路径，以及原 B 的未用 import/沙箱 Node EPERM 均保留在[初轮 A](orca-state-feed-retirement.md)/[初轮 B](orca-helper-producer-retirement.md)及各自证据中，不追认通过或宣称本轮修复其环境根因。没有实际代码问题需要修复，本轮只新增复审证据与文档导航。
+原 A 的沙箱连接失败、错误 livetest 路径，以及原 B 的未用 import/沙箱 Node EPERM 均保留在[初轮 A](orca-state-feed-retirement.md)/[初轮 B](orca-helper-producer-retirement.md)及各自证据中，不追认通过或宣称本轮修复其环境根因。
+
+提交后再从 Git blob 核对证据时确认一处保存问题：默认 `* text=auto eol=lf` 归一化了初轮15个文件及复审 audit.json 的行尾，而原 SHA 清单绑定工作区原字节。初次工作区 SHA 核对未覆盖这个提交转换。按仓库现有证据约定，为本批两个目录补 `.gitattributes` 的 `-text -whitespace`，重新保存原证据，不修改旧输出或重算成“通过”的替代摘要；直接验证 staged index 和最终 commit blob 的所有清单项。修复只涉及证据保存规则，不影响848个生产/测试/脚本输入或既有构建/公开结果；未因此额外重跑产品测试。[Git blob 核验入口](evidence/orca-feed-helper-reaudit-20261106/git-blobs.py.txt)。原首个提交保留，以后续修复提交纠正，不改写历史。
 
 ## 交付边界
 
