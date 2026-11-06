@@ -31,7 +31,8 @@
     "TestSROrcaCLIWaitRetry",
     "TestSRManualReconciliation",
     "TestSRSingleExecutionColdStop",
-    "TestSRNativeCatalogPublicCLI"
+    "TestSRNativeCatalogPublicCLI",
+    "TestSRExecutionConfigurationPublicCLI"
   ],
   "controlled_selection": {
     "groups": {
@@ -41,7 +42,8 @@
         "TestSRInputFreeze",
         "TestSRPermissionQualification",
         "TestSRStorageLogsEvents",
-        "TestSRNativeCatalogPublicCLI"
+        "TestSRNativeCatalogPublicCLI",
+        "TestSRExecutionConfigurationPublicCLI"
       ],
       "workflow": [
         "TestSRRunWorkflow",

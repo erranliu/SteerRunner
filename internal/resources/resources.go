@@ -61,6 +61,8 @@ func resourceDigest(catalog CapabilityCatalog) string {
 	digest.Write(ConfigurationSchemas())
 	digest.Write([]byte("capability-catalog\x00"))
 	digest.Write(marshal(catalog))
+	digest.Write([]byte("execution-configuration-contract\x00"))
+	digest.Write(marshal(ExecutionConfiguration()))
 	return hex.EncodeToString(digest.Sum(nil))
 }
 
@@ -166,14 +168,15 @@ func Capabilities() any {
 		}},
 		"protocol": contracts.Protocol, "version": Version,
 		"resource_version": 3, "resource_digest": Digest(),
-		"execution":             map[string]any{"status": "implemented", "adapters": []string{"codex-app-server", "orca-terminal"}, "readiness": "requires_per_run_native_verification"},
-		"workflow":              json.RawMessage(Read("development.json")),
-		"workflows":             workflow.Catalog(),
-		"configuration_schemas": ConfigurationSchemas(),
-		"generate":              map[string]any{"file_materials": map[string]any{"contract": "frozen_private_files/v1", "input_property": "generate.materials", "kind": "file", "manifest": "run.materials/content_result.file_materials", "max_files": contracts.MaxGenerateFileMaterials, "max_bytes": contracts.MaxGenerateFileMaterialBytes}, "workflow": "generate/1", "repository": map[string]any{"input_property": "generate.repository", "source": "existing_local_git_objects", "commit": "full_commit_object_id", "snapshot": "private_regular_files_without_git", "selection": "explicit_file_paths_or_whole_tree", "max_manifest_bytes": contracts.MaxGenerateRepositoryManifestBytes, "max_files": contracts.MaxGenerateRepositoryFiles, "max_bytes": contracts.MaxGenerateRepositoryBytes, "unsupported": []string{"symlinks", "submodules", "unsafe_or_case_colliding_paths"}}, "result": "inspect/history: content_result.json", "source": "repository_source: commit/tree/files/blob/sha256/size_bytes", "max_result_utf8_bytes": contracts.MaxGenerateResultBytes, "output_schema": "caller_defined_json_schema_2020_12", "replay": "original_request_id_only_no_unknown_retry"},
-		"capability_catalog":    Catalog(),
-		"cli_schema":            json.RawMessage(Read("cli.schema.json")),
-		"commands":              []string{"progress-file", "result-file", "run-usage", "run-usage-events", "estimate-run-cost", "version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "inspect", "submit", "last-message", "open-native-session", "observe", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git"},
+		"execution":               map[string]any{"status": "implemented", "adapters": []string{"codex-app-server", "orca-terminal"}, "readiness": "requires_per_run_native_verification"},
+		"workflow":                json.RawMessage(Read("development.json")),
+		"workflows":               workflow.Catalog(),
+		"configuration_schemas":   ConfigurationSchemas(),
+		"generate":                map[string]any{"file_materials": map[string]any{"contract": "frozen_private_files/v1", "input_property": "generate.materials", "kind": "file", "manifest": "run.materials/content_result.file_materials", "max_files": contracts.MaxGenerateFileMaterials, "max_bytes": contracts.MaxGenerateFileMaterialBytes}, "workflow": "generate/1", "repository": map[string]any{"input_property": "generate.repository", "source": "existing_local_git_objects", "commit": "full_commit_object_id", "snapshot": "private_regular_files_without_git", "selection": "explicit_file_paths_or_whole_tree", "max_manifest_bytes": contracts.MaxGenerateRepositoryManifestBytes, "max_files": contracts.MaxGenerateRepositoryFiles, "max_bytes": contracts.MaxGenerateRepositoryBytes, "unsupported": []string{"symlinks", "submodules", "unsafe_or_case_colliding_paths"}}, "result": "inspect/history: content_result.json", "source": "repository_source: commit/tree/files/blob/sha256/size_bytes", "max_result_utf8_bytes": contracts.MaxGenerateResultBytes, "output_schema": "caller_defined_json_schema_2020_12", "replay": "original_request_id_only_no_unknown_retry"},
+		"capability_catalog":      Catalog(),
+		"execution_configuration": ExecutionConfiguration(),
+		"cli_schema":              json.RawMessage(Read("cli.schema.json")),
+		"commands":                []string{"execution-config", "progress-file", "result-file", "run-usage", "run-usage-events", "estimate-run-cost", "version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "inspect", "submit", "last-message", "open-native-session", "observe", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git"},
 		"result_acquisition_configuration_schema": json.RawMessage(Read("result-acquisition.schema.json")),
 		"parser_support": map[string]any{"supported": parserSupported, "profile": ra.ParserProfile, "reason": parserReason, "readiness": "CLI_existing_login; in_memory_task; internal_process_cleanup", "empty_tool_guarantee": false},
 	}

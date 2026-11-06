@@ -87,6 +87,8 @@ func TestRADefinitionRename(t *testing.T) {
 	state := p.States[i.StepID]
 	delete(p.States, i.StepID)
 	state.SuccessOutput = "fixture finished"
+	// Plan-driven prompts render the definition's explicit result instruction.
+	state.ResultInstruction = "末行写「" + state.SuccessOutput + "」或「未完成」。"
 	state.Next = "next-fixture"
 	p.States["renamed.execute"] = state
 	i.StepID = "renamed.execute"
