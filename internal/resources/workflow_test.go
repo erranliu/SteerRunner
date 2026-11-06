@@ -39,7 +39,17 @@ func TestSRWorkflowSelection(t *testing.T) {
 			}
 		}
 		for _, state := range p.States {
-			if state.PromptKey != "" && prompts[state.PromptKey] != state.Prompt {
+			expected := prompts[state.PromptKey]
+			// Plain and audited development intentionally share a step key but
+			// have different existing default sources. The published legacy asset
+			// contains the audited default; it cannot stand for both workflows.
+			if p.ID == "development" && state.PromptKey == workflow.StepImplement {
+				expected = workflow.ImplementPrompt
+				if expected == prompts[workflow.StepImplement] {
+					t.Fatal("plain and audited implementation defaults unexpectedly collapsed")
+				}
+			}
+			if state.PromptKey != "" && expected != state.Prompt {
 				t.Fatal("published prompt differs from the frozen execution default", state.PromptKey)
 			}
 		}

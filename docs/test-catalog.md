@@ -2,6 +2,8 @@
 
 2026-11-05 当前退役：旧 `orca-remote.native-input` 已从 focused native 目录注销；`test-native-input.ps1` 在构建或现场操作前明确拒绝。TUI/helper 写入测试及旧 host 创建探针随旧执行支线退役，原证据只证明原构建。共享创建/原回执、历史解码/usage/files/停止证明、原终端并发读取及当前结构化测试保留。下文相关旧专项说明均为历史，范围见[验收](acceptance/orca-reader-execution-boundary.md)。
 
+2026-11-05 配置边界增量：Controlled 新增 `TestSRExecutionConfigurationPublicCLI`，当前完整集合29根；foundation归属与机器清单同步，原28根保留。实际验证范围见[专项](acceptance/native-execution-configuration-boundary.md)。
+
 2026-11-03 当前增量：移除 DSH 专用执行/历史/用量及 `orca-local.dsh`、`orca-local.mixed` 注册；当前数字以 JSON 目录为准。新增结构化 execute/1 的组件和真实场景见[实施验收](acceptance/orca-structured-agent-session-mvp.md)。下文已注明日期的 DSH 原结果仅作历史，不代表当前支持。
 
 > 2026-11-02 当前目录：现行数量统一见[当前清单与资格边界](#当前清单与资格边界)，以 tests/catalog.json 与 cases.json 为准。已有 TestSRSingleExecutionColdStop 纳入默认 Controlled；其余测试内容、分级与调度保持。当前为 state/v8；升级先排空，unknown 超时后的公开 resume 只读对账、零重建/重发见[P3 验收](acceptance/personal-executor-p3.md)。P1 的正式 test.ps1 -Focused 支持明确 L2/L3 场景、不启动完整 L1/Controlled、完整资格始终 false，见[测试指南](testing.md#快速定向验证p12026-11-01)。下文旧日期的数量、generate/takeover 建议、verify-takeover/旧兼容测试及结果仅属历史；候选接管成功场景已经退役，不作为现行测试义务。原生专项的 Pattern 不等于通用 Focused，也不授予完整 L2/L3。

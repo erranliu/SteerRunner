@@ -1,5 +1,7 @@
 # 原生目录查询与调用方边界 Spec
 
+后继配置边界草案：[Spec](native-execution-configuration-boundary.spec.md) / [Plan](native-execution-configuration-boundary.plan.md)。拟在 R2 为目录请求增加服务器可信 execution 上下文；尚未实施，不改变本页原版本的已验事实。
+
 R1–R3 已实施，审计日期为 2026-11-05，源码基线为 `e7876c0d`。实施顺序见 [Plan](native-catalog-boundary.plan.md)，实际验证范围及结果见[专属验收](../acceptance/native-catalog-boundary.md)。配套调用方文档位于 SteerLine 的 `SteerlineFlow/spec/runner-boundary-consolidation.spec.md` 和同名 Plan，核对基线为 `57e3c52e`。
 
 ## 1. 审计结论与职责

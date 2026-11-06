@@ -14,11 +14,12 @@ const NativeCatalogOutputLimit = 1 << 20
 var nativeAgentID = regexp.MustCompile(`^[A-Za-z][A-Za-z0-9_-]{0,63}$`)
 
 type NativeCatalogRequest struct {
-	Kind       string  `json:"kind"`
-	Adapter    string  `json:"adapter,omitempty"`
-	Target     *Target `json:"target,omitempty"`
-	Agent      string  `json:"agent,omitempty"`
-	Executable string  `json:"executable,omitempty"`
+	Execution  *Execution `json:"execution,omitempty"`
+	Kind       string     `json:"kind"`
+	Adapter    string     `json:"adapter,omitempty"`
+	Target     *Target    `json:"target,omitempty"`
+	Agent      string     `json:"agent,omitempty"`
+	Executable string     `json:"executable,omitempty"`
 }
 
 func ReadNativeCatalog(raw []byte) (NativeCatalogRequest, *Fault) {
@@ -53,6 +54,18 @@ func ReadNativeCatalog(raw []byte) (NativeCatalogRequest, *Fault) {
 	}
 	if input.Adapter != "orca-terminal" && input.Adapter != "codex-app-server" {
 		return input, Fail(3, "unsupported_capability", "Native catalog adapter is unsupported.")
+	}
+	if input.Execution != nil {
+		if fields["executable"] != nil {
+			return invalid()
+		}
+		if fault := validateSource(*input.Execution); fault != nil {
+			return input, fault
+		}
+		view := DescribeExecutionConfiguration(*input.Execution)
+		if input.Adapter != view.Adapter || *input.Target != view.Target || input.Kind == "models" && input.Agent != view.Agent {
+			return invalid()
+		}
 	}
 	if input.Adapter == "orca-terminal" && fields["executable"] != nil {
 		return invalid()
