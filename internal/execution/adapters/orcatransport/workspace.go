@@ -98,6 +98,15 @@ func (l *Lifecycle) prepareWorkspace(ctx context.Context, r b.LifecycleRequest, 
 	defer func() { receipt.Operation.Receipt, _ = json.Marshal(created) }()
 
 	return l.finishStructuredWorkspace(ctx, r, created)
+
+}
+
+func workspaceCreationFacts(project string, target b.ExecutionTarget, worktree native.Worktree, base string, checkedAt time.Time) (b.WorkspaceInspection, b.ExecutionTarget) {
+	workspace := b.WorkspaceInspection{InspectionScope: "revision", Repository: project, Worktree: worktree.Path, Branch: strings.TrimPrefix(worktree.Branch, "refs/heads/"), Base: base, Head: worktree.Head, CheckedAt: checkedAt}
+	target.WorktreeID = worktree.ID
+	target.Branch = workspace.Branch
+	target.BaseRevision = workspace.Base
+	return workspace, target
 }
 
 func (l *Lifecycle) creationTimeout() time.Duration {

@@ -602,3 +602,42 @@ func TestUsageExistingNativeEvidence(t *testing.T) {
 		t.Fatalf("expected two original Runs, found %d", found)
 	}
 }
+
+func TestUsageFailedReobservationCannotReviveOldAccessRequirement(t *testing.T) {
+	s, r, file := localFixture(t)
+	ctx := context.Background()
+	c := Collector{Store: s, Policy: api.DefaultPolicy(), Instance: "instance"}
+	authorizedTick(t, &c, ctx)
+	keys, err := s.UsageJournalKeys(ctx, "source:")
+	if err != nil || len(keys) != 1 {
+		t.Fatal(keys, err)
+	}
+	var cp checkpoint
+	if err = s.UsageJournal(ctx, keys[0], &cp); err != nil {
+		t.Fatal(err)
+	}
+	cp.Requirement = &api.AccessRequirement{SourceRef: cp.Summary.SourceRef, Environment: "previous-host", HostID: "old-host", SessionRoot: `C:\old\sessions\2026\11\05`, ObservedAt: time.Now().UTC()}
+	cp.Finalized = false
+	cp.EndedAt = time.Now().Add(-time.Minute)
+	if err = s.PutUsageJournal(ctx, keys[0], cp); err != nil {
+		t.Fatal(err)
+	}
+	if err = os.Remove(file); err != nil {
+		t.Fatal(err)
+	}
+	authorizedTick(t, &c, ctx)
+	if err = s.UsageJournal(ctx, keys[0], &cp); err != nil {
+		t.Fatal(err)
+	}
+	if !cp.Finalized {
+		t.Fatal("fixture did not reach bounded failure cache")
+	}
+	if cp.Requirement != nil {
+		t.Fatal("failed fresh observation retained stale access proof", cp.Requirement)
+	}
+	authorizedTick(t, &c, ctx)
+	after, err := s.GetRunUsage(ctx, r.ID, 0)
+	if err != nil || len(after.AccessRequirements) != 0 {
+		t.Fatal("cached failure revived stale grant suggestion", after, err)
+	}
+}

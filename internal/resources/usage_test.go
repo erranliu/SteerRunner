@@ -37,13 +37,16 @@ func TestUsageCapabilitiesBoundariesAndSeparation(t *testing.T) {
 			t.Fatal(row)
 		}
 	}
-	if CostCapabilities().(map[string]any)["independent"] != true {
-		t.Fatal("missing independent cost capability")
+	for _, key := range []string{"run_cost", "run_cost_estimate_schema", "run_pricing_policy_schema"} {
+		if _, ok := Capabilities().(map[string]any)[key]; ok {
+			t.Fatal("retired cost capability", key)
+		}
 	}
+
 }
 
 func TestRunUsageContractSchemas(t *testing.T) {
-	for _, name := range []string{"run-usage.schema.json", "run-usage-events.schema.json", "run-cost-estimate.schema.json", "run-pricing-policy.schema.json", "service-start.schema.json"} {
+	for _, name := range []string{"run-usage.schema.json", "run-usage-events.schema.json", "service-start.schema.json"} {
 		t.Run(name, func(t *testing.T) {
 			var document any
 			if err := json.Unmarshal(Read(name), &document); err != nil {

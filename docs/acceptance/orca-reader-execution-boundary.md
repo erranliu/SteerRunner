@@ -72,3 +72,11 @@ A代码与原函数迁移清单已固定后再开始B；A阶段没有删除旧�
 可复核证据归档：[records.json.gz](evidence/orca-reader-execution-boundary/records.json.gz)。包含 A/B 来源摘要、原/最终调用图、实际删除清单、全部类型比较、代表编码、原失败与最终日志、公开构建回执和目标 main 基线复现。每条记录含 `path`、`bytes`、`sha256`、`utf8`，解压后按 UTF-8 重编码可核对原字节摘要；不含 EXE、数据库或真实认证材料。
 
 这是受影响组件与定向公开受控资格，不能替代完整 L1/Controlled 或真实本机/配对主机/模型资格。没有部署、发布或提 PR。
+
+## 2026-11-06 PR 前目标刷新
+
+目标 main 刷新至 `efb024e1`（#119/#120）。在独立 worktree 解决 `workspace.go` 一处真实内容冲突：保留 #119 的共享 `workspaceCreationFacts` 及结构化调用，继续删除旧 Agent 终端准备尾段。新上游 timeout 单测的终端身份断言按本分支当前结构化夹具适配，同时保留工作区全部事实并加强 runtime/worktree、无 terminal/incarnation/PID/session 的核对；原操作对账与 owner 用例保留。没有 rebase 或重放已验证历史。
+
+复验结果：adapter 全包 73 顶层通过；其余 host/storage/contracts/cli/usage 消费者与最终 adapter 合计 192 顶层通过、0 失败，6 个既有 helper/现场 opt-in 跳过。合并初次复验中上述旧身份断言失败的日志一并保留，未计为通过。正式 foundation 重建 Runner/driver，`TestSRResourceCreationRecovery` 七个窗口及 `TestSRSingleExecutionColdStop` 全部通过，0 跳过。本次为目标更新影响范围复验，没有重跑完整 L1/Controlled；上节两项提示基线失败的结论和资格边界保持。
+
+单测修正后的最终构建与这次公开验收的 Runner 原字节相同（SHA256 `fe8eeb48cce9145fddccc153bac85fe02fb11463fd22d6dff562fb86a89672d2`），产品执行逻辑未为通过测试改变。追加原日志、构建回执和冲突解决差异见 [PR 前复验证据](evidence/orca-reader-execution-boundary/pr-20261106.json.gz)。

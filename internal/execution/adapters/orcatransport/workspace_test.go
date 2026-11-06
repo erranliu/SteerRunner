@@ -74,6 +74,14 @@ func TestWorkspaceCreationUsesConfiguredTimeout(t *testing.T) {
 			if err != nil || receipt.Disposition != b.OperationConfirmed || creations != 1 {
 				t.Fatal(receipt, err, creations)
 			}
+			if receipt.Workspace == nil || receipt.Target == nil || receipt.Workspace.Repository != s.Session.ProjectID || receipt.Workspace.Worktree != f.workspace["path"] || receipt.Workspace.Base != s.WorkspacePlan.BaseCommit || receipt.Workspace.Head != f.workspace["head"] || receipt.Workspace.InspectionScope != "revision" || receipt.Workspace.Tree != "" || receipt.Workspace.Qualified || receipt.Workspace.Dirty || receipt.Workspace.CheckedAt.IsZero() {
+				t.Fatal("structured creation workspace facts changed", receipt.Workspace)
+			}
+			wantTarget := s.Ref.Target
+			wantTarget.WorktreeID, wantTarget.Branch, wantTarget.BaseRevision = f.workspace["id"].(string), receipt.Workspace.Branch, s.WorkspacePlan.BaseCommit
+			if *receipt.Target != wantTarget || receipt.Process.Kind != "orca_agent_session" || receipt.Process.RuntimeID != "runtime" || receipt.Process.WorktreeID != f.workspace["id"] || receipt.Process.Terminal != "" || receipt.Process.Incarnation != "" || receipt.Process.PID != 0 || receipt.State.RuntimeID != "runtime" || receipt.State.WorktreeID != f.workspace["id"] || receipt.State.SessionID != "" || receipt.State.SessionAvailable || receipt.State.WorkerLive {
+				t.Fatal("structured target/state ownership changed", receipt.Target, receipt.State)
+			}
 		})
 	}
 }

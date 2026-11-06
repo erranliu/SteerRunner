@@ -72,14 +72,12 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 					return value, contracts.Fail(2, "invalid_arguments", "Expected binding requires the complete published service identity.")
 				}
 				value.opts.ExpectedBinding = &binding
-			case "--snapshot-revision", "--usage-revision":
+			case "--snapshot-revision":
 				revision, err := strconv.ParseUint(parameter, 10, 64)
 				if err != nil || revision == 0 {
 					return value, contracts.Fail(2, "invalid_arguments", "Usage revision must be a positive integer.")
 				}
 				value.opts.UsageRevision = revision
-			case "--pricing-policy":
-				value.opts.PricingPolicy = parameter
 			case "--kind":
 				value.kind = parameter
 			case "--expected-instance-id":
@@ -139,7 +137,7 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 		value.opts.Command = positional[0] + " " + positional[1]
 	}
 	switch value.opts.Command {
-	case "progress-file", "result-file", "run-usage", "run-usage-events", "estimate-run-cost":
+	case "progress-file", "result-file", "run-usage", "run-usage-events":
 	case "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git":
 	case "native-catalog", "version", "serve", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "submit", "inspect", "observe", "last-message", "open-native-session", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history":
 	default:
@@ -210,7 +208,7 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 		if selectors != 1 {
 			return value, contracts.Fail(2, "invalid_arguments", "inspect requires exactly one identifier.")
 		}
-	case "progress-file", "result-file", "run-usage", "run-usage-events", "estimate-run-cost", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git", "last-message", "open-native-session", "observe", "events", "reply", "resume", "stop", "message", "interrupt", "close", "history":
+	case "progress-file", "result-file", "run-usage", "run-usage-events", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git", "last-message", "open-native-session", "observe", "events", "reply", "resume", "stop", "message", "interrupt", "close", "history":
 		if selectors != 1 || value.opts.RunID == "" {
 			return value, contracts.Fail(2, "invalid_arguments", "This command requires only run-id.")
 		}
@@ -225,11 +223,11 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 	if (value.opts.Command == "events" || value.opts.Command == "history" || value.opts.Command == "run-usage-events" || value.opts.Command == "observe") && value.opts.Limit == 0 {
 		value.opts.Limit = 200
 	}
-	if seen["--snapshot-revision"] && (value.opts.Command != "run-usage" && value.opts.Command != "run-usage-events") || seen["--usage-revision"] && value.opts.Command != "estimate-run-cost" || seen["--pricing-policy"] && value.opts.Command != "estimate-run-cost" {
+	if seen["--snapshot-revision"] && (value.opts.Command != "run-usage" && value.opts.Command != "run-usage-events") {
 		return value, contracts.Fail(2, "invalid_arguments", "Usage options do not apply to this command.")
 	}
-	if value.opts.Command == "run-usage-events" && !seen["--snapshot-revision"] || value.opts.Command == "estimate-run-cost" && (!seen["--usage-revision"] || value.opts.PricingPolicy == "") {
-		return value, contracts.Fail(2, "invalid_arguments", "Events and cost queries require an explicit usage revision; cost also requires pricing-policy.")
+	if value.opts.Command == "run-usage-events" && !seen["--snapshot-revision"] {
+		return value, contracts.Fail(2, "invalid_arguments", "Usage events require an explicit snapshot revision.")
 	}
 	if value.opts.Command == "artifacts read" {
 		if !contracts.ValidRequestID(value.opts.ArtifactID) {
@@ -315,7 +313,7 @@ func Run(argv []string, input io.Reader, output, diagnostics io.Writer) int {
 		return finish(contracts.Success("", resources.VersionInfo()), 0)
 	}
 	if options.opts.Command == "help" {
-		return finish(contracts.Success("", map[string]any{"usage": "steerrunner <command> --state-dir <absolute-path> --json", "commands": []string{"native-catalog", "progress-file", "result-file", "run-usage", "run-usage-events", "estimate-run-cost", "version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "submit", "inspect", "last-message", "open-native-session", "observe", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git"}, "input": "Write commands consume a UTF-8 JSON envelope from --input -. validate consumes a bare object. service start optionally consumes a bare pending_stops object.", "static": "capabilities --offline; validate --kind run-configuration|run --input -", "run_evidence": "artifacts discover|list --run-id R; artifacts collect --run-id R --input -; artifacts read --run-id R --artifact-id A; workspace-git --run-id R. Producer writes .steerrunner/artifacts/<relative_path> in original workspace. Max file 1 MiB. Read is base64; schema/limits in capabilities.run_evidence.", "instance_binding": "--expected-instance-id <id> fences resident business/query commands and disables implicit service startup."}), 0)
+		return finish(contracts.Success("", map[string]any{"usage": "steerrunner <command> --state-dir <absolute-path> --json", "commands": []string{"native-catalog", "progress-file", "result-file", "run-usage", "run-usage-events", "version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "submit", "inspect", "last-message", "open-native-session", "observe", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git"}, "input": "Write commands consume a UTF-8 JSON envelope from --input -. validate consumes a bare object. service start optionally consumes a bare pending_stops object.", "static": "capabilities --offline; validate --kind run-configuration|run --input -", "run_evidence": "artifacts discover|list --run-id R; artifacts collect --run-id R --input -; artifacts read --run-id R --artifact-id A; workspace-git --run-id R. Producer writes .steerrunner/artifacts/<relative_path> in original workspace. Max file 1 MiB. Read is base64; schema/limits in capabilities.run_evidence.", "instance_binding": "--expected-instance-id <id> fences resident business/query commands and disables implicit service startup."}), 0)
 	}
 	if options.offline && options.opts.Command == "capabilities" {
 		executable, err := os.Executable()
