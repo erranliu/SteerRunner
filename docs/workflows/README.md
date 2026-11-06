@@ -49,10 +49,10 @@
 2026-10-19 新增内容流程：[conversation/1](conversation.md)、[generate/1](generate.md)。
 它们复用现有可靠执行与本机 Codex owner，使用独立输入契约，不进入下述开发流程的
 Spec/Plan、Git、补报、审计或发布路径。[Spec](../spec/content-workflows.spec.md) ·
-[Plan](../spec/content-workflows.plan.md) · [专属验收](../acceptance/content-workflows.md)。
+[Plan](../archive/2026-11/implementation/spec/content-workflows.plan.md) · [专属验收](../archive/2026-11/implementation/acceptance/content-workflows.md)。
 
-> 实施状态（2026-10-18）：已按确认的最小边界实现并完成必要验证。原生权限、行为约定和事后检测见总 Spec §6；当前支持 Windows / Codex >= 0.159.2，默认关闭独立解析。实际支持范围、失败修正及最终证据见[验收登记](../acceptance/result-acquisition.md)。历史“仅设计”说明指此前设计轮次。
-日期：2026-10-17（首次设计 2026-10-16）。状态：两份内置定义已实现；本目录是可读说明，Runner 使用编译定义，不加载 Markdown。两份示例以现有流程为业务基线，展示解耦后的定义：[普通开发](development.md) · [带审计的开发](development-audited.md)。[总 Spec](../spec/result-acquisition.spec.md) · [Plan](../spec/result-acquisition.plan.md)。
+> 实施状态（2026-10-18）：已按确认的最小边界实现并完成必要验证。原生权限、行为约定和事后检测见总 Spec §6；当前支持 Windows / Codex >= 0.159.2，默认关闭独立解析。实际支持范围、失败修正及最终证据见[验收登记](../archive/2026-11/implementation/acceptance/result-acquisition.md)。历史“仅设计”说明指此前设计轮次。
+日期：2026-10-17（首次设计 2026-10-16）。状态：两份内置定义已实现；本目录是可读说明，Runner 使用编译定义，不加载 Markdown。两份示例以现有流程为业务基线，展示解耦后的定义：[普通开发](development.md) · [带审计的开发](development-audited.md)。[总 Spec](../spec/result-acquisition.spec.md) · [Plan](../archive/2026-11/implementation/spec/result-acquisition.plan.md)。
 
 用户已确认：具体 Workflow 是状态机；执行 agent 的阶段切换统一通过 Workflow 约定的提示词；状态也可以通过程序取得结果后转移；执行 agent 报告本身属于状态切换。首期只覆盖两个内置定义、三种获取方式和必要恢复/来源接线，不实现定制脚本端口或宿主；未来脚本能力若单独设计，也只能核验结果。共同 worktree 初始化、原生执行可靠性与资源管理沿现有基础设施。
 
@@ -175,4 +175,4 @@ development 本轮采用的等待规则：原结果已明确未成功或原 agen
 
 新输入沿用原 worktree、session、模型和权限，不进行工作区/会话恢复预检；Orca 沿原已记录的 runtime fence 直接发送，由原生 Send 返回实际拒绝。发送后的原输入和结果来源仍沿现有可靠执行读取。每次 message 只授权一轮，结束后等待下一次显式输入；stop/closed 不重开，未知输入只对账原请求。开发完成不再公开不存在的 feedback 返工入口。
 
-本增量的固定构建及验证范围见[验收](../acceptance/pr-ready-messages.md)。
+本增量的固定构建及验证范围见[验收](../archive/2026-11/implementation/acceptance/pr-ready-messages.md)。

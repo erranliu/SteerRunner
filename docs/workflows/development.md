@@ -1,10 +1,10 @@
 # Workflow：development（确认稿）
 
-开发仅支持显式 `execution.settings.access_mode=full_access`；sandbox/省略/空值拒绝。内容流程及 parser 的 read_only 与认证链路不变；迁移及旧 Run 规则见 [权限 Spec](../spec/development-full-access.spec.md)。
+开发仅支持显式 `execution.settings.access_mode=full_access`；sandbox/省略/空值拒绝。内容流程及 parser 的 read_only 与认证链路不变；迁移及旧 Run 规则见 [权限 Spec](../archive/2026-11/implementation/spec/development-full-access.spec.md)。
 
 项目策略：`implement.execute` 显式引用 `git`、`command`、`testing`；`publish.execute` 引用 `git`、`command`；其余步骤不引用。固定路径及公开的 `\n阅读项目策略：%s。` 模板见[项目策略槽位](README.md#项目策略槽位)和[示例](project-policies.example.md)。仅固定源码中存在的所选文件产生引用，引用计入原预算；原授权和通过标准不变。
 
-> 实施状态（2026-10-18）：已按确认的最小边界实现并完成必要验证。原生权限、行为约定和事后检测见总 Spec §6；当前支持 Windows / Codex >= 0.159.2，默认关闭独立解析。实际支持范围、失败修正及最终证据见[验收登记](../acceptance/result-acquisition.md)。历史“仅设计”说明指此前设计轮次。
+> 实施状态（2026-10-18）：已按确认的最小边界实现并完成必要验证。原生权限、行为约定和事后检测见总 Spec §6；当前支持 Windows / Codex >= 0.159.2，默认关闭独立解析。实际支持范围、失败修正及最终证据见[验收登记](../archive/2026-11/implementation/acceptance/result-acquisition.md)。历史“仅设计”说明指此前设计轮次。
 日期：2026-10-17（首次设计 2026-10-16）。实施前业务基线 `development/1`；下文为已接线的 `development/2` 状态机定义。[统一能力与边界](README.md) · [带审计版本](development-audited.md) · [总 Spec](../spec/result-acquisition.spec.md)。本文件是独立流程说明，业务条件与提示词属于本定义，执行机制全部使用统一能力。
 
 ## 1. 实施前基线与本定义
@@ -192,7 +192,7 @@ PR 查询失败继续按原目标对账，不触发新的实施或发布。外�
 
 执行原结果已明确未成功，或 report 确认未成功，就进入 implement 内的 input，不等待更精细的原因分类。活动 turn 内的原生问答仍对应原请求，不另发重复实施输入；执行结束后的 input 才由明确答案/继续指示触发下一 execute。本节的输入续执行仅指 implement 内 input → execute；pr_ready 不因实施反馈返回 implement。本 Workflow 不设计发布就绪后的返工路径。仅恢复获取保持原源与内部状态，不默认重做实施。技术 resume 不等于用户对本次未成功结果给出了继续实施指示。
 
-stop 和原操作 unknown 优先于后继派发。同构建服务重启保留原授权、游标及等待状态，补收原事实后可接续已证明未派发的唯一后继；普通 in_flight 按可能已调用只对账。升级先由原版本排空全部原生资源及未完成操作/控制，不提供跨构建活动任务接管。资源丢失或未知查询预算耗尽转待人工；显式 resume 最多 30 秒只读核实原操作，符合当前资格才解除技术暂停，不新建资源、不重发输入、不重做实施或发布，原业务等待及 stop/close 保持。已核实 PR 可以在流程未完成时独立绑定；这不直接越过发布核验。原始 final 始终保存，程序提取与报告结果单列。详见[当前恢复与升级契约](../spec/personal-executor-simplification.spec.md#4-恢复与升级收缩pes-02)。
+stop 和原操作 unknown 优先于后继派发。同构建服务重启保留原授权、游标及等待状态，补收原事实后可接续已证明未派发的唯一后继；普通 in_flight 按可能已调用只对账。升级先由原版本排空全部原生资源及未完成操作/控制，不提供跨构建活动任务接管。资源丢失或未知查询预算耗尽转待人工；显式 resume 最多 30 秒只读核实原操作，符合当前资格才解除技术暂停，不新建资源、不重发输入、不重做实施或发布，原业务等待及 stop/close 保持。已核实 PR 可以在流程未完成时独立绑定；这不直接越过发布核验。原始 final 始终保存，程序提取与报告结果单列。详见[当前恢复与升级契约](../archive/2026-11/implementation/spec/personal-executor-simplification.spec.md#4-恢复与升级收缩pes-02)。
 
 成功声明的识别/采纳不消耗模型调用，命中且核验通过时获取模型次数为 0。每个源实施、每次原发布分别最多 1 次 agent 报告，无格式修正或报告重试；不调用或探测独立 parser，也不依赖其配置/环境；不得仅凭原生 completed 或正文出现“完成”就判成功。用户输入后真正开始新的 execute 才建立新源和获取预算；重启/补读、resume 或再次查询不重置报告次数。报告无效或不足且操作已结算时，implement 进入 input，publish 保持阻断，不重做发布。
 

@@ -1,11 +1,11 @@
 # 运行时单文件汇报通道 Spec
 
-2026-11-01：初始化由[个人执行器 P2](personal-executor-simplification.spec.md#32-一次有界准备)修订。Next 已准备原工作区/资源/会话后，在首次输入派发前进行两通道共享最多 4 秒的尽力准备；失败不阻塞业务，不因 Initialized=false 重试。元数据保存失败不发文件写 RPC；已派发业务的重启可只读原文件。实际稳定字节可读即继续采样，不要求等于种子；不在全局锁或 dispatch gate 内等文件 I/O。当前实施见[P2 验收](../acceptance/personal-executor-p2.md)。
+2026-11-01：初始化由[个人执行器 P2](../archive/2026-11/implementation/spec/personal-executor-simplification.spec.md#32-一次有界准备)修订。Next 已准备原工作区/资源/会话后，在首次输入派发前进行两通道共享最多 4 秒的尽力准备；失败不阻塞业务，不因 Initialized=false 重试。元数据保存失败不发文件写 RPC；已派发业务的重启可只读原文件。实际稳定字节可读即继续采样，不要求等于种子；不在全局锁或 dispatch gate 内等文件 I/O。当前实施见[P2 验收](../archive/2026-11/implementation/acceptance/personal-executor-p2.md)。
 
 
-2026-10-26 调用方联验补录见 [Task18 复验](../acceptance/task18-runner-retest-20261026.md#测试进度显示的独立负例)：一轮真实页面 7/7 与报告一致，另一轮原六项报告通过而公开测试进度仍 0/6、字段不匹配。该负例不能记作调用方上报/显示验收通过，也不能仅据它认定原始字节通道或某个渲染层故障。本 Spec 的内容所有权与原始字节边界保持不变，未补写原文件制造通过。
+2026-10-26 调用方联验补录见 [Task18 复验](../archive/2026-11/implementation/acceptance/task18-runner-retest-20261026.md#测试进度显示的独立负例)：一轮真实页面 7/7 与报告一致，另一轮原六项报告通过而公开测试进度仍 0/6、字段不匹配。该负例不能记作调用方上报/显示验收通过，也不能仅据它认定原始字节通道或某个渲染层故障。本 Spec 的内容所有权与原始字节边界保持不变，未补写原文件制造通过。
 
-2026-10-24；实现与注册已完成，当前构建资格见[审计验收](../acceptance/runtime-progress-pr55-review.md)，主线合入过程见[整合验收](../acceptance/runtime-progress-integration.md)，原始历史见[专属验收](../acceptance/runtime-progress.md)。本次只修改 Runner，Orca 本地及远端均为必需范围。调用方拥有内容与解释，执行工具拥有写入；Runner 只传原始字节。无 Plan、测试语义或 SteerLine 接线。
+2026-10-24；实现与注册已完成，当前构建资格见[审计验收](../archive/2026-11/implementation/acceptance/runtime-progress-pr55-review.md)，主线合入过程见[整合验收](../archive/2026-11/implementation/acceptance/runtime-progress-integration.md)，原始历史见[专属验收](../archive/2026-11/implementation/acceptance/runtime-progress.md)。本次只修改 Runner，Orca 本地及远端均为必需范围。调用方拥有内容与解释，执行工具拥有写入；Runner 只传原始字节。无 Plan、测试语义或 SteerLine 接线。
 
 - 可选 submit `progress_file: {initial_content_base64: "..."}`，严格 base64，最大 65536 字节。未配置无文件、无观察 goroutine。支持具有工作区写资格的 codex-app-server 本机开发流程与 Orca local / orca_environment 开发流程；read_only 内容流程不扩大权限。
 - Runner 在原实际工作区的 `.steerrunner/progress/<run_id>/progress.bin` 分配固定文件。执行前准备目录及 Git info/exclude，O_EXCL 初始化一次，持久化主机/workspace/资源绑定，本机路径额外保存目录身份。重启、请求重放和重连不覆写；初始化崩溃窗口已有文件只读接续，不清空。

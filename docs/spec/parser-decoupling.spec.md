@@ -1,8 +1,8 @@
 # Spec：Parser 独立文本分析与执行链路解耦
 
-> 2026-11-01 当前边界：以[个人执行器简化 Spec](personal-executor-simplification.spec.md) / [Plan](personal-executor-simplification.plan.md)为准。当前为 state/v7、user_version=7，默认 `%LOCALAPPDATA%/SteerRunner-v7`；拒绝 v6 及更旧目录，不迁移或代替原版本收尾。同构建服务重启接回原资源；升级先由原版本排空原生资源和未完成操作/控制，pr_ready 不等于排空。verify-takeover、跨构建活动任务接管及资源重建已删除。未知操作有界查询后转人工，显式 resume 最多 30 秒只读对账原操作，不重发输入、不创建替代资源，业务等待及 stop/close 保持。未来格式/契约兼容且已排空时可继续原目录并查询历史，不因 EXE 变化强制换目录。下文旧格式、接管矩阵及恢复资源条款仅供历史溯源，不覆盖此边界；原验收证据保持原构建结论。
+> 适用范围：当前状态目录、升级前排空与人工只读对账统一见[CLI 指南](../cli-guide.md#人工对账与资源丢失)及[长期承诺](steerrunner.spec.md#长期产品承诺)。本文按日期标注的旧版本、旧机制和验收事实仅按原记录时点阅读，不覆盖现行契约。
 
-日期：2026-10-31。状态：CLI 内存任务已实施，并完成实现审计的四项修复及本轮定向复验；此前正式 L1、定向受控证据保留，不作为修复后全量重跑的声明。设计保持内存文本任务。对应 [Plan](parser-decoupling.plan.md)；实施与验证见 [验收记录](../acceptance/parser-decoupling.md)，先前 API 调查见 [P1 历史](../acceptance/parser-decoupling-p1.md)。调查基线：`e78c0db6f4e9be6242c6928cfeae596c8358ca5f`。
+日期：2026-10-31。状态：CLI 内存任务已实施，并完成实现审计的四项修复及本轮定向复验；此前正式 L1、定向受控证据保留，不作为修复后全量重跑的声明。设计保持内存文本任务。对应 [Plan](../archive/2026-11/implementation/spec/parser-decoupling.plan.md)；实施与验证见 [验收记录](../archive/2026-11/implementation/acceptance/parser-decoupling.md)，先前 API 调查见 [P1 历史](../archive/2026-11/implementation/acceptance/parser-decoupling-p1.md)。调查基线：`e78c0db6f4e9be6242c6928cfeae596c8358ca5f`。
 
 用户范围：保留特定输出文本的分析能力，移除 parser 与正常执行链路的权限、工具、恢复、停止取证等耦合。此前文档轮仅编写/修订 Spec/Plan；用户后续“实施吧”已授权实现和验证，不包括安装部署或操作真实业务资源。
 
@@ -124,6 +124,6 @@ P1 确定单一后端实际字段，模型及配置只需在一次内存任务�
 
 ## 9. 与既有文档的关系
 
-本文件记录用户确认的解耦设计；实现与资格以验收记录为准。在本任务范围内取代 [结果获取 Spec](result-acquisition.spec.md) 中独立 parser 的原生 operation/权限/owner/资源结算条款、[执行边界 Spec](execution-boundary-refactor.spec.md) 中 EBR-F02/§5.2 的 parser 共用可靠操作要求，以及 [服务换代恢复 Spec](service-generation-recovery.spec.md)、[宿主认证 Spec](host-native-auth.spec.md) 中 parser 保留与恢复要求。正常执行的未知副作用零重发、原生身份、来源与 PR 校验仍有效。
+本文件记录用户确认的解耦设计；实现与资格以验收记录为准。在本任务范围内取代 [结果获取 Spec](result-acquisition.spec.md) 中独立 parser 的原生 operation/权限/owner/资源结算条款、[执行边界 Spec](../archive/2026-11/implementation/spec/execution-boundary-refactor.spec.md) 中 EBR-F02/§5.2 的 parser 共用可靠操作要求，以及 [服务换代恢复 Spec](../archive/2026-11/spec/service-generation-recovery.spec.md)、[宿主认证 Spec](../archive/2026-11/implementation/spec/host-native-auth.spec.md) 中 parser 保留与恢复要求。正常执行的未知副作用零重发、原生身份、来源与 PR 校验仍有效。
 
 对应旧验收属于历史构建证据，不删除、不改记为新实现通过。后续实施同步更新当前 Workflow 说明、测试清单、配置/schema/capabilities 和运维文档；不从设计阶段推导任何新支持声明。

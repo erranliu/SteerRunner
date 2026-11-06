@@ -1,6 +1,6 @@
 # Spec：Orca CLI 等待、读取重试与公开状态
 
-2026-10-26 结果补录：[Task18 原远端 Runner 复验](../acceptance/task18-runner-retest-20261026.md)记录固定 f3 的两轮调用方链路及用户要求的重启恢复，分别保留原所选报告、进度上报失败和未验边界。本补录不改变本 Spec 独立完成条件，不以 Task18 自然等待冒充 >15 秒竞争，也不把远端调用方链路移记为完整本机 L2 或 OCW-A07 两目标独立场景通过。
+2026-10-26 结果补录：[Task18 原远端 Runner 复验](../archive/2026-11/implementation/acceptance/task18-runner-retest-20261026.md)记录固定 f3 的两轮调用方链路及用户要求的重启恢复，分别保留原所选报告、进度上报失败和未验边界。本补录不改变本 Spec 独立完成条件，不以 Task18 自然等待冒充 >15 秒竞争，也不把远端调用方链路移记为完整本机 L2 或 OCW-A07 两目标独立场景通过。
 
 日期：2026-10-25。状态：已实施；L1/定向受控通过，完整验收因系统安全拦截未完成，实际资格见验收记录。配套 [Plan](orca-cli-wait-retry.plan.md) 与[验收规划](../acceptance/orca-cli-wait-retry.md)。本次在 Runner 独立实施与验收，不部署、不恢复生产 Run。
 
@@ -12,7 +12,7 @@ Runner 单独通过 submit / inspect / observe 使用时，也应在短暂竞争
 
 首版只扩展两个明确只读的准备查询：远端 repo list（repository_inventory）与本机 status（runtime_status）。复用 workspaceRepository、ReadOnlyPreparation 和当前操作意图，不新建查询操作 ID。共用 CLI 入口增加同进程 FIFO，使后台后到调用不能越过已排队的准备请求。
 
-创建、启动、业务输入、停止及未知结果核验继续沿原节点和[服务换代契约](service-generation-recovery.spec.md)。本项不改变其期限、次数或授权，不增加副作用重试；不改其它观察/进度/消息采样频率。不新增通用调度框架、优先级系统、第二恢复状态机或调用方专用分支。
+创建、启动、业务输入、停止及未知结果核验继续沿原节点和[服务换代契约](../archive/2026-11/spec/service-generation-recovery.spec.md)。本项不改变其期限、次数或授权，不增加副作用重试；不改其它观察/进度/消息采样频率。不新增通用调度框架、优先级系统、第二恢复状态机或调用方专用分支。
 
 ## 2. 分类与预算
 

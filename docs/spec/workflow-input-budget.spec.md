@@ -79,7 +79,7 @@ prompt_overrides 只替换原契约声明的正文，不能为了统一模板而
 
 ## 4 唯一输入出口
 
-> 2026-11-01 已实施清尾：[Spec](exit-proof-budget-cleanup.spec.md) / [Plan](exit-proof-budget-cleanup.plan.md) / [验收](../acceptance/exit-proof-budget-cleanup.md)。已冻结阶段输入的新派发只校验已有合法 Budget，删除正文反推；未渲染草稿、原预算副本复制和旧来源标签读取保持。缺 Budget 现场可能需人工处理，不再保证补算恢复。
+> 2026-11-01 已实施清尾：[Spec](../archive/2026-11/implementation/spec/exit-proof-budget-cleanup.spec.md) / [Plan](../archive/2026-11/implementation/spec/exit-proof-budget-cleanup.plan.md) / [验收](../archive/2026-11/implementation/acceptance/exit-proof-budget-cleanup.md)。已冻结阶段输入的新派发只校验已有合法 Budget，删除正文反推；未渲染草稿、原预算副本复制和旧来源标签读取保持。缺 Budget 现场可能需人工处理，不再保证补算恢复。
 
 唯一出口指唯一的预算判定和冻结规则，不要求所有输入经过同一个 application 函数。workflow/application 继续装配阶段和业务文字，parser owner 继续装配解析输入，适配器继续编译原生标识、终端换行和会话参数；各入口在文字最终确定处复用同一小型纯计量/校验函数，沿原记录与持久意图派发。
 

@@ -49,6 +49,6 @@ version 独立、持久化，只在内容变化时增加；不改 Run revision�
 
 用户收敛后的边界：固定原 Run 的主机、工作区及相对文件，不承诺抵御采集瞬间的恶意链接/目录替换；不要求新增 Orca 安全接口，不部署远端常驻 Runner/helper。
 
-详见 [Spec](spec/runtime-progress.spec.md)、[Plan](spec/runtime-progress.plan.md)、[验收](acceptance/runtime-progress.md)。
+详见 [Spec](spec/runtime-progress.spec.md)、[Plan](archive/2026-11/implementation/spec/runtime-progress.plan.md)、[验收](archive/2026-11/implementation/acceptance/runtime-progress.md)。
 
-2026-11-01 P2：文件 I/O 在全局锁和业务 dispatch gate 外进行；首次尝试前短临界区持久化尝试事实，stop 先提交则不初始化，锁外返回后复核绑定与当前控制。超时的迟到结果不发布，同一 Run 最多一个未结束的物理 progress 读取。Git ignore 设置也是尽力操作。当前状态格式仍为 v6；见[观测解耦验收](acceptance/personal-executor-p2.md)。
+2026-11-01 P2：文件 I/O 在全局锁和业务 dispatch gate 外进行；首次尝试前短临界区持久化尝试事实，stop 先提交则不初始化，锁外返回后复核绑定与当前控制。超时的迟到结果不发布，同一 Run 最多一个未结束的物理 progress 读取。Git ignore 设置也是尽力操作。当前状态格式仍为 v6；见[观测解耦验收](archive/2026-11/implementation/acceptance/personal-executor-p2.md)。

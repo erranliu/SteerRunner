@@ -1,8 +1,8 @@
 # Spec：独立调用配置契约与内部测试配置
 
-2026-10-31 当前开发权限修订：开发 sandbox 已退役，开发必须显式 full_access；read_only 与原认证链路保留。开发权限、迁移、旧 Run 与重复测试矩阵以 [统一权限 Spec](development-full-access.spec.md) / [Plan](development-full-access.plan.md) 为准。下文历史构建与验收事实不改写。
+2026-10-31 当前开发权限修订：开发 sandbox 已退役，开发必须显式 full_access；read_only 与原认证链路保留。开发权限、迁移、旧 Run 与重复测试矩阵以 [统一权限 Spec](../archive/2026-11/implementation/spec/development-full-access.spec.md) / [Plan](../archive/2026-11/implementation/spec/development-full-access.plan.md) 为准。下文历史构建与验收事实不改写。
 
-日期：2026-10-19。状态：已实施；本机基线与已配置 L3 通过，完整 L3 缺配置而不完整。运行证据见[登记](../acceptance/independent-configuration.md)及 [Plan](independent-configuration.plan.md)。
+日期：2026-10-19。状态：已实施；本机基线与已配置 L3 通过，完整 L3 缺配置而不完整。运行证据见[登记](../archive/2026-11/implementation/acceptance/independent-configuration.md)及 [Plan](../archive/2026-11/implementation/spec/independent-configuration.plan.md)。
 
 ## 1. 目标、范围与当前基线
 
@@ -12,7 +12,7 @@ SteerRunner 是可靠的开发执行器：接收确定的材料、执行参数�
 
 调查基线为本工作树提交 `59c7597ac8056fc5c29ad622034e10e74e4395de`。当前已有 `capabilities.configuration_schemas.run_configuration`、`contracts.ValidateRunConfiguration`、`ValidateRun`、接受时冻结、CLI 幂等与实例绑定。本仓测试不依赖 SteerLine checkout；`live-config/v1|v2` 的扁平字段由脚本装配为生产请求，场景需求、默认值及环境前置部分散布于脚本。公开 CLI 尚无本文的离线能力查询、纯校验及测试可用性入口；完整 Run 输入 schema 也不能由现有通用信封 schema 替代。
 
-相关依据：[产品与 CLI](steerrunner.spec.md)、[配置发布现状](../acceptance/run-configuration-publication.md)、[workflow 选择](../archive/2026-10/spec/workflow-selection-audit.spec.md)、[测试分层](../testing.md)、[测试清单](../test-catalog.md)。本文是职责、配置消费及可用性规则的增量，不改变原执行状态机、权限、停止、PR 核验和测试独有断言。
+相关依据：[产品与 CLI](steerrunner.spec.md)、[配置发布现状](../archive/2026-11/implementation/acceptance/run-configuration-publication.md)、[workflow 选择](../archive/2026-10/spec/workflow-selection-audit.spec.md)、[测试分层](../testing.md)、[测试清单](../test-catalog.md)。本文是职责、配置消费及可用性规则的增量，不改变原执行状态机、权限、停止、PR 核验和测试独有断言。
 
 ## 2. 职责与非目标
 
@@ -230,7 +230,7 @@ case 的配置项引用、角色、组合、模式、模型约束、夹具及故
 
 本期保持生产 CLI v1 的既有请求形状、默认值、存储格式及恢复事实，新增静态入口／声明采用明确能力发现并更新资源摘要。新 CLI 不强行接管旧服务；沿既有构建身份检查切换服务，并刷新实例绑定及能力缓存，原 unknown／冻结 Run 不重渲染或自动重发。内部测试配置新版本与旧 live-config/v1|v2 不隐式混读；实施时一次性更新本仓示例、脚本、框架断言及文档。旧文件明确报迁移提示，不自动补字段／默认选择；旧现场按原 manifest／构建结算，不用新文件重建旧授权。
 
-实施验收项如下；执行记录写入 [验收登记](../acceptance/independent-configuration.md)及 Plan，真实现场另保留原报告，本表只定义判据。
+实施验收项如下；执行记录写入 [验收登记](../archive/2026-11/implementation/acceptance/independent-configuration.md)及 Plan，真实现场另保留原报告，本表只定义判据。
 
 | ID | 必须证明的行为 | 级别 |
 | --- | --- | --- |

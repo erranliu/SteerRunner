@@ -2,13 +2,13 @@
 
 > 2026-10-31 parser 增补：独立解析已改为复用 Codex 登录/CLI 的内存文本任务；旧 parser operation、owner 接管、工具权限及停止取证条款由 [Parser 解耦 Spec](../spec/parser-decoupling.spec.md) 取代。工具禁用和进程清理只在 parser 内；其余主执行契约与历史证据结论保持。
 
-开发仅支持显式 `execution.settings.access_mode=full_access`；sandbox/省略/空值拒绝。内容流程及 parser 的 read_only 与认证链路不变；迁移及旧 Run 规则见 [权限 Spec](../spec/development-full-access.spec.md)。
+开发仅支持显式 `execution.settings.access_mode=full_access`；sandbox/省略/空值拒绝。内容流程及 parser 的 read_only 与认证链路不变；迁移及旧 Run 规则见 [权限 Spec](../archive/2026-11/implementation/spec/development-full-access.spec.md)。
 
 项目策略：`implement.execute`、`audit.code.execute` 显式引用 `git`、`command`、`testing`；`publish.execute` 引用 `git`、`command`；report、parse 等其余步骤不引用。固定路径及公开的 `\n阅读项目策略：%s。` 模板见[项目策略槽位](README.md#项目策略槽位)和[示例](project-policies.example.md)。仅固定源码中存在的所选文件产生引用，引用计入原预算；策略不解除审计来源、权限、发布授权或通过标准。
 
-> 实施状态（2026-10-18）：已按确认的最小边界实现并完成必要验证。原生权限、行为约定和事后检测见总 Spec §6；当前支持 Windows / Codex >= 0.159.2，默认关闭独立解析。实际支持范围、失败修正及最终证据见[验收登记](../acceptance/result-acquisition.md)。历史“仅设计”说明指此前设计轮次。
+> 实施状态（2026-10-18）：已按确认的最小边界实现并完成必要验证。原生权限、行为约定和事后检测见总 Spec §6；当前支持 Windows / Codex >= 0.159.2，默认关闭独立解析。实际支持范围、失败修正及最终证据见[验收登记](../archive/2026-11/implementation/acceptance/result-acquisition.md)。历史“仅设计”说明指此前设计轮次。
 
-2026-10-21 默认提示优化：原审计结束优先给出现有审计 JSON 契约，减少额外结果获取。仅修改新 Run 的默认提示文本，原冻结提示、流程边、预算、模型与来源核验不变；没有原生 schema 强约束，非 JSON 仍沿既有后备。原生小样本和跨构建旧提示保留/新默认验证见[本轮验收](../acceptance/reliable-delivery-simplification.md)。
+2026-10-21 默认提示优化：原审计结束优先给出现有审计 JSON 契约，减少额外结果获取。仅修改新 Run 的默认提示文本，原冻结提示、流程边、预算、模型与来源核验不变；没有原生 schema 强约束，非 JSON 仍沿既有后备。原生小样本和跨构建旧提示保留/新默认验证见[本轮验收](../archive/2026-11/implementation/acceptance/reliable-delivery-simplification.md)。
 日期：2026-10-17（首次设计 2026-10-16）。实施前业务基线 `development-audited/1`；下文为 `development-audited/2` 定义，独立解析按总 Spec §6 的最小边界实施和验收。[统一能力与边界](README.md) · [普通开发版本](development.md) · [总 Spec](../spec/result-acquisition.spec.md)。本定义与普通开发共用统一能力，仅通过状态、边、提示词和核验加入“代码审计并修复”。
 
 ## 1. 实施前基线与本定义
@@ -17,7 +17,7 @@
 
 实施和发布按 development 的思路：可信 final 命中阶段成功输出且核验通过即完成，无法判断时原 agent 最多 report 一次，不使用独立解析或格式修正。独立解析仅用于整理实际代码审计结果；不能替代真正审计或生成原审计没有作出的结论。
 
-本流程支持本机 `codex-app-server` 和本机 Orca 结构化 Codex。远端 Orca 在受理前返回 `unsupported_capability`。Orca 在同一会话按冻结角色选择执行和审计模型，使用绑定原 turn 的受限来源核验实际 model/effort 并确认撤权。执行模型用于实施、实施补报和发布，审计模型用于审计修复和审计补报。独立 parser 使用隔离会话和 Runner 自身配置。发布时切回执行模型，继续验证原工作区检查点和真实 PR。Orca 结果、停止和文件合同见 [M5 Spec](../spec/orca-structured-audited.spec.md)。
+本流程支持本机 `codex-app-server` 和本机 Orca 结构化 Codex。远端 Orca 在受理前返回 `unsupported_capability`。Orca 在同一会话按冻结角色选择执行和审计模型，使用绑定原 turn 的受限来源核验实际 model/effort 并确认撤权。执行模型用于实施、实施补报和发布，审计模型用于审计修复和审计补报。独立 parser 使用隔离会话和 Runner 自身配置。发布时切回执行模型，继续验证原工作区检查点和真实 PR。Orca 结果、停止和文件合同见 [M5 Spec](../archive/2026-11/implementation/spec/orca-structured-audited.spec.md)。
 
 ## 2. Workflow 整体状态图
 
@@ -246,4 +246,4 @@ stop、服务换代、未知操作优先于所有边，所有 executor/parser ow
 
 ## 当前实现映射
 
-确定性 extract 采用 development 的同次提交映射。实际审计已有完整结构时直接核验；其余可进入 audit.parse 业务等待并启动内存文本任务，否则选择一次原审计补报。parser 不写 Intents 或 operation_id，结果采纳和必要后继沿原 Commit。原审计 checkpoint、实施源和发布前核验保持；详见 [解耦验收](../acceptance/parser-decoupling.md)。
+确定性 extract 采用 development 的同次提交映射。实际审计已有完整结构时直接核验；其余可进入 audit.parse 业务等待并启动内存文本任务，否则选择一次原审计补报。parser 不写 Intents 或 operation_id，结果采纳和必要后继沿原 Commit。原审计 checkpoint、实施源和发布前核验保持；详见 [解耦验收](../archive/2026-11/implementation/acceptance/parser-decoupling.md)。
