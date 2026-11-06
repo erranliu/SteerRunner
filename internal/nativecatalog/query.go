@@ -3,6 +3,7 @@ package nativecatalog
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
@@ -48,6 +49,11 @@ func query(ctx context.Context, in contracts.NativeCatalogRequest, out *contract
 	}
 	if in.Adapter == "codex-app-server" {
 		program := in.Executable
+		if in.Execution != nil {
+			var settings contracts.CodexSettings
+			_ = json.Unmarshal(in.Execution.Settings, &settings)
+			program = settings.Executable
+		}
 		if program == "" {
 			program = "codex"
 			if runtime.GOOS == "windows" {

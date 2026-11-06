@@ -1,5 +1,12 @@
 # CLI 与运维指南
 
+## 无服务执行配置
+
+`steerrunner execution-config --input - --json` 从裸 stdin JSON 执行 describe、derive 或 compose，无 state-dir/服务/Run。构建的 capabilities.execution_configuration 同源提供自包含 schema、有限编辑字段与按 Agent 的 effort 选择；组合沿既有 capability_catalog。源配置、权限与目标必须明确；compose 仅接受可信 base/default 与逻辑 selection/unset，不接受任意程序路径/patch，缺审计模型不代选。
+
+identity 只用于配置等价与源摘要绑定，不是 ready 或安装探测。只在 identity 投影省略去掉偏好后的空 agent_launch；原 execution 不改，目标/Agent/权限/程序仍参与上下文。单次输入/输出各1 MiB、含stdin处理总30秒。完整字段和错误见[Spec](spec/native-execution-configuration-boundary.spec.md)，固定构建与验收见[专属记录](acceptance/native-execution-configuration-boundary.md)。
+
+
 Orca 原会话关闭与额外资源清理分别处理：关闭成功后允许业务收尾及按冻结 scope 核验，额外清理不保证且不构成新门禁；关闭本身未知仍保持未知。现行责任、文件变量绑定和重启/部署规则统一见[Orca 执行链路设计](orca-execution.md)。
 
 本指南面向直接集成 CLI 和维护 Runner 服务的用户。首次使用请从[项目介绍与快速开始](../README.md)进入；专题文档见[文档索引](README.md)。以下命令均在仓库根目录执行。

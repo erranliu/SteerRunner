@@ -139,14 +139,14 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 	switch value.opts.Command {
 	case "progress-file", "result-file", "run-usage", "run-usage-events":
 	case "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git":
-	case "native-catalog", "version", "serve", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "submit", "inspect", "observe", "last-message", "open-native-session", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history":
+	case "execution-config", "native-catalog", "version", "serve", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "submit", "inspect", "observe", "last-message", "open-native-session", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history":
 	default:
 		return value, contracts.Fail(2, "invalid_arguments", "Expected a documented SteerRunner command; use --help.")
 	}
 	if value.protocol != contracts.Protocol {
 		return value, contracts.Fail(3, "unsupported_protocol", "This executable supports "+contracts.Protocol+".")
 	}
-	if value.opts.Command == "native-catalog" {
+	if value.opts.Command == "native-catalog" || value.opts.Command == "execution-config" {
 		for option := range seen {
 			if option != "--json" && option != "--protocol" && option != "--input" {
 				return value, contracts.Fail(2, "invalid_arguments", "Native catalog does not accept service or target options.")
@@ -273,6 +273,9 @@ func Run(argv []string, input io.Reader, output, diagnostics io.Writer) int {
 	if parseErr != nil {
 		return reject(parseErr)
 	}
+	if options.opts.Command == "execution-config" {
+		return runExecutionConfiguration(input, finish)
+	}
 	if options.opts.Command == "native-catalog" {
 		raw, err := io.ReadAll(io.LimitReader(input, contracts.NativeCatalogInputLimit+1))
 		if err != nil {
@@ -313,7 +316,7 @@ func Run(argv []string, input io.Reader, output, diagnostics io.Writer) int {
 		return finish(contracts.Success("", resources.VersionInfo()), 0)
 	}
 	if options.opts.Command == "help" {
-		return finish(contracts.Success("", map[string]any{"usage": "steerrunner <command> --state-dir <absolute-path> --json", "commands": []string{"native-catalog", "progress-file", "result-file", "run-usage", "run-usage-events", "version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "submit", "inspect", "last-message", "open-native-session", "observe", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git"}, "input": "Write commands consume a UTF-8 JSON envelope from --input -. validate consumes a bare object. service start optionally consumes a bare pending_stops object.", "static": "capabilities --offline; validate --kind run-configuration|run --input -", "run_evidence": "artifacts discover|list --run-id R; artifacts collect --run-id R --input -; artifacts read --run-id R --artifact-id A; workspace-git --run-id R. Producer writes .steerrunner/artifacts/<relative_path> in original workspace. Max file 1 MiB. Read is base64; schema/limits in capabilities.run_evidence.", "instance_binding": "--expected-instance-id <id> fences resident business/query commands and disables implicit service startup."}), 0)
+		return finish(contracts.Success("", map[string]any{"usage": "steerrunner <command> --state-dir <absolute-path> --json", "commands": []string{"execution-config", "native-catalog", "progress-file", "result-file", "run-usage", "run-usage-events", "version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "submit", "inspect", "last-message", "open-native-session", "observe", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git"}, "input": "Write commands consume a UTF-8 JSON envelope from --input -. validate consumes a bare object. service start optionally consumes a bare pending_stops object.", "static": "capabilities --offline; validate --kind run-configuration|run --input -", "run_evidence": "artifacts discover|list --run-id R; artifacts collect --run-id R --input -; artifacts read --run-id R --artifact-id A; workspace-git --run-id R. Producer writes .steerrunner/artifacts/<relative_path> in original workspace. Max file 1 MiB. Read is base64; schema/limits in capabilities.run_evidence.", "instance_binding": "--expected-instance-id <id> fences resident business/query commands and disables implicit service startup."}), 0)
 	}
 	if options.offline && options.opts.Command == "capabilities" {
 		executable, err := os.Executable()

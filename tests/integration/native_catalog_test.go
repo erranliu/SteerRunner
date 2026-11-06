@@ -47,6 +47,13 @@ func TestSRNativeCatalogPublicCLI(t *testing.T) {
 		t.Fatal(response, exit, err)
 	}
 	// Killing the CLI must close the non-inheritable Job owning its metadata child.
+	trusted := contracts.Execution{Adapter: "codex-app-server", Target: contracts.Target{Kind: "local"}}
+	trusted.Settings, _ = json.Marshal(map[string]string{"access_mode": "full_access", "executable": helperEXE})
+	profileInput, _ := json.Marshal(contracts.NativeCatalogRequest{Kind: "models", Adapter: trusted.Adapter, Target: &trusted.Target, Agent: "codex", Execution: &trusted})
+	response, exit, _, err = invoke(runnerEXE, []string{"native-catalog", "--input", "-", "--json"}, string(profileInput))
+	if err != nil || exit != 0 || !response.OK {
+		t.Fatal("trusted execution metadata", response, exit, err)
+	}
 	pidFile := filepath.Join(root, "metadata.pid")
 	t.Setenv("STEERRUNNER_FIXTURE_METADATA_PID", pidFile)
 	cmd := exec.Command(runnerEXE, "native-catalog", "--input", "-", "--json")

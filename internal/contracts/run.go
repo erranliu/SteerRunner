@@ -181,13 +181,20 @@ func safeDocument(document Document) bool {
 	}
 }
 
-func effort(value string) bool {
-	switch value {
-	case "", "minimal", "low", "medium", "high", "xhigh", "max", "ultra":
-		return true
+// ReasoningEfforts is the logical selection domain shared by production
+// admission and the public configuration editor description.
+func ReasoningEfforts(agent string) []string {
+	switch agent {
+	case "codex":
+		return []string{"minimal", "low", "medium", "high", "xhigh", "max", "ultra"}
+	case "pi":
+		return []string{"minimal", "low", "medium", "high", "xhigh"}
 	default:
-		return false
+		return nil
 	}
+}
+func effort(value string) bool {
+	return value == "" || slices.Contains(ReasoningEfforts("codex"), value)
 }
 
 func optionalStrings(data []byte, names ...string) bool {
@@ -311,6 +318,17 @@ func OrcaStructuredAudited(execution Execution, selected Workflow) bool {
 
 // ValidateRunConfiguration is pure admission; it performs no environment I/O.
 func ValidateRunConfiguration(data []byte) *Fault {
+	return validateRunConfiguration(data, true)
+}
+
+// ValidateExecutionSelection checks the same configuration rules without requiring
+// workflow text or an audit-model selection that the caller has not assembled.
+func ValidateExecutionSelection(execution Execution, selected Workflow) *Fault {
+	data, _ := json.Marshal(RunConfiguration{Execution: execution, Workflow: selected})
+	return validateRunConfiguration(data, false)
+}
+
+func validateRunConfiguration(data []byte, complete bool) *Fault {
 	invalid := Fail(2, "invalid_input", "Run configuration does not satisfy the published contract.")
 	var value RunConfiguration
 	if DecodeStrict(data, &value) != nil {
@@ -320,7 +338,7 @@ func ValidateRunConfiguration(data []byte) *Fault {
 	if !supported {
 		return Fail(3, "unsupported_schema", "The selected workflow is not defined by this executable.")
 	}
-	if profile.ID == workflow.SingleExecution {
+	if complete && profile.ID == workflow.SingleExecution {
 		body := value.Workflow.PromptOverrides["execute"]
 		if len(value.Workflow.PromptOverrides) != 1 || strings.TrimSpace(body) == "" || strings.ContainsRune(body, '\x00') || !OrcaStructuredExecute(value.Execution, value.Workflow) && strings.ContainsAny(body, "\r\n") {
 			return invalid
@@ -397,7 +415,7 @@ func ValidateRunConfiguration(data []byte) *Fault {
 	if profile.AuditModelRequired && value.Execution.Adapter == "orca-terminal" && value.Execution.Target.Kind == "orca_environment" {
 		return Fail(3, "unsupported_capability", "Native remote Orca does not provide verified audit model or workspace provenance; use development/2.")
 	}
-	if profile.AuditModelRequired {
+	if complete && profile.AuditModelRequired {
 		model := value.Workflow.AuditModel
 		if model == nil || !plain(model.Model) || strings.TrimSpace(model.Model) != model.Model || strings.ContainsFunc(model.Model, unicode.IsControl) || !effort(model.ReasoningEffort) {
 			return invalid
@@ -480,7 +498,7 @@ func ValidateExecution(value Execution) *Fault {
 		if settings.AgentName() == "codex" && !effort(settings.AgentLaunch.ReasoningEffort) {
 			return invalid
 		}
-		if settings.AgentName() == "pi" && (value.Target.Kind != "local" || len(settings.AgentLaunch.Args) != 0 || !slices.Contains([]string{"", "minimal", "low", "medium", "high", "xhigh"}, settings.AgentLaunch.ReasoningEffort)) {
+		if settings.AgentName() == "pi" && (value.Target.Kind != "local" || len(settings.AgentLaunch.Args) != 0 || (settings.AgentLaunch.ReasoningEffort != "" && !slices.Contains(ReasoningEfforts("pi"), settings.AgentLaunch.ReasoningEffort))) {
 			return Fail(3, "unsupported_capability", "Pi requires local Orca and a supported thinking level.")
 		}
 		if raw, ok := fields["transport"]; ok && !optionalStrings(raw, "executable", "wait_timeout") {
