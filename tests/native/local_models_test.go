@@ -3,82 +3,69 @@
 package native
 
 import (
-	"encoding/json"
 	"github.com/erranliu/SteerRunner/internal/contracts"
-	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
-	"github.com/erranliu/SteerRunner/internal/execution/workflow"
-	"github.com/erranliu/SteerRunner/internal/storage"
 	"github.com/erranliu/SteerRunner/internal/testkit/livetest"
-	"path/filepath"
 	"testing"
 )
 
 func auditManagedLocalOrcaModels(t *testing.T, m livetest.Manifest, view contracts.RunView) {
 	t.Helper()
-	if m.Execution.Target.Kind != "local" {
-		t.Fatal("native remote Orca cannot qualify helper audit models")
-	}
-	store, err := storage.OpenReader(filepath.Join(m.Root, "s"))
+	record, run, err := originalStructuredRecord(m, view)
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer store.Close()
-	runs, err := store.Runs()
-	if err != nil {
-		t.Fatal(err)
-	}
-	var state *orca.State
-	for _, run := range runs {
-		if run.ID != view.RunID {
-			continue
-		}
-		for _, e := range run.Snapshot.Implementation {
-			if e.ImplementationKey == orca.StateKey {
-				var s orca.State
-				if json.Unmarshal(e.Payload, &s) != nil {
-					t.Fatal("invalid native state")
-				}
-				state = &s
-			}
-		}
-	}
-	if state == nil || state.RemoteReadiness == nil || orca.SessionID(state.Process) != view.Execution.SessionID || state.RemoteReadiness.ConfigurationDigest != livetest.ReceiptAuditPolicy(m).ConfigurationDigest {
-		t.Fatal("remote model audit lost original frozen execution")
+	if m.Execution.Target.Kind != "local" || view.Audit == nil || m.AuditModel == nil {
+		t.Fatal("original structured audited model proof missing")
 	}
 	writer, err := contracts.ExecutionModel(m.Execution)
 	if err != nil {
 		t.Fatal(err)
 	}
-	byCommand := map[string]*orca.Turn{}
-	for i := range state.Turns {
-		turn := &state.Turns[i]
-		if byCommand[turn.Command] != nil {
-			t.Fatal("duplicate native command")
+	byCommand := map[string]livetest.StructuredBinding{}
+	for _, binding := range run.Inputs {
+		byCommand[binding.CommandID] = binding
+	}
+	verify := func(command, step, model, effort string) any {
+		binding, ok := byCommand[command]
+		if !ok {
+			t.Fatal("original model input missing", command)
 		}
-		byCommand[turn.Command] = turn
+		matches := 0
+		var fact any
+		for _, result := range record.Workflow.StageResults {
+			if result.CommandID != command {
+				continue
+			}
+			matches++
+			proof := result.ActualModel
+			if proof == nil || !result.Succeeded || !result.FinalVerified || result.StepID != step || result.TurnID != binding.TurnID || proof.Model != model || proof.ReasoningEffort != effort || proof.Turn != binding.TurnID || proof.ProviderSession == "" || len(proof.SourceDigest) != 64 {
+				t.Fatal("actual original native model differs from frozen workflow", step)
+			}
+			fact = map[string]any{"step": step, "command_id": command, "turn_id": binding.TurnID, "native_turn_id": binding.TurnID, "source": "orca.structured.original-model.v1", "model": proof.Model, "effort": proof.ReasoningEffort, "source_digest": proof.SourceDigest, "provider_session": proof.ProviderSession}
+		}
+		if matches != 1 {
+			t.Fatal("original model result missing or ambiguous", step)
+		}
+		return fact
 	}
 	var facts []any
-	verify := func(command, step string, want workflow.ModelSettings) {
-		turn := byCommand[command]
-		if turn == nil || !turn.Accepted || !turn.Started || !turn.Settled || turn.StepID != step || state.Control == nil || state.Control.Ready == nil || turn.ReceiptRequest == "" || turn.ReceiptQueriedAt.IsZero() || orca.ValidateRecordedTurn(*state, turn) != nil {
-			t.Fatal("remote model proof lacks a settled original native turn", step)
-		}
-		r := turn.Recorded
-		if r.Model != want.Model || r.ReasoningEffort != want.ReasoningEffort || !r.Completed || r.Status != "completed" {
-			t.Fatal("actual native model differs from workflow", step)
-		}
-		facts = append(facts, map[string]any{"step": step, "command_id": turn.Command, "turn_id": turn.Command, "native_turn_id": r.NativeTurnID, "model": r.Model, "effort": r.ReasoningEffort, "source": r.Source, "session": r.Readiness.SessionID, "final_digest": r.FinalDigest, "reader_writers_absent": r.ReaderWritersAbsent, "control_request_id": turn.ReceiptRequest})
-	}
 	for _, audit := range view.Audit.Results {
-		if audit.Failure != "" || audit.CommandID != audit.TurnID {
-			t.Fatal("audit outer turn binding changed")
+		if audit.Failure != "" {
+			t.Fatal("audit failed")
 		}
-		verify(audit.CommandID, audit.StepID, *m.AuditModel)
+		facts = append(facts, verify(audit.CommandID, audit.StepID, m.AuditModel.Model, m.AuditModel.ReasoningEffort))
 	}
-	final := byCommand[view.Execution.TurnID]
-	if final == nil {
-		t.Fatal("publication lost original native model")
+	final := run.Binding
+	var step string
+	for _, result := range record.Workflow.StageResults {
+		if result.CommandID == final.CommandID {
+			step = result.StepID
+		}
 	}
-	verify(final.Command, final.StepID, writer)
-	save(t, "audit-models.json", map[string]any{"run_id": view.RunID, "session": view.Execution.SessionID, "provider_session": state.RemoteReadiness.SessionID, "configuration_digest": state.RemoteReadiness.ConfigurationDigest, "turns": facts, "passed": true})
+	effort := writer.ReasoningEffort
+	if effort == "" {
+		effort = "medium"
+	}
+	facts = append(facts, verify(final.CommandID, step, writer.Model, effort))
+	save(t, "audit-models.json", map[string]any{"run_id": view.RunID, "session": run.Binding.SessionID, "turns": facts, "configuration_digest": record.Snapshot.ConfigurationDigest, "passed": true, "protocol": "orca_agent_session_v1"})
 }

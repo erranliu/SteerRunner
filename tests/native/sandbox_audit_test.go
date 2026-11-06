@@ -7,7 +7,6 @@ import (
 	"context"
 	"encoding/json"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -15,40 +14,35 @@ import (
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
-	terminal "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
-	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
-	"github.com/erranliu/SteerRunner/internal/execution/terminaltools"
 	"github.com/erranliu/SteerRunner/internal/testkit/livetest"
 )
 
 func auditWorkerSandbox(t *testing.T, m livetest.Manifest, run contracts.RunView) {
 	t.Helper()
-	if m.Execution.Adapter == "orca-terminal" && (run.Execution.Agent == "pi") {
-		auditTerminalWorker(t, m, run)
-		return
-	}
-	if m.Execution.Adapter != "codex-app-server" {
-		if m.Execution.Target.Kind == "orca_environment" {
-			var settings contracts.OrcaSettings
-			if contracts.ValidateExecution(m.Execution) != nil || contracts.DecodeStrict(m.Execution.Settings, &settings) != nil || settings.AgentLaunch.RuntimeExecutable != "" || settings.AgentLaunch.RuntimeSHA256 != "" {
-				t.Fatal("native remote launch contract differs")
-			}
-			raw, readErr := os.ReadFile(filepath.Join(*evidenceFlag, "native-calls.jsonl"))
-			facts, auditErr := livetest.AnalyzeNativeAudit(raw, m.RemoteRuntimeID, smokeReceiptAuditPolicy(m, run.RunID))
-			expectedCreations := 1
-			if m.Driver == "development-multirun" {
-				expectedCreations = 2
-			}
-			if readErr != nil || auditErr != nil || !facts.Complete || facts.Creations != expectedCreations || facts.Inspections != 0 {
-				t.Fatal("native remote call audit failed", readErr, auditErr, facts)
-			}
-			save(t, "native-call-audit.json", facts)
-			save(t, "native-launch-contract.json", map[string]any{"requested_model": settings.AgentLaunch.Model, "requested_reasoning_effort": settings.AgentLaunch.ReasoningEffort, "requested_access_mode": settings.AccessMode, "effective_parameters_verified": false, "helper_calls": 0})
-		} else {
-			auditLocalCodexWorker(t, m, run)
+	if m.Execution.Adapter == "orca-terminal" {
+		run, history, err := structuredNativeState(m, run)
+		if err != nil {
+			t.Fatal(err)
 		}
+		if run.Profile.AccessMode != "full_access" || len(history.Tail.ActionablePromptIDs) > 0 || history.Inputs < 2 {
+			t.Fatal("structured full-access business turns unverified")
+		}
+		counts, callErr := candidateCallAudit(m, run.Binding.SessionID, false)
+		if callErr != nil {
+			t.Fatal(callErr)
+		}
+		if structuredPipe != nil {
+			rows, err := structuredPipe.Calls(run.Binding.SessionID)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if err := livetest.VerifyStructuredInputCalls(rows, run); err != nil {
+				t.Fatal(err)
+			}
+		}
+		save(t, "structured-native-audit.json", map[string]any{"original": run, "history": history, "configured_access_mode": run.Profile.AccessMode, "host_authentication": "existing", "helper_calls": 0, "calls": counts, "wire_audit": structuredPipe != nil})
 		return
 	}
 	var settings contracts.CodexSettings
@@ -144,122 +138,6 @@ func auditWorkerSandbox(t *testing.T, m livetest.Manifest, run contracts.RunView
 		}
 	}
 	save(t, "native-turn-audit.json", map[string]any{"qualified_turns": verifiedTurns, "session": run.Execution.SessionID, "contract": codex.PolicyContract})
-}
-
-func auditTerminalWorker(t *testing.T, m livetest.Manifest, run contracts.RunView) {
-	t.Helper()
-	var settings contracts.OrcaSettings
-	if json.Unmarshal(m.Execution.Settings, &settings) != nil {
-		t.Fatal("frozen Pi settings missing")
-	}
-	directory := filepath.Join(m.Root, "s", "terminal-agents", run.RunID, run.Execution.AttemptID)
-	read := func(name string, v any) {
-		body, e := os.ReadFile(filepath.Join(directory, name+".json"))
-		if e != nil || len(body) > 65536 || contracts.DecodeStrict(body, v) != nil {
-			t.Fatal("bounded Pi native audit unavailable", name, e)
-		}
-	}
-	var ready terminal.TerminalReceipt
-	var owner terminal.TerminalOwner
-	read("readiness", &ready)
-	read("owner", &owner)
-	p := ready.Preparation
-	source := "pi-extension-v1"
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-	metadataBytes, e := exec.CommandContext(ctx, settings.AgentLaunch.RuntimeExecutable, "--terminal-metadata").Output()
-	var metadata terminal.TerminalMetadata
-	if e != nil || contracts.DecodeStrict(metadataBytes, &metadata) != nil || metadata.RuntimeSHA256 != settings.AgentLaunch.RuntimeSHA256 {
-		t.Fatal("frozen native helper metadata changed", e)
-	}
-	expectedSource := metadata.PiSHA256
-	if ready.SourceSHA256 != expectedSource {
-		t.Fatal("native extension differs from frozen helper")
-	}
-	if ready.Source != source || ready.Stage != "ready" || ready.RunID != run.RunID || ready.SessionID != owner.SessionID || ready.PID != owner.Job.Worker.PID || !p.Verified || p.Contract != terminaltools.Contract || p.AccessMode != settings.AccessMode || !p.ProviderEnvironmentAbsent || p.AccessMode != "full_access" || ready.Version != 4 || owner.RuntimeSHA256 != settings.AgentLaunch.RuntimeSHA256 || owner.ExtensionSHA256 != metadata.BundleSHA256 {
-		t.Fatal("original Pi native permission/authentication audit failed")
-	}
-	job, e := process.AttachOwnedJob(owner.Job)
-	if e != nil {
-		t.Fatal("original Pi owned Job cannot be reattached", e)
-	}
-	job.Close()
-	files, e := filepath.Glob(filepath.Join(directory, "*.json"))
-	if e != nil {
-		t.Fatal(e)
-	}
-	qualified := 0
-	for _, file := range files {
-		name := strings.TrimSuffix(filepath.Base(file), ".json")
-		if !b.StableExecutionID(name) {
-			continue
-		}
-		var fact terminal.TerminalReceipt
-		read(name, &fact)
-		if fact.RunID != run.RunID || fact.SessionID != ready.SessionID || fact.InstanceID != ready.InstanceID || fact.PID != ready.PID || fact.CommandID != name || fact.Stage != "settled" || fact.Outcome != "completed" || fact.StopReason != "stop" || fact.NativeInputID == "" || fact.NativeReplyID == "" {
-			t.Fatal("Pi business turn lacks original native settlement", name)
-		}
-		qualified++
-	}
-	if qualified < 2 {
-		t.Fatal("Pi native audit lacks business implementation and publication turns")
-	}
-	save(t, settings.AgentName()+"-native-permission-audit.json", map[string]any{"readiness": ready, "owner": owner, "qualified_turns": qualified, "os_job_reattached": true})
-}
-
-func auditLocalCodexWorker(t *testing.T, m livetest.Manifest, run contracts.RunView) {
-	t.Helper()
-	var settings contracts.OrcaSettings
-	if json.Unmarshal(m.Execution.Settings, &settings) != nil || settings.AgentLaunch.RuntimeExecutable == "" {
-		t.Fatal("remote trusted runtime is required")
-	}
-	runtime, err := m.OrcaRuntimeID()
-	if err != nil {
-		t.Fatal(err)
-	}
-	parts := strings.Split(strings.TrimPrefix(run.Execution.SessionID, "orca-terminal:"+runtime+":"), ":")
-	if !strings.HasPrefix(run.Execution.SessionID, "orca-terminal:"+runtime+":") || len(parts) != 2 || parts[0] == "" || parts[1] == "" {
-		t.Fatal("remote original terminal binding missing")
-	}
-	ctx, cancel := context.WithTimeout(context.Background(), 90*time.Second)
-	defer cancel()
-	client := orca.New(orca.Config{CommandTimeout: "30s", Output: func(ctx context.Context, _ time.Duration, args ...string) ([]byte, error) {
-		all := append(append([]string(nil), settings.Transport.Args...), args...)
-		if m.Execution.Target.Environment != "" {
-			all = append(all, "--environment", m.Execution.Target.Environment)
-		}
-		return orca.SerializeCLI(ctx, func(ctx context.Context) ([]byte, error) {
-			return exec.CommandContext(ctx, settings.Transport.Executable, all...).Output()
-		})
-	}})
-	term, err := client.ShowTerminal(ctx, parts[0])
-	if err != nil {
-		t.Fatal(err)
-	}
-	original := b.ProcessIdentity{ExecutionHost: "local", RuntimeID: runtime, Terminal: parts[0], Incarnation: parts[1], WorktreeID: term.WorktreeID}
-	raw, err := orca.QueryState(ctx, m.Execution.Target.Environment, runtime, "id:"+original.WorktreeID)
-	if err != nil {
-		t.Fatal(err)
-	}
-	state, err := orca.DecodeOriginalState(raw, orca.StateResource{RuntimeID: original.RuntimeID, WorktreeID: original.WorktreeID, Handle: original.Terminal, IncarnationID: original.Incarnation})
-	if err != nil {
-		t.Fatal(err)
-	}
-	audit, err := livetest.LocalPermissionAudit(ctx, client, original, settings.AgentLaunch.RuntimeExecutable, run.Execution.Workspace, state.ProviderSession.ID)
-	save(t, "remote-worker-permission-audit.json", audit)
-	if err != nil {
-		t.Fatal(err)
-	}
-	mode := settings.AccessMode
-	if mode == "" {
-		mode = "sandbox"
-	}
-	if audit.Readiness.AccessMode != mode || audit.Readiness.Contract != codex.PolicyContract {
-		t.Fatal("remote native access mode or policy changed")
-	}
-	if settings.AgentLaunch.RuntimeSHA256 == "" || audit.Readiness.RuntimeSHA256 != settings.AgentLaunch.RuntimeSHA256 {
-		t.Fatal("remote runtime build is not frozen to the tested helper")
-	}
 }
 
 func containsApprovalRequest(body []byte) bool {

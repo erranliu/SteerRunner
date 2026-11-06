@@ -259,8 +259,8 @@ func assessCase(config TestConfig, scenario Scenario, test Case, catalog resourc
 					add(path, "invalid_configuration", err.Error())
 				}
 			}
-			if !filepath.IsAbs(orca.Transport.Executable) || (required.TargetKind == "local" && scenario.Driver != "native-capability-runner" && (!filepath.IsAbs(orca.AgentLaunch.RuntimeExecutable) || len(orca.AgentLaunch.RuntimeSHA256) != 64)) {
-				add(path, "missing_configuration", "Orca tests require an absolute transport; local managed tests also require helper references.")
+			if !filepath.IsAbs(orca.Transport.Executable) {
+				add(path, "missing_configuration", "Orca tests require an absolute transport for the current structured protocol.")
 			}
 			if fixtureOK && !filepath.IsAbs(fixture.Repository.LocalPath) {
 				add("/fixture/repository/local_path", "missing_fixture", "Orca tests require the configured registered project entry.")

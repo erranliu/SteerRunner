@@ -3,7 +3,6 @@
 package native
 
 import (
-	"bufio"
 	"context"
 	"encoding/json"
 	"errors"
@@ -35,7 +34,7 @@ type sharedNativeResult struct {
 	ServiceStopped   bool   `json:"service_stopped"`
 	OfflineVerified  bool   `json:"offline_verified"`
 	NoLegacyCalls    bool   `json:"no_legacy_calls"`
-	Provider         string `json:"provider_session,omitempty"`
+	Provider         string `json:"structured_session,omitempty"`
 	Head             string `json:"head_revision,omitempty"`
 }
 
@@ -53,110 +52,47 @@ func candidateClient(m livetest.Manifest) orca.Client {
 	}})
 }
 
-func candidateState(m livetest.Manifest, client orca.Client, view contracts.RunView) (orca.StateResource, orca.AgentState, error) {
-	runtime, err := m.OrcaRuntimeID()
-	if err != nil {
-		return orca.StateResource{}, orca.AgentState{}, err
-	}
-	prefix := "orca-terminal:" + runtime + ":"
-	if !strings.HasPrefix(view.Execution.SessionID, prefix) {
-		return orca.StateResource{}, orca.AgentState{}, errors.New("public session is not on the frozen runtime")
-	}
-	parts := strings.Split(strings.TrimPrefix(view.Execution.SessionID, prefix), ":")
-	if len(parts) != 2 || parts[0] == "" || parts[1] == "" {
-		return orca.StateResource{}, orca.AgentState{}, errors.New("public original terminal identity missing")
-	}
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
-	terminal, err := client.InspectTerminal(ctx, orca.TerminalIdentity{RuntimeID: runtime, Handle: parts[0], IncarnationID: parts[1]})
-	resource := orca.StateResource{RuntimeID: runtime, Handle: parts[0], IncarnationID: parts[1], WorktreeID: terminal.WorktreeID}
-	if err != nil {
-		return resource, orca.AgentState{}, err
-	}
-	if terminal.WorktreePath != view.Execution.Workspace || strings.TrimPrefix(terminal.Branch, "refs/heads/") != view.Execution.Branch || terminal.AgentIdentity != "codex" || terminal.WorktreeID == "" {
-		return resource, orca.AgentState{}, errors.New("public workspace/agent differs from original terminal")
-	}
-	raw, err := orca.QueryState(ctx, m.Execution.Target.Environment, runtime, "id:"+resource.WorktreeID)
-	if err != nil {
-		return resource, orca.AgentState{}, err
-	}
-	initial, err := orca.DecodeOriginalState(raw, resource)
-	if err != nil {
-		return resource, initial, err
-	}
-	state, err := orca.QueryOriginalAgent(ctx, m.Execution.Target.Environment, resource, initial.PaneKey)
-	return resource, state, err
-}
-
-func candidateCallAudit(m livetest.Manifest, handle string) (map[string]int, error) {
-	f, err := os.Open(filepath.Join(m.Root, "evidence", "native-calls.jsonl"))
+func candidateCallAudit(m livetest.Manifest, session string, settled bool) (map[string]int, error) {
+	raw, err := os.ReadFile(filepath.Join(m.Root, "evidence", "native-calls.jsonl"))
 	if err != nil {
 		return nil, err
 	}
-	defer f.Close()
+	// The CLI journal only proves absence of retired terminal writes. Structured
+	// mutations bypass it and are never inferred from a zero CLI-send count.
+	if err := livetest.ValidateStructuredCLI(raw, settled); err != nil {
+		return nil, err
+	}
 	counts := map[string]int{}
-	requests := map[string]bool{}
-	scanner := bufio.NewScanner(f)
-	scanner.Buffer(make([]byte, 65536), 16<<20)
-	for scanner.Scan() {
-		var row struct {
-			Phase string
-			Argv  []string
+	if structuredPipe != nil {
+		rows, err := structuredPipe.Calls(session)
+		if err != nil {
+			return nil, err
 		}
-		if json.Unmarshal(scanner.Bytes(), &row) != nil {
-			return nil, errors.New("native call audit is incomplete")
-		}
-		if row.Phase != "dispatch" {
-			continue
-		}
-		for _, arg := range row.Argv {
-			if strings.Contains(arg, "--native-control") || strings.Contains(arg, "steerrunner-agent") || strings.Contains(arg, "--configuration") {
-				return nil, errors.New("candidate invoked retired helper/control chain")
-			}
-		}
-		if len(row.Argv) < 2 {
-			return nil, errors.New("native audit operation missing")
-		}
-		operation := row.Argv[0] + " " + row.Argv[1]
-		counts[operation]++
-		if operation == "terminal send" {
-			id := ""
-			for i, arg := range row.Argv {
-				if arg == "--retry-request" && i+1 < len(row.Argv) {
-					id = row.Argv[i+1]
-				}
-			}
-			if id == "" || requests[id] {
-				return nil, errors.New("native input missing or repeated original request")
-			}
-			requests[id] = true
-		}
-		if operation == "terminal close" {
-			for i, arg := range row.Argv {
-				if arg == "--terminal" && i+1 < len(row.Argv) && row.Argv[i+1] == handle {
-					counts["original close"]++
-				}
+		for _, row := range rows {
+			counts[row.Method]++
+			if row.Method == "agentSession.create" || row.Method == "agentSession.send" {
+				counts["business dispatch"]++
 			}
 		}
 	}
-	return counts, scanner.Err()
+	return counts, nil
 }
 
 func sharedNativeRunner(t *testing.T, m livetest.Manifest) {
 	active := strings.HasSuffix(m.Scenario, "native-active-stop")
-	r := sharedNativeResult{Scenario: m.Scenario, Level: m.Level, Stage: "preflight", Scope: "orca_terminal"}
+	r := sharedNativeResult{Scenario: m.Scenario, Level: m.Level, Stage: "preflight", Scope: "orca_agent_session"}
 	checkpoint := func() { save(t, "candidate-result.json", r); save(t, "scenario.json", r) }
 	checkpoint()
-	client := candidateClient(m)
 	dir := filepath.Join(m.Root, "s")
 	if _, err := os.Stat(dir); !errors.Is(err, os.ErrNotExist) {
 		t.Fatal("candidate state directory must be fresh", err)
 	}
-	var original orca.StateResource
+	var original livetest.StructuredRun
 	var instance string
 	submitted := false
 	stopAttempted := false
 	sendsAtRevoke := -1
+	inputFingerprint := ""
 	// This cleanup uses formal controls only, even after an earlier assertion
 	// fails. Final success is written after original resources and writer exit.
 	t.Cleanup(func() {
@@ -188,13 +124,12 @@ func sharedNativeRunner(t *testing.T, m livetest.Manifest) {
 		}
 		if r.RunID != "" {
 			view, err := inspect(m, dir, r.RunID)
-			if err == nil && original.WorktreeID == "" && view.Execution.SessionID != "" {
-				resource, _, resourceErr := candidateState(m, client, view)
-				if resource.Handle != "" {
+			if err == nil && original.Binding.Worktree.ID == "" && view.Execution.SessionID != "" {
+				_, resource, resourceErr := originalStructuredRecord(m, view)
+				if resourceErr == nil {
 					original = resource
-				}
-				if resourceErr != nil {
-					save(t, "cleanup-original-query.json", map[string]any{"resource": original, "error": resourceErr.Error()})
+				} else {
+					save(t, "cleanup-original-query.json", map[string]any{"error": resourceErr.Error()})
 				}
 			}
 			for until := time.Now().Add(2 * time.Minute); time.Now().Before(until); time.Sleep(time.Second) {
@@ -209,7 +144,7 @@ func sharedNativeRunner(t *testing.T, m livetest.Manifest) {
 						t.Error("original stop response unavailable; reconciliation remains required", stopErr)
 					}
 				}
-				if err == nil && !view.NewInputsAllowed && view.StopStatus == "stopped" && view.StopEvidenceScope == "orca_terminal" {
+				if err == nil && !view.NewInputsAllowed && view.StopStatus == "stopped" && view.StopEvidenceScope == "orca_agent_session" {
 					r.RunStopped = true
 					save(t, "online-stopped.json", view)
 					break
@@ -218,18 +153,11 @@ func sharedNativeRunner(t *testing.T, m livetest.Manifest) {
 			if !r.RunStopped {
 				t.Error("original candidate Run stop is unverified", err)
 			}
-			if original.WorktreeID != "" {
-				ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-				inventory, inventoryErr := client.CompleteWorktreeInventory(ctx, orca.WorktreeInventoryScope{RuntimeID: original.RuntimeID, WorktreeID: original.WorktreeID})
-				cancel()
-				save(t, "original-inventory.json", map[string]any{"scope": original, "terminals": inventory, "error": fmt.Sprint(inventoryErr)})
-				if inventoryErr != nil {
-					t.Error(inventoryErr)
-				}
-				for _, terminal := range inventory {
-					if !terminal.Exited() || terminal.Handle == original.Handle && terminal.IncarnationID != original.IncarnationID {
-						t.Error("original workspace contains active or replacement resource", terminal)
-					}
+			if r.RunStopped {
+				proof, proofErr := structuredStopEvidence(m, view)
+				save(t, "original-session-stop.json", proof)
+				if proofErr != nil {
+					t.Error(proofErr)
 				}
 			}
 		}
@@ -261,9 +189,17 @@ func sharedNativeRunner(t *testing.T, m livetest.Manifest) {
 				r.OfflineVerified = true
 			}
 		}
-		counts, err := candidateCallAudit(m, original.Handle)
-		save(t, "call-audit.json", map[string]any{"counts": counts, "error": fmt.Sprint(err), "sends_at_revocation": sendsAtRevoke})
-		if err != nil || counts["original close"] != 1 || sendsAtRevoke >= 0 && counts["terminal send"] != sendsAtRevoke {
+		if r.RunStopped && inputFingerprint != "" {
+			stopped, inspectErr := inspect(m, dir, r.RunID)
+			if inspectErr != nil {
+				t.Error(inspectErr)
+			} else if structuredInputFingerprint(t, m, stopped) != inputFingerprint {
+				t.Error("new input after revocation")
+			}
+		}
+		counts, err := candidateCallAudit(m, original.Binding.SessionID, true)
+		save(t, "call-audit.json", map[string]any{"counts": counts, "error": fmt.Sprint(err), "dispatches_at_revocation": sendsAtRevoke, "wire_audit": structuredPipe != nil, "remote_proof": "original durable operations and complete history; not wire counts"})
+		if err != nil || structuredPipe != nil && (counts["agentSession.create"] != 1 || counts["agentSession.close"] != 1 || sendsAtRevoke >= 0 && counts["business dispatch"] != sendsAtRevoke) {
 			t.Error("original native calls or revocation fence unverified", counts, err)
 		} else {
 			r.NoLegacyCalls = true
@@ -329,7 +265,7 @@ func sharedNativeRunner(t *testing.T, m livetest.Manifest) {
 			t.Fatal(err)
 		}
 		save(t, "latest-run.json", view)
-		if view.StopEvidenceScope != "orca_terminal" {
+		if view.StopEvidenceScope != "orca_agent_session" {
 			t.Fatal("candidate frozen stop scope differs", view.StopEvidenceScope)
 		}
 		if view.Status == "blocked" || view.ResumeRequired {
@@ -339,24 +275,24 @@ func sharedNativeRunner(t *testing.T, m livetest.Manifest) {
 			t.Fatal("activity window ended before original Started/working verification; stop this original Run")
 		}
 		if active && view.Execution.TurnStarted {
-			resource, state, stateErr := candidateState(m, client, view)
-			if stateErr == nil && state.MainAgent != nil && state.MainAgent.State == "working" && state.ProviderSession.ID != "" && state.MetadataObservation.ValidHookTransition() && state.TurnStartedAt == state.MainAgent.StateStartedAt {
+			resource, state, stateErr := structuredNativeState(m, view)
+			if stateErr == nil && state.Tail.Working && state.CurrentTurn.State == "running" && state.CurrentTurn.StartedAt > 0 {
 				original = resource
-				r.Provider = state.ProviderSession.ID
+				r.Provider = resource.Binding.SessionID
 				r.ActiveVerified = true
 				r.Stage = "active-stop"
 				checkpoint()
-				save(t, "active-original.json", map[string]any{"run": view, "resource": resource, "state": state, "metadata_observation": state.MetadataObservation})
+				save(t, "active-original.json", map[string]any{"run": view, "resource": resource, "state": state})
 				break
 			}
 		} else if !active && !r.FeedbackVerified && view.Status == "waiting_input" && view.Question != nil {
-			resource, state, stateErr := candidateState(m, client, view)
-			if stateErr != nil || state.ProviderSession.ID == "" {
+			resource, _, stateErr := structuredNativeState(m, view)
+			if stateErr != nil || resource.Binding.SessionID == "" {
 				t.Fatal("original feedback session unavailable", stateErr)
 			}
 			original = resource
 			firstSession = view.Execution.SessionID
-			firstProvider = state.ProviderSession.ID
+			firstProvider = resource.Binding.SessionID
 			feedback := request("b5-feedback", contracts.ReplyInput{ExpectedRevision: view.Revision, Kind: "feedback", Text: "Authorize implementation now in this same original session. Implement the frozen Spec and Plan, run the real checker, and complete the normal development workflow with commit/push and a test PR. Never merge the PR."})
 			response, err := command(m, dir, []string{"reply", "--run-id", r.RunID, "--input", "-"}, &feedback)
 			save(t, "pre-publication-feedback.json", response)
@@ -371,8 +307,8 @@ func sharedNativeRunner(t *testing.T, m livetest.Manifest) {
 			if !r.FeedbackVerified || view.Execution.SessionID != firstSession {
 				t.Fatal("publication did not follow original pre-milestone feedback")
 			}
-			resource, state, stateErr := candidateState(m, client, view)
-			if stateErr != nil || resource != original || state.ProviderSession.ID != firstProvider {
+			resource, _, stateErr := structuredNativeState(m, view)
+			if stateErr != nil || resource.Binding.SessionID != original.Binding.SessionID || resource.Binding.RuntimeID != original.Binding.RuntimeID || resource.Binding.Worktree != original.Binding.Worktree || resource.Binding.SessionID != firstProvider {
 				t.Fatal("feedback changed original terminal/provider", stateErr)
 			}
 			if err := livetest.CheckPR(m, view); err != nil {
@@ -395,6 +331,7 @@ func sharedNativeRunner(t *testing.T, m livetest.Manifest) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	inputFingerprint = structuredInputFingerprint(t, m, view)
 	stop := request("b5-stop", contracts.RevisionInput{ExpectedRevision: view.Revision})
 	stopAttempted = true
 	response, err := command(m, dir, []string{"stop", "--run-id", r.RunID, "--input", "-"}, &stop)
@@ -402,11 +339,11 @@ func sharedNativeRunner(t *testing.T, m livetest.Manifest) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	counts, err := candidateCallAudit(m, original.Handle)
+	counts, err := candidateCallAudit(m, original.Binding.SessionID, false)
 	if err != nil {
 		t.Fatal(err)
 	}
-	sendsAtRevoke = counts["terminal send"]
+	sendsAtRevoke = counts["business dispatch"]
 }
 
 func ptrRequest(value contracts.Request) *contracts.Request { return &value }

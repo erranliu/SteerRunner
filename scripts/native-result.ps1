@@ -3,19 +3,19 @@ function Get-SRResultField($Value,[string]$Name) {
     return $null
 }
 function Assert-SRManagedOrcaAuditModels($Manifest,$View,$Proof) {
-    if($Manifest.execution.target.kind -cne 'local'){throw 'Managed audit proof is local only; native remote auditing is unsupported'}
-    if($Proof.passed -isnot [bool] -or -not $Proof.passed -or $Proof.run_id -cne $View.run_id -or $Proof.session -cne $View.execution.session_id -or -not $Proof.provider_session -or $Proof.configuration_digest -cnotmatch '^[0-9a-f]{64}$' -or @($Proof.turns).Count -ne 2 -or @($View.audit.results).Count -ne 1){throw 'Remote audit proof lacks its frozen original execution, single code audit and publication'}
-    $taskSeen=@{}; $taskCommands=@{}; $taskRequests=@{}
+    if($Manifest.execution.target.kind -cne 'local'){throw 'Structured audited proof requires the original local host'}
+    if($Proof.passed -isnot [bool] -or -not $Proof.passed -or $Proof.protocol -cne 'orca_agent_session_v1' -or $Proof.run_id -cne $View.run_id -or $Proof.session -cne $View.execution.session_id -or $Proof.configuration_digest -cnotmatch '^[0-9a-f]{64}$' -or @($Proof.turns).Count -ne 2 -or @($View.audit.results).Count -ne 1){throw 'Structured audit lacks its frozen original execution and two model proofs'}
+    $taskSeen=@{}; $taskCommands=@{}; $taskProvider=''
     foreach($taskFact in $Proof.turns){
-        if(-not $taskFact.command_id -or $taskFact.turn_id -cne $taskFact.command_id -or $taskCommands.ContainsKey($taskFact.command_id) -or -not $taskFact.native_turn_id -or $taskSeen.ContainsKey($taskFact.native_turn_id) -or $taskFact.source -cne 'codex.app-server.original-turn.v1' -or $taskFact.session -cne $Proof.provider_session -or -not $taskFact.final_digest -or $taskFact.reader_writers_absent -isnot [bool] -or -not $taskFact.reader_writers_absent -or -not $taskFact.control_request_id -or $taskRequests.ContainsKey($taskFact.control_request_id)){throw 'Remote native model context is incomplete, duplicated or foreign'}
-        $taskSeen[$taskFact.native_turn_id]=$true; $taskCommands[$taskFact.command_id]=$true; $taskRequests[$taskFact.control_request_id]=$true
+        if(-not $taskFact.command_id -or $taskCommands.ContainsKey($taskFact.command_id) -or -not $taskFact.turn_id -or $taskFact.native_turn_id -cne $taskFact.turn_id -or $taskSeen.ContainsKey($taskFact.turn_id) -or $taskFact.source -cne 'orca.structured.original-model.v1' -or $taskFact.source_digest -cnotmatch '^[0-9a-f]{64}$' -or -not $taskFact.provider_session -or ($taskProvider -and $taskFact.provider_session -cne $taskProvider)){throw 'Original structured model proof is missing, duplicated or foreign'}
+        $taskProvider=$taskFact.provider_session; $taskSeen[$taskFact.turn_id]=$true; $taskCommands[$taskFact.command_id]=$true
     }
     $taskAudit=$View.audit.results[0]
-    if($taskAudit.step -cne 'audit.code.execute' -or (Get-SRResultField $taskAudit 'failure') -or -not $taskAudit.source_result_id -or -not $taskAudit.result_id -or -not $taskAudit.pre_head -or -not $taskAudit.post_head -or $taskAudit.post_head -cne $View.pr.head_revision){throw 'Remote code audit lacks its source-bound result and verified post-head'}
+    if($taskAudit.step -cne 'audit.code.execute' -or (Get-SRResultField $taskAudit 'failure') -or -not $taskAudit.source_result_id -or -not $taskAudit.result_id -or -not $taskAudit.pre_head -or -not $taskAudit.post_head -or $taskAudit.post_head -cne $View.pr.head_revision){throw 'Code audit lacks its source-bound result and verified post-head'}
     $taskFacts=@($Proof.turns|Where-Object {$_.command_id -ceq $taskAudit.command_id -and $_.turn_id -ceq $taskAudit.turn_id -and $_.step -ceq $taskAudit.step})
-    if($taskFacts.Count -ne 1 -or $taskFacts[0].model -cne $Manifest.audit_model.model -or $taskFacts[0].effort -cne $Manifest.audit_model.reasoning_effort){throw 'Remote native audit did not use the frozen audit model and effort'}
-    $taskPublication=@($Proof.turns|Where-Object {$_.command_id -ceq $View.execution.turn_id -and $_.step -in @('publish.execute','publish.report')})
-    if($taskPublication.Count -ne 1 -or $taskPublication[0].model -cne $Manifest.execution.settings.agent_launch.model -or $taskPublication[0].effort -cne $Manifest.execution.settings.agent_launch.reasoning_effort -or $taskPublication[0].model -ceq $Manifest.audit_model.model){throw 'Remote native publication did not restore the distinct execution model'}
+    if($taskFacts.Count -ne 1 -or $taskFacts[0].model -cne $Manifest.audit_model.model -or $taskFacts[0].effort -cne $Manifest.audit_model.reasoning_effort){throw 'Native audit differs from the frozen model and effort'}
+    $taskPublication=@($Proof.turns|Where-Object {$_.turn_id -ceq $View.execution.turn_id -and $_.step -in @('publish.execute','publish.report')})
+    if($taskPublication.Count -ne 1 -or $taskPublication[0].model -cne $Manifest.execution.settings.agent_launch.model -or $taskPublication[0].effort -cne $Manifest.execution.settings.agent_launch.reasoning_effort -or $taskPublication[0].model -ceq $Manifest.audit_model.model){throw 'Native publication did not restore the distinct execution model'}
 }
 function Assert-SRAuditModels($Manifest,$View,[string]$History) {
     $taskContexts=@{}
@@ -75,7 +75,7 @@ function Get-SRNativeResources($Manifest,$Scenario,$View) {
 }
 function Assert-SRNativeScenario($Manifest,$Result,$Scenario) {
 	if ($Manifest.driver -eq 'native-capability-runner') {
-		if ($Result.exit_code -ne 0 -or $Result.scenario_count -ne 1 -or $Scenario.scenario -cne $Manifest.scenario -or $Scenario.level -cne $Manifest.level -or $Scenario.stage -cne 'completed' -or $Scenario.stop_evidence_scope -cne 'orca_terminal' -or -not $Scenario.run_id -or -not $Scenario.provider_session) { throw 'Native candidate result lacks its original completed execution/scope' }
+		if ($Result.exit_code -ne 0 -or $Result.scenario_count -ne 1 -or $Scenario.scenario -cne $Manifest.scenario -or $Scenario.level -cne $Manifest.level -or $Scenario.stage -cne 'completed' -or $Scenario.stop_evidence_scope -cne 'orca_agent_session' -or -not $Scenario.run_id -or -not $Scenario.structured_session) { throw 'Native candidate result lacks its original completed execution/scope' }
 		foreach ($taskField in @('passed','run_stopped','service_stopped','offline_verified','no_legacy_calls')) {
 			if ((Get-SRResultField $Scenario $taskField) -isnot [bool] -or -not (Get-SRResultField $Scenario $taskField)) { throw ('Native candidate boundary unverified: ' + $taskField) }
 		}

@@ -5,14 +5,11 @@ package native
 import (
 	"bytes"
 	"context"
-	"crypto/sha256"
 	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
 	"github.com/erranliu/SteerRunner/internal/contracts"
-	"github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
-	"github.com/erranliu/SteerRunner/internal/execution/agentlaunch"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/storage"
@@ -102,7 +99,7 @@ func TestSRLiveScenario(t *testing.T) {
 	if !ok {
 		t.Fatalf("unregistered real-environment driver %q", m.Driver)
 	}
-	t.Run(m.Scenario, func(t *testing.T) { driver(t, m) })
+	t.Run(m.Scenario, func(t *testing.T) { setupStructuredPipe(t, m); driver(t, m) })
 }
 
 type scenarioResult struct {
@@ -136,6 +133,7 @@ func command(m livetest.Manifest, dir string, args []string, input *contracts.Re
 	ctx, cancel := context.WithTimeout(context.Background(), 45*time.Second)
 	defer cancel()
 	cmd := exec.CommandContext(ctx, m.RunnerExe, argv...)
+	cmd.Env = runnerAuditEnvironment()
 	var body []byte
 	if input != nil {
 		body, _ = json.Marshal(input)
@@ -180,11 +178,11 @@ func verifyNativeStoppedScope(m livetest.Manifest, dir, runID string) (contracts
 		return proof, errors.New("offline original resource settlement is unverified")
 	}
 	for _, run := range proof.Runs {
-		if run.RunID == runID && run.StopEvidenceScope == "orca_terminal" {
+		if run.RunID == runID && run.StopEvidenceScope == "orca_agent_session" {
 			return proof, nil
 		}
 	}
-	return proof, errors.New("original remote Run is missing Orca terminal evidence scope")
+	return proof, errors.New("original remote Run is missing Orca structured session evidence scope")
 }
 
 func invoke(t *testing.T, m livetest.Manifest, dir string, args []string, input *contracts.Request) contracts.Response {
@@ -335,51 +333,11 @@ func request(id string, value any) contracts.Request {
 // Diagnostic reads are fenced to the original Orca resource and never
 // replace the Runner's native evidence or change business state.
 func remoteDiagnostic(m livetest.Manifest, view contracts.RunView) ([]byte, error) {
-	var settings contracts.OrcaSettings
-	if err := contracts.DecodeStrict(m.Execution.Settings, &settings); err != nil {
-		return nil, err
-	}
-	runtime, err := m.OrcaRuntimeID()
+	run, history, err := structuredNativeState(m, view)
 	if err != nil {
 		return nil, err
 	}
-	prefix := "orca-terminal:" + runtime + ":"
-	if !strings.HasPrefix(view.Execution.SessionID, prefix) {
-		return nil, errors.New("original remote session identity is unavailable")
-	}
-	parts := strings.Split(strings.TrimPrefix(view.Execution.SessionID, prefix), ":")
-	if len(parts) != 2 || parts[0] == "" || parts[1] == "" {
-		return nil, errors.New("original terminal identity is incomplete")
-	}
-	args := append(append([]string{}, settings.Transport.Args...), "terminal", "show", "--terminal", parts[0], "--json")
-	if m.Execution.Target.Environment != "" {
-		args = append(args, "--environment", m.Execution.Target.Environment)
-	}
-	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
-	defer cancel()
-	out, err := orca.SerializeCLI(ctx, func(ctx context.Context) ([]byte, error) {
-		return exec.CommandContext(ctx, settings.Transport.Executable, args...).Output()
-	})
-	if err != nil {
-		return nil, err
-	}
-	var proof struct {
-		OK   bool `json:"ok"`
-		Meta struct {
-			Runtime string `json:"runtimeId"`
-		} `json:"_meta"`
-		Result struct {
-			Terminal struct {
-				Handle      string `json:"handle"`
-				Incarnation string `json:"incarnationId"`
-				Agent       string `json:"agentIdentity"`
-			} `json:"terminal"`
-		} `json:"result"`
-	}
-	if json.Unmarshal(out, &proof) != nil || !proof.OK || proof.Meta.Runtime != runtime || proof.Result.Terminal.Handle != parts[0] || proof.Result.Terminal.Incarnation != parts[1] {
-		return nil, errors.New("remote diagnostic identity did not match the original terminal")
-	}
-	return out, nil
+	return json.Marshal(map[string]any{"original": run, "history": history})
 }
 
 func verifyHead(t *testing.T, m livetest.Manifest, view contracts.RunView, earliest time.Time) time.Time {
@@ -481,7 +439,7 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 				_ = json.Unmarshal(raw, &status)
 				if status.Status == "not_running" {
 					r.ServiceStopped = true
-					if m.Execution.Target.Kind == "orca_environment" && r.RunStopped {
+					if m.Execution.Adapter == "orca-terminal" && r.RunStopped {
 						proof, err := verifyNativeStoppedScope(m, dir, r.RunID)
 						save(t, "offline-stopped.json", proof)
 						if err != nil {
@@ -604,20 +562,12 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 		}
 	}
 	genericTerminal := m.Driver == "development-feedback" && m.Execution.Adapter == "orca-terminal"
-	var stoppedProbeJournal []byte
 	if genericTerminal {
 		input.Workflow.PromptOverrides[workflow.StepImplement] += " For the FIRST implementation input, return exactly {\"outcome\":\"needs_input\",\"summary\":\"Awaiting caller validation phrase\",\"question\":\"What validation phrase should authorize this artifact?\"}. Do not call tools on that first input. After receiving the caller's separate answer, or on later feedback in this same session, implement the task and do not repeat the question."
 	}
 	if genericTerminal {
 		verifyLocalTerminalFaults(t, m, dir, input)
-		stoppedProbeJournal, err = os.ReadFile(filepath.Join(*evidenceFlag, "native-calls.jsonl"))
-		if err != nil || len(stoppedProbeJournal) == 0 || stoppedProbeJournal[len(stoppedProbeJournal)-1] != '\n' {
-			t.Fatal("stopped probe journal is incomplete", err)
-		}
-		if err := os.WriteFile(filepath.Join(*evidenceFlag, "native-probe-calls.jsonl"), stoppedProbeJournal, 0600); err != nil {
-			t.Fatal(err)
-		}
-		save(t, "native-probe-boundary.json", map[string]any{"bytes": len(stoppedProbeJournal), "sha256": fmt.Sprintf("%x", sha256.Sum256(stoppedProbeJournal)), "probe_stopped": true})
+
 	}
 	checkpoint("submit")
 	primarySubmitted = true
@@ -767,29 +717,11 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 	// workflow/2 ends at pr_ready. The feedback scenario proves rejection,
 	// rather than mislabeling an ordinary successful delivery as feedback.
 	if m.Driver == "development-feedback" || m.Scenario == "local-codex.smoke" || m.Scenario == "orca-remote.smoke" {
-		inputCount := func() int {
+		inputCount := func() string {
 			if m.Execution.Adapter != "orca-terminal" {
-				return 0
+				return "direct-codex"
 			}
-			raw, err := os.ReadFile(filepath.Join(*evidenceFlag, "native-calls.jsonl"))
-			if err != nil {
-				t.Fatal(err)
-			}
-			if genericTerminal {
-				raw, err = livetest.NativeAuditAfterProbe(raw, stoppedProbeJournal)
-				if err != nil {
-					t.Fatal(err)
-				}
-			}
-			runtime, err := m.OrcaRuntimeID()
-			if err != nil {
-				t.Fatal(err)
-			}
-			audit, err := livetest.AnalyzeNativeAudit(raw, runtime, smokeReceiptAuditPolicy(m, r.RunID))
-			if err != nil {
-				t.Fatal(err)
-			}
-			return len(audit.Prompts)
+			return structuredInputFingerprint(t, m, first)
 		}
 		before := inputCount()
 		req := request("smoke-feedback-rejected", contracts.ReplyInput{ExpectedRevision: first.Revision, Kind: "feedback", Text: "Update the implementation."})
@@ -837,19 +769,4 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 		activeTerminalStop(t, m, dir, input)
 	}
 	t.Logf("%s %s run=%s PR=%s merge=%s", m.Level, m.Scenario, r.RunID, r.PRURL, r.MergeCommit)
-}
-
-// The optional-file probe changes only the two frozen channel wrappers. Keep
-// exact native command auditing rather than exempting the probe from it.
-func smokeReceiptAuditPolicy(m livetest.Manifest, runID string) livetest.NativeReceiptAuditPolicy {
-	p := livetest.ReceiptAuditPolicy(m)
-	_, faultErr := os.Stat(filepath.Join(m.Root, "observation-fault.json"))
-	_, filesErr := os.Stat(filepath.Join(m.Root, "observation-files.json"))
-	if (faultErr == nil || filesErr == nil) && p.NativeLaunchCommand != "" {
-		inner, ok := agentlaunch.UnwrapFileCommands(p.NativeLaunchCommand, runID)
-		if ok {
-			p.NativeLaunchCommand = agentlaunch.FileCommands(inner, runID, runID)
-		}
-	}
-	return p
 }

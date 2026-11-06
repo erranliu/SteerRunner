@@ -102,33 +102,30 @@ if($Evidence){
     }
 }
 $taskRemoteManifest=Convert-ResultObject @{audit_model=@{model='auditor';reasoning_effort='high'};execution=@{target=@{kind='local'};settings=@{agent_launch=@{model='executor';reasoning_effort='high'}}}}
-$taskRemoteView=Convert-ResultObject @{run_id='remote-run';execution=@{session_id='original-outer';turn_id='publish-command'};pr=@{head_revision='post'};audit=@{results=@(@{step='audit.code.execute';command_id='code-command';turn_id='code-command';source_result_id='implementation';result_id='audit';pre_head='pre';post_head='post'})}}
+$taskRemoteView=Convert-ResultObject @{run_id='remote-run';execution=@{session_id='original-outer';turn_id='native-publish-command'};pr=@{head_revision='post'};audit=@{results=@(@{step='audit.code.execute';command_id='code-command';turn_id='native-code-command';source_result_id='implementation';result_id='audit';pre_head='pre';post_head='post'})}}
 $taskRemoteTurns=@()
 foreach($taskRemoteStep in @('audit.code.execute','publish.execute')){
     $taskRemoteCommand=if($taskRemoteStep -eq 'audit.code.execute'){'code-command'}else{'publish-command'}
     $taskRemoteModel=if($taskRemoteStep -eq 'audit.code.execute'){'auditor'}else{'executor'}
-    $taskRemoteTurns+=@{step=$taskRemoteStep;command_id=$taskRemoteCommand;turn_id=$taskRemoteCommand;native_turn_id=('native-'+$taskRemoteCommand);model=$taskRemoteModel;effort='high';source='codex.app-server.original-turn.v1';session='original-native';final_digest='native-final';reader_writers_absent=$true;control_request_id=('control-'+$taskRemoteCommand)}
+    $taskRemoteTurns+=@{step=$taskRemoteStep;command_id=$taskRemoteCommand;turn_id=('native-'+$taskRemoteCommand);native_turn_id=('native-'+$taskRemoteCommand);model=$taskRemoteModel;effort='high';source='orca.structured.original-model.v1';provider_session='original-native';source_digest=('a'*64)}
 }
-$taskRemoteProof=Convert-ResultObject @{passed=$true;run_id='remote-run';session='original-outer';provider_session='original-native';configuration_digest=('a'*64);turns=$taskRemoteTurns}
+$taskRemoteProof=Convert-ResultObject @{passed=$true;run_id='remote-run';session='original-outer';protocol='orca_agent_session_v1';configuration_digest=('a'*64);turns=$taskRemoteTurns}
 Assert-SRManagedOrcaAuditModels $taskRemoteManifest $taskRemoteView $taskRemoteProof
 $taskRemoteProof.turns[1].step='publish.report'
 Assert-SRManagedOrcaAuditModels $taskRemoteManifest $taskRemoteView $taskRemoteProof
 $taskRemoteProof.turns[1].step='publish.execute'
-foreach($taskMutation in @('foreign-run','foreign-outer','foreign-provider','no-configuration','unclosed','string-closure','duplicate-native','duplicate-command','duplicate-control','missing-control','foreign-source','missing-final','wrong-turn','wrong-step','wrong-audit','wrong-effort','wrong-publication','wrong-publication-effort','no-proof','missing-turn','extra-spec')){
+foreach($taskMutation in @('foreign-run','foreign-outer','foreign-provider','no-configuration','wrong-protocol','duplicate-native','duplicate-command','foreign-source','missing-source','wrong-turn','wrong-step','wrong-audit','wrong-effort','wrong-publication','wrong-publication-effort','no-proof','missing-turn','extra-spec')){
     $taskBad=$taskRemoteProof|ConvertTo-Json -Depth 20|ConvertFrom-Json
     switch($taskMutation){
         'foreign-run'{$taskBad.run_id='foreign'}
         'foreign-outer'{$taskBad.session='foreign'}
-        'foreign-provider'{$taskBad.turns[0].session='foreign'}
+        'foreign-provider'{$taskBad.turns[0].provider_session='foreign'}
         'no-configuration'{$taskBad.configuration_digest=''}
-        'unclosed'{$taskBad.turns[0].reader_writers_absent=$false}
-        'string-closure'{$taskBad.turns[0].reader_writers_absent='true'}
+        'wrong-protocol'{$taskBad.protocol='orca_terminal_v3'}
         'duplicate-native'{$taskBad.turns[1].native_turn_id=$taskBad.turns[0].native_turn_id}
         'duplicate-command'{$taskBad.turns[1].command_id=$taskBad.turns[0].command_id;$taskBad.turns[1].turn_id=$taskBad.turns[0].turn_id}
-        'duplicate-control'{$taskBad.turns[1].control_request_id=$taskBad.turns[0].control_request_id}
-        'missing-control'{$taskBad.turns[0].control_request_id=''}
         'foreign-source'{$taskBad.turns[0].source='foreign'}
-        'missing-final'{$taskBad.turns[0].final_digest=''}
+        'missing-source'{$taskBad.turns[0].source_digest=''}
         'wrong-turn'{$taskBad.turns[0].turn_id='foreign'}
         'wrong-step'{$taskBad.turns[0].step='audit.spec'}
         'wrong-audit'{$taskBad.turns[0].model='executor'}
@@ -170,3 +167,14 @@ foreach($taskMutation in @('progress_verified','run_id','session_id','workspace'
  if(-not $taskRejected){throw "Progress result accepted invalid proof: $taskMutation"}
 }
 Write-Output 'Progress result proof, exact Run identity, native resources and no-publication guards passed'
+
+$taskCandidateManifest=Convert-ResultObject @{driver='native-capability-runner';scenario='orca-local.native-active-stop';level='L3'}
+$taskCandidate=Convert-ResultObject @{scenario=$taskCandidateManifest.scenario;level='L3';stage='completed';run_id='original';structured_session=('oas_'+('a'*32));stop_evidence_scope='orca_agent_session';passed=$true;run_stopped=$true;service_stopped=$true;offline_verified=$true;no_legacy_calls=$true;active_verified=$true}
+Assert-SRNativeScenario $taskCandidateManifest $taskResult $taskCandidate
+foreach($taskField in @('stop_evidence_scope','structured_session','offline_verified','active_verified','no_legacy_calls')){
+ $taskBad=$taskCandidate|ConvertTo-Json|ConvertFrom-Json
+ if($taskField -eq 'stop_evidence_scope'){$taskBad.$taskField='orca_terminal'}elseif($taskField -eq 'structured_session'){$taskBad.$taskField=''}else{$taskBad.$taskField=$false}
+ $taskRejected=$false;try{Assert-SRNativeScenario $taskCandidateManifest $taskResult $taskBad}catch{$taskRejected=$true}
+ if(-not $taskRejected){throw "Structured native candidate accepted incomplete proof: $taskField"}
+}
+Write-Host 'Structured native session scope and active-stop result guards passed'
