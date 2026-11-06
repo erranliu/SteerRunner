@@ -1,5 +1,7 @@
 # 当前 Orca 验收接线与旧证明计算器精简
 
+提 PR 前复审发现并修复三个测试取证问题，最新主线整合、真实受控记录接线和最终验证以[复审记录](orca-qualification-proof-reaudit.md)为准；下方保留原实施点的证据。
+
 日期：2026-11-06。基线 main `d58054a7`（#121 已合入）；分支 `codex/orca-structured-qualification-proof-cleanup`。先写四份 Spec/Plan，审计后按 A→B 独立实施。未部署、未提交真实业务输入、未创建 PR。
 
 ## 设计与实际消费者审计

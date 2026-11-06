@@ -18,6 +18,7 @@ import (
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"github.com/erranliu/SteerRunner/internal/storage"
+	"github.com/erranliu/SteerRunner/internal/testkit/livetest"
 )
 
 // Workspace preparation and recovery cannot dispatch legacy terminal input.
@@ -469,6 +470,13 @@ func TestSRResourceCreationRecovery(t *testing.T) {
 				_ = store.Close()
 				if err != nil || len(runs) != 1 {
 					t.Fatal("original record unavailable", err)
+				}
+				// The current native qualification reader must accept the
+				// public EXE's real no-create stop, not just a hand-built codec fixture.
+				manifest := livetest.Manifest{Execution: runs[0].Request.Execution, LocalRuntimeID: runtime}
+				proof, proofErr := livetest.ReadStructuredRun(manifest, runs[0].View(), runs[0])
+				if proofErr != nil || !proof.Binding.SessionNotCreated {
+					t.Fatal("native qualification rejected the original undispatched stop", proofErr)
 				}
 				snapshot := runs[0].Snapshot
 				if snapshot.Ref.External.RuntimeID != runtime || snapshot.Ref.External.WorktreeID != effect.Worktree.ID || snapshot.Ref.External.Kind != "orca_agent_session" || snapshot.Ref.External.Terminal != "" {

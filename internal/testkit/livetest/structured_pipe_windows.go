@@ -303,6 +303,9 @@ func (a *StructuredPipeAudit) BlockHistory(block bool) {
 // VerifyStructuredInputCalls compares actual local dispatches with original
 // committed inputs. A server's idempotent duplicate response cannot hide a replay.
 func VerifyStructuredInputCalls(rows []StructuredCall, run StructuredRun) error {
+	if run.Agent != "codex" && run.Agent != "pi" {
+		return errors.New("original structured agent missing")
+	}
 	expected := map[string]StructuredBinding{}
 	for _, binding := range append(append([]StructuredBinding{}, run.Inputs...), run.Binding) {
 		expected[binding.MessageID] = binding
@@ -323,8 +326,12 @@ func VerifyStructuredInputCalls(rows []StructuredCall, run StructuredRun) error 
 			}
 			envelope, body, message = request.Envelope, request.FirstMessage.Body, request.FirstMessage.ClientMessageID
 			creates++
-			if expected[message].CreateID != envelope.ClientOperationID {
-				return errors.New("actual create differs from original operation")
+			fingerprint, err := native.AgentFingerprint("agentSession.create", envelope.SessionID, map[string]any{"worktree": request.Worktree, "agent": request.Agent, "options": request.Options, "firstMessage": request.FirstMessage})
+			if expected[message].CreateID != envelope.ClientOperationID || run.Binding.Worktree.ID == "" || request.Worktree != "id:"+run.Binding.Worktree.ID || request.Agent != run.Agent || err != nil || fingerprint != envelope.PayloadFingerprint {
+				return errors.New("actual create differs from original target or operation")
+			}
+			if run.Agent == "codex" && (len(request.Options) != 1 || request.Options["permissionMode"] != "full-access") || run.Agent == "pi" && len(request.Options) != 0 {
+				return errors.New("actual create permission options changed")
 			}
 		} else {
 			var request native.AgentSend
@@ -332,6 +339,14 @@ func VerifyStructuredInputCalls(rows []StructuredCall, run StructuredRun) error 
 				return errors.New("invalid actual send request")
 			}
 			envelope, body, message = request.Envelope, request.Body, request.Envelope.ClientOperationID
+			fields := map[string]any{"body": body}
+			if request.Selection != nil {
+				fields["selection"] = request.Selection
+			}
+			fingerprint, err := native.AgentFingerprint("agentSession.send", envelope.SessionID, fields)
+			if envelope.ExpectedRuntimeFence == nil || *envelope.ExpectedRuntimeFence <= 0 || err != nil || fingerprint != envelope.PayloadFingerprint {
+				return errors.New("actual send envelope changed")
+			}
 		}
 		binding, ok := expected[message]
 		if !ok || seen[message] || row.Session != run.Binding.SessionID || envelope.SessionID != run.Binding.SessionID || body.ValidateInput() != nil {

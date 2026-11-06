@@ -93,7 +93,7 @@ func TestStructuredPipeForwardsOriginalAndDropsOnlyRealReceipt(t *testing.T) {
 	client := native.NewLocalAgentSessionClient("runtime")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	create := native.AgentCreate{Envelope: native.AgentMutationEnvelope{SessionID: "original-session", ClientOperationID: "original-create"}, Worktree: "id:worktree", Agent: "codex", Options: map[string]string{"mode": "full_access"}, FirstMessage: native.AgentFirstMessage{ClientMessageID: "original-message", Body: native.AgentMessage{Kind: "message", Role: "user", Blocks: []native.AgentTextBlock{{Type: "text", Text: "original input"}}}}}
+	create := native.AgentCreate{Envelope: native.AgentMutationEnvelope{SessionID: "original-session", ClientOperationID: "original-create"}, Worktree: "id:worktree", Agent: "codex", Options: map[string]string{"permissionMode": "full-access"}, FirstMessage: native.AgentFirstMessage{ClientMessageID: "original-message", Body: native.AgentMessage{Kind: "message", Role: "user", Blocks: []native.AgentTextBlock{{Type: "text", Text: "original input"}}}}}
 	create.Envelope.PayloadFingerprint, err = native.AgentFingerprint("agentSession.create", create.Envelope.SessionID, map[string]any{"worktree": create.Worktree, "agent": create.Agent, "options": create.Options, "firstMessage": create.FirstMessage})
 	if err != nil {
 		t.Fatal(err)
@@ -109,7 +109,7 @@ func TestStructuredPipeForwardsOriginalAndDropsOnlyRealReceipt(t *testing.T) {
 		t.Fatal(rows, err)
 	}
 	sum := sha256.Sum256([]byte(create.FirstMessage.Body.Blocks[0].Text))
-	run := StructuredRun{Binding: StructuredBinding{SessionID: create.Envelope.SessionID, CreateID: create.Envelope.ClientOperationID, MessageID: create.FirstMessage.ClientMessageID, InputDigest: hex.EncodeToString(sum[:])}}
+	run := StructuredRun{Agent: "codex", Binding: StructuredBinding{Worktree: native.Worktree{ID: "worktree"}, SessionID: create.Envelope.SessionID, CreateID: create.Envelope.ClientOperationID, MessageID: create.FirstMessage.ClientMessageID, InputDigest: hex.EncodeToString(sum[:])}}
 	if err := VerifyStructuredInputCalls(rows, run); err != nil {
 		t.Fatal(err)
 	}
@@ -145,5 +145,61 @@ func TestStructuredPipeForwardsOriginalAndDropsOnlyRealReceipt(t *testing.T) {
 	original, err := os.ReadFile(filepath.Join(root, "orca-runtime.json"))
 	if err != nil || string(original) != string(body) {
 		t.Fatal("original bootstrap changed", err)
+	}
+}
+
+func TestStructuredInputCallsBindActualTargetAndEnvelope(t *testing.T) {
+	for _, fault := range []string{"none", "foreign-worktree", "foreign-agent", "wrong-permission", "create-fingerprint", "send-fingerprint", "missing-fence", "foreign-session", "extra-send", "missing-send"} {
+		t.Run(fault, func(t *testing.T) {
+			first := native.AgentMessage{Kind: "message", Role: "user", Blocks: []native.AgentTextBlock{{Type: "text", Text: "first input"}}}
+			second := native.AgentMessage{Kind: "message", Role: "user", Blocks: []native.AgentTextBlock{{Type: "text", Text: "second input"}}}
+			hash := func(body native.AgentMessage) string {
+				sum := sha256.Sum256([]byte(body.Blocks[0].Text))
+				return hex.EncodeToString(sum[:])
+			}
+			one := StructuredBinding{SessionID: "original-session", CreateID: "original-create", MessageID: "first-message", InputDigest: hash(first), Worktree: native.Worktree{ID: "original-worktree"}}
+			one.BodyFingerprint, _ = native.AgentFingerprint("agentSession.send", one.SessionID, map[string]any{"body": first})
+			two := one
+			two.MessageID = "1793680000000-00112233445566778899aabbccddeeff"
+			two.InputDigest = hash(second)
+			two.BodyFingerprint, _ = native.AgentFingerprint("agentSession.send", two.SessionID, map[string]any{"body": second})
+			run := StructuredRun{Agent: "codex", Binding: two, Inputs: []StructuredBinding{one}}
+			create := native.AgentCreate{Envelope: native.AgentMutationEnvelope{SessionID: one.SessionID, ClientOperationID: one.CreateID}, Worktree: "id:" + one.Worktree.ID, Agent: run.Agent, Options: map[string]string{"permissionMode": "full-access"}, FirstMessage: native.AgentFirstMessage{ClientMessageID: one.MessageID, Body: first}}
+			fence := int64(7)
+			send := native.AgentSend{Envelope: native.AgentMutationEnvelope{SessionID: two.SessionID, ClientOperationID: two.MessageID, ExpectedRuntimeFence: &fence}, Body: second}
+			switch fault {
+			case "foreign-worktree":
+				create.Worktree = "id:other"
+			case "foreign-agent":
+				create.Agent = "pi"
+			case "wrong-permission":
+				create.Options["permissionMode"] = "read-only"
+			case "missing-fence":
+				send.Envelope.ExpectedRuntimeFence = nil
+			case "foreign-session":
+				send.Envelope.SessionID = "other"
+			}
+			create.Envelope.PayloadFingerprint, _ = native.AgentFingerprint("agentSession.create", create.Envelope.SessionID, map[string]any{"worktree": create.Worktree, "agent": create.Agent, "options": create.Options, "firstMessage": create.FirstMessage})
+			send.Envelope.PayloadFingerprint, _ = native.AgentFingerprint("agentSession.send", send.Envelope.SessionID, map[string]any{"body": send.Body})
+			if fault == "create-fingerprint" {
+				create.Envelope.PayloadFingerprint = "other"
+			}
+			if fault == "send-fingerprint" {
+				send.Envelope.PayloadFingerprint = "other"
+			}
+			a, _ := json.Marshal(create)
+			b, _ := json.Marshal(send)
+			rows := []StructuredCall{{Method: "agentSession.create", Session: one.SessionID, Params: a}, {Method: "agentSession.send", Session: two.SessionID, Params: b}}
+			if fault == "extra-send" {
+				rows = append(rows, rows[1])
+			}
+			if fault == "missing-send" {
+				rows = rows[:1]
+			}
+			err := VerifyStructuredInputCalls(rows, run)
+			if (err == nil) != (fault == "none") {
+				t.Fatal(fault, err)
+			}
+		})
 	}
 }

@@ -3,7 +3,6 @@
 package native
 
 import (
-	"bufio"
 	"context"
 	"encoding/json"
 	"errors"
@@ -53,35 +52,15 @@ func candidateClient(m livetest.Manifest) orca.Client {
 	}})
 }
 
-func candidateCallAudit(m livetest.Manifest, session string) (map[string]int, error) {
+func candidateCallAudit(m livetest.Manifest, session string, settled bool) (map[string]int, error) {
 	raw, err := os.ReadFile(filepath.Join(m.Root, "evidence", "native-calls.jsonl"))
 	if err != nil {
 		return nil, err
 	}
 	// The CLI journal only proves absence of retired terminal writes. Structured
 	// mutations bypass it and are never inferred from a zero CLI-send count.
-	scanner := bufio.NewScanner(strings.NewReader(string(raw)))
-	scanner.Buffer(make([]byte, 65536), 16<<20)
-	for scanner.Scan() {
-		var row struct{ Argv, Args []string }
-		if json.Unmarshal(scanner.Bytes(), &row) != nil {
-			return nil, errors.New("invalid native CLI audit")
-		}
-		args := row.Argv
-		if len(args) == 0 {
-			args = row.Args
-		}
-		for _, arg := range args {
-			if strings.Contains(arg, "--native-control") || strings.Contains(arg, "steerrunner-agent") {
-				return nil, errors.New("retired helper invoked")
-			}
-		}
-		if len(args) > 1 && args[0] == "terminal" && (args[1] == "send" || args[1] == "create") {
-			return nil, errors.New("retired terminal writer invoked")
-		}
-	}
-	if scanner.Err() != nil {
-		return nil, scanner.Err()
+	if err := livetest.ValidateStructuredCLI(raw, settled); err != nil {
+		return nil, err
 	}
 	counts := map[string]int{}
 	if structuredPipe != nil {
@@ -218,7 +197,7 @@ func sharedNativeRunner(t *testing.T, m livetest.Manifest) {
 				t.Error("new input after revocation")
 			}
 		}
-		counts, err := candidateCallAudit(m, original.Binding.SessionID)
+		counts, err := candidateCallAudit(m, original.Binding.SessionID, true)
 		save(t, "call-audit.json", map[string]any{"counts": counts, "error": fmt.Sprint(err), "dispatches_at_revocation": sendsAtRevoke, "wire_audit": structuredPipe != nil, "remote_proof": "original durable operations and complete history; not wire counts"})
 		if err != nil || structuredPipe != nil && (counts["agentSession.create"] != 1 || counts["agentSession.close"] != 1 || sendsAtRevoke >= 0 && counts["business dispatch"] != sendsAtRevoke) {
 			t.Error("original native calls or revocation fence unverified", counts, err)
@@ -360,7 +339,7 @@ func sharedNativeRunner(t *testing.T, m livetest.Manifest) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	counts, err := candidateCallAudit(m, original.Binding.SessionID)
+	counts, err := candidateCallAudit(m, original.Binding.SessionID, false)
 	if err != nil {
 		t.Fatal(err)
 	}

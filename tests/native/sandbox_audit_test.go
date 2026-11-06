@@ -29,7 +29,7 @@ func auditWorkerSandbox(t *testing.T, m livetest.Manifest, run contracts.RunView
 		if run.Profile.AccessMode != "full_access" || len(history.Tail.ActionablePromptIDs) > 0 || history.Inputs < 2 {
 			t.Fatal("structured full-access business turns unverified")
 		}
-		counts, callErr := candidateCallAudit(m, run.Binding.SessionID)
+		counts, callErr := candidateCallAudit(m, run.Binding.SessionID, false)
 		if callErr != nil {
 			t.Fatal(callErr)
 		}

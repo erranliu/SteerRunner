@@ -69,8 +69,7 @@ func ReadStructuredRun(m Manifest, view contracts.RunView, record *runstate.Reco
 		s.Ref.Agent.Name != view.Execution.Agent || settings.AgentName() != view.Execution.Agent ||
 		s.Ref.External.RuntimeID != runtime || s.Ref.External.Kind != "orca_agent_session" ||
 		s.Ref.External.Terminal != "" || s.Ref.External.Incarnation != "" || s.Ref.External.PID != 0 ||
-		s.Workspace.Path != view.Execution.Workspace || s.Workspace.Branch != view.Execution.Branch ||
-		view.Execution.SessionID != StructuredSessionID(view.RunID, view.Execution.AttemptID) {
+		s.Workspace.Path != view.Execution.Workspace || s.Workspace.Branch != view.Execution.Branch {
 		return result, errors.New("original structured Run/public identity changed")
 	}
 	setup := b.LifecycleSetup{Snapshot: s, ProfileData: record.Profile, ProfileID: record.ID, AcceptedConfigVersion: record.InputDigest, ProcessHost: process.New(30 * time.Second)}
@@ -107,8 +106,22 @@ func ReadStructuredRun(m Manifest, view contracts.RunView, record *runstate.Reco
 	}
 	result.Binding = bindings[0]
 	current := result.Binding
-	if current.SessionID != view.Execution.SessionID || current.RuntimeID != runtime || current.Worktree.ID == "" || current.Worktree.ID != s.Ref.External.WorktreeID || current.Worktree.InstanceID == "" || current.Worktree.Path != view.Execution.Workspace || current.Worktree.Branch != view.Execution.Branch || current.TurnID != view.Execution.TurnID {
+	if current.SessionID != StructuredSessionID(view.RunID, view.Execution.AttemptID) || current.RuntimeID != runtime || current.Worktree.ID == "" || current.Worktree.ID != s.Ref.External.WorktreeID || current.Worktree.InstanceID == "" || current.Worktree.Path != view.Execution.Workspace || current.Worktree.Branch != view.Execution.Branch || current.TurnID != view.Execution.TurnID {
 		return result, errors.New("original structured resource changed")
+	}
+	// A never-dispatched session has an original deterministic ID in its
+	// envelope but no public native session. Only the original stop proof can
+	// qualify that absence; an unknown create/close must still be rejected.
+	if view.Execution.SessionID != current.SessionID && (view.Execution.SessionID != "" || view.StopStatus != "stopped" || !current.SessionNotCreated) {
+		return result, errors.New("original structured public session changed")
+	}
+	if view.StopStatus == "stopped" {
+		if view.NewInputsAllowed {
+			return result, errors.New("stopped Run still permits new inputs")
+		}
+		if err := adapter.VerifyStopped(context.Background(), setup); err != nil {
+			return result, err
+		}
 	}
 	seen := map[string]bool{}
 	seenCommands, seenTurns := map[string]bool{}, map[string]bool{}

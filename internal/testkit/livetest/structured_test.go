@@ -6,8 +6,10 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	adapter "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
@@ -253,6 +255,70 @@ func TestStructuredRunKeepsOriginalCommittedInputProof(t *testing.T) {
 			}
 			if err == nil && (len(got.Inputs) != 1 || FrozenStructuredFingerprint(got) != FrozenStructuredFingerprint(run)) {
 				t.Fatal("original receipt binding changed", got)
+			}
+		})
+	}
+}
+
+func TestStructuredRunAcceptsOnlyProvedNotCreatedStop(t *testing.T) {
+	for _, fault := range []string{"none", "attempted", "not-stopped", "inputs-allowed", "missing-absence", "missing-close-attempt", "unknown-close", "created-close", "created-unknown-close", "created-failed-close"} {
+		t.Run(fault, func(t *testing.T) {
+			m, view, r, run := structuredTestFixture(t)
+			state := run.Binding
+			state.CloseReceipt = nil
+			state.CommandID, state.InputDigest, state.BodyFingerprint, state.CreateID, state.MessageID, state.TurnID, state.TurnItemID, state.ProviderItemID, state.Epoch = "", "", "", "", "", "", "", "", ""
+			state.CloseAttempted, state.SessionNotCreated = true, true
+			view.Execution.SessionID, view.Execution.TurnID = "", ""
+			view.StopStatus = "stopped"
+			switch fault {
+			case "attempted":
+				state.Attempted = true
+			case "not-stopped":
+				view.StopStatus = "pending"
+			case "inputs-allowed":
+				view.NewInputsAllowed = true
+			case "missing-absence":
+				state.SessionNotCreated = false
+			case "missing-close-attempt":
+				state.CloseAttempted = false
+			case "unknown-close":
+				state.SessionNotCreated = false
+				state.Attempted = true
+			case "created-close", "created-unknown-close", "created-failed-close":
+				state.SessionNotCreated = false
+				state.Attempted = true
+				view.Execution.SessionID = state.SessionID
+				if fault == "created-close" {
+					state.CloseReceipt = json.RawMessage(`{"ok":true}`)
+				}
+				if fault == "created-failed-close" {
+					state.CloseReceipt = json.RawMessage(`{"ok":false}`)
+				}
+			}
+			raw, _ := json.Marshal(state)
+			// The production codec omits an absent RawMessage; JSON null is
+			// not an original close acknowledgement.
+			var frozen map[string]json.RawMessage
+			_ = json.Unmarshal(raw, &frozen)
+			if len(state.CloseReceipt) == 0 {
+				delete(frozen, "close_receipt")
+			}
+			raw, _ = json.Marshal(frozen)
+			envelope := r.Snapshot.Implementation[0]
+			var err error
+			envelope, err = b.NewImplementationDataEnvelope(envelope, raw)
+			if err != nil {
+				t.Fatal(err)
+			}
+			r.Snapshot.Implementation = []b.ImplementationDataEnvelope{envelope}
+			if fault == "none" {
+				if err := adapter.VerifyStopped(context.Background(), b.LifecycleSetup{Snapshot: r.Snapshot, ProfileData: r.Profile, ProfileID: r.ID, AcceptedConfigVersion: r.InputDigest, ProcessHost: process.New(time.Second)}); err != nil {
+					t.Fatal("production permits original no-create stop", err)
+				}
+			}
+			_, err = ReadStructuredRun(m, view, r)
+			if (err == nil) != (fault == "none" || fault == "created-close") {
+				t.Fatal(fault, err)
 			}
 		})
 	}
