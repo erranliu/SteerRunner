@@ -1,0 +1,20 @@
+local-execute run 2eb1c6ac48ffdc89892f54a8e8066a53 C:\Users\lmas1\.codex\worktrees\d634\SteerRunner\.evidence\orca-profile-decode-pr\.evidence\profile-decode-review\live\local-execute-5cf6f799
+local-execute ('queued', 'execution_wait', None, None)
+local-execute ('queued', 'prepare_workspace', None, None)
+local-execute ('running', 'prepare_session', None, None)
+local-execute ('reconciling', 'operation_outcome_unknown', None, 'Original structured input/turn not yet verified; read-only reconciliation required.')
+local-execute ('running', 'observing', None, None)
+local-execute ('settling', 'closing', 'pending', None)
+local-execute ('settling', 'stop_execution', 'pending', None)
+local-execute ('completed', 'closed', 'stopped', 'Closed the original Orca session; detached processes and additional resource cleanup are not verified.')
+PASS local-execute 2eb1c6ac48ffdc89892f54a8e8066a53
+remote-execute run 8f77ed9fffa1fd83d7df24637bcc7309 C:\Users\lmas1\.codex\worktrees\d634\SteerRunner\.evidence\orca-profile-decode-pr\.evidence\profile-decode-review\live\remote-execute-58234565
+remote-execute ('queued', 'prepare_workspace', None, None)
+remote-execute ('running', 'prepare_session', None, None)
+remote-execute ('running', 'start_turn', None, None)
+remote-execute ('reconciling', 'operation_outcome_unknown', None, 'Original structured input/turn not yet verified; read-only reconciliation required.')
+remote-execute ('running', 'observing', None, None)
+remote-execute ('settling', 'stop_execution', 'pending', None)
+remote-execute ('completed', 'closed', 'stopped', 'Closed the original Orca session; detached processes and additional resource cleanup are not verified.')
+BLOCKED remote KeyError('sha256') C:\Users\lmas1\.codex\worktrees\d634\SteerRunner\.evidence\orca-profile-decode-pr\.evidence\profile-decode-review\live\remote-execute-58234565
+Blocked: remote

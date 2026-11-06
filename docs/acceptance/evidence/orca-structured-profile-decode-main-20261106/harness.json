@@ -1,0 +1,10 @@
+{
+  "production_base": "22cc3751f1d618f315ebbda27595b06a0c79a544",
+  "tested_merge": "2dccec275634f3c880ea388c8c79187b9299ef79",
+  "steerline_commit": "6d12483213822db44727bdc146ecb2d181bfd326",
+  "entry_sha256": "eaa36908649cf2b7b7fe3492e4c0d6e60bb489ec9d50f9e5ceed512f77fcf9b7",
+  "verification_script_sha256": "1c30a0d0a684347d69a6fe261b68e39a6881fb52e29373a78b0dc8517f01e9e8",
+  "upgrade_script_sha256": "fe63ab6a666a9c6dab98e5ba992425626d701602862a823b32648730a53ae91e",
+  "original_upgrade_script_sha256": "b949ab18422bc81749aa5fd5340f5ec524e56754beb0988f381366a85ac17e75",
+  "source_digest_after_live": "e51b8daba3de4648f256640f21e7e01e0d5fc8cfe2607bafd2da5390e99f432c"
+}

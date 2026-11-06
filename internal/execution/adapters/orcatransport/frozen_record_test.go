@@ -2,7 +2,7 @@ package orcatransport
 
 import (
 	"context"
-	"encoding/json"
+	"reflect"
 	"strings"
 	"testing"
 
@@ -11,7 +11,7 @@ import (
 
 func TestFrozenReaderHasNoExecutionAndRejectsMutation(t *testing.T) {
 	l, host, _ := sharedNativeFixture(t, "")
-	original, _ := json.Marshal(l.setup)
+	original := l.setup.Clone()
 	r, err := newFrozenReader(l.setup)
 	if err != nil {
 		t.Fatal(err)
@@ -28,8 +28,7 @@ func TestFrozenReaderHasNoExecutionAndRejectsMutation(t *testing.T) {
 	if err != nil || scope != "orca_terminal" || len(host.calls) != before {
 		t.Fatal("scope classification performed native I/O", scope, err)
 	}
-	after, _ := json.Marshal(l.setup)
-	if string(original) != string(after) {
+	if !reflect.DeepEqual(original, l.setup) {
 		t.Fatal("reader changed the original setup")
 	}
 	changed := r.setup.Snapshot.Clone()

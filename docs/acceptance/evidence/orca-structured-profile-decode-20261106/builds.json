@@ -1,0 +1,24 @@
+{
+  "writer": {
+    "schema": "steerrunner-build/v1",
+    "component": "runner",
+    "source_digest": "473676b10a73bbe0a5ab8721c5eaeadc2fd26c55a8723da8c6c3fe5430b5c9e2",
+    "version": "0.2.0-dev.4",
+    "source_commit": "5b5487b56715dfa3a2bbbd9d4c2d207b6647e555",
+    "source_dirty": true,
+    "protocol": "steerrunner-cli/v1",
+    "platform": "windows/amd64",
+    "sha256": "7619554464c63c31d8242f5ce4e910cae7773ef3bfbec0736aadc5693a495b75"
+  },
+  "reader": {
+    "schema": "steerrunner-build/v1",
+    "component": "runner",
+    "source_digest": "473676b10a73bbe0a5ab8721c5eaeadc2fd26c55a8723da8c6c3fe5430b5c9e2",
+    "version": "0.2.0-profile-decode-reader",
+    "source_commit": "5b5487b56715dfa3a2bbbd9d4c2d207b6647e555",
+    "source_dirty": true,
+    "protocol": "steerrunner-cli/v1",
+    "platform": "windows/amd64",
+    "sha256": "72f305e124c90e22bca62c57669840b2f23dbad7df63cffe140877715e5ddf1d"
+  }
+}

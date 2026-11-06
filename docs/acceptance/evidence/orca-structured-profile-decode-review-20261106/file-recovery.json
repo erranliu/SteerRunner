@@ -1,0 +1,21 @@
+{
+  "run": "8f77ed9fffa1fd83d7df24637bcc7309",
+  "first_query_status": "pending",
+  "same_original_run": true,
+  "same_writer_restart": true,
+  "intents_unchanged": true,
+  "sealed_snapshot_unchanged": true,
+  "final_file": {
+    "collection_status": "closed",
+    "content_base64": "cnBjLXNlZWQ=",
+    "contract": "steerrunner-result-file/v1",
+    "encoding": "base64",
+    "observed_at": "2026-11-06T04:30:09.6434853Z",
+    "run_id": "8f77ed9fffa1fd83d7df24637bcc7309",
+    "sha256": "b0343319116e6aad957219dc9c62b4b04f8f96a5c91dc1513404a795566713a5",
+    "size_bytes": 8,
+    "version": 1
+  },
+  "final_business_status": "completed",
+  "stop_status": "stopped"
+}

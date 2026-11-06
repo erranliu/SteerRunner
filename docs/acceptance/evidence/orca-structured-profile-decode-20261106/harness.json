@@ -1,0 +1,8 @@
+{
+  "shared_acceptance_path": "C:\\Users\\lmas1\\.codex\\worktrees\\d634\\SteerRunner\\.evidence\\orca-workspace-receipt-live\\acceptance.py",
+  "shared_acceptance_sha256": "82bbdbd5bf2e0173782468e1ff76f91c3b2aac566bbd729a6b61ea438deb6fe4",
+  "steerline_commit": "6d12483213822db44727bdc146ecb2d181bfd326",
+  "go_version": "go version go1.26.4 windows/amd64",
+  "candidate_source_digest": "473676b10a73bbe0a5ab8721c5eaeadc2fd26c55a8723da8c6c3fe5430b5c9e2",
+  "after_live_source_digest": "473676b10a73bbe0a5ab8721c5eaeadc2fd26c55a8723da8c6c3fe5430b5c9e2"
+}

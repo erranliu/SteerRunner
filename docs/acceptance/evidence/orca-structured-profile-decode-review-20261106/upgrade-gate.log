@@ -1,0 +1,10 @@
+=== RUN   TestOrcaWorkspaceReceiptOriginalDirectories
+=== RUN   TestOrcaWorkspaceReceiptOriginalDirectories/local-execute
+    orca_workspace_receipt_upgrade_test.go:79: 2eb1c6ac48ffdc89892f54a8e8066a53 9a6172562ccdb86f40cc81cdd0e40f828d48940123405c9b5121104ed4aebaae orca_agent_session
+=== RUN   TestOrcaWorkspaceReceiptOriginalDirectories/remote-execute
+    orca_workspace_receipt_upgrade_test.go:79: 8f77ed9fffa1fd83d7df24637bcc7309 f23a0178721b4904490245c7c689197c44ed228a6524010465b89a0405eb0b1c orca_agent_session
+--- PASS: TestOrcaWorkspaceReceiptOriginalDirectories (1.49s)
+    --- PASS: TestOrcaWorkspaceReceiptOriginalDirectories/local-execute (0.86s)
+    --- PASS: TestOrcaWorkspaceReceiptOriginalDirectories/remote-execute (0.59s)
+PASS
+ok  	github.com/erranliu/SteerLine/internal/runnerclient	3.072s

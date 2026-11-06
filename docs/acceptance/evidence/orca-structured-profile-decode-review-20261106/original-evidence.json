@@ -1,0 +1,133 @@
+{
+  "raw_log_hashes": {
+    "baseline": "949120f24a9316a75ad31dbd37daeadba3bbc5e40747b8db7a22cbace7ed494c",
+    "baseline-constructors": "c611feebf4b99d7901326c78a3c4ad3c0dbd74bc8fc073bd8f12ffeed0b03299",
+    "candidate": "d0fb5c63470d874edac6171d1e05bbddd87c2be8795681b4c33eef6c77952ad9",
+    "candidate-final": "708327098377461f23dd61c766f65183a56d41ab49d649be8c78cb67cf4757b2"
+  },
+  "baseline_production_exact": true,
+  "original_immutability_claim": "invalid encoding comparison; superseded by corrected final tests",
+  "runs": [
+    {
+      "side": "local",
+      "run": "69fc3182df7e39e068b32ebdd87edb60",
+      "raw_input_normalization": "existing empty agent_launch object only",
+      "raw_input_turn_close_verified": true,
+      "creation": {
+        "run": "69fc3182df7e39e068b32ebdd87edb60",
+        "input_digest": "6db538e12ed46447d03bb8efbd00f2814c6fc9c133506de0f97051b7dd5717f1",
+        "operation": "20c1d7e83321777a5537e37a40aebf56",
+        "selector_kind": "path",
+        "runtime": "5efa6758-d888-459e-83bf-0157e46ad5f5",
+        "worktree": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/decode-local-69fc3182df7e39e068b32ebdd87edb60",
+        "instance": "523ee68c-44c8-4717-aa40-009a69826308",
+        "base": "9d81d9c2652177faf6354d4e9f9f3aec79535d11",
+        "session": "oas_c3c241d1341024c66c17392aa99ec4e1",
+        "plan_sha256": "e11a7e26f4e16e54d56fe540f101041bc4c13ca9c4e77832c8f0caf079b9262e",
+        "dispatch_sha256": "abfdcd4d0f2a7ce3610fd15ff674f68da0b1d547c212021af3a72eda90f4d18c",
+        "result_sha256": "cfcd87ca893342b568c25b85ee8353306f52a37037e075b8e83c8119f99b53c2",
+        "workspace": {
+          "inspection_scope": "revision",
+          "repository": "C:\\Users\\lmas1\\.codex\\worktrees\\d634\\SteerRunner\\.evidence\\orca-profile-decode-pr\\.evidence\\profile-decode\\live\\local-execute-fe59cc42\\state\\r\\rci7lkmn2sppyb36ywbp7us5km\\.git",
+          "worktree": "C:/Users/lmas1/orca/workspaces/SteerlineTest/decode-local-69fc3182df7e39e068b32ebdd87edb60",
+          "branch": "erranliu/decode-local-69fc3182df7e39e068b32ebdd87edb60",
+          "base": "9d81d9c2652177faf6354d4e9f9f3aec79535d11",
+          "head": "9d81d9c2652177faf6354d4e9f9f3aec79535d11",
+          "dirty": false,
+          "checked_at": "2026-11-06T04:13:34.3340806Z"
+        },
+        "target": {
+          "id": "orca-terminal:f8f894502569db11b4a9b843",
+          "worktree_id": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/decode-local-69fc3182df7e39e068b32ebdd87edb60",
+          "branch": "erranliu/decode-local-69fc3182df7e39e068b32ebdd87edb60",
+          "base_revision": "9d81d9c2652177faf6354d4e9f9f3aec79535d11",
+          "execution_host": "local"
+        },
+        "process": {
+          "kind": "orca_agent_session",
+          "executable": "C:/Users/lmas1/AppData/Local/Programs/orca/resources/bin/orca.exe",
+          "runtime_id": "5efa6758-d888-459e-83bf-0157e46ad5f5",
+          "execution_host": "local",
+          "worktree_id": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/decode-local-69fc3182df7e39e068b32ebdd87edb60"
+        },
+        "state": {
+          "runtime_id": "5efa6758-d888-459e-83bf-0157e46ad5f5",
+          "worktree_id": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/decode-local-69fc3182df7e39e068b32ebdd87edb60"
+        }
+      },
+      "upgrade": {
+        "database_after": "177fe93d0da0c41cf6c1ef73b5563b1eea856f2b22cd37b7c2dc6f837a0354a7",
+        "database_before": "177fe93d0da0c41cf6c1ef73b5563b1eea856f2b22cd37b7c2dc6f837a0354a7",
+        "input_digest": "6db538e12ed46447d03bb8efbd00f2814c6fc9c133506de0f97051b7dd5717f1",
+        "reader_sha256": "a93ebc77f1e3a2e034fa43d29532387d36947580428cb16f687baf64ab01d821",
+        "run": "69fc3182df7e39e068b32ebdd87edb60",
+        "scope": "orca_agent_session",
+        "shutdown_after": "4d15ab4eee3a41c5511088725fbee268d2a9de3f6f484f52b08a9f3be4e88f12",
+        "shutdown_before": "4d15ab4eee3a41c5511088725fbee268d2a9de3f6f484f52b08a9f3be4e88f12",
+        "upgrade_drained": true,
+        "writer_sha256": "7619554464c63c31d8242f5ce4e910cae7773ef3bfbec0736aadc5693a495b75"
+      }
+    },
+    {
+      "side": "remote",
+      "run": "dab25227b610f14c391c6ce2dc55f11d",
+      "raw_input_normalization": "existing empty agent_launch object only",
+      "raw_input_turn_close_verified": true,
+      "creation": {
+        "run": "dab25227b610f14c391c6ce2dc55f11d",
+        "input_digest": "68b30c8388a1bd9a420944f8f01fb0862e4140534acb2cfcad6b5043f02c2af4",
+        "operation": "5e66b99e94caf95778f78fcb7aaa1ec2",
+        "selector_kind": "id",
+        "runtime": "21d98aa2-d284-41f3-a6cc-42fb22d728a2",
+        "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/decode-remote-dab25227b610f14c391c6ce2dc55f11d",
+        "instance": "18acf3c6-5014-4b44-9056-a0b751725ed5",
+        "base": "9d81d9c2652177faf6354d4e9f9f3aec79535d11",
+        "session": "oas_cb67a80b171b3b499b262941edb390c7",
+        "plan_sha256": "6c8fd5cf9909d7b28afd7877f28537cecc9e972ad612a6dc7a4830ef47e0b6f6",
+        "dispatch_sha256": "ebfe7b2ab6be87f1e5b357a30826123079d8a14e8defe3743d99dfcc789469f1",
+        "result_sha256": "02b35a0fcec87fdfd111ef0bc6d3d6544896a1dc42232c56ffa28af1eb4309c2",
+        "workspace": {
+          "inspection_scope": "revision",
+          "repository": "C:\\Users\\lmas1\\.codex\\worktrees\\d634\\SteerRunner\\.evidence\\orca-profile-decode-pr\\.evidence\\profile-decode\\live\\remote-execute-75ad10da\\state\\r\\rci7lkmn2sppyb36ywbp7us5km\\.git",
+          "worktree": "C:/Users/Administrator/orca/workspaces/SteerlineTest/decode-remote-dab25227b610f14c391c6ce2dc55f11d",
+          "branch": "erranliu/decode-remote-dab25227b610f14c391c6ce2dc55f11d",
+          "base": "9d81d9c2652177faf6354d4e9f9f3aec79535d11",
+          "head": "9d81d9c2652177faf6354d4e9f9f3aec79535d11",
+          "dirty": false,
+          "checked_at": "2026-11-06T04:14:03.340505Z"
+        },
+        "target": {
+          "id": "orca-terminal:dfe44122964244186942223e",
+          "worktree_id": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/decode-remote-dab25227b610f14c391c6ce2dc55f11d",
+          "branch": "erranliu/decode-remote-dab25227b610f14c391c6ce2dc55f11d",
+          "base_revision": "9d81d9c2652177faf6354d4e9f9f3aec79535d11",
+          "external_runtime": "e68f4edf-8a83-42c2-a9da-6d404d3aa3d8",
+          "execution_host": "e68f4edf-8a83-42c2-a9da-6d404d3aa3d8"
+        },
+        "process": {
+          "kind": "orca_agent_session",
+          "executable": "C:/Users/lmas1/AppData/Local/Programs/orca/resources/bin/orca.exe",
+          "runtime_id": "21d98aa2-d284-41f3-a6cc-42fb22d728a2",
+          "execution_host": "e68f4edf-8a83-42c2-a9da-6d404d3aa3d8",
+          "worktree_id": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/decode-remote-dab25227b610f14c391c6ce2dc55f11d"
+        },
+        "state": {
+          "runtime_id": "21d98aa2-d284-41f3-a6cc-42fb22d728a2",
+          "worktree_id": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/decode-remote-dab25227b610f14c391c6ce2dc55f11d"
+        }
+      },
+      "upgrade": {
+        "database_after": "4bfcd7681a2126d9f8e5d3d1981c7d6d8eb14d9031d81fd07fb9f5f5ba582004",
+        "database_before": "4bfcd7681a2126d9f8e5d3d1981c7d6d8eb14d9031d81fd07fb9f5f5ba582004",
+        "input_digest": "68b30c8388a1bd9a420944f8f01fb0862e4140534acb2cfcad6b5043f02c2af4",
+        "reader_sha256": "a93ebc77f1e3a2e034fa43d29532387d36947580428cb16f687baf64ab01d821",
+        "run": "dab25227b610f14c391c6ce2dc55f11d",
+        "scope": "orca_agent_session",
+        "shutdown_after": "add93ca14c603195f5032f34c853596f60db52cda3f37e3fd7f6af0522c0c498",
+        "shutdown_before": "add93ca14c603195f5032f34c853596f60db52cda3f37e3fd7f6af0522c0c498",
+        "upgrade_drained": true,
+        "writer_sha256": "7619554464c63c31d8242f5ce4e910cae7773ef3bfbec0736aadc5693a495b75"
+      }
+    }
+  ]
+}
