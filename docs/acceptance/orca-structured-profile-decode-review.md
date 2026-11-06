@@ -2,6 +2,8 @@
 
 2026-11-06，审计 PR head `5c7c402a3a4c75dfe28d97802b1478846c1e7b35`，目标 main `5b5487b56715dfa3a2bbbd9d4c2d207b6647e555`。本记录为合并前定向复验；实际合入结果以 [PR #123](https://github.com/erranliu/SteerRunner/pull/123) 为准。关联[首次验收](orca-structured-profile-decode.md)、[Spec](../spec/orca-structured-profile-decode.spec.md)及[Plan](../spec/orca-structured-profile-decode.plan.md)。未修改 Orca 或 SteerLine，未部署。
 
+最后合入前 main 新增 #124，已保留历史普通合并到隔离分支，再完成下方「最新主线组合补验」。最终资格以该组合为准，前两轮证据仅保留各自构建的事实。
+
 ## 发现及修复
 
 1. 新增构造测试与 #121 的 `TestFrozenReaderHasNoExecutionAndRejectsMutation`、`TestRetiredExecutionFactoryKeepsFrozenProof` 均以 `json.Marshal(setup)` 前后比较且忽略错误。LifecycleSetup 含函数字段，编码失败，比较为空，setup 不变的断言无效。改用独立 `setup.Clone()` 加 `reflect.DeepEqual`，保留原共享 ProcessHost 语义。旧 fixture 的 Snapshot 先沿原 Clone 规范冻结，再捕获比较基线，避免 Clone 对 nil Operations 的规范化被误报为被测代码修改。修复仅涉及三份测试，生产逻辑未改。
@@ -41,3 +43,15 @@ overlay 生产文件逐字节对应上述 main，新增构造夹具只去掉主�
 每个原目录仍为原同一个 Run/input，数据库与 shutdown.json 冷读前后摘要不变。专项用 `go test -overlay <对应 overlay> ./internal/runnerclient -run '^TestOrcaWorkspaceReceiptOriginalDirectories$' -count=1 -v` 调用；正常与首次原目录调用正文以 `.go.txt` 归档，不修改 SteerLine 源码。首次 EXE/完整测试日志摘要、原 DB/shutdown、原输入/回合/关闭及创建绑定也重新对照过原始文件，记录见 [original-evidence.json](evidence/orca-structured-profile-decode-review-20261106/original-evidence.json)。
 
 资格仅为上述合并前受影响包、双端默认 execute/1 和四项原目录核验；未运行完整 L1/Controlled、完整 L2/L3 或 Pi/audited 真机。未修改旧执行拒绝、非 Orca Codex、原工作区归属、停止、封存与发布合同。测试与文档修复后再次逐行审计、gofmt/diff/链接检查通过，最终合入前刷新主线与实际文件合并状态；不以历史 CI 或首次证据代替最终候选复验。
+
+## 最新主线组合补验（#124 后）
+
+main=`22cc3751f1d618f315ebbda27595b06a0c79a544`，已验证的普通合并候选=`2dccec275634f3c880ea388c8c79187b9299ef79`。#124 清理旧证明计算器并增加状态 codec 保留测试；本 PR 相对该最新 main 的生产差异仍仅原两处构造及字段投影，完整 decoder、旧执行拒绝和冻结读取白名单未改，无内容冲突。未改写已验证分支历史。
+
+最新 main 的相同夹具 overlay 对照 5 顶层/35 叶通过（4.822 秒）；组合候选完整 orcatransport 76 顶层/283 叶通过（58.696 秒），均零失败/零跳过。相较上一轮增加的是 #124 原有状态 codec 测试，不把计数变化误认为本 PR 删除断言。[测试记录](evidence/orca-structured-profile-decode-main-20261106/tests.json)。
+
+组合构建 source_dirty=false，两个 EXE 的 `source_digest=e51b8daba3de4648f256640f21e7e01e0d5fc8cfe2607bafd2da5390e99f432c`，真机与排空后复算相同。writer SHA256=`eb2ce7a580205d9469c23c0ede495b26e441950b849b82eaff852ca110840920`，reader SHA256=`040ce1c90136ae8f4414b539737c07d56f6c0e824d346f6f58a2a8415c475209`。[构建记录](evidence/orca-structured-profile-decode-main-20261106/builds.json)。
+
+相同组合 writer 再完成本机原 Run `20ff4af28efe41dd0e78b3d2187f63fe`、配对远端原 Run `8824b3eceb29bcd1a175736ca95cbcbc`。两端均为全新独立请求/目录，各一次已受理输入/会话及原关闭；可信三行结果、创建归属、恢复撤销、result-file/v1 closed/version=1 与 rpc-seed 摘要全部通过。本轮修复后的只读等待脚本正常结束，无重启或新阻断；不补发任何前轮请求。[状态日志](evidence/orca-structured-profile-decode-main-20261106/formal-live.log)、[Run 与原目录证据](evidence/orca-structured-profile-decode-main-20261106/runs.jsonl)。
+
+原 SteerLine checkout 和生产升级门禁不变。组合 writer/reader 对本轮双端原目录通过（案例 1.43 秒，[日志](evidence/orca-structured-profile-decode-main-20261106/upgrade-gate.log)）；组合 reader 与首次原 writer 对首次双端原目录通过（案例 1.67 秒，[日志](evidence/orca-structured-profile-decode-main-20261106/original-upgrade-gate.log)及[摘要](evidence/orca-structured-profile-decode-main-20261106/original-upgrade.json)）。每个原目录 DB/shutdown 冷读前后不变。停止范围仍为原 Orca 会话，额外进程清理未核实；文件与发布门禁不放宽。后续只补文档及脱敏证据，不改变已测 cmd/internal/build 源码摘要。完整 L1/Controlled、完整 L2/L3、Pi/audited 真机及合入后测试均未执行。
