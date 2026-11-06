@@ -84,3 +84,7 @@ focused native-generate-02 通过：原 Run `7d24913b665aa47f07dad6d20caad5c2`�
 本仓先提供公开 execution_configuration 三操作、identity、schema/能力及native-catalog可信execution上下文；SteerLine依赖这些能力消费配置、冻结业务资格并授权Web保存。本仓不依赖SteerLine代码或配置即可构建/运行；调用方需先选定包含本PR能力的Runner构建，不支持时明确阻断新操作，已有冻结请求观察/停止保持。两仓PR的评审/未来合入顺序为Runner在先；本次仅建PR，不启用自动合并或部署。
 
 前述正式和原生报告保留其原调查基线加dirty源码、固定EXE SHA及实际范围；提交不会把这些原始报告改写成已在干净提交上重跑，也不自动为后续main变更或新Runner产物授予原生资格。创建PR前刷新目标main并核对实际内容合并状态；如需解决冲突，另记集成改动和补验，不覆盖原失败/通过证据。
+
+创建PR前已刷新到 `origin/main=d58054a78471211c1eeb86c0eb1396ae870d6ca1`，在原worktree重放本轮提交，生产提交为 `08ca252ee82960fd7995f49e4f790ef7489bfbca`。仅三处真实冲突：两份测试目录文档保留双方说明，CLI help在main命令表增加execution-config，保留main已退役estimate-run-cost的事实。resources及测试机器清单自动合并后仍为29个Controlled根；实际merge-tree预检无冲突。
+
+新集成补验存同级 `publication-20261106`：contracts/resources/cli/nativecatalog四个owner全量286条通过，3个既有显式原生用量opt-in根跳过（LocalCodex、LocalPi、RemotePublicLive），未把跳过当作真实通过。干净生产提交08ca252e独立构建的EXE SHA256为 `c279ca725c9486bd50a2d183ca8dcd71c026f5b455a4b45ab9f5a24f1442c5b5`、resource_digest `feca8807ec988d60de79f426818e86282deefa01f7d4b3c9971eb83c63a6e508`。公开foundation两根execution-config/native-catalog实际通过、exit0、0skip，含真实stdin30秒期限；源提交/产物/原日志均冻结。此轮补验是受影响owner和公开接口，未重跑整套L1/Controlled或真实模型，不继承旧EXE的原生资格；本次只交付PR，不发布或部署。
