@@ -354,7 +354,7 @@ func (s *server) dispatch(wire wireRequest) (contracts.Response, bool) {
 	switch wire.Options.Command {
 	case "observe":
 		return s.engine.Observe(wire.Options.RunID, wire.Options.After, wire.Options.Limit), false
-	case "run-usage", "run-usage-events", "estimate-run-cost":
+	case "run-usage", "run-usage-events":
 		if wire.Request != nil {
 			return reject(contracts.Fail(2, "invalid_request", "Usage queries do not accept input."))
 		}

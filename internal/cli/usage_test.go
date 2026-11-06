@@ -9,7 +9,7 @@ import (
 )
 
 func TestRunUsageQueryDoesNotStartService(t *testing.T) {
-	for _, args := range [][]string{{"run-usage", "--run-id", "r"}, {"run-usage-events", "--run-id", "r", "--snapshot-revision", "1"}, {"estimate-run-cost", "--run-id", "r", "--usage-revision", "1", "--pricing-policy", `C:\missing.json`}} {
+	for _, args := range [][]string{{"run-usage", "--run-id", "r"}, {"run-usage-events", "--run-id", "r", "--snapshot-revision", "1"}} {
 		dir := filepath.Join(t.TempDir(), "not-created")
 		args = append(args, "--state-dir", dir, "--json")
 		var out, diag bytes.Buffer

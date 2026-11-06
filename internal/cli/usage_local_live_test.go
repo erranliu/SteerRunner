@@ -17,7 +17,6 @@ import (
 	"time"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
-	"github.com/erranliu/SteerRunner/internal/cost"
 	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	"github.com/erranliu/SteerRunner/internal/runstate"
@@ -297,39 +296,10 @@ func testRunUsageLocalPublicLive(t *testing.T, agent string) {
 	}
 	save("usage", snapshot)
 	save("events", events)
-	policy := cost.Policy{Schema: "run-pricing-policy/v1", ID: "local-native-arithmetic-only", Version: "1", Source: "synthetic rates, not supplier prices", Currency: "USD", Enabled: true, AllowCompletionTime: true}
-	models := map[string]bool{}
 	for _, e := range events {
 		if e.Model == nil || e.Provider == nil {
-			t.Fatal("native pricing metadata unavailable")
+			t.Fatal("native metadata unavailable")
 		}
-		key := *e.Provider + "/" + *e.Model
-		if !models[key] {
-			models[key] = true
-			policy.Rules = append(policy.Rules, cost.Rule{Provider: *e.Provider, Model: *e.Model, From: time.Date(2020, 1, 1, 0, 0, 0, 0, time.UTC), Until: time.Date(2030, 1, 1, 0, 0, 0, 0, time.UTC), Rates: cost.Rates{Input: "1", CacheRead: "0.1", CacheWrite: "0", Output: "2"}})
-		}
-	}
-	save("synthetic-prices", policy)
-	pricePath := filepath.Join(root, "synthetic-prices.json")
-	var estimate cost.Estimate
-	decode(call(nil, "estimate-run-cost", "--run-id", id, "--usage-revision", strconv.FormatUint(snapshot.Revision, 10), "--pricing-policy", pricePath), &estimate)
-	numerator := *control.Tokens.InputUncached*10 + *control.Tokens.CacheRead + *control.Tokens.Output*20
-	expectedAmount := fmt.Sprintf("%d.%08d", numerator/10000000, numerator%10000000*10)
-	if estimate.Status != "estimated" || estimate.Total == nil || *estimate.Total != expectedAmount || estimate.Priced != int64(len(events)) {
-		t.Fatal("independent arithmetic mismatch", estimate, expectedAmount)
-	}
-	save("cost", estimate)
-	// A bad or disabled independent price policy cannot alter base usage.
-	var bad cost.Estimate
-	decode(call(nil, "estimate-run-cost", "--run-id", id, "--usage-revision", strconv.FormatUint(snapshot.Revision, 10), "--pricing-policy", filepath.Join(root, "missing.json")), &bad)
-	if bad.Status != "unavailable" || bad.Total != nil || !reflect.DeepEqual(get(), snapshot) {
-		t.Fatal("bad price policy changed usage")
-	}
-	policy.Enabled = false
-	save("disabled-prices", policy)
-	decode(call(nil, "estimate-run-cost", "--run-id", id, "--usage-revision", strconv.FormatUint(snapshot.Revision, 10), "--pricing-policy", filepath.Join(root, "disabled-prices.json")), &bad)
-	if bad.Status != "unavailable" || !reflect.DeepEqual(get(), snapshot) {
-		t.Fatal("disabled costs changed usage")
 	}
 	stop()
 	start(true)
@@ -384,11 +354,6 @@ func testRunUsageLocalPublicLive(t *testing.T, agent string) {
 	if !reflect.DeepEqual(get(), snapshot) || !reflect.DeepEqual(readPages(snapshot.Revision), events) {
 		t.Fatal("native reread duplicated usage")
 	}
-	var pricedAgain cost.Estimate
-	decode(call(nil, "estimate-run-cost", "--run-id", id, "--usage-revision", strconv.FormatUint(snapshot.Revision, 10), "--pricing-policy", pricePath), &pricedAgain)
-	if !reflect.DeepEqual(estimate, pricedAgain) {
-		t.Fatal("reread changed fixed estimate")
-	}
 	stop()
 	start(false)
 	time.Sleep(2200 * time.Millisecond)
@@ -439,7 +404,6 @@ func testRunUsageLocalPublicLive(t *testing.T, agent string) {
 		t.Fatal("local directory baseline changed", e1, e2)
 	}
 	save("restart-proof", map[string]any{"run_id": id, "snapshot_revision": snapshot.Revision, "responses": len(events), "graceful_restart": true, "forced_source_reread": true, "disabled_history": true, "lease_count": len(leases), "permit_active": permit.Active, "business_revision": copied[0].Revision, "original_revision_before": originalRevision, "original_revision_after": afterRevision, "agent": agent})
-	t.Logf("Run=%s session=%s responses=%d total=%d synthetic_USD=%s revision=%d restart/reread dedup passed", id, binding.SessionID, len(events), *snapshot.Tokens.Total, expectedAmount, snapshot.Revision)
 }
 
 type localNativeControl struct {

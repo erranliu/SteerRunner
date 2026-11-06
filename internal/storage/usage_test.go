@@ -4,11 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"strings"
 	"testing"
 	"time"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
-	"github.com/erranliu/SteerRunner/internal/cost"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/runstate"
@@ -285,11 +285,6 @@ func TestUsageCrossRunConflictSurvivesCachedObservation(t *testing.T) {
 	if !found {
 		t.Fatal("claimant source lost its conflict reason", again.Issues)
 	}
-	policy := cost.Policy{Schema: "run-pricing-policy/v1", ID: "fixture", Version: "1", Source: "synthetic", Currency: "USD", Enabled: true, Rules: []cost.Rule{{Provider: provider, Model: model, From: now.Add(-time.Hour), Until: now.Add(time.Hour), Rates: cost.Rates{Input: "1", CacheRead: "0", CacheWrite: "0", Output: "2"}}}}
-	estimate, err := cost.EstimateRun(ctx, s, "other", again.Revision, policy)
-	if err != nil || estimate.Status != "partial" || estimate.Total != nil || estimate.Covered == nil {
-		t.Fatal("ownership conflict allowed a complete cost estimate", estimate, err)
-	}
 	old, err := s.GetRunUsage(ctx, "other", before.Revision)
 	if err != nil || old.Status != "available" || !old.Coverage.Finalized {
 		t.Fatal("conflict rewrote historical coverage", old, err)
@@ -374,5 +369,28 @@ func TestUsageStructuredProjectionRetainsOnlyOriginalInputAndEndFacts(t *testing
 		if row.ID == "legacy-unknown" && (len(row.Workflow.StageInputs) != 0 || row.Result != nil) {
 			t.Fatal("legacy projection changed")
 		}
+	}
+}
+
+func TestUsageAccessRequirementsBelongToImmutableSnapshot(t *testing.T) {
+	s := usageStore(t)
+	ctx := context.Background()
+	first := summary()
+	first.AccessRequirements = []api.AccessRequirement{{SourceRef: "source", Environment: "remote", HostID: "sha256:" + strings.Repeat("a", 64), SessionRoot: "C:/account/sessions/2026/11/05", ObservedAt: time.Now().UTC()}}
+	one, err := s.CommitUsage(ctx, first, []api.Event{event("one")})
+	if err != nil {
+		t.Fatal(err)
+	}
+	next := summary()
+	two, err := s.CommitUsage(ctx, next, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	old, err := s.GetRunUsage(ctx, "r", one.Revision)
+	if err != nil || len(old.AccessRequirements) != 1 || old.AccessRequirements[0].HostID != first.AccessRequirements[0].HostID {
+		t.Fatal(old, err)
+	}
+	if two.Revision == one.Revision || len(two.AccessRequirements) != 0 {
+		t.Fatal("new authorization facts overwrote old snapshot", two)
 	}
 }
