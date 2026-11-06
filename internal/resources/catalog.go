@@ -88,6 +88,9 @@ func Catalog() CapabilityCatalog {
 						selection.AuditModel = nil
 						selection.PromptOverrides = nil
 						operations := []string{"submit", "reply", "resume", "stop"}
+						if profile.ID == "development" || profile.ID == "development-audited" {
+							operations = append(operations, "message", "history")
+						}
 						if structured {
 							operations = []string{"submit", "inspect", "stop"}
 						}

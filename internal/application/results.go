@@ -105,6 +105,9 @@ func (e *Engine) finishWithMaterials(id string, value b.TurnEvidence, gate *sync
 	if !ok {
 		return false
 	}
+	if r.DevelopmentMessage() && inputCopy.StepID == workflow.StepPRReady && inputCopy.FeedbackDecisionID != "" {
+		state.Contract = "final"
+	}
 	if result.ContentVerified {
 		// A fast/offline turn can finish before this service subscribes to its
 		// notifications. Sampling its verified native final is observation too;
@@ -167,7 +170,7 @@ func (e *Engine) finishWithMaterials(id string, value b.TurnEvidence, gate *sync
 		}
 	}
 	var modelEvidence *workflow.ModelEvidence
-	if structuredAudited(r) && result.Succeeded && result.ContentVerified {
+	if structuredAudited(r) && !r.DevelopmentMessage() && result.Succeeded && result.ContentVerified {
 		if !r.Allowed || r.ResumeRequired || r.PendingStop != "" || r.Closed {
 			return false
 		}
@@ -197,8 +200,8 @@ func (e *Engine) finishWithMaterials(id string, value b.TurnEvidence, gate *sync
 	}
 	if state.Contract == "final" {
 		singleExecution := r.Request.Workflow.ID == workflow.SingleExecution
-		if (r.Request.Conversation != nil || singleExecution) && (result.NativeOutcome == "unknown" ||
-			result.NativeOutcome == "unreported" && (!singleExecution || !result.ContentVerified || strings.TrimSpace(result.Content) == "")) {
+		if (r.Request.Conversation != nil || r.DevelopmentMessage() || singleExecution) && (result.NativeOutcome == "unknown" ||
+			result.NativeOutcome == "unreported" && (!singleExecution && !r.DevelopmentMessage() || !result.ContentVerified || strings.TrimSpace(result.Content) == "")) {
 			r.Result = &value
 			r.Status, r.Phase, r.Diagnostic = "reconciling", "native_outcome_unverified", "Original native turn outcome remains unverified"
 			_ = e.commitLocked(r, nil, "final_unavailable")
@@ -210,7 +213,7 @@ func (e *Engine) finishWithMaterials(id string, value b.TurnEvidence, gate *sync
 			_ = e.commitLocked(r, nil, "final_unavailable")
 			return false
 		}
-		if (r.Request.Conversation != nil || r.Request.Workflow.ID == workflow.SingleExecution) && result.Succeeded && !result.ContentVerified {
+		if (r.Request.Conversation != nil || r.DevelopmentMessage() || r.Request.Workflow.ID == workflow.SingleExecution) && result.Succeeded && !result.ContentVerified {
 			r.Result = &value
 			r.Status, r.Phase, r.Diagnostic = "reconciling", "final_unavailable", "Original final content remains unverified"
 			_ = e.commitLocked(r, nil, "final_unavailable")

@@ -13,7 +13,7 @@ import (
 )
 
 func TestStructuredDevelopmentFollowUp(t *testing.T) {
-	for _, scenario := range []string{"normal", "audit-role", "lost-response", "active", "reused-turn", "foreign-user"} {
+	for _, scenario := range []string{"normal", "message", "audit-role", "lost-response", "active", "reused-turn", "foreign-user"} {
 		t.Run(scenario, func(t *testing.T) {
 			ctx := context.Background()
 			l, snapshot, fake := structuredFixture(t)
@@ -36,6 +36,7 @@ func TestStructuredDevelopmentFollowUp(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
+			fake.pages[0].Fence = 5
 			original, err := l.readStructured(ctx, snapshot)
 			if err != nil || original.TurnEvidence == nil {
 				t.Fatal("first input not qualified", err)
@@ -64,6 +65,11 @@ func TestStructuredDevelopmentFollowUp(t *testing.T) {
 			// A distinct original command can carry the same bytes.
 			snapshot.PendingTurn = &b.TurnInput{CommandID: strings.Repeat("b", 32), Prompt: body}
 			wantModel, wantEffort := "requested-model", "medium"
+			wantFence := int64(7)
+			if scenario == "message" {
+				snapshot.PendingTurn.Purpose = "message"
+				wantFence = 5
+			}
 			if scenario == "audit-role" {
 				wantModel, wantEffort = "audit-model", "high"
 				snapshot.PendingTurn.Model, snapshot.PendingTurn.ReasoningEffort = wantModel, wantEffort
@@ -75,7 +81,7 @@ func TestStructuredDevelopmentFollowUp(t *testing.T) {
 			final := `{"outcome":"needs_input","summary":"original result","question":"Continue?"}`
 			fake.send = func(send native.AgentSend) error {
 				writes++
-				if send.Envelope.ClientOperationID != "1793680000123-"+r.Operation.ID || *send.Envelope.ExpectedRuntimeFence != 7 || send.Body.Blocks[0].Text != body || send.Selection == nil || send.Selection.Model != wantModel || send.Selection.Effort != wantEffort {
+				if send.Envelope.ClientOperationID != "1793680000123-"+r.Operation.ID || *send.Envelope.ExpectedRuntimeFence != wantFence || send.Body.Blocks[0].Text != body || send.Selection == nil || send.Selection.Model != wantModel || send.Selection.Effort != wantEffort {
 					t.Fatal("follow-up lost original wire facts", send)
 				}
 				userID := "orca:" + send.Envelope.ClientOperationID

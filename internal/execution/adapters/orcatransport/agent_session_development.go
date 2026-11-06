@@ -171,22 +171,29 @@ func (l *Lifecycle) sendStructuredDevelopment(ctx context.Context, r b.Lifecycle
 		if r.Snapshot.Session.LastStoppedTurnID != prior.TurnID {
 			return receipt, nil, errors.New("structured follow-up requires a distinct input and the original terminal turn")
 		}
-		items, page, err := l.agentHistory(ctx, prior)
-		if err != nil {
-			return receipt, nil, err
+		fence := prior.RuntimeFence
+		if input.Purpose != "message" {
+			items, page, err := l.agentHistory(ctx, prior)
+			if err != nil {
+				return receipt, nil, err
+			}
+			observed, _, err := l.verifyAgentActivity(r.Snapshot, prior, items, page)
+			if err != nil {
+				return receipt, nil, err
+			}
+			if !observed.State.TurnCompleted || page.Working || len(page.ActionablePromptIDs) != 0 {
+				return receipt, nil, errors.New("original structured session is not verified idle")
+			}
+			fence = page.Fence
 		}
-		observed, _, err := l.verifyAgentActivity(r.Snapshot, prior, items, page)
-		if err != nil {
-			return receipt, nil, err
-		}
-		if !observed.State.TurnCompleted || page.Working || page.Fence <= 0 || len(page.ActionablePromptIDs) != 0 {
-			return receipt, nil, errors.New("original structured session is not verified idle")
+		if fence <= 0 {
+			return receipt, nil, errors.New("original native send fence unavailable")
 		}
 		fingerprint, err := native.AgentFingerprint("agentSession.send", state.SessionID, fields)
 		if err != nil {
 			return receipt, nil, err
 		}
-		request := native.AgentSend{Body: body, Selection: selection, Envelope: native.AgentMutationEnvelope{SessionID: state.SessionID, ClientOperationID: state.MessageID, PayloadFingerprint: fingerprint, ExpectedRuntimeFence: &page.Fence}}
+		request := native.AgentSend{Body: body, Selection: selection, Envelope: native.AgentMutationEnvelope{SessionID: state.SessionID, ClientOperationID: state.MessageID, PayloadFingerprint: fingerprint, ExpectedRuntimeFence: &fence}}
 		receipt.Disposition = b.OperationUnknown
 		if _, err := l.agentClient(state.RuntimeID).Send(ctx, request); err != nil {
 			return receipt, nil, err

@@ -164,7 +164,7 @@ func (e *Engine) advance(id string, w *worker) bool {
 	if !r.Allowed || r.ResumeRequired {
 		return false
 	}
-	if r.Request.Execution.Adapter == "codex-app-server" && r.Snapshot.Workspace.Path != "" {
+	if !r.DevelopmentMessage() && r.Request.Execution.Adapter == "codex-app-server" && r.Snapshot.Workspace.Path != "" {
 		if !workflow.Content(r.Request.Workflow.ID) && !w.freshWorkspace && !w.startupWorkspaceChecked && r.WorkspaceFact != nil && !fileInputDispatched(r) {
 			if err := e.verifyRecoveredStartup(r); err != nil {
 				e.block(id, "workspace_unverified", err, false)

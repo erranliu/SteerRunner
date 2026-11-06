@@ -118,6 +118,9 @@ func (e *Engine) checkDispatchSource(r *runstate.Record, input workflow.StageInp
 	if !ok {
 		return errors.New("unknown state")
 	}
+	if r.DevelopmentMessage() && input.StepID == workflow.StepPRReady && input.FeedbackDecisionID != "" {
+		return nil
+	}
 	if err := workflow.VerifyPrerequisites(r.Workflow, input, state); err != nil {
 		return err
 	}

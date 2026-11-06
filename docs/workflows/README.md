@@ -168,3 +168,11 @@ development 本轮采用的等待规则：原结果已明确未成功或原 agen
 `inspect --offline --state-dir D --run-id R --json`（也可选原 request-id 或 command-id，恰好一个）只读原 current state/v7 快照。没有驻留写者时，Runner 非创建地取得原 writer.lock 排他租约，拒绝未知 bootstrap/旧格式，不迁移、不启动服务/worker、不刷新 PR。持锁失败应改用已核对构建/实例的驻留 inspect；冷查询不能证明原进程已退出或最终文件已封存。capabilities 的 offline_inspect 明确 command/read_only/writer_absent/starts_workers。
 
 调用方可在同构建取消恢复时先查原 Run 和命令，再沿既有 service start pending_stops 入口提交原 stop；服务在 worker 启动前受理，避免旧业务输入继续推进。重复原 stop 仍幂等；未结算时拒绝不同 stop，迟到 final 不改写已受理的 stop。原 Run 已 Closed 时不再添加 stop，由原持久停止收尾，之后仍核对 stopped 及结果封存。此查询不提供跨构建接管、兼容迁移或业务结果复核。
+
+## 开发 Run 的后续消息
+
+已完成的 development/2、development-audited/2 在原 Run 未停止/关闭且当前输入空闲时公开 `controls.can_message`。调用方使用已有 `message --run-id R --input -`，input 为 `{"expected_revision":N,"text":"调用方完整正文"}`。Runner 只执行本次正文并回传原生结果，不重跑实施、审计、发布或补报；开发步骤仍为 pr_ready。问答沿原 reply/answer，逐轮正文与结果可通过原 events/history 读取。
+
+新输入沿用原 worktree、session、模型和权限，不进行工作区/会话恢复预检；Orca 沿原已记录的 runtime fence 直接发送，由原生 Send 返回实际拒绝。发送后的原输入和结果来源仍沿现有可靠执行读取。每次 message 只授权一轮，结束后等待下一次显式输入；stop/closed 不重开，未知输入只对账原请求。开发完成不再公开不存在的 feedback 返工入口。
+
+本增量的固定构建及验证范围见[验收](../acceptance/pr-ready-messages.md)。

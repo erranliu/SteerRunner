@@ -229,7 +229,7 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 		if single && (command == "reply" || command == "resume" || command == "message" || command == "interrupt" || command == "close") {
 			return reject(contracts.Fail(3, "unsupported_capability", "Single execution accepts no additional input; use the original stop or inspect."))
 		}
-		if (command == "message" || command == "interrupt" || command == "close" || command == "history") && r.Request.Workflow.ID != "conversation" {
+		if ((command == "message" || command == "history") && !r.DevelopmentMessage() || command == "interrupt" || command == "close") && r.Request.Workflow.ID != "conversation" {
 			return reject(contracts.Fail(3, "unsupported_capability", "This operation requires conversation/1."))
 		}
 		if structuredDevelopmentClose(r) && r.StopStatus == "stopped" && (command == "stop" || command == "resume") {
@@ -263,6 +263,7 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 				closeContent(next, receipt.ID)
 				break
 			}
+			revokeDevelopmentInputs(next)
 			next.Allowed = false
 			next.ResumeRequired = true
 			next.PendingStop = receipt.ID
@@ -310,7 +311,7 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 					next.CommandStates[r.PendingAnswer.CommandID] = "failed"
 				}
 				next.PendingAnswer = &runstate.Answer{CommandID: receipt.ID, QuestionID: reply.QuestionID, Text: reply.Text, Epoch: controlScope(r, reply.QuestionID)}
-				if isContent {
+				if isContent || r.DevelopmentMessage() {
 					next.History = append(next.History, contracts.HistoryEntry{RequestCommandID: receipt.ID, CommandID: r.Snapshot.Session.CurrentCommandID, SessionID: r.Snapshot.Session.SessionID, TurnID: r.Snapshot.Session.CurrentTurnID, Role: "answer", Text: reply.Text, Question: r.Question})
 				}
 				next.Phase = "answer_saved"
@@ -334,13 +335,17 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 			}
 		case "message":
 			if !r.View().Controls.CanMessage {
-				return reject(contracts.Fail(5, "invalid_state", "The original conversation must be idle, authorized and reconciled."))
+				return reject(contracts.Fail(5, "invalid_state", "The original Run must be idle, authorized and reconciled."))
 			}
 			var message contracts.MessageInput
 			_ = json.Unmarshal(input.Input, &message)
 			next.PendingFeedback = &runstate.Answer{CommandID: receipt.ID, Text: message.Text, Epoch: controlScope(r, "")}
 			next.History = append(next.History, contracts.HistoryEntry{RequestCommandID: receipt.ID, Role: "user", Text: message.Text})
 			next.Phase = "message_saved"
+			if r.DevelopmentMessage() {
+				next.Result, next.LastFinal = nil, nil
+				next.NativeStarted = false
+			}
 		case "interrupt":
 			if !r.View().Controls.CanInterrupt || r.PendingAnswer != nil {
 				return reject(contracts.Fail(5, "invalid_state", "No qualified current turn is available for interruption."))
@@ -389,7 +394,7 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 		return contracts.Success("", page)
 	}
 	if command == "history" {
-		if !workflow.Content(r.Request.Workflow.ID) {
+		if !workflow.Content(r.Request.Workflow.ID) && !r.DevelopmentMessage() {
 			return reject(contracts.Fail(3, "unsupported_capability", "Message history is available for content workflows."))
 		}
 		return contentHistory(r, after, limit)
