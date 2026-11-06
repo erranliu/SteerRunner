@@ -26,6 +26,7 @@ func TestDevelopmentRunMessagesRetainOriginalWorkflow(t *testing.T) {
 			p, _ := workflow.Lookup(flow, 2)
 			r.Request.Workflow = contracts.Workflow{ID: flow, Version: 2}
 			r.Request.Conversation = nil
+			r.Snapshot.Session.Generation = r.Snapshot.ResourceGeneration
 			r.Request.Execution.Settings = []byte(`{"access_mode":"full_access"}`)
 			r.Workflow.Config, r.Workflow.StepID = &p, workflow.StepPRReady
 			r.Workflow.ExecutionModel = &workflow.ModelSettings{Model: "original", ReasoningEffort: "medium"}
@@ -83,7 +84,38 @@ func TestDevelopmentRunMessagesRetainOriginalWorkflow(t *testing.T) {
 				if request == "second-message" {
 					outcome = "unreported"
 				}
-				if !e.finish("run", contentEvidence(e, "message result", outcome, true)) {
+				evidence := contentEvidence(e, "message result", outcome, true)
+				if request == "first-message" {
+					r = e.runs["run"]
+					session := r.Snapshot.Session
+					route, err := b.NewQuestionRoute("future.answer", 99, b.QuestionRouteIdentity{ProjectID: session.ProjectID, WorkflowRunID: "run", ExecutionID: "run", AttemptID: session.AttemptID, Generation: session.Generation, TurnID: session.CurrentTurnID, QuestionID: "message-question"}, []byte(`{}`))
+					if err != nil {
+						t.Fatal(err)
+					}
+					if err := e.acceptEvent("run", b.LifecycleEvent{Fact: b.EventFact{Kind: b.EventQuestion, SessionID: session.SessionID, StartedTurnID: session.CurrentTurnID, QuestionRoute: &route, Questions: []b.Question{{ID: "q", AllowFreeText: true}}}}); err != nil {
+						t.Fatal(err)
+					}
+					r = e.runs["run"]
+					if !r.View().Controls.CanReply || r.View().Controls.CanMessage {
+						t.Fatal("question did not serialize original message input")
+					}
+					if response := contentControl(e, "reply", "message-answer", contracts.ReplyInput{ExpectedRevision: r.Revision, Kind: "answer", QuestionID: route.QuestionID, Text: "回答😀"}); !response.OK {
+						t.Fatal(response)
+					}
+					port := &answerInputPort{LifecyclePort: w.port}
+					w.gate.Lock()
+					answered := e.answer("run", w, port)
+					w.gate.Unlock()
+					r = e.runs["run"]
+					if !answered || port.sends != 1 || port.request.Snapshot.QuestionRoute.QuestionID != route.QuestionID || port.request.Snapshot.Session.CurrentTurnID != session.CurrentTurnID || r.Question != nil || r.PendingAnswer != nil || len(r.Workflow.StageInputs) != before+1 {
+						t.Fatal("answer lost its original question or restarted the message")
+					}
+					history := r.History
+					if len(history) < 2 || history[len(history)-2].Role != "question" || history[len(history)-1].Role != "answer" || history[len(history)-1].Text != "回答😀" {
+						t.Fatal("development message lost question/answer history")
+					}
+				}
+				if !e.finish("run", evidence) {
 					t.Fatal("message result lost")
 				}
 				r = e.runs["run"]
