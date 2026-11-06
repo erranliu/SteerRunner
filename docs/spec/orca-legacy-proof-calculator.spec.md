@@ -1,6 +1,6 @@
 # Spec B：退役旧 Orca 证明计算器
 
-日期：2026-11-06。基线为 A 独立通过点。状态：设计，实施前审计。配套 [Plan](orca-legacy-proof-calculator.plan.md)。不修改长期能力/可靠性承诺。
+日期：2026-11-06。基线为 A 独立通过点 `ceca3316`。状态：设计审计后已实施，受影响验收通过（不含实际 L3）。配套 [Plan](orca-legacy-proof-calculator.plan.md)。不修改长期能力/可靠性承诺。
 
 ## 入口与消费者审计
 

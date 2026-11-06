@@ -170,23 +170,6 @@ func (l *Lifecycle) original(ctx context.Context, s b.LifecycleSnapshot) (native
 	return t, nil
 }
 
-// Probe the already registered source before creating a business workspace.
-// Local observation uses native queries; it does not require a streaming pipe.
-func (l *Lifecycle) verifyLocalObservation(ctx context.Context, runtime string) error {
-	bootstrap, err := native.LocalRuntimeID()
-	if err != nil {
-		return err
-	}
-	if bootstrap != runtime {
-		return fmt.Errorf("%w: local CLI/bootstrap runtime changed", native.ErrStateIdentityChanged)
-	}
-	if _, err := native.QueryWorktreeAgents(ctx, "", runtime); err != nil {
-		return err
-	}
-	_, err = native.QueryState(ctx, "", runtime, "path:"+l.setup.RepositoryPath)
-	return err
-}
-
 func (l *Lifecycle) PreparationFacts(ctx context.Context, s b.LifecycleSnapshot) (b.PreparationFacts, error) {
 	return l.structuredPreparation(ctx, s)
 }

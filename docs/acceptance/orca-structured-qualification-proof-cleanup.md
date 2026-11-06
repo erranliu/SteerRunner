@@ -30,4 +30,26 @@ B 对应 [Spec](../spec/orca-legacy-proof-calculator.spec.md)/[Plan](../spec/orc
 
 ## B 实施与验证
 
-等待 A 独立验证点固定后实施；本节在完成后填入实际删除闭包、格式与受影响测试结果。
+A 独立点为 `ceca3316`。最终审计补充的 A 修正单独保存为 `d31b7e7c`：本机 Codex reader 使用 Codex 的原 capability 集，不误用 Pi 的附加 capability；通用当前 native audit 同样核对 CLI 中无旧 writer，以及本机实际原输入派发。该修正已重新跑 livetest 全包和全部 live 编译；不混入 B 的生产删除提交。
+
+| 删除闭包 | 保留项与证据 |
+| --- | --- |
+| NativeProof 的 query/end/attribution/body/preview 等旧计算链、nativeObservation、nativeInput 匹配/补证链 | NativeProof 整个声明和 agentName、state_codec 严格解码/矛盾拒绝、旧 State/Turn/Profile/owner/control/receipt 格式保留 |
+| 无合法当前执行根的 !structured hook preflight/verifyLocalObservation、无消费者 stateFeedFactory | 当前 structured bootstrap/runtime 检查、nativeAccess FIFO/准备、原 workspace creation/对账/最佳努力 shell 清理保留 |
+| 专属 hostStateFeed/stateFactory/fixtureState/fixtureSample | fakeHost/fixtureOn/structuredFixture/creation/local IPC、original/boundTerminal 并发回归和旧 usage/files/stop 夹具保留 |
+
+共删除 23 个生产函数、7 个专属测试支持函数、7 个明确非持久类型；B 代码净减 497 行（含 codec 测试调整），没有删除顶层测试。原 adapter 73 项全部保留，加 1 项 Waiting/unknown 三 codec 原字节回归，最终 74 项通过、零 skip。roundtrip 原测试继续验证原字段/Conflict 和 usage 绑定，不再调用退役计算器；新测试验证 Waiting/unknown 原字节不变。不是将保存的未知状态升级为完成。
+
+全部 Orca 类型 AST 从 37 到 30，只少上述 7 个进程内类型，其余声明（包括 NativeProof 的字段/tag/顺序）完全相同。独立提取 A 的源码归档，旧 Profile/State/NativeProof/当前 profile/版本代表编码与 B 的 1510 字节完全相同，SHA256 `9f09b508329a0e2734ff56618371f4fb56ee98c2ec74b9e595ea5b2859c0dbe3`。另含 backend/runstate 持久声明及能力的 151520 字节通用 wire 也与 A 完全相同（上述 A 摘要）。无 schema、codec、state/v8 或迁移变更；contracts/application/backend/storage/runstate 源文件无改动。
+
+B adapter 74、host/storage/contracts/usage/livetest 支持包 151、application 定向 13，共 238 个顶层通过、零失败；usage collect 的 TestUsageExistingNativeEvidence、TestUsageRemoteCodexCleanupLive、TestUsageRemoteCodexLive 为原有显式 opt-in skip，未计为通过。application 定向验证缺预算不阻原始结果/读/停止、原证明缺失仍等待、原操作只读对账、新输入围栏与停止优先。完整 live driver/helper 再次编译通过。
+
+正式 B 固定 EXE 的两个公开受控顶层/七创建窗口通过、零 skip。A 收尾修正后再次以最终稳定源正式构建并复验同一范围，结果另记 final-public。所有以上均为合并前定向或受影响包检查，没有冒充完整 L1/Controlled、合并后或真实 L3。未迁移用户数据，没有恢复/重发旧 Run。
+
+## 可复核证据
+
+测试 JSON、公开受控结果/源码身份/日志、AST 与删除消费者清单、A/B 编码比较、复算脚本放在本目录 evidence/orca-structured-qualification-proof-cleanup/records.json.gz。每项含相对 path、原字节数、SHA256 与 UTF-8 内容；解压后按 path 定位。未打包 EXE、完整临时源码库、真实认证或用户状态。工作目录原始复算材料位于忽略目录 `.evidence/orca-qualification-cleanup/`。
+
+实际收益：A 把当前真机开发/验证路径移出旧 TUI/helper 假设；本机精确 wire 取证属于测试设施，会增加测试支持代码，不宣称净删或运行提速。B 把历史读取范围内的旧动态证明状态机移除，后续开发无需再查旧通知/输入归属闭包。原执行、恢复、停止承诺及实际旧数据读取保持。
+
+归档为 51 项、165193 字节，SHA256 `5aacac163982649bda322ba1eb67556ff2d6f089a042006773783d92b361d7e5`；原字节回放核对通过。最终固定 Runner SHA256 `6fd3f8a96429c510ae6771c5130424f02726d544327fd32c52d86ee2e9d7047c`，final-public 的 exit_code=0、scenario_count=2、零 skip。最终目标分支已刷新，仍为 `d58054a7`，无新增上游内容冲突。

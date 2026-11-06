@@ -192,11 +192,6 @@ func (l *Lifecycle) workspaceRepository(ctx context.Context) (selector, runtimeI
 		if err != nil || result.RuntimeID == "" {
 			return "", "", errors.Join(err, errors.New("local Orca runtime identity is unavailable"))
 		}
-		if l.nativeAccess && !l.structured() {
-			if err := l.verifyLocalObservation(ctx, result.RuntimeID); err != nil {
-				return "", "", err
-			}
-		}
 		if l.nativeAccess && l.structured() {
 			runtime, bootstrapErr := native.LocalRuntimeID()
 			if bootstrapErr != nil || runtime != result.RuntimeID {
