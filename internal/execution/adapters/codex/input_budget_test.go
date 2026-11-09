@@ -32,6 +32,34 @@ func TestInputSessionAggregateAndZeroOversizeSend(t *testing.T) {
 		t.Fatal("ask Runner framing overflow sent")
 	}
 }
+
+// This checks the model-visible policy, not whether a model follows it.
+func TestWorkerInstructionsAllowRepairWithoutBlindReplay(t *testing.T) {
+	text := (&workerRuntime{Shell: "powershell.exe"}).instructions()
+	for _, required := range []string{
+		"仅暂存并提交任务改动，核实结果",
+		"优先项目验收，避免重复预检",
+		"命令/测试错误可修复则在本阶段授权内修复复验",
+		"仅缺必要信息、授权或外部条件才等待",
+		"提交/推送/发布结果未知先核实原操作，保留原分支/PR，不盲目重做",
+	} {
+		if !strings.Contains(text, required) {
+			t.Fatalf("missing execution boundary: %s", required)
+		}
+	}
+	for _, obsolete := range []string{"非零即停", "$LASTEXITCODE", "检查非空暂存diff", "串行暂存/检查/提交", "失败或未知"} {
+		if strings.Contains(text, obsolete) {
+			t.Fatalf("reintroduced stop/check template: %s", obsolete)
+		}
+	}
+	facts, err := sessionInput(map[string]any{"developerInstructions": text, "dynamicTools": []any{codexapp.AskDynamicTool()}})
+	if err != nil || facts.Parts[0].Text != text || facts.Parts[0].Source != "native.developer" {
+		t.Fatal("session did not account for actual worker instructions", facts, err)
+	}
+	if InputContract().(map[string]any)["worker"] != WorkerInstructionFormat {
+		t.Fatal("published policy differs from worker session policy")
+	}
+}
 func TestInputTurnChecksFinalFrozenText(t *testing.T) {
 	for _, n := range []int{1999, 2000, 2001, 2999, 3000, 3001, 10552} {
 		input := b.TurnInput{CommandID: strings.Repeat("c", 32), Prompt: strings.Repeat("c", n)}

@@ -1,0 +1,5 @@
+=== RUN   TestSRResultAcquisition
+=== RUN   TestSRResultAcquisition/plain-marker
+--- PASS: TestSRResultAcquisition (11.51s)
+    --- PASS: TestSRResultAcquisition/plain-marker (11.51s)
+PASS

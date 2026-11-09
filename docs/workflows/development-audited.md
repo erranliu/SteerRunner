@@ -216,8 +216,8 @@ Parser 复用现有 Codex 登录/CLI，在独立临时目录分析指定文本�
 ```text
 将已完成审计修复的当前分支 push 到发布目标并创建 PR。
 实施及审计修复事实：{{verified_implementation_and_audit}}；发布目标：{{publication_binding}}
-用 git branch --show-current 取得实际分支，作为远端分支和 PR head。
-结果未知时说明情况，不重复创建。
+使用当前分支作为远端分支和 PR head。
+结果未知先核实原操作，不盲目重做。
 成功后给出 PR URL，并在最终回复末尾单独写一行：本次发布已完成。
 ```
 

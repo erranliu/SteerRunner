@@ -142,3 +142,27 @@ func TestTerminalToolFinalStatusDoesNotBorrowEarlierNativeExit(t *testing.T) {
 		}
 	}
 }
+
+// The runner reports a bad read without revoking later tools in the same
+// workspace. Choosing the correction remains the execution model's job.
+func TestTerminalToolReadOnlyCheckCanBeCorrected(t *testing.T) {
+	c := fixture(t)
+	path := filepath.Join(c.Workspace, "evidence.txt")
+	if err := os.WriteFile(path, []byte("original evidence"), 0600); err != nil {
+		t.Fatal(err)
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+	var out, diag bytes.Buffer
+	if err := Run(ctx, c, strings.NewReader("Get-Content -LiteralPath './wrong-path.txt' -ErrorAction Stop"), &out, &diag); err == nil {
+		t.Fatal("bad read was reported as success")
+	}
+	out.Reset()
+	diag.Reset()
+	if err := Run(ctx, c, strings.NewReader("Get-Content -LiteralPath './evidence.txt' -Raw"), &out, &diag); err != nil || !strings.Contains(out.String(), "original evidence") {
+		t.Fatal("corrected read could not continue", err, out.String(), diag.String())
+	}
+	if raw, err := os.ReadFile(path); err != nil || string(raw) != "original evidence" {
+		t.Fatal("read-only correction changed evidence", err)
+	}
+}

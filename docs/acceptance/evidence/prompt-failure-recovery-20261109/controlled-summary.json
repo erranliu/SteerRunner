@@ -1,0 +1,31 @@
+{
+  "started_at": "2026-11-09T03:36:50.8616046Z",
+  "selection": {
+    "tests": [
+      "TestSRResultAcquisition"
+    ],
+    "cases": {
+      "TestSRResultAcquisition": [
+        "plain-marker"
+      ]
+    },
+    "pattern": "^(TestSRResultAcquisition)$",
+    "ids": [
+      "result-plain"
+    ],
+    "kind": "combinations",
+    "result_file_cases": []
+  },
+  "complete_controlled_passed": false,
+  "mode": "execution",
+  "qualification_eligible": false,
+  "schema": "steerrunner-controlled-selection/v1",
+  "finished_at": "2026-11-09T03:37:19.2034886Z",
+  "status": "passed",
+  "observed_top_level_seconds": 11.51,
+  "timing_report": "C:\\Users\\lmas1\\.codex\\worktrees\\dd5e\\SteerRunner\\.evidence\\prompt-failure-recovery\\controlled-plain\\timings.json",
+  "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\dd5e\\SteerRunner\\.evidence\\prompt-failure-recovery\\controlled-plain\\controlled",
+  "duration_seconds": 28.3603202,
+  "catalog_sha256": "f1f07fc37ce0d1ba3da95656eeb9fcdd34ef1d9aed907d93c0972c197c6233b8",
+  "validation_scope": "controlled-selection"
+}
