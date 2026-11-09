@@ -376,13 +376,12 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		_ = json.Unmarshal(r.Request.Execution.Settings, &settings)
 		r.Workflow.ExecutionModel = &workflow.ModelSettings{Model: settings.Model, ReasoningEffort: settings.ReasoningEffort}
 	}
+	if request.Execution.Adapter == "orca-terminal" {
+		var settings contracts.OrcaSettings
+		_ = json.Unmarshal(r.Request.Execution.Settings, &settings)
+		r.Workflow.ExecutionModel = &workflow.ModelSettings{Model: settings.AgentLaunch.Model, ReasoningEffort: settings.AgentLaunch.ReasoningEffort}
+	}
 	if flowProfile.AuditModelRequired {
-		settings, modelErr := contracts.ExecutionModel(r.Request.Execution)
-		if modelErr != nil {
-			return nil, modelErr
-		}
-		r.Workflow.Config = &flowProfile
-		r.Workflow.ExecutionModel = &workflow.ModelSettings{Model: settings.Model, ReasoningEffort: settings.ReasoningEffort}
 		model := *r.Request.Workflow.AuditModel
 		r.Workflow.AuditModel = &model
 	}
@@ -460,8 +459,15 @@ func queueInput(r *runstate.Record, input workflow.StageInput, feedback string) 
 		var err error
 		if r.Workflow.ExecutionModel != nil {
 			model := r.Workflow.ExecutionModel
-			if state, _ := r.Workflow.State(input.StepID); state.ModelRole == "audit" {
+			switch state.ModelRole {
+			case "execution":
+			case "audit":
 				model = r.Workflow.AuditModel
+			default:
+				return errors.New("workflow stage has an unknown model role")
+			}
+			if model == nil || state.ModelRole == "audit" && model.Model == "" {
+				return errors.New("workflow stage lacks its configured model")
 			}
 			input.Model, input.ReasoningEffort = model.Model, model.ReasoningEffort
 		}

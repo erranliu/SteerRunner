@@ -225,6 +225,7 @@ func (c *Collector) observe(ctx context.Context, r *runstate.Record) {
 				missing = result.Missing
 				for i := range result.Events {
 					result.Events[i].SourceRef = source
+					attributeUsage(r, &result.Events[i])
 				}
 				events = append(events, result.Events...)
 				if result.HeaderHash != "" {
@@ -305,7 +306,48 @@ func (c *Collector) observe(ctx context.Context, r *runstate.Record) {
 	if s.AccessCleanupStatus == "pending" {
 		s.Issues = append(s.Issues, api.Issue{Category: "access_cleanup", Code: "ACCESS_CLEANUP_PENDING", Retryable: true})
 	}
+	// Enrich cached history from frozen inputs without reopening native logs.
+	// Old immutable snapshot pages retain their original contents.
+	if prior.Revision != 0 {
+		cursor := ""
+		for {
+			page, err := c.Store.ListRunUsageEvents(ctx, r.ID, prior.Revision, cursor, 500)
+			if err != nil {
+				return
+			}
+			for _, event := range page.Events {
+				before := event
+				attributeUsage(r, &event)
+				if before.StepID != event.StepID || before.ConfiguredModel != event.ConfiguredModel || before.ConfiguredReasoningEffort != event.ConfiguredReasoningEffort {
+					events = append(events, event)
+				}
+			}
+			cursor = page.NextCursor
+			if cursor == "" {
+				break
+			}
+		}
+	}
 	_, _ = c.Store.CommitObservedUsage(ctx, s, events, r.Revision, journal, api.CollectionPermit{Instance: c.Instance, PolicyDigest: c.Policy.Digest(), Active: true})
+}
+
+// Attribute only an exact original command, never the current workflow role or
+// the observed provider model. Initialization and unbound history stay unknown.
+func attributeUsage(r *runstate.Record, event *api.Event) {
+	if event.Phase == "initialization" || event.CommandID == "" {
+		return
+	}
+	var matched int
+	var step, configured, effort string
+	for _, input := range r.Workflow.StageInputs {
+		if input.CommandID == event.CommandID && input.AttemptID == event.AttemptID {
+			matched++
+			step, configured, effort = input.StepID, input.Model, input.ReasoningEffort
+		}
+	}
+	if matched == 1 {
+		event.StepID, event.ConfiguredModel, event.ConfiguredReasoningEffort = step, configured, effort
+	}
 }
 
 func (c *Collector) checkPermit(ctx context.Context) error {

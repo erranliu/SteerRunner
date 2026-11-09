@@ -4,6 +4,7 @@ package native
 
 import (
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/testkit/livetest"
 	"testing"
 )
@@ -37,11 +38,11 @@ func auditManagedLocalOrcaModels(t *testing.T, m livetest.Manifest, view contrac
 				continue
 			}
 			matches++
-			proof := result.ActualModel
-			if proof == nil || !result.Succeeded || !result.FinalVerified || result.StepID != step || result.TurnID != binding.TurnID || proof.Model != model || proof.ReasoningEffort != effort || proof.Turn != binding.TurnID || proof.ProviderSession == "" || len(proof.SourceDigest) != 64 {
-				t.Fatal("actual original native model differs from frozen workflow", step)
+			input := workflow.Input(record.Workflow, command)
+			if input == nil || !result.Succeeded || !result.FinalVerified || result.StepID != step || result.TurnID != binding.TurnID || input.Model != model || input.ReasoningEffort != effort {
+				t.Fatal("configured model differs from frozen workflow", step)
 			}
-			fact = map[string]any{"step": step, "command_id": command, "turn_id": binding.TurnID, "native_turn_id": binding.TurnID, "source": "orca.structured.original-model.v1", "model": proof.Model, "effort": proof.ReasoningEffort, "source_digest": proof.SourceDigest, "provider_session": proof.ProviderSession}
+			fact = map[string]any{"step": step, "command_id": command, "turn_id": binding.TurnID, "source": "frozen_stage_input", "configured_model": input.Model, "configured_reasoning_effort": input.ReasoningEffort}
 		}
 		if matches != 1 {
 			t.Fatal("original model result missing or ambiguous", step)

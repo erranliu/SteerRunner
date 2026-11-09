@@ -57,6 +57,31 @@ func TestUsageDedupMetadataEnrichment(t *testing.T) {
 		t.Fatal("reused response identity crossed commands")
 	}
 }
+
+func TestUsageConfiguredAttributionSurvivesObservedConflict(t *testing.T) {
+	model, other := "observed", "other-observed"
+	old := api.Event{ID: "response", RunID: "r", CommandID: "cmd", Decision: "counted", Model: &model, MetadataBasis: "observed", StepID: "audit.code.execute", ConfiguredModel: "reviewer", ConfiguredReasoningEffort: "high", Tokens: api.Tokens{Total: api.Number(3)}}
+	next := old
+	next.Model = &other
+	merged := Merge(old, next)
+	if merged.Decision != "counted" || merged.Model != nil || merged.ConfiguredModel != "reviewer" || merged.StepID != old.StepID || *merged.Tokens.Total != 3 {
+		t.Fatal("observation dispute changed frozen configuration or tokens", merged)
+	}
+	for _, field := range []string{"step", "model", "effort"} {
+		next = old
+		switch field {
+		case "step":
+			next.StepID = "publish.execute"
+		case "model":
+			next.ConfiguredModel = "executor"
+		case "effort":
+			next.ConfiguredReasoningEffort = "low"
+		}
+		if Merge(old, next).Decision != "quarantined" {
+			t.Fatal("conflicting configured attribution accepted", field)
+		}
+	}
+}
 func TestUsageAvailability(t *testing.T) {
 	for _, tc := range []struct {
 		code, status string

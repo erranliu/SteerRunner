@@ -17,7 +17,7 @@
 
 实施和发布按 development 的思路：可信 final 命中阶段成功输出且核验通过即完成，无法判断时原 agent 最多 report 一次，不使用独立解析或格式修正。独立解析仅用于整理实际代码审计结果；不能替代真正审计或生成原审计没有作出的结论。
 
-本流程支持本机 `codex-app-server` 和本机 Orca 结构化 Codex。远端 Orca 在受理前返回 `unsupported_capability`。Orca 在同一会话按冻结角色选择执行和审计模型，使用绑定原 turn 的受限来源核验实际 model/effort 并确认撤权。执行模型用于实施、实施补报和发布，审计模型用于审计修复和审计补报。独立 parser 使用隔离会话和 Runner 自身配置。发布时切回执行模型，继续验证原工作区检查点和真实 PR。Orca 结果、停止和文件合同见 [M5 Spec](../archive/2026-11/implementation/spec/orca-structured-audited.spec.md)。
+本流程支持本机 `codex-app-server` 和本机 Orca 结构化 Codex。远端 Orca 在受理前返回 `unsupported_capability`。Orca 在同一会话按冻结角色派发执行和审计模型，不再额外读取模型日志作为业务或计价门槛。执行模型用于实施、实施补报和发布，审计模型用于审计修复和审计补报。独立 parser 使用隔离会话和 Runner 自身配置。发布时按明确编排切回执行模型，继续验证原工作区检查点和真实 PR。模型不可执行时明确报错，不换模型；阶段配置与用量交接见[当前契约](../model-usage.md)。Orca 结果、停止和文件合同见 [M5 Spec](../archive/2026-11/implementation/spec/orca-structured-audited.spec.md)。
 
 ## 2. Workflow 整体状态图
 
@@ -242,7 +242,7 @@ stop、服务换代、未知操作优先于所有边，所有 executor/parser ow
 
 所有核验复用内置函数和原 owner，本期无定制脚本端口/宿主或通用快照设施。Runner 独立管理 parser 配置、认证引用和资源；执行/审计/parser 模型分别选择。SteerLine 不增加配置覆盖或调用义务。实际支持范围及验证结果见总 Spec §6 与专属验收，不宣称空工具面或零隐式上下文。
 
-原生远端 Orca 不提供该流程需要的实际模型与 Git 来源证明，接受前返回 unsupported_capability；本机 codex-app-server 与 Orca local 受管 Codex 继续沿原模型切换及原工作树 owner 核验，不调用远端 helper。
+远端 audited 尚未取得该流程的 Git 来源等完整资格，接受前返回 unsupported_capability；本机 codex-app-server 与 Orca local Codex 按冻结编排切换配置模型并保留原工作树 owner 核验，不调用远端 helper，也不再额外核验实际模型日志。
 
 ## 当前实现映射
 

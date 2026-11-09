@@ -13,7 +13,7 @@ import (
 )
 
 func TestStructuredDevelopmentFollowUp(t *testing.T) {
-	for _, scenario := range []string{"normal", "message", "audit-role", "lost-response", "active", "reused-turn", "foreign-user"} {
+	for _, scenario := range []string{"normal", "message", "audit-role", "model-unavailable", "lost-response", "active", "reused-turn", "foreign-user"} {
 		t.Run(scenario, func(t *testing.T) {
 			ctx := context.Background()
 			l, snapshot, fake := structuredFixture(t)
@@ -70,7 +70,7 @@ func TestStructuredDevelopmentFollowUp(t *testing.T) {
 				snapshot.PendingTurn.Purpose = "message"
 				wantFence = 5
 			}
-			if scenario == "audit-role" {
+			if scenario == "audit-role" || scenario == "model-unavailable" {
 				wantModel, wantEffort = "audit-model", "high"
 				snapshot.PendingTurn.Model, snapshot.PendingTurn.ReasoningEffort = wantModel, wantEffort
 			}
@@ -83,6 +83,9 @@ func TestStructuredDevelopmentFollowUp(t *testing.T) {
 				writes++
 				if send.Envelope.ClientOperationID != "1793680000123-"+r.Operation.ID || *send.Envelope.ExpectedRuntimeFence != wantFence || send.Body.Blocks[0].Text != body || send.Selection == nil || send.Selection.Model != wantModel || send.Selection.Effort != wantEffort {
 					t.Fatal("follow-up lost original wire facts", send)
+				}
+				if scenario == "model-unavailable" {
+					return errors.New("configured audit-model is unavailable")
 				}
 				userID := "orca:" + send.Envelope.ClientOperationID
 				if scenario == "foreign-user" {
@@ -121,6 +124,10 @@ func TestStructuredDevelopmentFollowUp(t *testing.T) {
 				defer observer.Close(ctx)
 			}
 			switch scenario {
+			case "model-unavailable":
+				if err == nil || !strings.Contains(err.Error(), "audit-model is unavailable") || writes != 1 || result.State.InputAccepted {
+					t.Fatal("model failure was hidden or triggered fallback", writes, result, err)
+				}
 			case "active", "reused-turn", "foreign-user":
 				if err == nil || result.State.InputAccepted || scenario == "active" && writes != 0 || scenario != "active" && writes != 1 {
 					t.Fatal("unsafe follow-up authorized", result, writes, err)

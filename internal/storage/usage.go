@@ -71,9 +71,12 @@ func (s *Store) UsageRuns(ctx context.Context) ([]*runstate.Record, error) {
 				} `json:"request"`
 				Workflow struct {
 					StageInputs []struct {
-						CommandID string `json:"command_id"`
-						AttemptID string `json:"attempt_id"`
-						Prompt    string `json:"prompt"`
+						CommandID       string `json:"command_id"`
+						AttemptID       string `json:"attempt_id"`
+						Prompt          string `json:"prompt"`
+						StepID          string `json:"step_id"`
+						Model           string `json:"model"`
+						ReasoningEffort string `json:"reasoning_effort"`
 					}
 					StageResults []struct {
 						CommandID, AttemptID, TurnID string
@@ -88,7 +91,7 @@ func (s *Store) UsageRuns(ctx context.Context) ([]*runstate.Record, error) {
 			if json.Unmarshal(raw, &facts) == nil {
 				r.Request.Workflow.ID, r.Request.Workflow.Version = facts.Request.Workflow.ID, facts.Request.Workflow.Version
 				for _, input := range facts.Workflow.StageInputs {
-					r.Workflow.StageInputs = append(r.Workflow.StageInputs, workflow.StageInput{CommandID: input.CommandID, AttemptID: input.AttemptID, Prompt: input.Prompt})
+					r.Workflow.StageInputs = append(r.Workflow.StageInputs, workflow.StageInput{CommandID: input.CommandID, AttemptID: input.AttemptID, Prompt: input.Prompt, StepID: input.StepID, Model: input.Model, ReasoningEffort: input.ReasoningEffort})
 				}
 				for _, result := range facts.Workflow.StageResults {
 					r.Workflow.StageResults = append(r.Workflow.StageResults, workflow.StageResult{CommandID: result.CommandID, AttemptID: result.AttemptID, SessionID: result.SessionID, TurnID: result.TurnID})

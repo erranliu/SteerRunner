@@ -80,12 +80,28 @@ func Merge(old, next api.Event) api.Event {
 	if old.Decision == "quarantined" {
 		return old
 	}
+	// Conflicting frozen attribution cannot be safely assigned to either model.
+	for _, pair := range [][2]string{{old.StepID, next.StepID}, {old.ConfiguredModel, next.ConfiguredModel}, {old.ConfiguredReasoningEffort, next.ConfiguredReasoningEffort}} {
+		if pair[0] != "" && pair[1] != "" && pair[0] != pair[1] {
+			old.Decision = "quarantined"
+			return old
+		}
+	}
 	if old.RunID != next.RunID || old.SessionID != next.SessionID || old.ResponseID != next.ResponseID || old.Agent != "" && next.Agent != "" && old.Agent != next.Agent || old.Phase != "" && next.Phase != "" && old.Phase != next.Phase || old.CommandID != "" && next.CommandID != "" && old.CommandID != next.CommandID || old.TurnID != "" && next.TurnID != "" && old.TurnID != next.TurnID || !reflect.DeepEqual(old.Tokens, next.Tokens) {
 		old.Decision = "quarantined"
 		return old
 	}
 	if old.Phase == "" {
 		old.Phase = next.Phase
+	}
+	if old.StepID == "" {
+		old.StepID = next.StepID
+	}
+	if old.ConfiguredModel == "" {
+		old.ConfiguredModel = next.ConfiguredModel
+	}
+	if old.ConfiguredReasoningEffort == "" {
+		old.ConfiguredReasoningEffort = next.ConfiguredReasoningEffort
 	}
 	for _, issue := range append(append([]api.Issue{}, old.MetadataIssues...), next.MetadataIssues...) {
 		if issue.Code == "SOURCE_METADATA_CONFLICT" {

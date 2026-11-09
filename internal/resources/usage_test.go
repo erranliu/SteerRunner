@@ -11,6 +11,9 @@ import (
 
 func TestUsageCapabilitiesBoundariesAndSeparation(t *testing.T) {
 	caps := UsageCapabilities().(map[string]any)
+	if caps["configured_model_attribution"] != "frozen_stage_input" || caps["observed_model_field"] != "model" {
+		t.Fatal("model attribution semantics missing from discovery", caps)
+	}
 	for _, key := range []string{"pricing_policy", "cost_basis", "prices", "currency"} {
 		if _, ok := caps[key]; ok {
 			t.Fatal("pricing leaked into usage", key)
@@ -63,6 +66,15 @@ func TestRunUsageContractSchemas(t *testing.T) {
 			if name == "run-usage.schema.json" {
 				snapshot := usage.Project(api.Snapshot{RunID: "fixture", AccessCleanupStatus: "not_required"}, nil)
 				raw, _ := json.Marshal(snapshot)
+				var value any
+				_ = json.Unmarshal(raw, &value)
+				if err = schema.Validate(value); err != nil {
+					t.Fatal(err)
+				}
+			}
+			if name == "run-usage-events.schema.json" {
+				page := api.Page{RunID: "fixture", Revision: 1, Events: []api.Event{{ID: "event", StepID: "audit.code.execute", ConfiguredModel: "reviewer", ConfiguredReasoningEffort: "high", MetadataIssues: []api.Issue{}}}}
+				raw, _ := json.Marshal(page)
 				var value any
 				_ = json.Unmarshal(raw, &value)
 				if err = schema.Validate(value); err != nil {

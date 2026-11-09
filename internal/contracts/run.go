@@ -413,7 +413,7 @@ func validateRunConfiguration(data []byte, complete bool) *Fault {
 		return failure
 	}
 	if profile.AuditModelRequired && value.Execution.Adapter == "orca-terminal" && value.Execution.Target.Kind == "orca_environment" {
-		return Fail(3, "unsupported_capability", "Native remote Orca does not provide verified audit model or workspace provenance; use development/2.")
+		return Fail(3, "unsupported_capability", "Remote Orca audited workflow is not qualified for original workspace provenance; use development/2.")
 	}
 	if complete && profile.AuditModelRequired {
 		model := value.Workflow.AuditModel

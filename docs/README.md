@@ -25,6 +25,7 @@
 | 内容输入与固定版本仓库调查 | [内容流程 Spec](spec/content-workflows.spec.md) · [仓库调查 Spec](archive/2026-11/implementation/spec/generate-repository.spec.md) |
 | 开发权限与宿主已有登录 | [full_access Spec](archive/2026-11/implementation/spec/development-full-access.spec.md) · [宿主认证 Spec](archive/2026-11/implementation/spec/host-native-auth.spec.md) |
 | 测试入口、场景、资格与缺口 | [测试指南](testing.md) · [测试清单](test-catalog.md) |
+| Workflow 模型、分阶段用量及 SteerLine 参考估价 | [模型与用量契约](model-usage.md) |
 | 专项设计、计划及验收 | [当前契约与未结设计](spec/README.md) · [当前验收与未结事项](acceptance/README.md) · [历史实施与验收](archive/2026-11/implementation/README.md)；各目录列表和搜索供完整检索 |
 
 实现状态与实际资格分别以各专项和固定构建验收为准。运行时支持组合由 `capabilities` 发布，字段以[内嵌 schema](../internal/resources/assets/cli.schema.json)和生产校验为准；流程定义见[源码](../internal/execution/workflow)，默认提示见[内嵌资源](../internal/resources/assets/prompts.json)。

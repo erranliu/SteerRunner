@@ -59,8 +59,8 @@ type StageResult struct {
 	ActualModel                              *ModelEvidence   `json:"actual_model,omitempty"`
 }
 
-// ModelEvidence records the native original turn report after its temporary
-// source registration has been revoked.
+// ModelEvidence retains historical observed evidence for decoding old records.
+// New executions do not require a separate model-log read or populate this field.
 type ModelEvidence struct {
 	Model           string `json:"model"`
 	ReasoningEffort string `json:"reasoning_effort"`

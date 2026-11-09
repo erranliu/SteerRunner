@@ -1,7 +1,6 @@
 package application
 
 import (
-	"context"
 	"errors"
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
@@ -11,7 +10,6 @@ import (
 	ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/runstate"
-	"github.com/erranliu/SteerRunner/internal/usage/collect"
 	"reflect"
 	"strings"
 	"sync"
@@ -169,28 +167,9 @@ func (e *Engine) finishWithMaterials(id string, value b.TurnEvidence, gate *sync
 			return false
 		}
 	}
-	var modelEvidence *workflow.ModelEvidence
-	if structuredAudited(r) && !r.DevelopmentMessage() && result.Succeeded && result.ContentVerified {
-		if !r.Allowed || r.ResumeRequired || r.PendingStop != "" || r.Closed {
-			return false
-		}
-		if gate != nil {
-			gate.Unlock()
-		}
-		ctx, cancel := context.WithTimeout(e.ctx, 25*time.Second)
-		proof, modelErr := collect.ReadAuditedModel(ctx, e.store, r, value)
-		cancel()
-		if gate != nil {
-			gate.Lock()
-		}
-		if modelErr == nil && (inputCopy.Model == "" || inputCopy.ReasoningEffort == "" || proof.Choice.Model != inputCopy.Model || proof.Choice.ReasoningEffort != inputCopy.ReasoningEffort) {
-			modelErr = errors.New("original turn model or reasoning effort differs from the frozen role")
-		}
-		if modelErr != nil {
-			e.blockRevision(id, r.Revision, "audited_model_unverified", modelErr, false)
-			return false
-		}
-		modelEvidence = &workflow.ModelEvidence{Model: proof.Choice.Model, ReasoningEffort: proof.Choice.ReasoningEffort, ProviderSession: proof.ProviderSession, Turn: proof.Turn, SourceDigest: proof.SourceDigest}
+	// Removing optional model observation must not relax stage authority.
+	if structuredAudited(r) && !r.DevelopmentMessage() && result.Succeeded && result.ContentVerified && (!r.Allowed || r.ResumeRequired || r.PendingStop != "" || r.Closed) {
+		return false
 	}
 	e.mu.Lock()
 	defer e.mu.Unlock()
@@ -247,7 +226,7 @@ func (e *Engine) finishWithMaterials(id string, value b.TurnEvidence, gate *sync
 		_ = e.commitLocked(r, nil, "final_unavailable")
 		return false
 	}
-	raw := workflow.StageResult{SessionID: value.SessionID, PRCandidates: append([]string(nil), value.PRCandidates...), UnexpectedWork: r.ReportWork[inputCopy.CommandID] != "", CommandID: value.CommandID, AttemptID: inputCopy.AttemptID, StepID: inputCopy.StepID, InputVersion: inputCopy.Version, TurnID: value.TurnID, Succeeded: result.Succeeded, FinalVerified: result.ContentVerified, Final: result.Content, Failure: result.Failure, FinalDiagnostic: result.Diagnostic, Outcome: result.NativeOutcome, Workspace: checkpoint, ActualModel: modelEvidence}
+	raw := workflow.StageResult{SessionID: value.SessionID, PRCandidates: append([]string(nil), value.PRCandidates...), UnexpectedWork: r.ReportWork[inputCopy.CommandID] != "", CommandID: value.CommandID, AttemptID: inputCopy.AttemptID, StepID: inputCopy.StepID, InputVersion: inputCopy.Version, TurnID: value.TurnID, Succeeded: result.Succeeded, FinalVerified: result.ContentVerified, Final: result.Content, Failure: result.Failure, FinalDiagnostic: result.Diagnostic, Outcome: result.NativeOutcome, Workspace: checkpoint}
 	if state.Contract == "publication" && result.ContentVerified {
 		if provider, err := providerFor(r); err == nil {
 			seen := map[string]bool{}
