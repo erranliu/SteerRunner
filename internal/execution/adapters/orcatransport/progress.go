@@ -18,17 +18,27 @@ func ResultSource(ctx context.Context, setup b.LifecycleSetup, host, instance st
 	return fileSource(ctx, setup, host, instance, true)
 }
 func fileSource(ctx context.Context, setup b.LifecycleSetup, host, instance string, result bool) (*native.ScopedFiles, error) {
-	profile, _, err := decodeLifecycleProfile(setup)
-	if err != nil {
-		return nil, errors.New("binding_invalid")
-	}
 	s := setup.Snapshot
+	var profile Profile
+	var development bool
+	if s.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 {
+		current, err := decodeAgentSessionProfile(setup)
+		if err != nil {
+			return nil, errors.New("binding_invalid")
+		}
+		profile, development = current.Transport, current.Development
+	} else {
+		var err error
+		profile, _, err = decodeLifecycleProfile(setup)
+		if err != nil {
+			return nil, errors.New("binding_invalid")
+		}
+	}
 	p := s.Ref.External
 	kind := "orca_terminal"
 	if s.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 {
 		kind = "orca_agent_session"
-		l := &frozenRecord{setup: setup, profile: profile}
-		state, stateErr := l.agentState(s)
+		state, stateErr := readAgentSessionState(s, profile, development, s)
 		if stateErr != nil || state.Worktree.Path != s.Workspace.Path || instance != "" && instance != state.Worktree.InstanceID {
 			return nil, errors.New("binding_invalid")
 		}

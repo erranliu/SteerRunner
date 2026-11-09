@@ -126,7 +126,7 @@ func decodeAgentSessionProfile(setup b.LifecycleSetup) (AgentSessionProfile, err
 	return p, nil
 }
 func (l *Lifecycle) validateStructured(s b.LifecycleSnapshot) error {
-	return l.frozenRecord().validateStructured(s)
+	return validateStructuredSnapshot(l.setup.Snapshot, l.profile, s)
 }
 func (l *Lifecycle) agentClient(runtime string) agentSessionPort {
 	if l.agentSessions != nil {
@@ -144,7 +144,7 @@ func agentSessionID(s b.LifecycleSnapshot) string {
 	return "oas_" + digest([]byte(s.Ref.RunID + "\x00" + s.Ref.AttemptID))[:32]
 }
 func (l *Lifecycle) agentState(s b.LifecycleSnapshot) (agentSessionState, error) {
-	return l.frozenRecord().agentState(s)
+	return readAgentSessionState(l.setup.Snapshot, l.profile, l.agentDevelopment, s)
 }
 func (l *Lifecycle) agentEnvelope(s b.LifecycleSnapshot, state agentSessionState) ([]b.ImplementationDataEnvelope, error) {
 	raw, err := json.Marshal(state)

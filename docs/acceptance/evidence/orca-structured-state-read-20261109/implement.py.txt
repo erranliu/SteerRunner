@@ -1,0 +1,57 @@
+from pathlib import Path
+base=Path('internal/execution/adapters/orcatransport')
+p=base/'frozen_record.go';text=p.read_text(encoding='utf-8')
+start=text.index('func (l *frozenRecord) validateStructured(');end=text.index('func (l *frozenRecord) closeSettlesAgentSession()',start)
+core=text[start:end]
+core=core.replace('func (l *frozenRecord) validateStructured(s b.LifecycleSnapshot) error {','func validateStructuredSnapshot(original b.LifecycleSnapshot, profile Profile, s b.LifecycleSnapshot) error {')
+core=core.replace('if err := l.validate(s);','if err := validateSnapshotBinding(original, profile, s);')
+core=core.replace('func (l *frozenRecord) agentState(s b.LifecycleSnapshot) (agentSessionState, error) {','func readAgentSessionState(original b.LifecycleSnapshot, profile Profile, development bool, s b.LifecycleSnapshot) (agentSessionState, error) {')
+core=core.replace('l.validateStructured(s)','validateStructuredSnapshot(original, profile, s)').replace('l.profile','profile').replace('l.agentDevelopment','development')
+text=text[:start]+'''func (l *frozenRecord) validateStructured(s b.LifecycleSnapshot) error {
+    return validateStructuredSnapshot(l.setup.Snapshot, l.profile, s)
+}
+
+func (l *frozenRecord) agentState(s b.LifecycleSnapshot) (agentSessionState, error) {
+    return readAgentSessionState(l.setup.Snapshot, l.profile, l.agentDevelopment, s)
+}
+
+'''+text[end:]
+start=text.index('func (l *frozenRecord) validate(s b.LifecycleSnapshot) error {');end=text.index('func (l *frozenRecord) resourceState',start)
+binding=text[start:end].replace('func (l *frozenRecord) validate(s b.LifecycleSnapshot) error {','func validateSnapshotBinding(original b.LifecycleSnapshot, profile Profile, s b.LifecycleSnapshot) error {').replace('w := l.setup.Snapshot','w := original').replace('l.profile','profile')
+text=text[:start]+'''func (l *frozenRecord) validate(s b.LifecycleSnapshot) error {
+    return validateSnapshotBinding(l.setup.Snapshot, l.profile, s)
+}
+
+'''+text[end:]
+p.write_text(text,encoding='utf-8',newline='\n')
+(base/'agent_session_read.go').write_text('''package orcatransport
+
+import (
+    "errors"
+
+    b "github.com/erranliu/SteerRunner/internal/execution/backend"
+)
+
+// Shared read validation owns no host, process probe, observer or mutable state.
+// Development is explicit: a queued next input may coexist with the prior turn.
+'''+core+binding,encoding='utf-8',newline='\n')
+p=base/'agent_session.go';text=p.read_text(encoding='utf-8').replace('return l.frozenRecord().validateStructured(s)','return validateStructuredSnapshot(l.setup.Snapshot, l.profile, s)').replace('return l.frozenRecord().agentState(s)','return readAgentSessionState(l.setup.Snapshot, l.profile, l.agentDevelopment, s)');p.write_text(text,encoding='utf-8',newline='\n')
+p=base/'agent_session_usage.go';text=p.read_text(encoding='utf-8').replace('l := frozenRecord{setup: setup, profile: p.Transport, agentDevelopment: p.Development}\n\tstate, err := l.agentState(snapshot)','state, err := readAgentSessionState(snapshot, p.Transport, p.Development, snapshot)');p.write_text(text,encoding='utf-8',newline='\n')
+p=base/'progress.go';text=p.read_text(encoding='utf-8');old='''	profile, _, err := decodeLifecycleProfile(setup)
+	if err != nil {
+		return nil, errors.New("binding_invalid")
+	}
+	s := setup.Snapshot'''.replace('\n+','\n')
+new='''    s := setup.Snapshot
+    var profile Profile
+    var development bool
+    if s.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 {
+        current, err := decodeAgentSessionProfile(setup)
+        if err != nil { return nil, errors.New("binding_invalid") }
+        profile, development = current.Transport, current.Development
+    } else {
+        var err error
+        profile, _, err = decodeLifecycleProfile(setup)
+        if err != nil { return nil, errors.New("binding_invalid") }
+    }'''
+assert old in text;text=text.replace(old,new,1).replace('l := &frozenRecord{setup: setup, profile: profile}\n\t\tstate, stateErr := l.agentState(s)','state, stateErr := readAgentSessionState(s, profile, development, s)');p.write_text(text,encoding='utf-8',newline='\n')

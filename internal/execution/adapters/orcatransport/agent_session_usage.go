@@ -38,8 +38,7 @@ func StructuredUsageBinding(profile []b.ImplementationDataEnvelope, snapshot b.L
 	if err != nil || binding.RunID == "" || binding.RunID != snapshot.Session.ExecutionID || binding.AttemptID != snapshot.Session.AttemptID || binding.CWD == "" || binding.CWD != snapshot.Workspace.Path {
 		return binding, p.Transport, original, errors.New("IDENTITY_UNVERIFIED")
 	}
-	l := frozenRecord{setup: setup, profile: p.Transport, agentDevelopment: p.Development}
-	state, err := l.agentState(snapshot)
+	state, err := readAgentSessionState(snapshot, p.Transport, p.Development, snapshot)
 	if err != nil {
 		return binding, p.Transport, original, errors.New("IDENTITY_CHANGED")
 	}

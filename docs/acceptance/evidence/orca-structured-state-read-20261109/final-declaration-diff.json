@@ -1,0 +1,21 @@
+{
+  "added": [
+    "internal/execution/adapters/orcatransport/agent_session_read.go:func readAgentSessionState",
+    "internal/execution/adapters/orcatransport/agent_session_read.go:func validateSnapshotBinding",
+    "internal/execution/adapters/orcatransport/agent_session_read.go:func validateStructuredSnapshot"
+  ],
+  "baseline": "baseline",
+  "changed_or_deleted_types": [],
+  "deleted": [],
+  "identical": 2246,
+  "modified": [
+    "internal/execution/adapters/orcatransport/agent_session.go:func *Lifecycle.agentState",
+    "internal/execution/adapters/orcatransport/agent_session.go:func *Lifecycle.validateStructured",
+    "internal/execution/adapters/orcatransport/agent_session_usage.go:func StructuredUsageBinding",
+    "internal/execution/adapters/orcatransport/frozen_record.go:func *frozenRecord.agentState",
+    "internal/execution/adapters/orcatransport/frozen_record.go:func *frozenRecord.validate",
+    "internal/execution/adapters/orcatransport/frozen_record.go:func *frozenRecord.validateStructured",
+    "internal/execution/adapters/orcatransport/progress.go:func fileSource"
+  ],
+  "stage": "final"
+}

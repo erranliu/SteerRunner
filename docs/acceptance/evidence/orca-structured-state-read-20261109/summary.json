@@ -1,0 +1,238 @@
+{
+  "base_commit": "827ad83bf0785bbcd32ac5775c311f1a981ae6a5",
+  "tests": {
+    "before.jsonl": {
+      "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport": {
+        "top_pass": 0,
+        "top_fail": 1,
+        "top_skip": 0,
+        "all_pass": 0,
+        "all_fail": 7,
+        "all_skip": 0,
+        "skip_names": [],
+        "fail_names": [
+          "TestStructuredFilesWhileNextInputQueued/development-queued",
+          "TestStructuredFilesWhileNextInputQueued/execute-queued",
+          "TestStructuredFilesWhileNextInputQueued/changed-input",
+          "TestStructuredFilesWhileNextInputQueued/foreign-resource",
+          "TestStructuredFilesWhileNextInputQueued/wrong-instance",
+          "TestStructuredFilesWhileNextInputQueued/malformed-state",
+          "TestStructuredFilesWhileNextInputQueued"
+        ],
+        "result": "fail"
+      }
+    },
+    "before-recheck.jsonl": {
+      "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport": {
+        "top_pass": 0,
+        "top_fail": 1,
+        "top_skip": 0,
+        "all_pass": 5,
+        "all_fail": 2,
+        "all_skip": 0,
+        "skip_names": [],
+        "fail_names": [
+          "TestStructuredFilesWhileNextInputQueued/development-queued",
+          "TestStructuredFilesWhileNextInputQueued"
+        ],
+        "result": "fail"
+      }
+    },
+    "after-focused.jsonl": {
+      "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport": {
+        "top_pass": 1,
+        "top_fail": 0,
+        "top_skip": 0,
+        "all_pass": 7,
+        "all_fail": 0,
+        "all_skip": 0,
+        "skip_names": [],
+        "fail_names": [],
+        "result": "pass"
+      }
+    },
+    "components.jsonl": {
+      "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport": {
+        "top_pass": 82,
+        "top_fail": 0,
+        "top_skip": 0,
+        "all_pass": 358,
+        "all_fail": 0,
+        "all_skip": 0,
+        "skip_names": [],
+        "fail_names": [],
+        "result": "pass"
+      },
+      "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca": {
+        "top_pass": 62,
+        "top_fail": 0,
+        "top_skip": 4,
+        "all_pass": 360,
+        "all_fail": 0,
+        "all_skip": 4,
+        "skip_names": [
+          "TestOrcaLocalPipeNativeEvidence",
+          "TestOrcaLocalIPCNativeProbe",
+          "TestOrcaTerminalQueryLive",
+          "TestUsageLocalAcceptanceRepoCleanupLive"
+        ],
+        "fail_names": [],
+        "result": "pass"
+      }
+    },
+    "application.jsonl": {
+      "github.com/erranliu/SteerRunner/internal/application": {
+        "top_pass": 103,
+        "top_fail": 0,
+        "top_skip": 0,
+        "all_pass": 255,
+        "all_fail": 0,
+        "all_skip": 0,
+        "skip_names": [],
+        "fail_names": [],
+        "result": "pass"
+      }
+    },
+    "shared.jsonl": {
+      "github.com/erranliu/SteerRunner/internal/usage/collect": {
+        "top_pass": 23,
+        "top_fail": 0,
+        "top_skip": 3,
+        "all_pass": 34,
+        "all_fail": 0,
+        "all_skip": 3,
+        "skip_names": [
+          "TestUsageExistingNativeEvidence",
+          "TestUsageRemoteCodexCleanupLive",
+          "TestUsageRemoteCodexLive"
+        ],
+        "fail_names": [],
+        "result": "pass"
+      },
+      "github.com/erranliu/SteerRunner/internal/host": {
+        "top_pass": 18,
+        "top_fail": 0,
+        "top_skip": 0,
+        "all_pass": 251,
+        "all_fail": 0,
+        "all_skip": 0,
+        "skip_names": [],
+        "fail_names": [],
+        "result": "pass"
+      },
+      "github.com/erranliu/SteerRunner/internal/storage": {
+        "top_pass": 20,
+        "top_fail": 0,
+        "top_skip": 0,
+        "all_pass": 27,
+        "all_fail": 0,
+        "all_skip": 0,
+        "skip_names": [],
+        "fail_names": [],
+        "result": "pass"
+      },
+      "github.com/erranliu/SteerRunner/internal/contracts": {
+        "top_pass": 25,
+        "top_fail": 0,
+        "top_skip": 0,
+        "all_pass": 119,
+        "all_fail": 0,
+        "all_skip": 0,
+        "skip_names": [],
+        "fail_names": [],
+        "result": "pass"
+      },
+      "github.com/erranliu/SteerRunner/internal/testkit/livetest": {
+        "top_pass": 49,
+        "top_fail": 0,
+        "top_skip": 0,
+        "all_pass": 323,
+        "all_fail": 0,
+        "all_skip": 0,
+        "skip_names": [],
+        "fail_names": [],
+        "result": "pass"
+      }
+    }
+  },
+  "build": {
+    "schema": "steerrunner-build/v1",
+    "component": "runner",
+    "source_digest": "4f7a2d48ff8a4d1a001796886919312a07451b1d9100a447f6a4cc0c951b1275",
+    "version": "0.2.0-dev.4",
+    "source_commit": "827ad83bf0785bbcd32ac5775c311f1a981ae6a5",
+    "source_dirty": true,
+    "protocol": "steerrunner-cli/v1",
+    "platform": "windows/amd64",
+    "sha256": "76c888a5d27da028c8a91bcb558103bb41fb785b44091db54ecf2634c0d35373"
+  },
+  "controlled": {
+    "controlled_cases": {
+      "TestSRRestartPreservesAuthorization": [
+        {
+          "id": "graceful",
+          "passed": true,
+          "duration_seconds": 17.296047
+        },
+        {
+          "id": "kill",
+          "passed": true,
+          "duration_seconds": 16.8575618
+        },
+        {
+          "id": "creation_receipt",
+          "passed": true,
+          "duration_seconds": 13.6488365
+        },
+        {
+          "id": "pending_stop",
+          "passed": true,
+          "duration_seconds": 12.3120868
+        }
+      ]
+    },
+    "exe": "C:\\Users\\lmas1\\.codex\\worktrees\\cdc6\\SteerRunner\\.evidence\\structured-state-read\\final\\steerrunner.exe",
+    "exit_code": 0,
+    "finished_at": "2026-11-09T03:12:07.0666057Z",
+    "scenario_count": 3
+  },
+  "scope": {
+    "changed_source_files": [
+      "internal/execution/adapters/orcatransport/agent_session.go",
+      "internal/execution/adapters/orcatransport/agent_session_read.go",
+      "internal/execution/adapters/orcatransport/agent_session_read_windows_test.go",
+      "internal/execution/adapters/orcatransport/agent_session_usage.go",
+      "internal/execution/adapters/orcatransport/frozen_record.go",
+      "internal/execution/adapters/orcatransport/progress.go"
+    ],
+    "unchanged_input_files": 844,
+    "persistent_type_changes": [],
+    "read_validation_logic_equivalent": {
+      "agentState -> readAgentSessionState": true,
+      "validate -> validateSnapshotBinding": true,
+      "validateStructured -> validateStructuredSnapshot": true
+    },
+    "final_manifest_sha256": "3553462ad88589b2e9c096e912b38088f4fbaf0da09ed9834919d6c34ae649f2",
+    "preserved": [
+      "NewLifecycle/decodeFrozenRecord constructors",
+      "closeSettlesAgentSession/verifyAgentSessionStopped bodies",
+      "Lifecycle.original/boundTerminal and capabilityFixtureLifecycle",
+      "all existing shared fixtures",
+      "raw query/subscription",
+      "five Node assets and probe/L1 scripts"
+    ]
+  },
+  "formats": {
+    "wire": {
+      "bytes": 158875,
+      "sha256": "f5d69cd15df16ef2ba029b137e4fc6caea774aadf11565963dd0813254d78b62",
+      "identical": true
+    },
+    "frozen": {
+      "bytes": 15528,
+      "sha256": "06034f8e8ccba2233eac1518a29ac706ae48f6273993da21cc6a69f233f16d62",
+      "identical": true
+    }
+  },
+  "source_archive_sha256": "49f46963c8ea1b1149f9057d77e3e0245a11f1611ed9799f711b467184320515"
+}
