@@ -174,8 +174,8 @@ PR 查询失败继续按原目标对账，不触发新的实施或发布。外�
 ```text
 将当前分支 push 到发布目标并创建 PR。
 实施结果：{{verified_implementation_result}}；发布目标：{{publication_binding}}
-用 git branch --show-current 取得实际分支，作为远端分支和 PR head。
-结果未知时说明情况，不重复创建。
+使用当前分支作为远端分支和 PR head。
+结果未知先核实原操作，不盲目重做。
 成功后给出 PR URL，并在最终回复末尾单独写一行：本次发布已完成。
 ```
 

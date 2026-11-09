@@ -1,0 +1,29 @@
+{
+  "baseline": "827ad83bf0785bbcd32ac5775c311f1a981ae6a5",
+  "encoding": "UTF-8 without BOM; body only",
+  "changes": [
+    {
+      "path": "internal/execution/adapters/codex/worker_runtime.go",
+      "name": "WorkerInstructionFormat",
+      "before": "shell=%q,login=false。临时文件使用本次Run指定临时目录并同次清理，禁写认证/Git管理根。不得输出环境/凭据、提权、登录、改认证或权限。仅精确暂存任务路径，检查非空暂存diff且仅含任务；串行暂存/检查/提交，非零即停。commit不用管道，紧接命令保存并打印其$LASTEXITCODE，再查状态。失败或未知（含认证过期）保留原分支/PR结果并停止对账；未知发布不重做。",
+      "after": "shell=%q,login=false。临时文件限本次Run指定临时目录，用后清理；禁写认证/Git管理根，禁输出环境/凭据、提权、登录、改认证/权限。仅暂存并提交任务改动，核实结果。优先项目验收，避免重复预检；命令/测试错误可修复则在本阶段授权内修复复验，仅缺必要信息、授权或外部条件才等待。提交/推送/发布结果未知先核实原操作，保留原分支/PR，不盲目重做。",
+      "before_utf8_bytes": 479,
+      "after_utf8_bytes": 476,
+      "before_sha256": "6fa4cc2ba24b1e2c1beccea2baeb633727fbc3dd3cafcebb051d04a229970fde",
+      "after_sha256": "0e51849e39822d8d4c76c89674578972009d3d9f98997c08c28d59c23ab6114d",
+      "shell": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "before_rendered_utf8_bytes": 541,
+      "after_rendered_utf8_bytes": 538
+    },
+    {
+      "path": "internal/execution/workflow/prompt.go",
+      "name": "publishPrompt",
+      "before": "发布当前分支并创建 PR；用 git branch --show-current 确定 head。返回真实 PR URL；结果未知时说明并停止，不重复发布。",
+      "after": "发布当前分支并创建 PR；返回真实 PR URL；结果未知先核实原操作，不盲目重做。",
+      "before_utf8_bytes": 150,
+      "after_utf8_bytes": 106,
+      "before_sha256": "5be35984a9d0b6b13bc802223eccbc52dafa66e27f3e4e9517abfe69b9fae4ff",
+      "after_sha256": "47de7b168c4f1d2e86c5c75e316282950b99d2760e7ae18e6570fe092ff772cf"
+    }
+  ]
+}

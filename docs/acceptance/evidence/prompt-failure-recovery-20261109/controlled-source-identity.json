@@ -1,0 +1,17 @@
+{
+  "pid": 3780,
+  "process_started_at": "2026-11-09T03:37:07.2161490Z",
+  "pattern": "^(TestSRResultAcquisition)$",
+  "result_file_cases": [],
+  "controlled_cases": [
+    "TestSRResultAcquisition/plain-marker"
+  ],
+  "runner_sha256": "6AED7AB5EC7A2AA4743C716922CE22C2B2876CE8F1BD9A169F06202DD0D05582",
+  "fixture_sha256": "3B9A75E479C776A48EA92AFB2D91E57F9FAAC5B985C74E7B08B42BD0F548E273",
+  "native_fixture_sha256": "647592F9ADB4A2CE85BCCDD55288FA763FA2F3E39E81F15BF90F801626E2B06C",
+  "source_commit": "827ad83bf0785bbcd32ac5775c311f1a981ae6a5",
+  "source_dirty": true,
+  "go_version": "go version go1.26.4 windows/amd64",
+  "os_version": "Microsoft Windows NT 10.0.26200.0",
+  "machine": "LIUMING-ASUS"
+}

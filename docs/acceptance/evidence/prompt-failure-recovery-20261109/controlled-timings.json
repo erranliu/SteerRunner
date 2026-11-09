@@ -1,0 +1,170 @@
+{
+  "case_coverage": {
+    "TestSRResultFile": {
+      "status": "not_required",
+      "expected_cases": []
+    },
+    "TestSRResultAcquisition": {
+      "expected_cases": [
+        "plain-marker"
+      ],
+      "required_paths": [
+        "TestSRResultAcquisition/plain-marker"
+      ],
+      "status": "passed",
+      "actual_cases": [
+        {
+          "id": "plain-marker",
+          "passed": true,
+          "duration_seconds": 11.5132501
+        }
+      ]
+    },
+    "TestSRRestartPreservesAuthorization": {
+      "status": "not_required",
+      "expected_cases": []
+    }
+  },
+  "expected_tests": [
+    "TestSRResultAcquisition"
+  ],
+  "unknown_tests": [],
+  "result_file_coverage": {
+    "status": "not_required",
+    "expected_cases": []
+  },
+  "complete_controlled_passed": false,
+  "errors": [],
+  "status": "passed",
+  "schema": "steerrunner-controlled-timings/v1",
+  "unexpected_tests": [],
+  "missing_tests": [],
+  "subtests": [
+    {
+      "test": "TestSRResultAcquisition/plain-marker",
+      "status": "pass",
+      "duration_seconds": 11.51
+    }
+  ],
+  "sources": [
+    {
+      "sha256": "3ab37c894b313da5dab899c9e92d2d955e657b334d5b747e00b44d23c71e208d",
+      "path": "C:\\Users\\lmas1\\.codex\\worktrees\\dd5e\\SteerRunner\\.evidence\\prompt-failure-recovery\\controlled-plain\\controlled\\integration.log"
+    },
+    {
+      "sha256": "afc237bc4fc8214e61c5e8a34b738a1f2c59d9875d4740380389f6ed91def5f6",
+      "path": "C:\\Users\\lmas1\\.codex\\worktrees\\dd5e\\SteerRunner\\.evidence\\prompt-failure-recovery\\controlled-plain\\controlled\\result.json"
+    },
+    {
+      "sha256": "0e3d8c20271810dbb3cbeb1ecd3e538b419c34f7bac1f6e41814d583726f1ab1",
+      "path": "C:\\Users\\lmas1\\.codex\\worktrees\\dd5e\\SteerRunner\\.evidence\\prompt-failure-recovery\\controlled-plain\\controlled\\source-identity.json"
+    }
+  ],
+  "groups": [
+    {
+      "id": "foundation",
+      "measured_count": 0,
+      "registered_count": 7,
+      "observed_seconds": 0.0,
+      "missing_tests": [
+        "TestSRStandalonePackage",
+        "TestSRServiceOwnership",
+        "TestSRInputFreeze",
+        "TestSRPermissionQualification",
+        "TestSRStorageLogsEvents",
+        "TestSRNativeCatalogPublicCLI",
+        "TestSRExecutionConfigurationPublicCLI"
+      ],
+      "observed_count": 0
+    },
+    {
+      "id": "workflow",
+      "measured_count": 1,
+      "registered_count": 5,
+      "observed_seconds": 11.51,
+      "missing_tests": [
+        "TestSRRunWorkflow",
+        "TestSRPublicationIdentity",
+        "TestSRPublicationBeforeWorkflowReady",
+        "TestSRWorkflowDiscoveryAndSelection"
+      ],
+      "observed_count": 1
+    },
+    {
+      "id": "recovery",
+      "measured_count": 0,
+      "registered_count": 7,
+      "observed_seconds": 0.0,
+      "missing_tests": [
+        "TestSRNativeUnknownAndStop",
+        "TestSRRestartPreservesAuthorization",
+        "TestSRStabilityLostSubmitResponse",
+        "TestSRStabilityRevocationAcrossRestart",
+        "TestSRMultipleRunsIsolation",
+        "TestSRResourceCreationRecovery",
+        "TestSRManualReconciliation"
+      ],
+      "observed_count": 0
+    },
+    {
+      "id": "content",
+      "measured_count": 0,
+      "registered_count": 5,
+      "observed_seconds": 0.0,
+      "missing_tests": [
+        "TestSRContentGenerate",
+        "TestSRContentRepository",
+        "TestSRContentConversation",
+        "TestSRContentQuestionAndUnknown",
+        "TestSRContentGenerationRecovery"
+      ],
+      "observed_count": 0
+    },
+    {
+      "id": "files",
+      "measured_count": 0,
+      "registered_count": 4,
+      "observed_seconds": 0.0,
+      "missing_tests": [
+        "TestSRRunEvidenceR2",
+        "TestSRProgressFile",
+        "TestSRResultFile",
+        "TestSRSingleExecutionColdStop"
+      ],
+      "observed_count": 0
+    },
+    {
+      "id": "orca-cli",
+      "measured_count": 0,
+      "registered_count": 1,
+      "observed_seconds": 0.0,
+      "missing_tests": [
+        "TestSROrcaCLIWaitRetry"
+      ],
+      "observed_count": 0
+    }
+  ],
+  "validation_scope": "controlled-timing",
+  "observed_count": 1,
+  "observed_top_level_seconds": 11.51,
+  "slowest": [
+    {
+      "test": "TestSRResultAcquisition",
+      "group": "workflow",
+      "status": "pass",
+      "duration_seconds": 11.51
+    }
+  ],
+  "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\dd5e\\SteerRunner\\.evidence\\prompt-failure-recovery\\controlled-plain\\controlled",
+  "passed_count": 1,
+  "qualification_eligible": false,
+  "incomplete_tests": [],
+  "tests": [
+    {
+      "test": "TestSRResultAcquisition",
+      "group": "workflow",
+      "status": "pass",
+      "duration_seconds": 11.51
+    }
+  ]
+}

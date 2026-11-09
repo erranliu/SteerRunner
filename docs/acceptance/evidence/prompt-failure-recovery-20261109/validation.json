@@ -1,0 +1,209 @@
+{
+  "scope": "pre-merge targeted packages and controlled-selection",
+  "baseline": "827ad83bf0785bbcd32ac5775c311f1a981ae6a5",
+  "source_sha256": {
+    "internal/execution/adapters/codex/worker_runtime.go": "e745eac89b5d5c212da2f9000f3337e56cc984ff14c76788f4dd6f9aed9d4239",
+    "internal/execution/adapters/codex/input_budget_test.go": "d030d151271ad0710e1173424ee3fe13ec640192c4721c13f5d31f26b2cfc24f",
+    "internal/execution/terminaltools/tool_windows_test.go": "f07af3b6bfdfd9da6d67b1022ff0825f2732df0d42f30e0b8bf1b4e9d2ac25f5",
+    "internal/execution/workflow/prompt.go": "e1bbf821c60db27e2e8a04047a732e56da3eb0296552c630d31765e7821b75a9",
+    "internal/resources/assets/prompts.json": "7db2e0bba07385f1045aacff57b961584f19b7e204483bd5399ea06708aee446"
+  },
+  "full_l1": false,
+  "full_controlled": false,
+  "live_model_verified": false,
+  "original_candidate_run_modified": false,
+  "tests": {
+    "owners": {
+      "packages": [
+        {
+          "package": "github.com/erranliu/SteerRunner/internal/execution/workflow",
+          "status": "pass",
+          "seconds": 1.5070000000000001
+        },
+        {
+          "package": "github.com/erranliu/SteerRunner/internal/resources",
+          "status": "pass",
+          "seconds": 1.837
+        },
+        {
+          "package": "github.com/erranliu/SteerRunner/internal/execution/terminaltools",
+          "status": "fail",
+          "seconds": 10.214
+        },
+        {
+          "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+          "status": "fail",
+          "seconds": 49.321
+        }
+      ],
+      "root_passed": 117,
+      "root_failed": 15,
+      "root_skipped": 1,
+      "root_failures": [
+        "TestFullAccessCommandHasNoCodexSandboxDependency",
+        "TestExecutionOwnerAllowsOnlyQualifiedLaterAttemptForOriginalIdleThread",
+        "TestExecutionOwnerServiceCancellationClosesOnlyClientConnection",
+        "TestNativeViewerVerifiesLiveBindingWithReadsOnly",
+        "TestNativeViewerAttachesWithoutPromptOrPolicyOverrides",
+        "TestRemoteModelBridgeRejectsInvalidOriginalRequest",
+        "TestRemoteModelBridgeRejectsUnboundInvalidRequest",
+        "TestRemoteModelBridgePreservesLargeNativeReplies",
+        "TestRemoteModelBridgeUsesOriginalNativeConnection",
+        "TestRemoteWorkspaceAuditUsesOriginalGitOwner",
+        "TestWorkerRuntimeTempUsesFixedAdmin",
+        "TestAsyncQuestionObserveSteerAndReconcile",
+        "TestCodexLinkedWorktreePathsOnlyGrantsFixedGitPaths",
+        "TestAppServerPendingFeedbackRecoveryUsesNewTurnReceipt",
+        "TestMockAppServerThreadAndTurnContract"
+      ],
+      "root_skips": [
+        "TestServiceStopWorkerHelper"
+      ],
+      "log": "owners.jsonl.gz"
+    },
+    "adapter-parser": {
+      "packages": [
+        {
+          "package": "github.com/erranliu/SteerRunner/internal/textanalysis",
+          "status": "pass",
+          "seconds": 3.355
+        },
+        {
+          "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+          "status": "fail",
+          "seconds": 52.841
+        }
+      ],
+      "root_passed": 83,
+      "root_failed": 7,
+      "root_skipped": 0,
+      "root_failures": [
+        "TestOrcaCLICommandEncodingAndConsumers",
+        "TestStructuredWorkspaceRecoversOriginalOwnerOutput",
+        "TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch",
+        "TestCreationOwnerIncompleteLaunchClaimNeverRetries",
+        "TestCreationOwnerStartupUsesOriginalDeadline",
+        "TestNativeReceiptPublicationAcrossWindowsReaders",
+        "TestStructuredWorkspaceAuditReadsOriginalChangedTree"
+      ],
+      "root_skips": [],
+      "log": "adapter-parser.jsonl.gz"
+    },
+    "application": {
+      "packages": [
+        {
+          "package": "github.com/erranliu/SteerRunner/internal/application",
+          "status": "fail",
+          "seconds": 2.003
+        }
+      ],
+      "root_passed": 5,
+      "root_failed": 3,
+      "root_skipped": 0,
+      "root_failures": [
+        "TestFrozenBudgetSuccessorsAndDraftResume",
+        "TestSRFreezeOrcaStructuredAudited",
+        "TestSRFreezeOrcaStructuredExecuteOnly"
+      ],
+      "root_skips": [],
+      "log": "application.jsonl.gz"
+    },
+    "owners-host": {
+      "packages": [
+        {
+          "package": "github.com/erranliu/SteerRunner/internal/execution/workflow",
+          "status": "pass",
+          "seconds": 0.829
+        },
+        {
+          "package": "github.com/erranliu/SteerRunner/internal/resources",
+          "status": "pass",
+          "seconds": 2.403
+        },
+        {
+          "package": "github.com/erranliu/SteerRunner/internal/textanalysis",
+          "status": "pass",
+          "seconds": 7.622
+        },
+        {
+          "package": "github.com/erranliu/SteerRunner/internal/execution/terminaltools",
+          "status": "pass",
+          "seconds": 10.316
+        },
+        {
+          "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+          "status": "pass",
+          "seconds": 41.556
+        },
+        {
+          "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+          "status": "pass",
+          "seconds": 59.557
+        }
+      ],
+      "root_passed": 222,
+      "root_failed": 0,
+      "root_skipped": 1,
+      "root_failures": [],
+      "root_skips": [
+        "TestServiceStopWorkerHelper"
+      ],
+      "log": "owners-host.jsonl.gz"
+    },
+    "application-host": {
+      "packages": [
+        {
+          "package": "github.com/erranliu/SteerRunner/internal/application",
+          "status": "pass",
+          "seconds": 17.437
+        }
+      ],
+      "root_passed": 8,
+      "root_failed": 0,
+      "root_skipped": 0,
+      "root_failures": [],
+      "root_skips": [],
+      "log": "application-host.jsonl.gz"
+    },
+    "final-defaults": {
+      "packages": [
+        {
+          "package": "github.com/erranliu/SteerRunner/internal/execution/workflow",
+          "status": "pass",
+          "seconds": 1.109
+        },
+        {
+          "package": "github.com/erranliu/SteerRunner/internal/resources",
+          "status": "pass",
+          "seconds": 2.058
+        },
+        {
+          "package": "github.com/erranliu/SteerRunner/internal/testkit/protocol",
+          "status": "pass",
+          "seconds": 3.296
+        }
+      ],
+      "root_passed": 43,
+      "root_failed": 0,
+      "root_skipped": 0,
+      "root_failures": [],
+      "root_skips": [],
+      "log": "final-defaults.jsonl.gz"
+    }
+  },
+  "controlled": {
+    "command": "./scripts/test-controlled.ps1 -Combination result-plain -OutDir .evidence/prompt-failure-recovery/controlled-plain",
+    "status": "passed",
+    "cases": {
+      "TestSRResultAcquisition": [
+        "plain-marker"
+      ]
+    },
+    "qualification_eligible": false
+  },
+  "commands": {
+    "owners-host": "go test ./internal/execution/adapters/codex ./internal/execution/workflow ./internal/resources ./internal/execution/terminaltools ./internal/execution/adapters/orcatransport ./internal/textanalysis -count=1 -timeout=8m -json",
+    "application-host": "go test ./internal/application -run '^(TestFrozenBudgetLegalWorkflowEntries|TestFrozenBudgetSuccessorsAndDraftResume|TestFrozenBudgetReadsSavedLegacySources|TestFrozenBudgetUnknownReconcileAndStopDoNotRepair|TestSRResumeWorkflowRetainsOriginalReportSource|TestWorkflowRecoveryChecksExecutionSemanticsInsteadOfCatalogMetadata|TestSRFreezeOrcaStructuredAudited|TestSRFreezeOrcaStructuredExecuteOnly)$' -count=1 -timeout=8m -json",
+    "final-defaults": "go test ./internal/execution/workflow ./internal/resources ./internal/testkit/protocol -count=1 -timeout=5m -json"
+  }
+}

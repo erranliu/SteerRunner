@@ -157,7 +157,7 @@ func (r *workerRuntime) environment(env []string) ([]string, error) {
 	return setEnvironmentValues(env, values), nil
 }
 
-const WorkerInstructionFormat = "shell=%q,login=false。临时文件使用本次Run指定临时目录并同次清理，禁写认证/Git管理根。不得输出环境/凭据、提权、登录、改认证或权限。仅精确暂存任务路径，检查非空暂存diff且仅含任务；串行暂存/检查/提交，非零即停。commit不用管道，紧接命令保存并打印其$LASTEXITCODE，再查状态。失败或未知（含认证过期）保留原分支/PR结果并停止对账；未知发布不重做。"
+const WorkerInstructionFormat = "shell=%q,login=false。临时文件限本次Run指定临时目录，用后清理；禁写认证/Git管理根，禁输出环境/凭据、提权、登录、改认证/权限。仅暂存并提交任务改动，核实结果。优先项目验收，避免重复预检；命令/测试错误可修复则在本阶段授权内修复复验，仅缺必要信息、授权或外部条件才等待。提交/推送/发布结果未知先核实原操作，保留原分支/PR，不盲目重做。"
 
 func (r *workerRuntime) instructions() string {
 	return fmt.Sprintf(WorkerInstructionFormat, r.Shell)

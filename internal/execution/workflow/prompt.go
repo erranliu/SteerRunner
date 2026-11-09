@@ -13,7 +13,7 @@ type FileReference struct {
 const ImplementPrompt = "按 Spec 和 Plan 实施并验证。"
 const reportPrompt = "仅整理原实施结果，不补做。"
 const implementationIncomplete = "未完成"
-const publishPrompt = "发布当前分支并创建 PR；用 git branch --show-current 确定 head。返回真实 PR URL；结果未知时说明并停止，不重复发布。"
+const publishPrompt = "发布当前分支并创建 PR；返回真实 PR URL；结果未知先核实原操作，不盲目重做。"
 const PublishReportPrompt = "仅整理原发布结果与 PR URL，不重发；保留依据、失败、未知、缺失与冲突。"
 const FeedbackLabel = "\n反馈：\n"
 const SuccessLabel = "\n成功时末行："

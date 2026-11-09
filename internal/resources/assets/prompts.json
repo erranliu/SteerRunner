@@ -1,7 +1,7 @@
 {
   "implement.execute": "读取所列 Spec/Plan/材料，实施并完成必要验证。",
   "implement.report": "仅整理原实施结果，不补做。",
-  "publish": "发布当前分支并创建 PR；用 git branch --show-current 确定 head。返回真实 PR URL；结果未知时说明并停止，不重复发布。",
+  "publish": "发布当前分支并创建 PR；返回真实 PR URL；结果未知先核实原操作，不盲目重做。",
   "publish.report": "仅整理原发布结果与 PR URL，不重发；保留依据、失败、未知、缺失与冲突。",
   "audit.code.report": "仅报告原审计；不补做或编造。",
   "audit.code": "审计修复 P0–P2；必要验证后提交，无改动沿用提交。\nJSON only: outcome=done|needs_input|blocked,summary; needs_input:question; blocked:blocker{category=failure|unknown_external|permission|prerequisite,action,error,known?,unknown?}. fixed_count>=0=len(fixed_issues); severity=P0|P1|P2; fixed_issues:[{severity,issue,repair,evidence}],remaining_issues:[{severity,issue,reason}]. done: audit+validation complete,remaining_issues=[]. Keep partial/unknown; never invent facts or 0/[].",
