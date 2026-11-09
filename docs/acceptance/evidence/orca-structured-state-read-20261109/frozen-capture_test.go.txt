@@ -1,0 +1,24 @@
+package orcatransport
+import (
+ "encoding/json"
+ "os"
+ "testing"
+ b "github.com/erranliu/SteerRunner/internal/execution/backend"
+ "github.com/erranliu/SteerRunner/internal/runstate"
+)
+func TestBoundaryFormatCapture(t *testing.T) {
+ l,f,s:=frozenFixture(t)
+ f.root="C:/format/worker"
+ s=frozenWorkspaceFixture(t,l,f,s)
+ state,err:=l.state(s);if err!=nil{t.Fatal(err)}
+ state.Turns=[]Turn{{Command:"cccccccccccccccccccccccccccccccc",Prompt:"original\r\n中文😀",InputDigest:digest([]byte("original\r\n中文😀")),Native:NativeProof{Agent:"codex",Waiting:"original proof missing"}}}
+ old,err:=l.envelope(s,state);if err!=nil{t.Fatal(err)}
+ record:=runstate.Record{ID:s.Ref.RunID,Snapshot:s,Allowed:true,StopEvidenceScope:"orca_terminal"}
+ current,cs,_:=structuredFixture(t)
+ agent,err:=current.agentState(cs);if err!=nil{t.Fatal(err)}
+ agent.RuntimeFence=7
+ structured,err:=current.agentEnvelope(cs,agent);if err!=nil{t.Fatal(err)}
+ formats:=map[string]any{"profile":l.profile,"profile_envelopes":l.setup.ProfileData,"state":state,"state_envelopes":old,"record":record,"structured_profile":current.setup.ProfileData,"structured_state":agent,"structured_envelopes":structured,"operation":request(s,b.LifecycleStopExecution,b.LifecycleInput{})}
+ raw,err:=json.MarshalIndent(formats,"","  ");if err!=nil{t.Fatal(err)}
+ if err=os.WriteFile(os.Getenv("SR_BOUNDARY_FORMAT_OUT"),raw,0600);err!=nil{t.Fatal(err)}
+}

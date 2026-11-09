@@ -1,0 +1,26 @@
+{
+  "changed_source_files": [
+    "internal/execution/adapters/orcatransport/agent_session.go",
+    "internal/execution/adapters/orcatransport/agent_session_read.go",
+    "internal/execution/adapters/orcatransport/agent_session_read_windows_test.go",
+    "internal/execution/adapters/orcatransport/agent_session_usage.go",
+    "internal/execution/adapters/orcatransport/frozen_record.go",
+    "internal/execution/adapters/orcatransport/progress.go"
+  ],
+  "unchanged_input_files": 844,
+  "persistent_type_changes": [],
+  "read_validation_logic_equivalent": {
+    "agentState -> readAgentSessionState": true,
+    "validate -> validateSnapshotBinding": true,
+    "validateStructured -> validateStructuredSnapshot": true
+  },
+  "final_manifest_sha256": "3553462ad88589b2e9c096e912b38088f4fbaf0da09ed9834919d6c34ae649f2",
+  "preserved": [
+    "NewLifecycle/decodeFrozenRecord constructors",
+    "closeSettlesAgentSession/verifyAgentSessionStopped bodies",
+    "Lifecycle.original/boundTerminal and capabilityFixtureLifecycle",
+    "all existing shared fixtures",
+    "raw query/subscription",
+    "five Node assets and probe/L1 scripts"
+  ]
+}

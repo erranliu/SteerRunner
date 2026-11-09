@@ -1,0 +1,5 @@
+{
+  "agentState -\u003e readAgentSessionState": true,
+  "validate -\u003e validateSnapshotBinding": true,
+  "validateStructured -\u003e validateStructuredSnapshot": true
+}

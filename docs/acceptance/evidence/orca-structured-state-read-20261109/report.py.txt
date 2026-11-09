@@ -1,0 +1,40 @@
+import gzip,hashlib,json,pathlib,shutil,subprocess
+base=pathlib.Path('.evidence/structured-state-read');out=pathlib.Path('docs/acceptance/evidence/orca-structured-state-read-20261109');out.mkdir(parents=True,exist_ok=True)
+summary={'base_commit':'827ad83bf0785bbcd32ac5775c311f1a981ae6a5','tests':{},'build':json.loads((base/'final/steerrunner.exe.build.json').read_text()),'controlled':json.loads((base/'controlled/result.json').read_text()),'scope':json.loads((base/'scope-audit.json').read_text())}
+for name in ['before.jsonl','before-recheck.jsonl','after-focused.jsonl','components.jsonl','application.jsonl','shared.jsonl']:
+ events=[json.loads(s) for s in (base/name).read_text(encoding='utf-8-sig').splitlines() if s.startswith('{')];pkgs={}
+ for e in events:
+  a=e['Action'];p=e.get('Package',e.get('ImportPath',''));r=pkgs.setdefault(p,{'top_pass':0,'top_fail':0,'top_skip':0,'all_pass':0,'all_fail':0,'all_skip':0,'skip_names':[],'fail_names':[]})
+  if a in ['pass','fail','skip']:
+   if e.get('Test'):
+    r['all_'+a]+=1
+    if '/' not in e['Test']:r['top_'+a]+=1
+    if a in ['fail','skip']:r[a+'_names'].append(e['Test'])
+   else:r['result']=a
+ summary['tests'][name]=pkgs
+ if name in ['components.jsonl','application.jsonl','shared.jsonl']:assert all(r.get('result')=='pass' and not r['top_fail'] for r in pkgs.values()),name
+ with gzip.open(out/(name+'.gz'),'wb') as f:f.write((base/name).read_bytes())
+summary['formats']={}
+for kind in ['wire','frozen']:
+ before=(base/('before-'+kind+'.json')).read_bytes();after=(base/('after-'+kind+'.json')).read_bytes();assert before==after
+ summary['formats'][kind]={'bytes':len(before),'sha256':hashlib.sha256(before).hexdigest(),'identical':True}
+ for phase in ['before','after']:
+  with gzip.open(out/(phase+'-'+kind+'.json.gz'),'wb') as f:f.write((base/(phase+'-'+kind+'.json')).read_bytes())
+assert summary['controlled']['exit_code']==0 and summary['controlled']['scenario_count']==3
+assert all(v['passed'] for v in summary['controlled']['controlled_cases']['TestSRRestartPreservesAuthorization'])
+assert hashlib.sha256((base/'final/steerrunner.exe').read_bytes()).hexdigest()==summary['build']['sha256']
+manifest=json.loads((base/'final/source-sha256.json').read_text());assert all(pathlib.Path(p).is_file() and hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()==h for p,h in manifest.items())
+for name in ['scope-audit.json','logic-equivalence.json','final-declaration-diff.json']:
+ shutil.copyfile(base/name,out/name)
+for name in ['source-sha256.json','steerrunner.exe.build.json']:
+ shutil.copyfile(base/'final'/name,out/name)
+for name in ['result.json','source-identity.json','integration.log','unit-foundation.log']:
+ shutil.copyfile(base/'controlled'/name,out/('controlled-'+name))
+for name in ['equivalence.go','declarations.go','wire.go','snapshot.py','report.py','implement.py']:
+ shutil.copyfile(base/name,out/(name+'.txt'))
+shutil.copyfile('docs/acceptance/evidence/orca-feed-helper-retirement-20261106/frozen-capture_test.go.txt',out/'frozen-capture_test.go.txt')
+summary['source_archive_sha256']=hashlib.sha256((base/'final/source.zip').read_bytes()).hexdigest()
+(out/'summary.json').write_text(json.dumps(summary,indent=2,ensure_ascii=False),encoding='utf-8')
+checksums={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(out.iterdir()) if p.is_file() and p.name!='SHA256SUMS.json'}
+(out/'SHA256SUMS.json').write_text(json.dumps(checksums,indent=2),encoding='utf-8')
+print(json.dumps(summary,indent=2,ensure_ascii=False))
