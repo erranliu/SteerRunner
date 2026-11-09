@@ -1,0 +1,9 @@
+import hashlib,json,pathlib,sys
+root=pathlib.Path.cwd();base=root/'.evidence/retirement-audit'; stage=sys.argv[1]; previous=sys.argv[2]
+before=json.loads((base/previous/'source-sha256.json').read_text());after=json.loads((base/(stage+'-final')/'source-sha256.json').read_text())
+changed=[p for p in sorted(before.keys()|after.keys()) if before.get(p)!=after.get(p)]
+assets=['internal/execution/adapters/orcatransport/extensions/'+n for n in ['pi-evidence.mjs','pi-managed.mjs','terminal-tools.mjs','receipt.mjs','pi-evidence.test.mjs']]+['scripts/probe-orca-pi.ps1','scripts/test-prerequisite-contract.ps1']
+protected=['internal/execution/adapters/protocol/orca/state_subscription.go','tests/helpers/stability/main.go','tests/native/stability_test.go','internal/execution/adapters/protocol/orca/state_stream.go','internal/execution/adapters/protocol/orca/state_local.go']+assets
+assert all(before[p]==after[p] for p in protected)
+result={'stage':stage,'baseline':previous,'changed_files':changed,'protected':{p:after[p] for p in protected},'unchanged_files':sum(before.get(p)==h for p,h in after.items()),'manifest_sha256':hashlib.sha256((base/(stage+'-final')/'source-sha256.json').read_bytes()).hexdigest()}
+(base/(stage+'-file-diff.json')).write_text(json.dumps(result,indent=2),encoding='utf-8');print(json.dumps(result,indent=2))

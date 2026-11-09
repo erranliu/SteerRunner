@@ -1,0 +1,79 @@
+from pathlib import Path
+p=Path('internal/execution/adapters/protocol/orca/state_feed.go');s=p.read_text()
+s=s.replace('\n\t"sync"','')
+s=s[:s.index('type SampleKind string')]+s[s.index('func DecodeOriginalState'):]
+s=s[:s.index('type nativeStateFeed struct')]+s[s.index('// A bounded independent read'):]
+s=s[:s.index('func (f *nativeStateFeed) Close()')]
+p.write_text(s)
+Path('internal/execution/adapters/protocol/orca/state_query_feed.go').unlink()
+p=Path('internal/execution/adapters/protocol/orca/state_stream_test.go');s=p.read_text()
+s=s.replace('"sample-feed",','"subscription-updates-cancel", "subscription-updates-disconnect",')
+s=s.replace('\t\t\tpub, private, err :=', '\t\t\treleaseUpdate := make(chan struct{})\n\t\t\tdisconnect := make(chan struct{})\n\t\t\tserverDone := make(chan struct{})\n\t\t\tpub, private, err :=')
+s=s.replace('scenario == "sample-feed"', 'strings.HasPrefix(scenario, "subscription-updates-")')
+needle='\t\t\t\t\t\tupdate := map[string]any'
+s=s.replace(needle, '\t\t\t\t\t\tselect {\n\t\t\t\t\t\tcase <-releaseUpdate:\n\t\t\t\t\t\tcase <-serverDone:\n\t\t\t\t\t\t\treturn\n\t\t\t\t\t\t}\n'+needle)
+needle='\t\t\t\t\t\tif socket.write(ctx, map[string]any{"id": id, "ok": true, "result": update, "_meta": map[string]string{"runtimeId": runtime}}) != nil {\n\t\t\t\t\t\t\treturn\n\t\t\t\t\t\t}'
+s=s.replace(needle,needle+'\n\t\t\t\t\t\tif scenario == "subscription-updates-disconnect" {\n\t\t\t\t\t\t\tselect {\n\t\t\t\t\t\t\tcase <-disconnect:\n\t\t\t\t\t\t\tcase <-serverDone:\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\treturn\n\t\t\t\t\t\t}')
+s=s.replace('\t\t\tdefer server.Close()', '\t\t\tdefer server.Close()\n\t\t\tdefer close(serverDone)')
+start=s.index('\t\t\tif strings.HasPrefix(scenario, "subscription-updates-") {')
+end=s.index('\n\t\t\tsub, _, err := SubscribeState',start)
+s=s[:start]+'''\t\t\tif strings.HasPrefix(scenario, "subscription-updates-") {
+                initCtx, initCancel := context.WithCancel(ctx)
+                sub, raw, err := SubscribeState(initCtx, "test-remote", "runtime", "id:worktree")
+                initCancel() // Only initialization belongs to this context.
+                if err != nil { t.Fatal(err) }
+                defer sub.Close()
+                original := StateResource{RuntimeID:"runtime", WorktreeID:"worktree", Handle:"terminal", IncarnationID:"incarnation"}
+                initial, err := DecodeOriginalState(raw, original)
+                if err != nil || initial.LastAssistantMessage != "old" || initial.PaneKey != "tab:leaf" { t.Fatal(initial, err) }
+                // Independent queries complete while the same subscription is live.
+                // The server releases its update only after both queries return.
+                if _, err := QueryState(ctx, "test-remote", "runtime", "id:worktree"); err != nil { t.Fatal(err) }
+                if _, err := QueryWorktreeAgents(ctx, "test-remote", "runtime"); err != nil { t.Fatal(err) }
+                close(releaseUpdate)
+                raw, err = sub.Next(ctx)
+                if err != nil { t.Fatal(err) }
+                var frame struct{ Type string }
+                if err := json.Unmarshal(raw, &frame); err != nil || frame.Type != "updated" { t.Fatal(string(raw), err) }
+                updated, err := DecodeOriginalState(raw, original)
+                if err != nil || updated.LastAssistantMessage != "public" || updated.PaneKey != initial.PaneKey { t.Fatal(updated, err) }
+                nextCtx, nextCancel := context.WithCancel(ctx)
+                defer nextCancel()
+                started, finished := make(chan struct{}), make(chan error, 1)
+                go func(){ close(started); _, err := sub.Next(nextCtx); finished <- err }()
+                <-started
+                if scenario == "subscription-updates-cancel" { nextCancel() } else { close(disconnect) }
+                select {
+                case err := <-finished:
+                    if scenario == "subscription-updates-cancel" {
+                        if !errors.Is(err, context.Canceled) { t.Fatal("Next lost caller cancellation", err) }
+                    } else if !IsStateConnectionError(err) { t.Fatal("Next lost peer disconnect", err) }
+                case <-ctx.Done(): t.Fatal("Next did not end on cancellation/disconnect")
+                }
+                return
+            }'''+s[end:]
+p.write_text(s)
+p=Path('internal/execution/adapters/protocol/orca/state_query_feed_windows_test.go');s=p.read_text()
+s=s.replace('TestOrcaLocalQueryFeed','TestOrcaLocalOriginalQuery')
+start=s.index('\tfeed, err := OpenStateFeed')
+end=s.index('\n\treplacement.Store(true)',start)
+s=s[:start]+'''    raw, err := QueryState(ctx, "", p.RuntimeID, "id:"+p.WorktreeID)
+    cancel()
+    if err != nil { t.Fatal(err) }
+    initial, err := DecodeOriginalState(raw, p)
+    if err != nil || initial.PaneKey != "tab:leaf" || initial.ProviderSession.ID != "provider" { t.Fatal(initial, err) }
+    if queries.Load() != 0 || subscriptions.Load() != 0 { t.Fatal("unexpected background observation") }
+    state, err := QueryOriginalAgent(context.Background(), "", p, initial.PaneKey)
+    if err != nil || state.LastAssistantMessage != "complete" || state.MainAgent == nil || state.MainAgent.State != "done" || state.Observation != nil { t.Fatal(state, err) }
+'''+s[end:]
+s=s.replace('feed.Query(context.Background())', 'QueryOriginalAgent(context.Background(), "", p, initial.PaneKey)')
+s=s.replace('\tqueryDone := make(chan error, 1)', '\tqueryCtx, queryCancel := context.WithCancel(context.Background())\n\tdefer queryCancel()\n\tqueryDone := make(chan error, 1)')
+s=s.replace('go func() { _, err := QueryOriginalAgent(context.Background(), "", p, initial.PaneKey); queryDone <- err }()', 'go func() { _, err := QueryOriginalAgent(queryCtx, "", p, initial.PaneKey); queryDone <- err }()')
+s=s.replace('\tfeed.Close()\n\tfeed.Close()', '\tqueryCancel()')
+s=s.replace('if err == nil {\n\t\t\tt.Fatal("closed query succeeded")', 'if !errors.Is(err, context.Canceled) {\n\t\t\tt.Fatal("query lost caller cancellation", err)')
+s=s.replace('close did not cancel query','caller cancellation did not cancel query')
+start=s.index('\tif _, err := QueryOriginalAgent(context.Background(), "", p, initial.PaneKey); !errors.Is(err, context.Canceled)')
+end=s.index('\tif subscriptions.Load()',start)
+s=s[:start]+s[end:]
+s=s.replace('local feed attempted subscription', 'local query attempted subscription')
+p.write_text(s)

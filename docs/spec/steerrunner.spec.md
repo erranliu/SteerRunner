@@ -177,6 +177,14 @@ B0–B6 已完成能力迁移、生产接线、正式合同与保留例外同步
 
 同日[实现复审](../archive/2026-11/implementation/acceptance/orca-stop-reader-reaudit.md)未确认生产缺陷，修复输入不变测试的 Payload 浅拷贝并补实际在线/离线 scope 与首错回归；所有生产文件原字节保持，完整 adapter 81、应用定向 76 及最终 EXE 四公开受控场景通过。原历史失败不追认，最新产物和实际资格以复审记录为准；后续按用户追加授权提 PR，不自动合并或部署。
 
+### 现行职责收口：原始状态与历史 helper 资产
+
+2026-11-06 按 [A Spec](orca-state-feed-retirement.spec.md)/[Plan](orca-state-feed-retirement.plan.md)独立退役没有产品入口的 StateFeed 聚合层，原查询、SubscribeState/Next/Close、AgentState/Observation 与身份/完整性/取消语义保持。通知传递测试直接接回原始订阅，不将观察或查询视为执行/停止证明；原稳定性工具及共享夹具保留，见 [A 验收](../acceptance/orca-state-feed-retirement.md)。
+
+A 验收和源码归档后，再按 [B Spec](orca-helper-producer-retirement.spec.md)/[Plan](orca-helper-producer-retirement.plan.md)删除无人调用的旧 helper 元数据/命令生产端，将四资产 embed/摘要装配移至测试。原 TerminalConfig/owner/receipt/冻结摘要、五个 JS、Node 测试及诊断脚本保留；历史读取只比较原记录，不从当前构建补证明，见 [B 验收](../acceptance/orca-helper-producer-retirement.md)。两批持久编码、wire/能力和资源摘要均与原基线相同，PC-R01–R10 与执行、恢复、停止及原提交边界不变；各自三项同 EXE 公开受控通过，Node 原 TAP 21 项通过。原 opt-in 跳过及首轮环境/编译失败单列；未执行完整 L1/Controlled、L2/L3、真实模型或部署，不扩大资格。
+
+同日[实现复审](../acceptance/orca-feed-helper-reaudit.md)未确认生产或测试迁移缺陷，原查询/订阅、382个既有 Go 测试文件、五个 JS 和两个脚本保持相应保留范围。生产和测试与 B 通过点一致；新跑完整协议、adapter 和 Node，明确复用 B 原应用/共享组件及同 EXE 公开受控结果，按用户追加授权提 PR。原失败、跳过和完整资格限制保持。
+
 ### 文档分工与维护规则
 
 - 本节是能力及可靠性承诺的长期总入口。CLI 字段/退出码、Workflow 和专项 Spec 细化机制；[可靠性交付链路](../reliable-delivery.md)解释运行路径；[操作指南](../cli-guide.md)描述如何使用；acceptance 保存具体构建的验证事实。

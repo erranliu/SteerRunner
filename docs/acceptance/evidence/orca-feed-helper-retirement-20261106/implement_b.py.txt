@@ -1,0 +1,46 @@
+from pathlib import Path
+p=Path('internal/execution/adapters/orcatransport/terminal_runtime.go');s=p.read_text()
+retained=s[s.index('type TerminalConfig struct'):s.index('type TerminalMetadata struct')]+s[s.index('type TerminalOwner struct'):s.index('func (c TerminalConfig) Command')]
+p.write_text('''package orcatransport
+
+import (
+    b "github.com/erranliu/SteerRunner/internal/execution/backend"
+    "github.com/erranliu/SteerRunner/internal/execution/process"
+)
+
+'''+retained)
+Path('internal/execution/adapters/orcatransport/terminal_assets_test.go').write_text('''package orcatransport
+
+import (
+    "crypto/sha256"
+    "embed"
+    "fmt"
+    "testing"
+)
+
+// These historical bytes belong to receipt/owner fixtures, not current execution.
+//go:embed extensions/pi-evidence.mjs extensions/pi-managed.mjs extensions/terminal-tools.mjs extensions/receipt.mjs
+var historicalTerminalAssets embed.FS
+
+func historicalTerminalAsset(t testing.TB, name string) []byte {
+    t.Helper()
+    raw, err := historicalTerminalAssets.ReadFile("extensions/"+name)
+    if err != nil { t.Fatalf("read historical terminal asset %q: %v", name, err) }
+    return raw
+}
+
+func historicalTerminalBundleDigest(t testing.TB) string {
+    t.Helper()
+    h := sha256.New()
+    for _, name := range []string{"pi-evidence.mjs", "pi-managed.mjs", "terminal-tools.mjs", "receipt.mjs"} {
+        h.Write([]byte(name))
+        h.Write(historicalTerminalAsset(t, name))
+    }
+    return fmt.Sprintf("%x", h.Sum(nil))
+}
+''')
+for name in ['access_mode_test.go','terminal_receipt_test.go']:
+ p=Path('internal/execution/adapters/orcatransport')/name;s=p.read_text().replace('TerminalExtensionDigest()', 'historicalTerminalBundleDigest(t)')
+ s=s.replace('body, _ := terminalAssets.ReadFile("extensions/" + file)', 'body := historicalTerminalAsset(t, file)')
+ s=s.replace('source, _ := terminalAssets.ReadFile("extensions/" + file)', 'source := historicalTerminalAsset(t, file)')
+ p.write_text(s)

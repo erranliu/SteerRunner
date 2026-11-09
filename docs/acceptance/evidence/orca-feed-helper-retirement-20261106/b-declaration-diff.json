@@ -1,0 +1,17 @@
+{
+  "added": [],
+  "baseline": "a-final",
+  "changed_or_deleted_types": [
+    "internal/execution/adapters/orcatransport/terminal_runtime.go:type TerminalMetadata"
+  ],
+  "deleted": [
+    "internal/execution/adapters/orcatransport/terminal_runtime.go:func TerminalConfig.Command",
+    "internal/execution/adapters/orcatransport/terminal_runtime.go:func TerminalExtensionDigest",
+    "internal/execution/adapters/orcatransport/terminal_runtime.go:func TerminalRuntimeMetadata",
+    "internal/execution/adapters/orcatransport/terminal_runtime.go:type TerminalMetadata",
+    "internal/execution/adapters/orcatransport/terminal_runtime.go:var terminalAssets"
+  ],
+  "identical": 2253,
+  "modified": [],
+  "stage": "b"
+}

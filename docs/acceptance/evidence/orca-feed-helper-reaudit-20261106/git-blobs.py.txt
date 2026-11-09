@@ -1,0 +1,9 @@
+import hashlib,json,subprocess,sys
+ref=sys.argv[1] if len(sys.argv)>1 else 'HEAD'
+def blob(path):return subprocess.check_output(['git','show',ref+':'+path])
+for name in ['orca-feed-helper-retirement-20261106','orca-feed-helper-reaudit-20261106']:
+ base='docs/acceptance/evidence/'+name
+ manifest=json.loads(blob(base+'/SHA256SUMS.json'))
+ for path,expected in manifest.items():
+  assert hashlib.sha256(blob(base+'/'+path)).hexdigest()==expected,(ref,base,path)
+ print(ref,base,len(manifest),'Git blob checksums verified')

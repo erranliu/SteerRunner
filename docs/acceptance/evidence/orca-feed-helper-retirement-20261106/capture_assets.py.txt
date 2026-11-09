@@ -1,0 +1,15 @@
+from pathlib import Path
+import sys
+mode=sys.argv[1]
+code='''package orcatransport
+import("crypto/sha256";"encoding/json";"fmt";"os";"testing")
+func TestRetirementAssetCapture(t *testing.T) {
+ raw,err:=terminalAssets.ReadFile("extensions/pi-evidence.mjs");if err!=nil{t.Fatal(err)}
+ value:=map[string]string{"bundle":TerminalExtensionDigest(),"evidence":fmt.Sprintf("%x",sha256.Sum256(raw))}
+ output,err:=json.Marshal(value);if err!=nil{t.Fatal(err)}
+ if err=os.WriteFile(os.Getenv("SR_RETIREMENT_ASSET_OUT"),output,0600);err!=nil{t.Fatal(err)}
+}
+'''
+if mode=='after':
+ code=code.replace('raw,err:=terminalAssets.ReadFile("extensions/pi-evidence.mjs");if err!=nil{t.Fatal(err)}','raw:=historicalTerminalAsset(t,"pi-evidence.mjs")').replace('TerminalExtensionDigest()', 'historicalTerminalBundleDigest(t)')
+Path('internal/execution/adapters/orcatransport/retirement_assets_capture_test.go').write_text(code)
