@@ -40,7 +40,10 @@ func TestLocalAppServerUsageCollectsOriginalTurns(t *testing.T) {
 				CurrentCommandID: second, CurrentTurnID: turnTwo},
 			ResourceGeneration: "generation",
 		},
-		Workflow: workflow.Snapshot{StageResults: []workflow.StageResult{{CommandID: first, AttemptID: "attempt", SessionID: thread, TurnID: turnOne}}},
+		Workflow: workflow.Snapshot{StageInputs: []workflow.StageInput{
+			{CommandID: first, AttemptID: "attempt", StepID: workflow.StepImplement, Model: "executor", ReasoningEffort: "medium"},
+			{CommandID: second, AttemptID: "attempt", StepID: workflow.StepAuditCode, Model: "reviewer", ReasoningEffort: "high"},
+		}, StageResults: []workflow.StageResult{{CommandID: first, AttemptID: "attempt", SessionID: thread, TurnID: turnOne}}},
 	}
 	if err := store.Commit(r, 0, nil); err != nil {
 		t.Fatal(err)
@@ -81,6 +84,23 @@ func TestLocalAppServerUsageCollectsOriginalTurns(t *testing.T) {
 	if err != nil || snapshot.Status != "available" || snapshot.Tokens == nil || *snapshot.Tokens.Total != 210 ||
 		*snapshot.Tokens.CacheRead != 90 || *snapshot.Tokens.InputUncached != 90 || snapshot.Coverage.CountedResponses != 2 {
 		t.Fatalf("unexpected usage snapshot: %+v, %v", snapshot, err)
+	}
+	page, err := store.ListRunUsageEvents(ctx, run, snapshot.Revision, "", 500)
+	if err != nil || len(page.Events) != 2 {
+		t.Fatal(page, err)
+	}
+	byCommand := map[string]api.Event{}
+	for _, event := range page.Events {
+		byCommand[event.CommandID] = event
+		if event.Model != nil || event.MetadataBasis != "unknown" {
+			t.Fatal("configured choice fabricated observed model", event)
+		}
+	}
+	if e := byCommand[first]; e.StepID != workflow.StepImplement || e.ConfiguredModel != "executor" || *e.Tokens.Total != 120 {
+		t.Fatal("implementation usage attributed incorrectly", e)
+	}
+	if e := byCommand[second]; e.StepID != workflow.StepAuditCode || e.ConfiguredModel != "reviewer" || e.ConfiguredReasoningEffort != "high" || *e.Tokens.Total != 90 {
+		t.Fatal("audit usage mixed with executor", e)
 	}
 	c.Tick(ctx)
 	again, err := store.GetRunUsage(ctx, run, 0)

@@ -85,6 +85,11 @@ type Event struct {
 	EvidenceRef    string     `json:"evidence_ref"`
 	MetadataIssues []Issue    `json:"metadata_issues"`
 	Decision       string     `json:"decision"`
+
+	// Frozen workflow attribution, independent of native observed metadata above.
+	StepID                    string `json:"step_id,omitempty"`
+	ConfiguredModel           string `json:"configured_model,omitempty"`
+	ConfiguredReasoningEffort string `json:"configured_reasoning_effort,omitempty"`
 }
 type Page struct {
 	RunID      string  `json:"run_id"`

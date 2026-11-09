@@ -17,14 +17,14 @@ Orca 提供已有的会话、终端、工作区及执行主机能力。Runner �
 | 本机 Codex execute/1 | 原子 create.firstMessage，一条完整 user 消息；从公开 history/item 取得原 turn 的完整 assistant 文本 | `orca_agent_session`：原 session 的关闭成功回执，或原创建尚未派发 |
 | 新配对远端 Codex execute/1 | 原子首消息及原 turn 完整 assistant 文本，按原会话/回合绑定公开 usage | `orca_agent_session`：按原会话关闭成功回执或原创建未派发结算 |
 | 新本机/配对远端 Codex development/2 | 原子首消息及同一会话的授权续轮；原 turn 最后一条完整 assistant 消息继续交给现有 Workflow | `orca_agent_session`：原 session 关闭确认后，结束该 Run 的恢复授权 |
-| 新本机 Codex development-audited/2 | 结构化原会话多轮；保留逐轮实际模型、工作区/审计 HEAD 和发布来源核验 | `orca_agent_session`：原 session 关闭确认；结果按原有快照合同封存 |
+| 新本机 Codex development-audited/2 | 结构化原会话多轮；按冻结角色派发配置模型，保留工作区/审计 HEAD 和发布来源核验 | `orca_agent_session`：原 session 关闭确认；结果按原有快照合同封存 |
 | 新本机 Pi execute/1、development/2 | 结构化原会话、现有宿主工具及原回合结果；Pi usage 未核实仍报告不可用 | `orca_agent_session`：原 session 关闭确认；保留 Pi 原有单次文件快照窗口 |
 
 上表只列当前新 Run 的合法组合。旧 `agent_launch` executable、非空 args、helper 路径/摘要在受理前拒绝；传输端 Orca executable/args 与模型设置仍按现行配置契约处理，不把传输参数误作旧 Agent 启动入口。远端 Pi、远端 audited 和 DSH 不因此取得资格。依据[已实施 helper 退役](archive/2026-11/implementation/spec/orca-helper-retirement.spec.md)及[验收](archive/2026-11/implementation/acceptance/orca-helper-retirement.md)。
 
 旧冻结终端配置不再是当前构建的执行选项：服务启动及执行 port 均拒绝旧协议。旧 Run 必须由原构建完成/停止并排空，新构建不接管或重发原输入；保留当前格式旧记录的离线 inspect、既有只读 scope/停止证明和严格解码，不能删除证据或按新 scope 重释。历史 `orca_terminal`、`orca_local_codex_resources` 的含义仍分别是原终端、登记终端及 helper/app-server 根范围；保留这些解码/证明不意味着恢复旧执行能力。公共终端、直接 Codex 和 parser 沿各自原入口，不能随 Orca Agent 写链一起删除。
 
-远端 Runner 执行、SteerLine 环境检测和发布排空分别验收。实际模型偏好不是独立模型证明；普通 development 不继承 audited 资格，workspace audit 可为 unreported。usage 未提供时如实保持 unreported，不读取 Orca 私有 transcript。
+远端 Runner 执行、SteerLine 环境检测和发布排空分别验收。配置模型不是实际模型证明；audited 不再要求额外模型日志核验，配置模型和用量按[模型与用量契约](model-usage.md)交接。普通 development 的 workspace audit 可为 unreported。usage 未提供时如实保持 unreported，不读取 Orca 私有 transcript。
 
 ## 输入身份与恢复
 

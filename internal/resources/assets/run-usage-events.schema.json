@@ -64,6 +64,15 @@
           "command_id": {
             "type": "string"
           },
+          "step_id": {
+            "type": "string"
+          },
+          "configured_model": {
+            "type": "string"
+          },
+          "configured_reasoning_effort": {
+            "type": "string"
+          },
           "phase": {
             "type": "string",
             "enum": ["command", "initialization"]

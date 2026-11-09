@@ -14,6 +14,7 @@ import (
 	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
+	"github.com/erranliu/SteerRunner/internal/execution/workspace"
 	"github.com/erranliu/SteerRunner/internal/runstate"
 	"github.com/erranliu/SteerRunner/internal/storage"
 )
@@ -34,6 +35,60 @@ func TestSRFreezeOrcaStructuredAudited(t *testing.T) {
 	}
 	if !profile.Audited || !profile.Development || profile.Model != "execution-model" || r.Workflow.AuditModel.ReasoningEffort != "high" || !structuredDevelopmentClose(r) || resultContract(r) != contracts.ResultFileSnapshotContract || r.StopEvidenceScope != orca.AgentSessionStopScope || r.LaunchCommand != "" {
 		t.Fatal("audited did not freeze the original structured model/stop/file contract", profile, r.Workflow.AuditModel, r.StopEvidenceScope)
+	}
+}
+
+type configuredAuditPort struct{ auditPort }
+
+func (configuredAuditPort) InspectLifecycleAuditWorkspace(ctx context.Context, s b.LifecycleSnapshot, preHead string) (b.WorkspaceInspection, error) {
+	return workspace.InspectAudit(ctx, gitHost(), workspace.Repository{Path: s.WorkspacePlan.Path, CommonDir: filepath.Join(s.WorkspacePlan.Path, ".git")}, &s.WorkspacePlan, preHead)
+}
+
+func TestStructuredAuditDoesNotRequireModelLogEvidence(t *testing.T) {
+	e, w := auditEngine(t)
+	w.port = configuredAuditPort{}
+	r := e.runs["run"].Clone()
+	r.Request.Execution = contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "local"}, Settings: canonical(contracts.OrcaSettings{AccessMode: "full_access"})}
+	r.Snapshot.Ref.Protocol = b.ProtocolOrcaAgentSessionV1
+	e.runs["run"] = r
+	if !structuredAudited(r) {
+		t.Fatal("fixture did not select structured audit")
+	}
+	// The former log-read block also guarded authority; keep that boundary.
+	for _, flag := range []string{"revoked", "resume-required", "stopping", "closed"} {
+		stopped := r.Clone()
+		switch flag {
+		case "revoked":
+			stopped.Allowed = false
+		case "resume-required":
+			stopped.ResumeRequired = true
+		case "stopping":
+			stopped.PendingStop = "stop"
+		case "closed":
+			stopped.Closed = true
+		}
+		e.runs["run"] = stopped
+		finishStage(t, e, "实施及必要验证已完成")
+		if got := e.runs["run"]; got.Workflow.StepID != workflow.StepImplement || len(got.Workflow.StageResults) != 0 {
+			t.Fatal("removing model observation relaxed stage authority", flag)
+		}
+	}
+	e.runs["run"] = r
+	// No Orca usage channel, log source, lease or observed model exists here.
+	finishStage(t, e, "实施及必要验证已完成")
+	r = e.runs["run"]
+	if r.Workflow.StepID != workflow.StepAuditCode || r.Snapshot.PendingTurn == nil || r.Snapshot.PendingTurn.Model != "reviewer" {
+		t.Fatal("model log absence blocked the configured audit", r.Phase, r.Diagnostic)
+	}
+	finishStage(t, e, `{"outcome":"done","summary":"audited","fixed_count":0,"fixed_issues":[],"remaining_issues":[]}`)
+	r = e.runs["run"]
+	if r.Workflow.StepID != workflow.StepPublish || r.Snapshot.PendingTurn == nil || r.Snapshot.PendingTurn.Model != "executor" || !workflow.AuditsPassed(r.Workflow) {
+		t.Fatal("model log absence blocked publication or changed model", r.Phase, r.Diagnostic)
+	}
+	for _, result := range r.Workflow.StageResults {
+		if result.ActualModel != nil {
+			t.Fatal("configured model was presented as observed evidence")
+		}
 	}
 }
 

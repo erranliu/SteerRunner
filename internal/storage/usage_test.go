@@ -327,7 +327,7 @@ func TestUsageReadOnlyLifecycleProjection(t *testing.T) {
 func TestUsageStructuredProjectionRetainsOnlyOriginalInputAndEndFacts(t *testing.T) {
 	s := usageStore(t)
 	r := &runstate.Record{ID: "structured", Revision: 1, Status: "reconciling", StopStatus: "unknown", Allowed: true, PendingStop: "must-not-project", Snapshot: b.LifecycleSnapshot{Ref: b.ExecutionRef{Protocol: b.ProtocolOrcaAgentSessionV1}}, Result: &b.TurnEvidence{CommandID: "command", SessionID: "native-session", TurnID: "native-turn", Completed: true, LastMessage: "must-not-project-full-result"}}
-	r.Workflow.StageInputs = []workflow.StageInput{{CommandID: "command", AttemptID: "attempt", Prompt: "one\r\n\r\n中文😀  \n", Model: "must-not-project-model-policy"}}
+	r.Workflow.StageInputs = []workflow.StageInput{{CommandID: "command", AttemptID: "attempt", Prompt: "one\r\n\r\n中文😀  \n", StepID: "audit.code.execute", Model: "configured-reviewer", ReasoningEffort: "high"}}
 	r.Workflow.StageResults = []workflow.StageResult{{CommandID: "command", AttemptID: "attempt", SessionID: "native-session", TurnID: "native-turn", Final: "must-not-project-result-body"}}
 	if err := s.Commit(r, 0, nil); err != nil {
 		t.Fatal(err)
@@ -345,7 +345,10 @@ func TestUsageStructuredProjectionRetainsOnlyOriginalInputAndEndFacts(t *testing
 	if projected == nil || len(projected.Workflow.StageInputs) != 1 || projected.Workflow.StageInputs[0].CommandID != "command" || projected.Workflow.StageInputs[0].AttemptID != "attempt" || projected.Workflow.StageInputs[0].Prompt != r.Workflow.StageInputs[0].Prompt || len(projected.Workflow.StageResults) != 1 || projected.Workflow.StageResults[0].SessionID != "native-session" || projected.Result == nil || !projected.Result.Completed || projected.Result.TurnID != "native-turn" {
 		t.Fatal("structured usage lost frozen input or completed native turn", projected)
 	}
-	if projected.Allowed || projected.PendingStop != "" || projected.Workflow.Config != nil || projected.Workflow.StageInputs[0].Model != "" || projected.Workflow.StageResults[0].Final != "" || projected.Result.LastMessage != "" {
+	if input := projected.Workflow.StageInputs[0]; input.Model != "configured-reviewer" || input.StepID != "audit.code.execute" || input.ReasoningEffort != "high" {
+		t.Fatal("read projection lost frozen model attribution", input)
+	}
+	if projected.Allowed || projected.PendingStop != "" || projected.Workflow.Config != nil || projected.Workflow.StageResults[0].Final != "" || projected.Result.LastMessage != "" {
 		t.Fatal("read projection gained authority/config/result body", projected)
 	}
 	// Unknown historical workflow formats remain entirely uninterpreted.

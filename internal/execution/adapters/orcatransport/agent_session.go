@@ -44,7 +44,7 @@ type AgentSessionProfile struct {
 func (p AgentSessionProfile) selection(input, pending *b.TurnInput) (*native.AgentSelection, error) {
 	model, effort := p.Model, p.ReasoningEffort
 	if input.Model != "" || input.ReasoningEffort != "" {
-		if pending == nil || pending.CommandID != input.CommandID || input.Model == "" || input.ReasoningEffort == "" || input.Model != pending.Model || input.ReasoningEffort != pending.ReasoningEffort {
+		if pending == nil || pending.CommandID != input.CommandID || input.Model != pending.Model || input.ReasoningEffort != pending.ReasoningEffort {
 			return nil, errors.New("structured model selection differs from the frozen turn")
 		}
 		model, effort = input.Model, input.ReasoningEffort

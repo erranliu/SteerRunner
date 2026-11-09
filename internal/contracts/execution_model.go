@@ -20,7 +20,7 @@ func ExecutionModel(e Execution) (workflow.ModelSettings, error) {
 			return workflow.ModelSettings{}, err
 		}
 		if e.Target.Kind != "local" || s.AgentName() != "codex" {
-			return workflow.ModelSettings{}, errors.New("auditing requires local Orca Codex model provenance")
+			return workflow.ModelSettings{}, errors.New("auditing requires explicit local Orca Codex model configuration")
 		}
 		return workflow.ModelSettings{Model: s.AgentLaunch.Model, ReasoningEffort: s.AgentLaunch.ReasoningEffort}, nil
 	}

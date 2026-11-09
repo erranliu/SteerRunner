@@ -122,7 +122,7 @@ func Capabilities() any {
 				"agent": "codex", "workflow": contracts.Workflow{ID: "development-audited", Version: 2}, "access_mode": "full_access",
 				"target_kinds": []string{"local"}, "selection": "Orca's structured executor with explicit execution and audit models",
 				"result":              "unique assistant message qualified by the original stage contract",
-				"actual_model":        "original turn model and effort from the bound audited source",
+				"actual_model":        "optional usage observation; not an execution or pricing prerequisite",
 				"workspace_audit":     "original managed Git checkpoint and existing publication validation",
 				"stop_evidence_scope": orca.AgentSessionStopScope, "session_close_settles_scope": true,
 				"result_file": contracts.ResultFileSnapshotContract,
