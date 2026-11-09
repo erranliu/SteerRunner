@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"strings"
 	"testing"
 	"time"
 
@@ -369,28 +368,5 @@ func TestUsageStructuredProjectionRetainsOnlyOriginalInputAndEndFacts(t *testing
 		if row.ID == "legacy-unknown" && (len(row.Workflow.StageInputs) != 0 || row.Result != nil) {
 			t.Fatal("legacy projection changed")
 		}
-	}
-}
-
-func TestUsageAccessRequirementsBelongToImmutableSnapshot(t *testing.T) {
-	s := usageStore(t)
-	ctx := context.Background()
-	first := summary()
-	first.AccessRequirements = []api.AccessRequirement{{SourceRef: "source", Environment: "remote", HostID: "sha256:" + strings.Repeat("a", 64), SessionRoot: "C:/account/sessions/2026/11/05", ObservedAt: time.Now().UTC()}}
-	one, err := s.CommitUsage(ctx, first, []api.Event{event("one")})
-	if err != nil {
-		t.Fatal(err)
-	}
-	next := summary()
-	two, err := s.CommitUsage(ctx, next, nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-	old, err := s.GetRunUsage(ctx, "r", one.Revision)
-	if err != nil || len(old.AccessRequirements) != 1 || old.AccessRequirements[0].HostID != first.AccessRequirements[0].HostID {
-		t.Fatal(old, err)
-	}
-	if two.Revision == one.Revision || len(two.AccessRequirements) != 0 {
-		t.Fatal("new authorization facts overwrote old snapshot", two)
 	}
 }

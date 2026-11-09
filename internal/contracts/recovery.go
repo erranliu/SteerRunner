@@ -25,13 +25,13 @@ func ReadServiceStartInput(raw []byte) (*ServiceStartInput, *Fault) {
 	var fields map[string]json.RawMessage
 	_ = json.Unmarshal(raw, &fields)
 	if policy, ok := fields["usage_policy"]; ok {
-		if string(policy) == "null" || input.UsagePolicy == nil || input.UsagePolicy.Validate() != nil {
+		if string(policy) == "null" || input.UsagePolicy == nil {
 			return nil, Fail(2, "invalid_request", "Invalid usage_policy.")
 		}
 		var members map[string]json.RawMessage
 		_ = json.Unmarshal(policy, &members)
-		if members["enabled"] == nil || string(members["enabled"]) == "null" || members["remote_log_access"] == nil {
-			return nil, Fail(2, "invalid_request", "usage_policy requires enabled and remote_log_access.")
+		if members["enabled"] == nil || string(members["enabled"]) == "null" {
+			return nil, Fail(2, "invalid_request", "usage_policy requires enabled.")
 		}
 	}
 	for _, stop := range input.PendingStops {

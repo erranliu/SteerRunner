@@ -35,13 +35,7 @@ type Collector struct {
 	// Cleanup of existing leases remains independent of observation eligibility.
 	CanObserveRun func(string) bool
 }
-type accessRequired struct{ Requirement api.AccessRequirement }
-
-func (e *accessRequired) Error() string { return "REMOTE_LOG_ACCESS_NOT_CONFIGURED" }
-
 type checkpoint struct {
-	Requirement *api.AccessRequirement
-
 	Bytes               int
 	Hash, Header, Input string
 	Policy, Instance    string
@@ -177,9 +171,6 @@ func (c *Collector) observe(ctx context.Context, r *runstate.Record) {
 		completeHistory := cp.Summary.Status == "verified" && cp.Summary.Finalized && len(cp.Issues) == 0 && cp.Missing == 0
 		sameObservation := cp.Policy == c.Policy.Digest() && cp.Instance == c.Instance
 		if !checkpointInvalid && cp.Finalized && cp.Input == inputHash && (completeHistory || sameObservation) {
-			if cp.Requirement != nil {
-				s.AccessRequirements = append(s.AccessRequirements, *cp.Requirement)
-			}
 			s.Coverage.SourceSummaries = append(s.Coverage.SourceSummaries, cp.Summary)
 			s.Issues = append(s.Issues, cp.Issues...)
 			s.Coverage.MissingUsageResponses += cp.Missing
@@ -191,8 +182,6 @@ func (c *Collector) observe(ctx context.Context, r *runstate.Record) {
 			}
 			continue
 		}
-		// A new observation must re-establish any authorization requirement.
-		cp.Requirement = nil
 		if !sameObservation || cp.Input != inputHash {
 			cp.EndedAt = time.Time{}
 		}
@@ -218,7 +207,6 @@ func (c *Collector) observe(ctx context.Context, r *runstate.Record) {
 				s.AccessCleanupStatus = cleanup
 			}
 			if err == nil {
-				cp.Requirement = nil
 				for i := range result.Issues {
 					result.Issues[i].SourceRef = source
 				}
@@ -256,11 +244,6 @@ func (c *Collector) observe(ctx context.Context, r *runstate.Record) {
 			}
 		}
 		if err != nil {
-			var required *accessRequired
-			if errors.As(err, &required) {
-				cp.Requirement = &required.Requirement
-				s.AccessRequirements = append(s.AccessRequirements, required.Requirement)
-			}
 			code := errorCode(err)
 			if strings.HasPrefix(code, "ACCESS_") {
 				issues = append(issues, api.Issue{Category: "access_cleanup", Code: code, Retryable: true, SourceRef: source})
@@ -294,7 +277,7 @@ func (c *Collector) observe(ctx context.Context, r *runstate.Record) {
 		cp.Missing = missing
 		// Exhausting this bounded observation is not proof of complete source
 		// coverage. Only complete history survives policy/instance replacement
-		// without observation; gaps may be retried under the new authorization.
+		// without observation; gaps may be retried under a new collection policy or instance.
 		cp.Finalized = summary.Finalized || final && !cp.EndedAt.IsZero() && time.Since(cp.EndedAt) >= 30*time.Second
 		cp.Policy = c.Policy.Digest()
 		cp.Profile = profileHash
@@ -374,7 +357,7 @@ func errorCode(err error) string {
 			return "LOG_NOT_FOUND"
 		}
 	}
-	allowed := []string{"COLLECTION_DISABLED", "PRODUCTION_BINDING_UNSUPPORTED", "FORMAT_UNSUPPORTED", "SESSION_UNBOUND", "SESSION_AMBIGUOUS", "IDENTITY_UNVERIFIED", "IDENTITY_CHANGED", "REMOTE_LOG_ACCESS_NOT_CONFIGURED", "LOG_NOT_FOUND", "LOG_ACCESS_DENIED", "HOST_OFFLINE", "READ_TIMEOUT", "READ_FAILED", "SOURCE_CHANGED", "SOURCE_PATH_UNVERIFIED", "BUDGET_EXCEEDED", "ACCESS_CLEANUP_PENDING", "ACCESS_CREATE_OUTCOME_UNKNOWN"}
+	allowed := []string{"COLLECTION_DISABLED", "PRODUCTION_BINDING_UNSUPPORTED", "FORMAT_UNSUPPORTED", "SESSION_UNBOUND", "SESSION_AMBIGUOUS", "IDENTITY_UNVERIFIED", "IDENTITY_CHANGED", "LOG_NOT_FOUND", "LOG_ACCESS_DENIED", "HOST_OFFLINE", "READ_TIMEOUT", "READ_FAILED", "SOURCE_CHANGED", "SOURCE_PATH_UNVERIFIED", "BUDGET_EXCEEDED", "ACCESS_CLEANUP_PENDING", "ACCESS_CREATE_OUTCOME_UNKNOWN"}
 	for _, code := range allowed {
 		if err.Error() == code {
 			return code
@@ -515,12 +498,10 @@ func (c *Collector) read(ctx context.Context, binding parsers.Binding, p orca.Pr
 			return zero, cleanup, err
 		}
 		if p.Environment != "" {
+			// Collection authorizes only this already verified Run/session leaf.
+			// Each new date is derived from the native source, never a saved grant.
 			if !c.Policy.Allows(p.Environment, host, root) {
-				// Discovery uses directory metadata only; never creates a folder or reads a log.
-				if err = channel.VerifySource(ctx, root, filepath.Base(file)); err != nil {
-					return zero, cleanup, err
-				}
-				return zero, cleanup, &accessRequired{Requirement: api.AccessRequirement{SourceRef: source, Environment: p.Environment, HostID: host, SessionRoot: root, ObservedAt: time.Now().UTC()}}
+				return zero, cleanup, errors.New("SOURCE_PATH_UNVERIFIED")
 			}
 			if err = channel.VerifySource(ctx, root, filepath.Base(file)); err != nil {
 				return zero, cleanup, err
