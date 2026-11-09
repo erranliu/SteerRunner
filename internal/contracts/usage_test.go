@@ -2,13 +2,13 @@ package contracts
 
 import "testing"
 
-func TestUsageAuthorizationFenceInput(t *testing.T) {
-	valid := `{"pending_stops":[],"usage_policy":{"enabled":true,"remote_log_access":{"mode":"disabled","grants":[]}}}`
+func TestUsageCollectionInput(t *testing.T) {
+	valid := `{"pending_stops":[],"usage_policy":{"enabled":true}}`
 	v, f := ReadServiceStartInput([]byte(valid))
 	if f != nil || v.UsagePolicy == nil {
 		t.Fatal(v, f)
 	}
-	for _, raw := range []string{`{"pending_stops":[],"usage_policy":null}`, `{"pending_stops":[],"usage_policy":{"remote_log_access":{"mode":"disabled","grants":[]}}}`, `{"pending_stops":[],"usage_policy":{"enabled":null,"remote_log_access":{"mode":"disabled","grants":[]}}}`, `{"pending_stops":[],"usage_policy":{"enabled":true,"remote_log_access":{"mode":"temporary","grants":null}}}`, `{"pending_stops":[],"usage_policy":{"enabled":true,"remote_log_access":{"mode":"disabled","grants":[]},"cost":{}}}`} {
+	for _, raw := range []string{`{"pending_stops":[],"usage_policy":null}`, `{"pending_stops":[],"usage_policy":{"remote_log_access":{"mode":"disabled","grants":[]}}}`, `{"pending_stops":[],"usage_policy":{"enabled":null}}`, `{"pending_stops":[],"usage_policy":{"enabled":true,"remote_log_access":{"mode":"temporary","grants":null}}}`, `{"pending_stops":[],"usage_policy":{"enabled":true,"cost":{}}}`} {
 		if _, f = ReadServiceStartInput([]byte(raw)); f == nil {
 			t.Fatal("invalid policy accepted", raw)
 		}

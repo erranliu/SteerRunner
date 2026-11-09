@@ -9,18 +9,10 @@ import (
 	"strings"
 )
 
-type Grant struct {
-	Environment  string   `json:"environment"`
-	HostID       string   `json:"host_id"`
-	SessionRoots []string `json:"session_roots"`
-}
-type RemoteLogAccess struct {
-	Mode   string  `json:"mode"`
-	Grants []Grant `json:"grants"`
-}
+// Policy enables collection for local and verified remote Run sessions.
+// Remote log access is derived from the original binding, without saved grants.
 type Policy struct {
-	Enabled         bool            `json:"enabled"`
-	RemoteLogAccess RemoteLogAccess `json:"remote_log_access"`
+	Enabled bool `json:"enabled"`
 }
 
 const CollectionPermitKey = "collection-permit"
@@ -36,7 +28,7 @@ type CollectionPermit struct {
 }
 
 func DefaultPolicy() Policy {
-	return Policy{Enabled: true, RemoteLogAccess: RemoteLogAccess{Mode: "disabled", Grants: []Grant{}}}
+	return Policy{Enabled: true}
 }
 
 var leafRoot = regexp.MustCompile(`(?i)(/sessions/[0-9]{4}/[0-9]{2}/[0-9]{2}|/terminal-agents/[a-z0-9-]+/[a-z0-9-]+/sessions)$`)
@@ -49,43 +41,18 @@ func SafeRoot(root string) bool {
 	abs := strings.HasPrefix(s, "/") && !strings.HasPrefix(s, "//") || len(s) > 3 && s[1] == ':' && s[2] == '/'
 	return abs && leafRoot.MatchString(s)
 }
-func (p Policy) Validate() error {
-	if p.RemoteLogAccess.Mode != "disabled" && p.RemoteLogAccess.Mode != "temporary" || p.RemoteLogAccess.Grants == nil || p.RemoteLogAccess.Mode == "disabled" && len(p.RemoteLogAccess.Grants) > 0 {
-		return errors.New("invalid usage_policy")
-	}
-	for _, g := range p.RemoteLogAccess.Grants {
-		if g.Environment == "" || !strings.HasPrefix(g.HostID, "sha256:") || len(g.HostID) != 71 || len(g.SessionRoots) == 0 {
-			return errors.New("invalid usage grant")
-		}
-		if _, err := hex.DecodeString(strings.TrimPrefix(g.HostID, "sha256:")); err != nil {
-			return err
-		}
-		for _, root := range g.SessionRoots {
-			if !SafeRoot(root) {
-				return errors.New("unsafe usage root")
-			}
-		}
-	}
-	return nil
-}
 func (p Policy) Digest() string {
 	raw, _ := json.Marshal(p)
 	h := sha256.Sum256(raw)
 	return hex.EncodeToString(h[:])
 }
+
+// Allows accepts only a verified environment, stable paired host fingerprint and
+// a narrow session root. The caller also verifies the original session and path.
 func (p Policy) Allows(environment, host, root string) bool {
-	if !p.Enabled || p.RemoteLogAccess.Mode != "temporary" {
+	if !p.Enabled || environment == "" || !strings.HasPrefix(host, "sha256:") || len(host) != 71 || !SafeRoot(root) {
 		return false
 	}
-	for _, g := range p.RemoteLogAccess.Grants {
-		if g.Environment != environment || g.HostID != host {
-			continue
-		}
-		for _, r := range g.SessionRoots {
-			if strings.EqualFold(strings.ReplaceAll(r, `\`, "/"), strings.ReplaceAll(root, `\`, "/")) {
-				return true
-			}
-		}
-	}
-	return false
+	_, err := hex.DecodeString(strings.TrimPrefix(host, "sha256:"))
+	return err == nil
 }

@@ -147,8 +147,6 @@ func TestRunUsageRemotePublicLive(t *testing.T) {
 		}
 	}
 	policy := api.DefaultPolicy()
-	policy.RemoteLogAccess.Mode = "temporary"
-	policy.RemoteLogAccess.Grants = []api.Grant{{Environment: p.Environment, HostID: host, SessionRoots: []string{logRoot}}}
 	body, _ := json.Marshal(contracts.ServiceStartInput{PendingStops: []contracts.PendingStop{}, UsagePolicy: &policy})
 	var info contracts.ServiceInfo
 	decode(call(string(body), "service", "start", "--input", "-"), &info)

@@ -214,39 +214,6 @@
     "observed_at": {
       "type": "string",
       "format": "date-time"
-    },
-    "access_requirements": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "source_ref",
-          "environment",
-          "host_id",
-          "session_root",
-          "observed_at"
-        ],
-        "properties": {
-          "source_ref": {
-            "type": "string"
-          },
-          "environment": {
-            "type": "string"
-          },
-          "host_id": {
-            "type": "string",
-            "pattern": "^sha256:[0-9a-f]{64}$"
-          },
-          "session_root": {
-            "type": "string"
-          },
-          "observed_at": {
-            "type": "string",
-            "format": "date-time"
-          }
-        }
-      }
     }
   },
   "$schema": "https://json-schema.org/draft/2020-12/schema"

@@ -140,8 +140,8 @@ func TestUsageRemoteCodexLive(t *testing.T) {
 		if err = dest.Commit(run, 0, nil); err != nil {
 			t.Fatal(err)
 		}
-		c := Collector{Store: dest, Policy: api.DefaultPolicy(), Instance: "explicit-live-acceptance"}
-		// Default configuration must not create any remote registration.
+		c := Collector{Store: dest, Policy: api.Policy{Enabled: false}, Instance: "explicit-live-acceptance"}
+		// Disabled collection must not create any remote registration.
 		authorizedTick(t, &c, ctx)
 		v, err := dest.GetRunUsage(ctx, id, 0)
 		if err != nil {
@@ -154,8 +154,7 @@ func TestUsageRemoteCodexLive(t *testing.T) {
 		if err != nil || len(keys) != 0 {
 			t.Fatal("disabled policy created an intent", keys, err)
 		}
-		c.Policy.RemoteLogAccess.Mode = "temporary"
-		c.Policy.RemoteLogAccess.Grants = []api.Grant{{Environment: p.Environment, HostID: host, SessionRoots: []string{root}}}
+		c.Policy = api.DefaultPolicy()
 		c.Leases = &access.Manager{Store: dest, Instance: c.Instance, PolicyDigest: c.Policy.Digest(), Permit: c.checkPermit}
 		defer func() {
 			clean, done := context.WithTimeout(context.Background(), 45*time.Second)

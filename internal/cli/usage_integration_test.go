@@ -76,7 +76,7 @@ func TestRunUsagePublicExecutable(t *testing.T) {
 		}
 		return response, exit
 	}
-	input := `{"pending_stops":[],"usage_policy":{"enabled":false,"remote_log_access":{"mode":"disabled","grants":[]}}}`
+	input := `{"pending_stops":[],"usage_policy":{"enabled":false}}`
 	started, exit := call(input, "service", "start", "--input", "-")
 	if exit != 0 {
 		t.Fatal(started)
@@ -135,7 +135,7 @@ func TestRunUsagePublicExecutable(t *testing.T) {
 	if exit != 0 {
 		t.Fatal("omitted policy replaced running policy", response)
 	}
-	response, exit = call(`{"pending_stops":[],"usage_policy":{"enabled":true,"remote_log_access":{"mode":"disabled","grants":[]}}}`, "service", "start", "--input", "-")
+	response, exit = call(`{"pending_stops":[],"usage_policy":{"enabled":true}}`, "service", "start", "--input", "-")
 	if exit != 5 || response.Error.Code != "usage_policy_conflict" {
 		t.Fatal(response, exit)
 	}
