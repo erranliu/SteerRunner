@@ -2,6 +2,7 @@ package codexworker
 
 import (
 	"encoding/json"
+	"fmt"
 	"strings"
 	"testing"
 
@@ -10,14 +11,16 @@ import (
 
 func TestPS2RejectsAllRetiredCodexOverrides(t *testing.T) {
 	for _, field := range []string{"args", "profile", "windows_sandbox", "sandbox", "sandbox_mode", "approval_policy", "approvals_reviewer"} {
-		for _, value := range []any{nil, "", []string{}, map[string]any{}} {
-			raw, err := json.Marshal(map[string]any{"executable": "must-not-run", field: value})
-			if err != nil {
-				t.Fatal(err)
-			}
-			if _, _, err := NormalizeProfilePayload(raw, "windows", "local", "codex"); err == nil || !strings.Contains(err.Error(), "unknown field") {
-				t.Fatalf("retired %s=%v accepted: %v", field, value, err)
-			}
+		for i, value := range []any{nil, "", []string{}, map[string]any{}} {
+			t.Run(fmt.Sprintf("%s/value-%d", field, i), func(t *testing.T) {
+				raw, err := json.Marshal(map[string]any{"executable": "must-not-run", field: value})
+				if err != nil {
+					t.Fatal(err)
+				}
+				if _, err := DecodeProfileConfig(raw); err == nil || !strings.Contains(err.Error(), "unknown field") {
+					t.Fatalf("retired %s=%v accepted: %v", field, value, err)
+				}
+			})
 		}
 	}
 }

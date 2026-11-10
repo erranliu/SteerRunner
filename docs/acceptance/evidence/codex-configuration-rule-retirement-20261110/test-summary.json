@@ -1,0 +1,307 @@
+{
+  "baseline": {
+    "exit_code": 1,
+    "packages": {
+      "github.com/erranliu/SteerRunner/internal/execution/adapters/codex": {
+        "top_level": {
+          "pass": 2
+        },
+        "all_nodes": {
+          "pass": 31
+        },
+        "tests": [
+          "TestCD63CodecIdentityAndVersion",
+          "TestPS2RejectsAllRetiredCodexOverrides"
+        ],
+        "skipped": [],
+        "status": "pass"
+      },
+      "github.com/erranliu/SteerRunner/internal/contracts": {
+        "top_level": {
+          "pass": 2
+        },
+        "all_nodes": {
+          "pass": 30
+        },
+        "tests": [
+          "TestCodexConfigurationRetainsModelValidation",
+          "TestCodexConfigurationRejectsRetiredOverrides"
+        ],
+        "skipped": [],
+        "status": "pass"
+      },
+      "github.com/erranliu/SteerRunner/internal/application": {
+        "top_level": {
+          "fail": 2,
+          "pass": 4
+        },
+        "all_nodes": {
+          "fail": 2,
+          "pass": 6
+        },
+        "tests": [
+          "TestCodexAdmissionPreservesFrozenDefaults",
+          "TestCodexDiagnosticPublicationUsesExistingRedaction",
+          "TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope",
+          "TestLastMessageIsBoundedReadOnlyTelemetry",
+          "TestNativePolicyMismatchBlocksNewDispatch",
+          "TestNativeProofBusinessKnowledgeBoundary"
+        ],
+        "skipped": [],
+        "status": "fail"
+      }
+    }
+  },
+  "baseline-host": {
+    "exit_code": 0,
+    "packages": {
+      "github.com/erranliu/SteerRunner/internal/execution/adapters/codex": {
+        "top_level": {
+          "pass": 2
+        },
+        "all_nodes": {
+          "pass": 31
+        },
+        "tests": [
+          "TestCD63CodecIdentityAndVersion",
+          "TestPS2RejectsAllRetiredCodexOverrides"
+        ],
+        "skipped": [],
+        "status": "pass"
+      },
+      "github.com/erranliu/SteerRunner/internal/contracts": {
+        "top_level": {
+          "pass": 2
+        },
+        "all_nodes": {
+          "pass": 30
+        },
+        "tests": [
+          "TestCodexConfigurationRetainsModelValidation",
+          "TestCodexConfigurationRejectsRetiredOverrides"
+        ],
+        "skipped": [],
+        "status": "pass"
+      },
+      "github.com/erranliu/SteerRunner/internal/application": {
+        "top_level": {
+          "pass": 6
+        },
+        "all_nodes": {
+          "pass": 53
+        },
+        "tests": [
+          "TestCodexAdmissionPreservesFrozenDefaults",
+          "TestCodexDiagnosticPublicationUsesExistingRedaction",
+          "TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope",
+          "TestLastMessageIsBoundedReadOnlyTelemetry",
+          "TestNativePolicyMismatchBlocksNewDispatch",
+          "TestNativeProofBusinessKnowledgeBoundary"
+        ],
+        "skipped": [],
+        "status": "pass"
+      }
+    }
+  },
+  "components": {
+    "exit_code": 0,
+    "packages": {
+      "github.com/erranliu/SteerRunner/internal/execution/adapters/codex": {
+        "top_level": {
+          "pass": 82,
+          "skip": 1
+        },
+        "all_nodes": {
+          "pass": 255,
+          "skip": 1
+        },
+        "tests": [
+          "TestExplicitPermissionsPreserveReadOnlyAndFrozenFullAccess",
+          "TestAnswerInputPreservesNativeBytesAndOwnership",
+          "TestAsyncQuestionNativeIdentityOptionsReplayAndFinal",
+          "TestAsyncQuestionObserverUsesNewInputCommand",
+          "TestPrepareSessionRetainsPartialProcessReceiptOnWriteFailure",
+          "TestPrepareSessionRejectsInvalidSettingsBeforeAnySideEffect",
+          "TestManagedOrcaLaunchFreezesPermissionsAndRejectsArgs",
+          "TestManagedCommandIndependentEffortAndOrderedPermissionArgs",
+          "TestContentReadOnlyPermissions",
+          "TestContentInterruptRejectsChangedProcess",
+          "TestDecodeQuestionsKeepsCenterActionsOutOfNativeContent",
+          "TestCD62NativeFactsAndQuestionRoute",
+          "TestRAReportWorkObservation",
+          "TestAppServerLaunchBindsNativeExecutable",
+          "TestExecutionOwnerJournalWakesOriginalObservationWithoutNativeBroadcast",
+          "TestExecutionOwnerAllowsOnlyQualifiedLaterAttemptForOriginalIdleThread",
+          "TestExecutionOwnerServiceCancellationClosesOnlyClientConnection",
+          "TestExecutionOwnerRejectsInputOutsideOriginalPayload",
+          "TestExecutionOwnerRejectsForeignRunConfigurationAndWorkspace",
+          "TestExecutionOwnerExitRequiresSignatureAndCompleteOriginalBinding",
+          "TestHostNativeAuthShellPolicyAndHooks",
+          "TestInputSessionAggregateAndZeroOversizeSend",
+          "TestWorkerInstructionsAllowRepairWithoutBlindReplay",
+          "TestInputTurnChecksFinalFrozenText",
+          "TestPrepareTurnNeverOverwritesOriginalJournal",
+          "TestLaunchServerFixesWindowsSandboxBeforeStarting",
+          "TestStartTurnFailureRetainsOriginalSessionIdentity",
+          "TestRAReportPolicyDeclaration",
+          "TestAppServerLaunchPreservesConfiguredArgs",
+          "TestTurnStartParamsKeepApprovalAndWritableRoots",
+          "TestNativeViewerVerifiesLiveBindingWithReadsOnly",
+          "TestNativeViewerAttachesWithoutPromptOrPolicyOverrides",
+          "TestWorkerTurnFindsPRBeforeFinalMessage",
+          "TestExecutionOwnerContentCompletionNeedsNoGitCheckpoint",
+          "TestExecutionOwnerCheckpointPinsOriginalTerminalAndSignature",
+          "TestTurnParamsRejectsUnboundCommandBeforeWorkspaceProbe",
+          "TestSRTurnModelBinding",
+          "TestGitPermissionLinkedWorktreePathsCompilesOnlyResolvedDirectories",
+          "TestPrivateGitRootsRejectForeignCommonDirectory",
+          "TestPolicyResourceMatchesOriginalProfile",
+          "TestVerifyPolicyMinimumVersion",
+          "TestPolicyResourceAcceptsNewerNativeVersion",
+          "TestPreparationApplicabilitySkipsTerminalLaunch",
+          "TestCD63CodecIdentityAndVersion",
+          "TestLegacyAppProfilesRejectWithoutHostFallback",
+          "TestPS2RejectsAllRetiredCodexOverrides",
+          "TestPS2NativeResourceRejectsApprovalChanges",
+          "TestPS2NativeLaunchAndInputForbidEscalation",
+          "TestPublicMessageWhitelistAndIdentity",
+          "TestRecoveryProcessIdentityRequiresPositiveNativeProof",
+          "TestRecoveryHistoryRejectsChangedFrozenBindingBeforeNativeRead",
+          "TestRecoveryHistoryIdleRequiresOriginalStoppedTurn",
+          "TestFixedControlFiniteProtocol",
+          "TestRemoteStopBindingNeedsNoExitArtifact",
+          "TestRemoteStopRequiresCompleteOriginalReadiness",
+          "TestRemoteExitAccountsForOriginalOwnedTree",
+          "TestRemoteExitSleepingChild",
+          "TestRemoteReaderFailedStartStillProvesNoNativeReader",
+          "TestRemoteTUIUsesServerOwnedPermissionsAndRoots",
+          "TestRemoteModelBridgeRejectsInvalidOriginalRequest",
+          "TestRemoteModelBridgeRejectsUnboundInvalidRequest",
+          "TestRemoteModelBridgePreservesLargeNativeReplies",
+          "TestRemoteAuditedModelRoutingAndRestoration",
+          "TestRemoteModelBridgeUsesOriginalNativeConnection",
+          "TestRemoteNativeModelProofRejectsMissingAndChangedContexts",
+          "TestRemoteModelAssemblyPreservesConfigurationAndPromptEncoding",
+          "TestRemoteTurnMatchesCompleteOriginalInputAndNativeFinal",
+          "TestRemoteWorkspaceAuditUsesOriginalGitOwner",
+          "TestRemoteWorkspaceEvidenceCannotPromoteRevisionOnlyOrForeignFacts",
+          "TestServiceStopWorkerHelper",
+          "TestServiceStopWorkerFacts",
+          "TestIndependentOwnerServiceDetachPreservesOriginalTree",
+          "TestBootstrapCompletionRequiresOriginalThreadAndTurn",
+          "TestWorkerRuntimeTempUsesFixedAdmin",
+          "TestWorkerRuntimeEnvironmentPreservesGitConfigAndRejectsAlias",
+          "TestWorkspaceLifecyclePrecedesSessionAndRejectsRetargeting",
+          "TestAsyncQuestionObserveSteerAndReconcile",
+          "TestCD63BindingCodecIsolation",
+          "TestCodexLinkedWorktreePathsOnlyGrantsFixedGitPaths",
+          "TestWorkerFlowMockCodexHelper",
+          "TestAppServerPendingFeedbackRecoveryUsesNewTurnReceipt",
+          "TestAppServerOutcomeUsesNativeTurnAndEarlierPRItem",
+          "TestMockAppServerThreadAndTurnContract"
+        ],
+        "skipped": [
+          "TestServiceStopWorkerHelper"
+        ],
+        "status": "pass"
+      },
+      "github.com/erranliu/SteerRunner/internal/contracts": {
+        "top_level": {
+          "pass": 27
+        },
+        "all_nodes": {
+          "pass": 149
+        },
+        "tests": [
+          "TestDevelopmentPermissionsRequireExplicitFullAccess",
+          "TestCodexConfigurationRetainsModelValidation",
+          "TestCodexConfigurationRejectsRetiredOverrides",
+          "TestContentRepositoryAdmission",
+          "TestContentAdmission",
+          "TestSRCLIContract",
+          "TestExecutionConfigurationIdentityAndDerivation",
+          "TestExecutionConfigurationComposePreservesTrustedPrograms",
+          "TestExecutionConfigurationComposePreferencesKeepOrcaIdentity",
+          "TestExecutionConfigurationRejectsAmbiguityAndRetiredSources",
+          "TestNativeCatalogUsesTrustedExecutionContext",
+          "TestExecutionConfigurationSourceDigestPreservesExplicitFields",
+          "TestGenerateFileMaterialContract",
+          "TestStrictJSONNativeDeadline",
+          "TestNativeCatalogStrictInput",
+          "TestOrcaAgentSettings",
+          "TestProgressInputOpaqueBytesAndSupportedRoutes",
+          "TestPendingStopsStrictOriginalEnvelope",
+          "TestLocalOrcaAuditedModelsUseStructuredRuntime",
+          "TestTerminalAgentsCannotUseCodexAuditModels",
+          "TestGitHubAppConfigurationRejectedBeforeRun",
+          "TestNativeRemoteAuditAndRetiredAppAreRejectedPurely",
+          "TestRAPublicContract",
+          "TestResultFileAdmissionAndOpaqueByteBounds",
+          "TestSingleExecutionAdmissionWithoutPublication",
+          "TestUsageCollectionInput",
+          "TestSRWorkflowSelection"
+        ],
+        "skipped": [],
+        "status": "pass"
+      },
+      "github.com/erranliu/SteerRunner/internal/resources": {
+        "top_level": {
+          "pass": 22
+        },
+        "all_nodes": {
+          "pass": 113
+        },
+        "tests": [
+          "TestTerminalAgentCapabilitiesDoNotRequireCodex",
+          "TestSRPublishedRunConfiguration",
+          "TestPublishedDevelopmentDocumentPaths",
+          "TestNativeRemoteCatalogDoesNotAdvertiseManagedGuarantees",
+          "TestContentRepositoryPublishedSchema",
+          "TestContentPublishedSchemas",
+          "TestExecutionConfigurationPublishedSchemas",
+          "TestExecutionWaitPublicSchema",
+          "TestInputContractDiscoveryMatchesOwners",
+          "TestRunNamePrefixPublishedContract",
+          "TestNativeCatalogSchemaMatchesGate",
+          "TestOrcaPublishedContractsMatchAdmissionAndStopScopes",
+          "TestStructuredExecuteCatalogMatchesNarrowAdmission",
+          "TestRAPublicContract",
+          "TestResultFilePublishedContract",
+          "TestPublicResourcesRetireCheckWithoutHidingRunChannels",
+          "TestR2PublishedEvidenceContract",
+          "TestUsageCapabilitiesBoundariesAndSeparation",
+          "TestRunUsageContractSchemas",
+          "TestSRValidationPreservesGateAndDiagnostics",
+          "TestSRCapabilityCatalogIsStaticAndResolvable",
+          "TestSRWorkflowSelection"
+        ],
+        "skipped": [],
+        "status": "pass"
+      }
+    }
+  },
+  "application": {
+    "exit_code": 0,
+    "packages": {
+      "github.com/erranliu/SteerRunner/internal/application": {
+        "top_level": {
+          "pass": 6
+        },
+        "all_nodes": {
+          "pass": 53
+        },
+        "tests": [
+          "TestCodexAdmissionPreservesFrozenDefaults",
+          "TestCodexDiagnosticPublicationUsesExistingRedaction",
+          "TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope",
+          "TestLastMessageIsBoundedReadOnlyTelemetry",
+          "TestNativePolicyMismatchBlocksNewDispatch",
+          "TestNativeProofBusinessKnowledgeBoundary"
+        ],
+        "skipped": [],
+        "status": "pass"
+      }
+    }
+  },
+  "application_exact_selection": true
+}

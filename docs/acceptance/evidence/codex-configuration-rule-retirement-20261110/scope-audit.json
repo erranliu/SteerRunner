@@ -1,0 +1,13 @@
+{
+  "changed_since_migrated_baseline": [
+    "internal/execution/adapters/codex/config.go",
+    "internal/execution/adapters/codex/diagnostic.go",
+    "internal/execution/adapters/codex/profile_config.go"
+  ],
+  "unchanged_go_files": 689,
+  "retained_declarations_exact": true,
+  "capture_bytes": 222022,
+  "capture_sha256": "b17f4fd2915862332e6e99ef3be4c0678116195364d4bce789e8c4f6919eb190",
+  "capture_equal": true,
+  "resource_digest": "910c7fa06b933be3632f862062e966200fd581b34873a395268826d44c1bbbe7"
+}

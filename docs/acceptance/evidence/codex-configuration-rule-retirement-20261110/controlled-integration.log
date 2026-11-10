@@ -1,0 +1,3 @@
+=== RUN   TestSRSingleExecutionColdStop
+--- PASS: TestSRSingleExecutionColdStop (12.30s)
+PASS

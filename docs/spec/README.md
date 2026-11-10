@@ -14,5 +14,6 @@
 | 持续进度与结束封存 | [Progress](runtime-progress.spec.md) · [Result-file](runtime-result-file.spec.md) |
 | 输入预算及后续完成确认未结事项 | [Spec](workflow-input-budget.spec.md) · [Plan](workflow-input-budget.plan.md) · [未结记录](../acceptance/workflow-input-budget.md) |
 | Orca CLI 等待与完整资格未结事项 | [Spec](orca-cli-wait-retry.spec.md) · [Plan](orca-cli-wait-retry.plan.md) · [原阻断](../acceptance/orca-cli-wait-retry.md) |
+| Codex 旧配置规则退役（2026-11-10 已实施，定向验收） | [Spec](codex-configuration-rule-retirement.spec.md) · [Plan](codex-configuration-rule-retirement.plan.md) · [验收](../acceptance/codex-configuration-rule-retirement.md) |
 
-13 份契约/未结设计文件之外，目录里仅保留 3 个原始证据固定引用的归档导引；它们不作为当前契约。新任务材料仍按工作流写入 `docs/spec/`，完成实施后将一次性 Spec/Plan 归档，长期规则只在相应领域契约中维护。
+长期契约及未结设计之外，目录中的归档导引只为原始证据固定引用保留，不作为当前契约。新任务材料仍按工作流写入 `docs/spec/`，完成实施后将一次性 Spec/Plan 归档，长期规则只在相应领域契约中维护。上述 Codex 退役设计于 2026-11-10 新增，其余索引核对日期保持如上。

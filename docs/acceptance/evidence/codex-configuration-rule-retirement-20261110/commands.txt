@@ -1,0 +1,20 @@
+Baseline (first sandbox run, failed on Git temp config permissions; unchanged production):
+go test ./internal/execution/adapters/codex ./internal/contracts ./internal/application -run '^(TestCD63CodecIdentityAndVersion|TestPS2RejectsAllRetiredCodexOverrides|TestCodexConfigurationRetainsModelValidation|TestCodexConfigurationRejectsRetiredOverrides|TestCodexAdmissionPreservesFrozenDefaults|TestCodexDiagnosticPublicationUsesExistingRedaction|TestLastMessageIsBoundedReadOnlyTelemetry|TestNativePolicyMismatchBlocksNewDispatch|TestNativeProofBusinessKnowledgeBoundary|TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope)$' -count=1 -timeout=10m -json
+
+Baseline-host: same exact command in the normal host context, before production deletion.
+
+Components (normal host):
+go test ./internal/execution/adapters/codex ./internal/contracts ./internal/resources -count=1 -timeout=10m -json
+
+Application (normal host):
+go test ./internal/application -run '^(TestCodexAdmissionPreservesFrozenDefaults|TestCodexDiagnosticPublicationUsesExistingRedaction|TestLastMessageIsBoundedReadOnlyTelemetry|TestNativePolicyMismatchBlocksNewDispatch|TestNativeProofBusinessKnowledgeBoundary|TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope)$' -count=1 -timeout=10m -json
+
+Captures (independently before and after production deletion):
+go run ./.evidence/codex-configuration-rule-retirement/capture.go .evidence/codex-configuration-rule-retirement/before-capture.json
+go run ./.evidence/codex-configuration-rule-retirement/capture.go .evidence/codex-configuration-rule-retirement/after-capture.json
+
+Formal build:
+./scripts/build.ps1 -OutFile .evidence/codex-configuration-rule-retirement/final/steerrunner.exe
+
+One public controlled scenario (normal host, original hidden CIM test launcher):
+./scripts/test-foundation.ps1 -RunnerExe .evidence/codex-configuration-rule-retirement/final/steerrunner.exe -Pattern '^TestSRSingleExecutionColdStop$' -OutDir .evidence/codex-configuration-rule-retirement/controlled-new

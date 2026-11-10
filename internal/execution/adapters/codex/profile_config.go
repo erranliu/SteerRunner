@@ -2,9 +2,7 @@ package codexworker
 
 import (
 	"encoding/json"
-	"errors"
 	executionbackend "github.com/erranliu/SteerRunner/internal/execution/backend"
-	"strings"
 )
 
 const ProfileCodecKey = "codex.worker-profile"
@@ -35,47 +33,3 @@ func DecodeProfileConfig(payload []byte) (ProfileConfig, error) {
 	return config, nil
 }
 func EncodeProfileConfig(config ProfileConfig) ([]byte, error) { return json.Marshal(config) }
-func NormalizeProfilePayload(payload []byte, goos, host, agent string) ([]byte, []string, error) {
-	settings, err := DecodeProfileConfig(payload)
-	if err != nil {
-		return nil, nil, err
-	}
-	settings, err = NormalizeProfileConfig(settings, host, agent)
-	if err != nil {
-		return nil, nil, err
-	}
-	display := []string{}
-	if host != "orca_supervised" && agent == "codex" {
-		permissions, err := NativePermissions(goos, host, agent, settings.AccessMode)
-		if err != nil {
-			return nil, nil, err
-		}
-		display = append(display, "权限："+permissions.Sandbox, "Windows 权限："+permissions.WindowsSandbox, "审批："+permissions.ApprovalPolicy+" · "+permissions.ApprovalsReviewer)
-	}
-	if settings.Model != "" {
-		display = append(display, "Model："+settings.Model)
-	}
-	if settings.ReasoningEffort != "" {
-		display = append(display, "Reasoning effort："+settings.ReasoningEffort)
-	}
-	encoded, err := EncodeProfileConfig(settings)
-	return encoded, display, err
-}
-func NormalizeProfileConfig(config ProfileConfig, host, agent string) (ProfileConfig, error) {
-	if config.AccessMode != "full_access" && !(host == "local" && config.AccessMode == "read_only") {
-		return ProfileConfig{}, errors.New("unsupported access mode")
-	}
-	if config.Executable == "" {
-		return ProfileConfig{}, errors.New("Codex implementation requires an executable")
-	}
-	if config.Model != strings.TrimSpace(config.Model) || strings.ContainsAny(config.Model, "\r\n\x00") {
-		return ProfileConfig{}, errors.New("invalid model")
-	}
-	if config.ReasoningEffort != "" && !ValidReasoningEffort(config.ReasoningEffort) {
-		return ProfileConfig{}, errors.New("invalid reasoning_effort")
-	}
-	if host == "local" && agent == "codex" {
-		config.ReasoningEffort = LocalReasoningEffortDefault(config.ReasoningEffort)
-	}
-	return config, nil
-}

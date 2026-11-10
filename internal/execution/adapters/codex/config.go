@@ -32,13 +32,6 @@ func ValidReasoningEffort(value string) bool {
 	return false
 }
 
-func LocalReasoningEffortDefault(effort string) string {
-	if effort == "" {
-		return "high"
-	}
-	return effort
-}
-
 func (c Config) Validate(goos string) error {
 	if c.Profile != "" {
 		return fmt.Errorf("native profile overrides are unsupported")
