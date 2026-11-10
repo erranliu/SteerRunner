@@ -1,0 +1,19 @@
+{
+  "changed_files": [
+    "internal/application/feedback.go",
+    "internal/application/feedback_test.go",
+    "internal/application/frozen_budget_test.go",
+    "internal/application/result_acquisition_test.go"
+  ],
+  "production_changed": [
+    "internal/application/feedback.go"
+  ],
+  "production_lines_removed": 12,
+  "retained_production_bytes_exact": true,
+  "unchanged_source_test_tool_files": 804,
+  "capture_bytes": 288929,
+  "capture_sha256": "5436f793b82c5d7c335fe819bf673bcac2592c8fc81dc5c9a7e3ff95ab555e70",
+  "capture_equal": true,
+  "resource_digest": "910c7fa06b933be3632f862062e966200fd581b34873a395268826d44c1bbbe7",
+  "final_manifest_sha256": "0c1813d764a740344bfba74f26e0938b217dfbe61e0cf6de36d078006092a419"
+}

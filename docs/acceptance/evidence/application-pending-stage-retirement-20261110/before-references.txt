@@ -1,0 +1,5 @@
+internal\application\feedback_test.go:26:	preservePendingStage(r)
+internal\application\feedback.go:144:// preservePendingStage retains business input before the original session's
+internal\application\feedback.go:146:func preservePendingStage(r *runstate.Record) {
+internal\application\frozen_budget_test.go:104:					preservePendingStage(original)
+internal\application\result_acquisition_test.go:253:	preservePendingStage(r)

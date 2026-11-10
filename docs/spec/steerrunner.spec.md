@@ -97,6 +97,8 @@ scope 在新 Run 受理时冻结，公开为可选 `stop_evidence_scope`。state
 
 取舍：不再保证恢复已冻结却缺 Budget 的不完整现场，即使旧算法曾能补算也拒绝新候选，可能需本人处理。此限制不阻止原查询、结果观察、accepted/unknown 只读对账、stop 或离线核验，不补写原意图/结果。state/v8、CLI 和 Workflow 版本保持，不新增迁移器或恢复框架。生产代码分项净减 103/83 行；未做同条件耗时比较，不宣称任务提速。未部署、未发布，不授予完整 L2/L3 资格。
 
+2026-11-10，按[Spec](application-pending-stage-retirement.spec.md)/[Plan](application-pending-stage-retirement.plan.md)退役仅由三处测试维持的 preservePendingStage 阶段重建规则，生产仅删函数及独占内容 12 行。原冻结待发输入沿真实存储/重载/resume 保持身份、来源和预算，后继草稿首次冻结、已消费输入只读观察/不重发分别保留验证；NextStage、原资格核验/未知对账、授权与停止、原持久格式保持。独立设计及实施复核未确认新问题，合并前最小范围及原测试迁移失败见[验收](../acceptance/application-pending-stage-retirement.md)，不扩大完整恢复或真实后端资格。
+
 ### 现行实现清理：旧规则与 Lifecycle 接口
 
 2026-11-01 已按[Spec](../archive/2026-11/implementation/spec/dormant-lifecycle-cleanup.spec.md)、[Plan](../archive/2026-11/implementation/spec/dormant-lifecycle-cleanup.plan.md)实施并完成[专项验收](../archive/2026-11/implementation/acceptance/dormant-lifecycle-cleanup.md)。删除无生产入口的旧准备/回合/恢复模型、三类未调用 Lifecycle 方法和六个无读取能力字段。实际继续资格、受理/开始区分、原操作对账、观察、结果/预算、owner/Job/reader、权限和停止仍由现有生产入口执行。

@@ -1,0 +1,23 @@
+Windows/amd64; PowerShell 7; repository root. count=1.
+
+Original baseline, then repeated for migrated-baseline, migrated-baseline-fixed, migrated-baseline-final:
+go test ./internal/application -run '^(TestSRResumeWorkflowRetainsOriginalReportSource|TestFrozenBudgetLegalWorkflowEntries|TestRARecoveryConsumedInput)$' -count=1 -timeout=10m -json
+
+Lost-resource diagnostic (failed before fixing expected original projection):
+go test ./internal/application -run '^TestSRResumeWorkflowRetainsOriginalReportSource/lost$' -count=1 -timeout=5m -json
+
+Final application:
+go test ./internal/application -run '^(TestSRResumeWorkflowRetainsOriginalReportSource|TestFrozenBudgetLegalWorkflowEntries|TestRARecoveryConsumedInput|TestFrozenBudgetSuccessorsAndDraftResume|TestFrozenBudgetCopyRequiresOriginalUnsentBinding|TestFrozenBudgetUnknownReconcileAndStopDoNotRepair|TestFrozenBudgetMissingDoesNotGateOriginalResults|TestFrozenBudgetFirstRenderCommitFailureDoesNotPublish|TestServiceGenerationPreservesDurableAuthorizationAndBusinessState|TestRAResumeConsumedActiveInputWaitsForOriginalEvidence|TestRAFeedbackSupersedesUnsent|TestSRManualReconciliationExplicitRetryReplayAndLostResource|TestSRManualReconciliationStopWinsDuringRead|TestSRManualReconciliationCommitFailureAndRestart|TestSRManualLostResourceDuringContinuation|TestSROperationIntentCommitFailureDoesNotDispatch|TestSROperationReceiptCommitFailureReconcilesOriginal|TestStopContractKeepsWorkflowAndSavedScopeRules)$' -count=1 -timeout=10m -json
+
+Final components:
+go test ./internal/execution/workflow ./internal/execution/reliable ./internal/runstate -count=1 -timeout=5m -json
+
+Build and public controlled:
+./scripts/build.ps1 -OutFile .evidence/application-pending-stage-retirement/final/steerrunner.exe
+./scripts/test-foundation.ps1 -RunnerExe .evidence/application-pending-stage-retirement/final/steerrunner.exe -Pattern '^(TestSRNativeUnknownAndStop|TestSRRestartPreservesAuthorization)$' -Case 'TestSRRestartPreservesAuthorization/graceful','TestSRRestartPreservesAuthorization/kill' -OutDir .evidence/application-pending-stage-retirement/controlled-new
+
+Before and after capture (each executed independently):
+go run .evidence/application-pending-stage-retirement/capture.go .evidence/application-pending-stage-retirement/before-capture.json
+go run .evidence/application-pending-stage-retirement/capture.go .evidence/application-pending-stage-retirement/after-capture.json
+
+Raw JSON, stderr and exit files remain separate. Initial migrated failures are not passes.

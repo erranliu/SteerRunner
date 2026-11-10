@@ -16,5 +16,6 @@
 | Orca CLI 等待与完整资格未结事项 | [Spec](orca-cli-wait-retry.spec.md) · [Plan](orca-cli-wait-retry.plan.md) · [原阻断](../acceptance/orca-cli-wait-retry.md) |
 | Codex 旧配置规则退役（2026-11-10 已实施，定向验收） | [Spec](codex-configuration-rule-retirement.spec.md) · [Plan](codex-configuration-rule-retirement.plan.md) · [验收](../acceptance/codex-configuration-rule-retirement.md) |
 | Orca 旧终端测试与当前执行器分离（2026-11-10 已实施，定向验收） | [Spec](orca-terminal-fixture-separation.spec.md) · [Plan](orca-terminal-fixture-separation.plan.md) · [验收](../acceptance/orca-terminal-fixture-separation.md) |
+| 应用层旧阶段重建规则退役（2026-11-10 已实施，定向验收） | [Spec](application-pending-stage-retirement.spec.md) · [Plan](application-pending-stage-retirement.plan.md) · [验收](../acceptance/application-pending-stage-retirement.md) |
 
-长期契约及未结设计之外，目录中的归档导引只为原始证据固定引用保留，不作为当前契约。新任务材料仍按工作流写入 `docs/spec/`，完成实施后将一次性 Spec/Plan 归档，长期规则只在相应领域契约中维护。上述 Codex 退役及 Orca 测试分离专项于 2026-11-10 新增，其余索引核对日期保持如上。
+长期契约及未结设计之外，目录中的归档导引只为原始证据固定引用保留，不作为当前契约。新任务材料仍按工作流写入 `docs/spec/`，完成实施后将一次性 Spec/Plan 归档，长期规则只在相应领域契约中维护。上述 Codex 退役、Orca 测试分离及应用层旧阶段重建规则退役专项于 2026-11-10 新增，其余索引核对日期保持如上。

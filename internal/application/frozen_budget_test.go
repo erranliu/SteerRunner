@@ -100,14 +100,10 @@ func TestFrozenBudgetLegalWorkflowEntries(t *testing.T) {
 				assertFrozenStageBudgets(t, rows[0].Clone())
 				if !workflow.Content(id) {
 					original := rows[0].Clone()
-					text, budget := original.Snapshot.PendingTurn.Prompt, original.Snapshot.PendingTurn.Budget.Clone()
-					preservePendingStage(original)
-					if original.NextStage == nil || original.NextStage.Budget == nil {
-						t.Fatal("preserved original stage lost budget")
-					}
+					pending, frozen := original.Snapshot.Clone(), original.Clone().Workflow
 					original.PromptBodies = map[string]string{}
-					if err := resumeWorkflow(original); err != nil || original.Snapshot.PendingTurn.Prompt != text || !reflect.DeepEqual(original.Snapshot.PendingTurn.Budget, budget) {
-						t.Fatal("restored input rerendered or reconstructed", err)
+					if err := resumeWorkflow(original); err != nil || !reflect.DeepEqual(original.Snapshot.Clone(), pending) || !reflect.DeepEqual(original.Workflow, frozen) || original.NextStage != nil {
+						t.Fatal("queued original input changed identity, budget, model or policy", err)
 					}
 				}
 			})

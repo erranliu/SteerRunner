@@ -141,18 +141,6 @@ func (e *Engine) feedbackValue(id string, w *worker, p b.LifecyclePort, answer *
 	return err == nil
 }
 
-// preservePendingStage retains business input before the original session's
-// resource binding is restored. It does not authorize or dispatch the input.
-func preservePendingStage(r *runstate.Record) {
-	if r.NextStage == nil && r.Snapshot.PendingTurn != nil && r.Snapshot.PendingTurn.CommandID != r.Snapshot.Session.CurrentCommandID {
-		if prior := workflow.Input(r.Workflow, r.Snapshot.PendingTurn.CommandID); prior != nil {
-			copy := *prior
-			copy.CommandID = ""
-			r.NextStage = &copy
-		}
-	}
-}
-
 // resumeWorkflow chooses business continuation only after control qualification.
 // The caller commits this together with its authorization and command receipt.
 func resumeWorkflow(r *runstate.Record) error {
