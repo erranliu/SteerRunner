@@ -1,0 +1,330 @@
+{
+  "original-baseline": {
+    "exit_code": 0,
+    "packages": {
+      "github.com/erranliu/SteerRunner/internal/application": {
+        "top_level": {
+          "pass": 3
+        },
+        "nodes": {
+          "pass": 11
+        },
+        "tests": [
+          "TestSRResumeWorkflowRetainsOriginalReportSource",
+          "TestFrozenBudgetLegalWorkflowEntries",
+          "TestRARecoveryConsumedInput"
+        ],
+        "skipped": [],
+        "status": "pass"
+      }
+    },
+    "diagnostics": []
+  },
+  "migrated-baseline": {
+    "exit_code": 1,
+    "packages": {
+      "github.com/erranliu/SteerRunner/internal/application": {
+        "top_level": {
+          "fail": 2,
+          "pass": 1
+        },
+        "nodes": {
+          "fail": 11,
+          "pass": 3
+        },
+        "tests": [
+          "TestSRResumeWorkflowRetainsOriginalReportSource",
+          "TestFrozenBudgetLegalWorkflowEntries",
+          "TestRARecoveryConsumedInput"
+        ],
+        "skipped": [],
+        "status": "fail"
+      }
+    },
+    "diagnostics": [
+      "feedback_test.go:76: resume did not use only the original recovery query true &{{{<nil> }} available 1 0 0 0 {{1   {      } {}      { 0       }  false} {     attempt {} {      } session  turn-1c7229bfc1feb113faecf16d1f4c7c2a  turn-1c7229bfc1feb113faecf16d1f4c7c2a 1c7229bfc1feb113faecf16d1f4c7c2a 51ba86293ff0d710453d54c5064681d9 0} false   [] <nil> [] {  } false {C:\\Users\\lmas1\\AppData\\Local\\Temp\\TestSRResumeWorkflowRetainsOriginalReportSourceavailable1375799112\\002 main c2a80e567825321661744cb7659006ac0e050c53} 0x2cec1880a500 <nil>   [] [] <nil> <nil> <nil>}}",
+      "feedback_test.go:76: resume did not use only the original recovery query false &{{{<nil> }} lost 1 0 0 0 {{1   {      } {}      { 0       }  false} {     attempt {} {      } session  turn-241e7d681b0c2325af0f54d8bc631ac3  turn-241e7d681b0c2325af0f54d8bc631ac3 241e7d681b0c2325af0f54d8bc631ac3 e35d7576f0bbebf05002ff37274c8189 0} false   [] <nil> [] {  } false {C:\\Users\\lmas1\\AppData\\Local\\Temp\\TestSRResumeWorkflowRetainsOriginalReportSourcelost2692019301\\002 main 65ab30f71e9383021d9b1c6c00a5d298067e5f6b} 0x2cec18913d60 <nil>   [] [] <nil> <nil> <nil>}}",
+      "feedback_test.go:76: resume did not use only the original recovery query false &{{{<nil> }} busy 1 0 0 0 {{1   {      } {}      { 0       }  false} {     attempt {} {      } session  turn-d6ceef7a82d109c8baff56877ebba8cf  turn-d6ceef7a82d109c8baff56877ebba8cf d6ceef7a82d109c8baff56877ebba8cf 0e4372fb06f7ce76cb32f8c0f13c6be1 0} false   [] <nil> [] {  } false {C:\\Users\\lmas1\\AppData\\Local\\Temp\\TestSRResumeWorkflowRetainsOriginalReportSourcebusy1371419599\\002 main 0b42c036f08e5452990e7515cc52f54fd5de8fb0} 0x2cec18912be0 <nil>   [] [] <nil> <nil> <nil>}}",
+      "frozen_budget_test.go:106: queued original input changed identity, budget, model or policy <nil>",
+      "frozen_budget_test.go:106: queued original input changed identity, budget, model or policy <nil>",
+      "frozen_budget_test.go:106: queued original input changed identity, budget, model or policy <nil>",
+      "frozen_budget_test.go:106: queued original input changed identity, budget, model or policy <nil>",
+      "frozen_budget_test.go:106: queued original input changed identity, budget, model or policy <nil>",
+      "frozen_budget_test.go:106: queued original input changed identity, budget, model or policy <nil>",
+      "result_acquisition_test.go:285: resume=resumeRun recovery_queries=1 executes=0 reconciles=0 stops=0 consumed_status=blocked"
+    ]
+  },
+  "migrated-baseline-fixed": {
+    "exit_code": 1,
+    "packages": {
+      "github.com/erranliu/SteerRunner/internal/application": {
+        "top_level": {
+          "fail": 1,
+          "pass": 2
+        },
+        "nodes": {
+          "pass": 12,
+          "fail": 2
+        },
+        "tests": [
+          "TestSRResumeWorkflowRetainsOriginalReportSource",
+          "TestFrozenBudgetLegalWorkflowEntries",
+          "TestRARecoveryConsumedInput"
+        ],
+        "skipped": [],
+        "status": "fail"
+      }
+    },
+    "diagnostics": [
+      "feedback_test.go:92: mode=available reload=New resume=resumeRun recovery_queries=1 executes=0 reconciles=0 stops=0 command_state=completed",
+      "feedback_test.go:86: unavailable original resource was not rejected by recovery qualification",
+      "feedback_test.go:92: mode=busy reload=New resume=resumeRun recovery_queries=1 executes=0 reconciles=0 stops=0 command_state=failed",
+      "result_acquisition_test.go:285: resume=resumeRun recovery_queries=1 executes=0 reconciles=0 stops=0 consumed_status=blocked"
+    ]
+  },
+  "lost-diagnostic": {
+    "exit_code": 1,
+    "packages": {
+      "github.com/erranliu/SteerRunner/internal/application": {
+        "top_level": {
+          "fail": 1
+        },
+        "nodes": {
+          "fail": 2
+        },
+        "tests": [
+          "TestSRResumeWorkflowRetainsOriginalReportSource"
+        ],
+        "skipped": [],
+        "status": "fail"
+      }
+    },
+    "diagnostics": [
+      "feedback_test.go:86: unavailable original resource was not rejected by recovery qualification failed false true  manual_intervention_required The original session or prior writers cannot be verified for resume:"
+    ]
+  },
+  "migrated-baseline-final": {
+    "exit_code": 0,
+    "packages": {
+      "github.com/erranliu/SteerRunner/internal/application": {
+        "top_level": {
+          "pass": 3
+        },
+        "nodes": {
+          "pass": 14
+        },
+        "tests": [
+          "TestSRResumeWorkflowRetainsOriginalReportSource",
+          "TestFrozenBudgetLegalWorkflowEntries",
+          "TestRARecoveryConsumedInput"
+        ],
+        "skipped": [],
+        "status": "pass"
+      }
+    },
+    "diagnostics": [
+      "feedback_test.go:99: mode=available reload=New resume=resumeRun recovery_queries=1 executes=0 reconciles=0 stops=0 command_state=completed",
+      "feedback_test.go:99: mode=lost reload=New resume=resumeRun recovery_queries=1 executes=0 reconciles=0 stops=0 command_state=failed",
+      "feedback_test.go:99: mode=busy reload=New resume=resumeRun recovery_queries=1 executes=0 reconciles=0 stops=0 command_state=failed",
+      "result_acquisition_test.go:285: resume=resumeRun recovery_queries=1 executes=0 reconciles=0 stops=0 consumed_status=blocked"
+    ]
+  },
+  "application": {
+    "exit_code": 0,
+    "packages": {
+      "github.com/erranliu/SteerRunner/internal/application": {
+        "top_level": {
+          "pass": 18
+        },
+        "nodes": {
+          "pass": 63
+        },
+        "tests": [
+          "TestSRResumeWorkflowRetainsOriginalReportSource",
+          "TestFrozenBudgetMissingDoesNotGateOriginalResults",
+          "TestFrozenBudgetLegalWorkflowEntries",
+          "TestFrozenBudgetSuccessorsAndDraftResume",
+          "TestFrozenBudgetCopyRequiresOriginalUnsentBinding",
+          "TestFrozenBudgetUnknownReconcileAndStopDoNotRepair",
+          "TestFrozenBudgetFirstRenderCommitFailureDoesNotPublish",
+          "TestServiceGenerationPreservesDurableAuthorizationAndBusinessState",
+          "TestSRManualReconciliationExplicitRetryReplayAndLostResource",
+          "TestSRManualReconciliationStopWinsDuringRead",
+          "TestSRManualReconciliationCommitFailureAndRestart",
+          "TestSRManualLostResourceDuringContinuation",
+          "TestSROperationIntentCommitFailureDoesNotDispatch",
+          "TestSROperationReceiptCommitFailureReconcilesOriginal",
+          "TestRARecoveryConsumedInput",
+          "TestRAFeedbackSupersedesUnsent",
+          "TestRAResumeConsumedActiveInputWaitsForOriginalEvidence",
+          "TestStopContractKeepsWorkflowAndSavedScopeRules"
+        ],
+        "skipped": [],
+        "status": "pass"
+      }
+    },
+    "diagnostics": [
+      "feedback_test.go:99: mode=available reload=New resume=resumeRun recovery_queries=1 executes=0 reconciles=0 stops=0 command_state=completed",
+      "feedback_test.go:99: mode=lost reload=New resume=resumeRun recovery_queries=1 executes=0 reconciles=0 stops=0 command_state=failed",
+      "feedback_test.go:99: mode=busy reload=New resume=resumeRun recovery_queries=1 executes=0 reconciles=0 stops=0 command_state=failed",
+      "result_acquisition_test.go:285: resume=resumeRun recovery_queries=1 executes=0 reconciles=0 stops=0 consumed_status=blocked"
+    ]
+  },
+  "components": {
+    "exit_code": 0,
+    "packages": {
+      "github.com/erranliu/SteerRunner/internal/execution/workflow": {
+        "top_level": {
+          "pass": 19
+        },
+        "nodes": {
+          "pass": 27
+        },
+        "tests": [
+          "TestSRNativeAnswerKnowledgeBoundary",
+          "TestRAAuditSources",
+          "TestRAAuditPartialAndFallback",
+          "TestRAParserFieldProvenance",
+          "TestSRWorkflowDevelopment",
+          "TestSRExecutionDependencyBoundary",
+          "TestProjectPolicyStepDeclarations",
+          "TestProjectPolicyOnlyPublicTemplateAndSelectedSlots",
+          "TestProjectPolicyRenderOverrideAndLegacy",
+          "TestSingleExecutionHasNoPublicationOrAcquisition",
+          "TestRASuccessOutputRouting",
+          "TestRASemantics",
+          "TestRADefinitionRename",
+          "TestRAFeedback",
+          "TestRAPublicationProgramClue",
+          "TestRAVerificationConflictSurvivesResume",
+          "TestRASuccessOutputLargeFinal",
+          "TestRASourcesReportUsesOriginalContext",
+          "TestRAHistoricalOutcomeCannotBePromoted"
+        ],
+        "skipped": [],
+        "status": "pass"
+      },
+      "github.com/erranliu/SteerRunner/internal/execution/reliable": {
+        "top_level": {
+          "pass": 10
+        },
+        "nodes": {
+          "pass": 30
+        },
+        "tests": [
+          "TestSRTurnModelBinding",
+          "TestReliablePreparationFacts",
+          "TestReliablePreparationApplicability",
+          "TestReliableRecoveryAndAuthorization",
+          "TestReliableLateFacts",
+          "TestRAReportPolicyUnknown",
+          "TestRANativeFailureDominatesCompletion",
+          "TestRAUnreportedOutcomeBoundary",
+          "TestSessionReceiptSeparatesAcceptedInputFromTurnStart",
+          "TestSessionReceiptRejectsForeignBindingWithoutPartialChanges"
+        ],
+        "skipped": [],
+        "status": "pass"
+      },
+      "github.com/erranliu/SteerRunner/internal/runstate": {
+        "top_level": {},
+        "nodes": {},
+        "tests": [],
+        "skipped": [],
+        "status": "skip"
+      }
+    },
+    "diagnostics": [
+      "?   \tgithub.com/erranliu/SteerRunner/internal/runstate\t[no test files]"
+    ]
+  },
+  "scope": {
+    "changed_files": [
+      "internal/application/feedback.go",
+      "internal/application/feedback_test.go",
+      "internal/application/frozen_budget_test.go",
+      "internal/application/result_acquisition_test.go"
+    ],
+    "production_changed": [
+      "internal/application/feedback.go"
+    ],
+    "production_lines_removed": 12,
+    "retained_production_bytes_exact": true,
+    "unchanged_source_test_tool_files": 804,
+    "capture_bytes": 288929,
+    "capture_sha256": "5436f793b82c5d7c335fe819bf673bcac2592c8fc81dc5c9a7e3ff95ab555e70",
+    "capture_equal": true,
+    "resource_digest": "910c7fa06b933be3632f862062e966200fd581b34873a395268826d44c1bbbe7",
+    "final_manifest_sha256": "0c1813d764a740344bfba74f26e0938b217dfbe61e0cf6de36d078006092a419"
+  },
+  "build": {
+    "schema": "steerrunner-build/v1",
+    "component": "runner",
+    "source_digest": "c2dacc922c5a053e7c66c9c5949c436db7500ab5eedd1fa9a92d538be262e49d",
+    "version": "0.2.0-dev.4",
+    "source_commit": "25f71fd62f53f072ef0f30d7f06dcc60d1af837e",
+    "source_dirty": true,
+    "protocol": "steerrunner-cli/v1",
+    "platform": "windows/amd64",
+    "sha256": "df1ffd5465b13b438b6505e060911c674a82ee0483b1cfc000d83fd79d35afe2"
+  },
+  "design_audit": {
+    "confirmed_findings": 0,
+    "implementation_narrow_recheck_findings": 0,
+    "readonly": true,
+    "agent_ran_tests": false
+  },
+  "qualification": {
+    "scope": "pre-merge targeted application/components and two generic controlled parent tests with graceful/kill cases",
+    "full_application": false,
+    "full_L1": false,
+    "full_Controlled": false,
+    "L2_L3_L4": false,
+    "real_Orca_or_models_or_PR": false,
+    "Node": false,
+    "deployed": false
+  },
+  "controlled": {
+    "result": {
+      "controlled_cases": {
+        "TestSRRestartPreservesAuthorization": [
+          {
+            "id": "graceful",
+            "passed": true,
+            "duration_seconds": 21.3399735
+          },
+          {
+            "id": "kill",
+            "passed": true,
+            "duration_seconds": 20.8738039
+          }
+        ]
+      },
+      "exe": "C:\\Users\\lmas1\\.codex\\worktrees\\3656\\SteerRunner\\.evidence\\application-pending-stage-retirement\\final\\steerrunner.exe",
+      "exit_code": 0,
+      "finished_at": "2026-11-10T04:47:06.5569598Z",
+      "scenario_count": 2
+    },
+    "identity": {
+      "pid": 24964,
+      "process_started_at": "2026-11-10T04:46:09.5582620Z",
+      "pattern": "^(TestSRNativeUnknownAndStop|TestSRRestartPreservesAuthorization)$",
+      "result_file_cases": [],
+      "controlled_cases": [
+        "TestSRRestartPreservesAuthorization/graceful",
+        "TestSRRestartPreservesAuthorization/kill"
+      ],
+      "runner_sha256": "DF1FFD5465B13B438B6505E060911C674A82EE0483B1CFC000D83FD79D35AFE2",
+      "fixture_sha256": "7A1B53A4C9EC7DF7765DEBF6C754FDAE5CC35615E7EE4F8B3037F28CE40939FA",
+      "native_fixture_sha256": "7888598CAC93C1B7E1F756E6077B3E5147FE55CE1A425E77DF48E85C77AE45CE",
+      "source_commit": "25f71fd62f53f072ef0f30d7f06dcc60d1af837e",
+      "source_dirty": true,
+      "go_version": "go version go1.26.4 windows/amd64",
+      "os_version": "Microsoft Windows NT 10.0.26200.0",
+      "machine": "LIUMING-ASUS"
+    },
+    "native_unknown_seconds": 14.59,
+    "foundation_top_level_passed": 5,
+    "foundation_packages": 4
+  }
+}

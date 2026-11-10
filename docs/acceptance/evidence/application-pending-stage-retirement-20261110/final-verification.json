@@ -1,0 +1,19 @@
+{
+  "source_manifest_files_checked": 808,
+  "approved_source_test_changes": 4,
+  "unchanged_source_test_tool_files": 804,
+  "source_test_tool_bytes_unchanged_since_final_validation": true,
+  "compressed_original_evidence_bytes_match": true,
+  "application_actual_top_level_matches_plan": 18,
+  "same_runner_sha256": "df1ffd5465b13b438b6505e060911c674a82ee0483b1cfc000d83fd79d35afe2",
+  "refreshed_origin_main": "dce4dff8e5be8529a2a1a1d6a300f8cfd01087c1",
+  "head": "25f71fd62f53f072ef0f30d7f06dcc60d1af837e",
+  "head_and_origin_main_base_file_trees_equal": true,
+  "design_audit_confirmed_findings": 0,
+  "implementation_narrow_recheck_confirmed_findings": 0,
+  "runtime_repeated_after_document_only_updates": false,
+  "committed": false,
+  "pushed": false,
+  "new_PR_created": false,
+  "deployed": false
+}

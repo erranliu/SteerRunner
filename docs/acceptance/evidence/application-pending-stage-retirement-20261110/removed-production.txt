@@ -1,0 +1,12 @@
+// preservePendingStage retains business input before the original session's
+// resource binding is restored. It does not authorize or dispatch the input.
+func preservePendingStage(r *runstate.Record) {
+	if r.NextStage == nil && r.Snapshot.PendingTurn != nil && r.Snapshot.PendingTurn.CommandID != r.Snapshot.Session.CurrentCommandID {
+		if prior := workflow.Input(r.Workflow, r.Snapshot.PendingTurn.CommandID); prior != nil {
+			copy := *prior
+			copy.CommandID = ""
+			r.NextStage = &copy
+		}
+	}
+}
+

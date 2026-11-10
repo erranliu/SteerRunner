@@ -13,6 +13,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"reflect"
 	"testing"
 	"time"
 )
@@ -247,17 +248,41 @@ func TestRAImplementationReportCompletesOriginal(t *testing.T) {
 }
 
 func TestRARecoveryConsumedInput(t *testing.T) {
-	e, _ := auditEngine(t)
+	e, w := auditEngine(t)
 	r := e.runs["run"].Clone()
-	r.Snapshot.Session.CurrentCommandID = r.Snapshot.PendingTurn.CommandID
-	preservePendingStage(r)
-	if r.NextStage != nil {
-		t.Fatal("consumed prompt became an unsent input")
+	input := r.Snapshot.PendingTurn.CommandID
+	if err := merge(r, b.LifecycleReceipt{Disposition: b.OperationConfirmed, State: b.LifecycleStateFacts{SessionID: r.Snapshot.Session.SessionID, TurnID: "original-turn", InputAccepted: true, TurnStarted: true}}); err != nil {
+		t.Fatal(err)
 	}
-	r.Snapshot.PendingTurn = nil
-	if err := resumeWorkflow(r); err != nil || r.Snapshot.PendingTurn != nil || r.NextStage != nil || r.Status != "blocked" {
-		t.Fatal("resume resent consumed implementation", err)
+	if r.Snapshot.PendingTurn != nil || r.NextStage != nil || r.Snapshot.Session.CurrentCommandID != input || !r.NativeStarted {
+		t.Fatal("original accepted receipt did not consume the queued input")
 	}
+	// This original turn is settled; the separate active-turn test below must
+	// continue observing its original final instead of taking this branch.
+	r.Snapshot.Session.LastStoppedTurnID = r.Snapshot.Session.CurrentTurnID
+	r.Allowed, r.ResumeRequired = false, true
+	if err := e.commitLocked(r, nil, "consumed_original_settled"); err != nil {
+		t.Fatal(err)
+	}
+	before := e.runs["run"].Clone()
+	p := &frozenResumePort{mode: "available"}
+	w.port = p
+	_, command := manualResume(t, e, "resume-consumed")
+	w.gate.Lock()
+	resumed := e.resumeRun("run", w, p)
+	w.gate.Unlock()
+	after := e.runs["run"]
+	if !resumed || after.Snapshot.PendingTurn != nil || after.NextStage != nil || after.Status != "blocked" || after.CommandStates[command] != "completed" || !after.Allowed || after.ResumeRequired {
+		t.Fatal("resume recreated consumed implementation or lost its control result")
+	}
+	if p.queries != 1 || p.executes != 0 || p.reconciles != 0 || p.stops != 0 || !reflect.DeepEqual(before.Snapshot, after.Snapshot) || !reflect.DeepEqual(before.Workflow, after.Workflow) || !reflect.DeepEqual(before.Intents, after.Intents) {
+		t.Fatal("consumed recovery rewrote or redispatched original work", p)
+	}
+	rows, err := e.store.Runs()
+	if err != nil || len(rows) != 1 || string(canonical(rows[0])) != string(canonical(after)) {
+		t.Fatal("consumed recovery was not durably committed", err)
+	}
+	t.Logf("resume=resumeRun recovery_queries=%d executes=%d reconciles=%d stops=%d consumed_status=%s", p.queries, p.executes, p.reconciles, p.stops, after.Status)
 }
 func TestRAStateAuthorityMilestone(t *testing.T) {
 	e, _ := auditEngine(t)
