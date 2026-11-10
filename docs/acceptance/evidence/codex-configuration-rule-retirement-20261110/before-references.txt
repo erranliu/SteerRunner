@@ -1,0 +1,8 @@
+internal\execution\adapters\codex\diagnostic.go:11:func EnvironmentDiagnostic(err error) string {
+internal\execution\adapters\codex\config.go:35:func LocalReasoningEffortDefault(effort string) string {
+internal\execution\adapters\codex\profile_config.go:37:func EncodeProfileConfig(config ProfileConfig) ([]byte, error) { return json.Marshal(config) }
+internal\execution\adapters\codex\profile_config.go:38:func NormalizeProfilePayload(payload []byte, goos, host, agent string) ([]byte, []string, error) {
+internal\execution\adapters\codex\profile_config.go:43:	settings, err = NormalizeProfileConfig(settings, host, agent)
+internal\execution\adapters\codex\profile_config.go:61:	encoded, err := EncodeProfileConfig(settings)
+internal\execution\adapters\codex\profile_config.go:64:func NormalizeProfileConfig(config ProfileConfig, host, agent string) (ProfileConfig, error) {
+internal\execution\adapters\codex\profile_config.go:78:		config.ReasoningEffort = LocalReasoningEffortDefault(config.ReasoningEffort)
