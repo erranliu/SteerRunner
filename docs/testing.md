@@ -32,7 +32,7 @@ Copy-Item tests/test-config.example.json .evidence/test-config.json
 .\scripts\test.ps1 -Level L4
 ```
 
-有可执行 case 的 L2/L3/L4 自动先运行 L1 和完整 Controlled；前置失败不启动依赖它的模型。全缺配置只报告不可用，不启动前置。L2 的原生 Git 检查归其 worker，失败不阻止独立 L3。L4 使用同批 Controlled 的三份冻结二进制并校验摘要、退出及无 skip，不借用历史通过。
+未显式复用时，有可执行 case 的 L2/L3/L4 自动先运行 L1 和完整 Controlled；单级 L2/L3 可通过下文的 `-PrerequisitesFrom` 核验并复用完整前置的直接成功证明。前置失败不启动依赖它的模型。全缺配置只报告不可用，不启动前置。L2 的原生 Git 检查归其 worker，失败不阻止独立 L3。L4 使用同批 Controlled 的三份冻结二进制并校验摘要、退出及无 skip，不借用历史通过。
 
 `-Scenario` 必须是注册的精确 ID，重复、未匹配或跨级选择拒绝；选择场景执行其全部 case。PowerShell 可传数组，外部命令行须传实际数组参数，不能把逗号串当作一个 ID。`-Repeat` 为 1–10，每个 case/repeat 建新现场。`-MaxParallel` 默认为 1、范围 1–8；L2/L3 有界并行，L4 排空队列后独占。
 
@@ -98,7 +98,7 @@ Copy-Item tests/test-config.example.json .evidence/test-config.json
 
 入口复用 `test-foundation.ps1`，不运行完整 L1；其原有四项 foundation 单元前置、真实 EXE/受控 peer、独立进程、原超时与清理保持。Group 与 Combination 二选一，支持多个精确 ID、拒绝未知/重复/通配 ID；展开后的测试去重并按原完整目录顺序记录；实际执行顺序沿用原 Go 测试执行器，不按分组重新排序。每次使用新 OutDir，可用 `-TimeoutMinutes 1..60` 选择原 foundation 聚合预算，单项调用期限不变。
 
-`summary.json` 固定记录 `validation_scope=controlled-selection`、`complete_controlled_passed=false`、`qualification_eligible=false`，保存组合/精确测试集合、catalog 摘要及入口总耗时。即使选择六组全部测试，成功也只表示这次选择通过；不生成 `prerequisites.json`，不能用于 `-PrerequisitesFrom`。原 `test.ps1 -Level Controlled`、独立完整前置及 L2/L3/L4 的完整 Controlled 门禁继续执行原完整集合，不读取选测资格。
+`summary.json` 固定记录 `validation_scope=controlled-selection`、`complete_controlled_passed=false`、`qualification_eligible=false`，保存组合/精确测试集合、catalog 摘要及入口总耗时。即使选择六组全部测试，成功也只表示这次选择通过；不生成 `prerequisites.json`，不能用于 `-PrerequisitesFrom`。`test.ps1 -Level Controlled`、独立完整前置及默认 L2/L3/L4 仍执行原完整集合；单级 L2/L3 显式复用也只接受该完整集合的直接成功证明，不接受选测资格。
 
 `timings.json` 只累计 Go 顶层 `--- PASS/FAIL/SKIP: Test… (…s)`，不重复累计子测试；记录逐项状态、主分组、分组已观测数量/缺项、已观测耗时合计、最慢十项和原 log/result/source-identity 摘要。未完成项的耗时为 null，零执行、缺结果、重复记录、未知测试、失败/跳过或精确集合不匹配不能报告选测通过。顶层耗时合计不等于构建/准备/清理在内的入口墙钟耗时；日志精度为 Go 输出的百分之一秒，不用它推导细粒度性能收益。
 
@@ -243,19 +243,22 @@ L2 的 `local-codex.smoke` 验证 workflow/2 最小交付；parser 专项在 L3�
 
 ## 证据与失败
 
-### 独立前置与显式 L2 复用
+### 独立前置与显式 L2/L3 复用
 
-默认 test.ps1 运行完整前置；显式复用只支持单级 L2、默认 catalog，不能与 Focused、ListAvailability、L3/L4 或混合级别合用。
+默认 test.ps1 运行完整前置；显式复用支持单级 L2 或 L3、默认 catalog，不能与 Focused、ListAvailability、L4、重复或混合级别合用。不自动搜索或复用“最近一次”结果。
 
 ```powershell
 .\scripts\test-prerequisites.ps1 -Stage All -OutDir C:\srt-evidence\prereq-new
 .\scripts\test.ps1 -Level L2 -Config .evidence/test-config.json `
   -PrerequisitesFrom C:\srt-evidence\prereq-new -OutDir C:\srt-evidence\l2-new
+# 同一工作副本、输入和环境仍匹配时，L3 同样复用；每轮输出与用例现场独立。
+.\scripts\test.ps1 -Level L3 -Scenario orca-local.codex -Config .evidence/test-config.json `
+  -PrerequisitesFrom C:\srt-evidence\prereq-new -OutDir C:\srt-evidence\l3-new
 ```
 
 来源必须是同机、同账号/工作副本、输入及产物/证据匹配的新格式 l1-core 与完整 Controlled 直接成功。共享源码、脚本、依赖、目录/注册及参与 L1 的 docs JSON 改动使其失效；无关文档或 native-only 改动按实际指纹判断。历史不补签，单阶段或 Pattern 不拼装完整前置；失配明确拒绝，不自动补跑。
 
-本轮仍重新评估配置/可用性、新编译/guard driver、创建新现场并完整验证 Git、真实发布/合并/审计与停止。后续 native 失败不改写已封存前置，失败批次仍 failed。边界见[Spec](archive/2026-11/implementation/spec/validation-reuse.spec.md) / [验收](archive/2026-11/implementation/acceptance/validation-reuse.md)。
+L2/L3 本轮仍重新评估配置/可用性、新编译/guard driver、冻结当前配置和 driver，并在派发前及执行后重核原证明、输入与产物。各用例仍创建新现场，执行其原有交付、审计、恢复和停止断言；L2 的真实 Git/发布/合并检查不变，L3 按所选 case 的契约执行，不因复用前置跳过或补造结果。L3 子集通过不代表完整 L3；即使完整 L3 通过，单独运行 L3 也不取得 L2 交付基线。后续 native、清理或来源复核失败不改写已封存前置，失败批次仍 failed，完整级别资格保持 false。边界见[Spec](archive/2026-11/implementation/spec/validation-reuse.spec.md) / [验收](archive/2026-11/implementation/acceptance/validation-reuse.md)。
 
 ### 批次报告
 

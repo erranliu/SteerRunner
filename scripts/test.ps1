@@ -58,7 +58,7 @@ try {
         Assert-SRFocusedRunner $taskRepo $RunnerExe
     }
     if ($PrerequisitesFrom) {
-        if ($Level.Count -ne 1 -or $Level[0] -ne 'L2' -or $ListAvailability -or -not $taskDefaultCatalog) { throw 'Prerequisite reuse only supports -Level L2 with the default catalog and without ListAvailability' }
+        if ($Level.Count -ne 1 -or $Level[0] -notin @('L2','L3') -or $ListAvailability -or -not $taskDefaultCatalog) { throw 'Prerequisite reuse only supports one L2 or L3 level with the default catalog and without ListAvailability' }
         $taskVerifyStarted=[DateTime]::UtcNow
         $taskReused=Read-SRPrerequisites $taskRepo $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($PrerequisitesFrom)
         if($RunnerExe) {

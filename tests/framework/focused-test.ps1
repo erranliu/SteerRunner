@@ -1,6 +1,7 @@
 param([Parameter(Mandatory)][string]$Repository,[Parameter(Mandatory)][string]$Evidence)
 $ErrorActionPreference='Stop'
 Set-StrictMode -Version Latest
+. (Join-Path $Repository 'scripts/live-catalog.ps1')
 . (Join-Path $Repository 'scripts/test-prerequisite-contract.ps1')
 . (Join-Path $Repository 'scripts/test-configuration.ps1')
 . (Join-Path $Repository 'scripts/test-focused.ps1')
@@ -72,6 +73,7 @@ Put $taskWrapper @'
 param($Repository,$Entry,$Output,$Runner,$Helper,$Config,$Mode)
 $ErrorActionPreference='Stop'
 Set-StrictMode -Version Latest
+$taskReuseState=@{reads=0}
 foreach($library in @('live-catalog.ps1','test-configuration.ps1','test-prerequisite-contract.ps1','test-focused.ps1')){. (Join-Path $Repository ('scripts/'+$library))}
 function Mark($Output,$Name){[IO.File]::AppendAllText((Join-Path $Output 'calls.txt'),$Name+"`n")}
 function Get-SRTestConfiguration {
@@ -83,9 +85,11 @@ function Invoke-SRControlledStage($Root,$Output,$Catalog,$DefaultCatalog){Mark $
 function Invoke-SRNativePreflight($Root,$Output,[switch]$RequireStable){
     Mark $Output 'NativePreflight'
     $driver=Join-Path $Output 'native.test.exe';[IO.File]::WriteAllText($driver,'synthetic driver')
-    @{compile_exit=$(if($Mode -eq 'compile-fail'){1}else{0});zero_match_guard=($Mode -ne 'zero-match');duration_seconds=0;driver_path=$driver;driver_sha256=(Get-SRFileDigest $driver);input_finish=@{fingerprint='fixture'}}
+    @{compile_exit=$(if($Mode -in @('compile-fail','reuse-L3-compile-fail')){1}else{0});zero_match_guard=($Mode -notin @('zero-match','reuse-L3-zero-match'));duration_seconds=0;driver_path=$driver;driver_sha256=(Get-SRFileDigest $driver);input_finish=@{fingerprint='fixture'}}
 }
 function Read-SRPrerequisites($Root,$Source){
+    $taskReuseState.reads++
+    if(($Mode -eq 'reuse-L3-proof-before' -and $taskReuseState.reads -eq 2) -or ($Mode -eq 'reuse-L3-proof-after' -and $taskReuseState.reads -eq 3)){throw 'Source proof changed at the original refresh fence'}
     @{runner_exe=$Runner;manifest_path=($Runner+'.build.json');manifest_sha256=(Get-SRFileDigest ($Runner+'.build.json'));manifest=@{stages=@{'l1-core'=@{record=@{level='L1';exit_code=0};finished_at='fixture';duration_seconds=0};controlled=@{record=@{level='Controlled';exit_code=0};finished_at='fixture';duration_seconds=0}}}}
 }
 function Get-SRPrerequisiteSnapshot($Root,[switch]$Native){@{supported=$true;fingerprint='fixture'}}
@@ -95,30 +99,44 @@ function Invoke-SRCaseBatch {
     if($Mode -ne 'default' -and (-not $NativeDriver -or (Get-SRFileDigest $NativeDriver) -cne $NativeDriverSHA256)){throw 'Guarded driver was not passed to the case batch'}
     $records=@()
     if($Mode -ne 'empty'){
-        foreach($e in $Executions){$records+=@{level=$e.entry.level;scenario=$e.entry.id;case_id=$e.case.id;repeat_index=$e.repeat_index;status=$(if($Mode -eq 'cleanup-fail'){'failed'}else{'passed'});timings=@{preparation_seconds=0;native_and_cleanup_seconds=0}}}
+        foreach($e in $Executions){$records+=@{level=$e.entry.level;scenario=$e.entry.id;case_id=$e.case.id;repeat_index=$e.repeat_index;status=$(if($Mode -in @('cleanup-fail','reuse-L3-cleanup-fail')){'failed'}else{'passed'});timings=@{preparation_seconds=0;native_and_cleanup_seconds=0}}}
     }
     & $Checkpoint $records
-    if($Mode -eq 'changed-driver'){[IO.File]::AppendAllText($NativeDriver,'changed')}
+    if($Mode -in @('changed-driver','reuse-L3-driver-after')){[IO.File]::AppendAllText($NativeDriver,'changed')}
 }
 $argsMap=@{Level='L2';Scenario='local-codex.smoke';Config=$Config;RunnerExe=$Runner;ConfigHelper=$Helper;OutDir=$Output}
-if($Mode -eq 'reuse'){$argsMap['PrerequisitesFrom']=Split-Path -Parent $Config}
+if($Mode -like 'reuse*'){$argsMap['PrerequisitesFrom']=Split-Path -Parent $Config}
 elseif($Mode -ne 'default'){$argsMap['Focused']=$true}
-if($Mode -eq 'L3'){$argsMap.Level='L3';$argsMap.Scenario='orca-local.codex'}
+if($Mode -eq 'L3' -or $Mode -like 'reuse-L3*'){$argsMap.Level='L3';$argsMap.Scenario='orca-local.codex'}
+if($Mode -in @('reuse-L3-all','reuse-L3-proof-after','reuse-L3-driver-after')){$argsMap.Scenario=@()}
+if($Mode -eq 'reuse-L3-repeat'){$argsMap.Repeat=2;$argsMap.MaxParallel=2}
 & $Entry @argsMap
 exit $LASTEXITCODE
 '@
-foreach($taskMode in @('L2','L3','default','reuse','compile-fail','zero-match','cleanup-fail','empty','changed-driver')) {
+$taskModes=@('L2','L3','default','reuse','compile-fail','zero-match','cleanup-fail','empty','changed-driver',
+    'reuse-L3','reuse-L3-all','reuse-L3-repeat','reuse-L3-compile-fail','reuse-L3-zero-match',
+    'reuse-L3-proof-before','reuse-L3-proof-after','reuse-L3-driver-after','reuse-L3-cleanup-fail')
+foreach($taskMode in $taskModes) {
     $taskOutput=Join-Path $taskRoot ('dispatch-'+$taskMode)
     & $taskShell -NoProfile -File $taskWrapper -Repository $Repository -Entry $taskEntry -Output $taskOutput -Runner $taskRunner -Helper $taskHelper -Config $taskConfig -Mode $taskMode *> (Join-Path $taskRoot ('dispatch-'+$taskMode+'.log'))
     $taskCode=$LASTEXITCODE
     $taskSummary=Get-Content -LiteralPath (Join-Path $taskOutput 'summary.json') -Raw|ConvertFrom-Json
     $taskCalls=(Get-Content -LiteralPath (Join-Path $taskOutput 'calls.txt')) -join ','
-    $taskSuccess=$taskMode -in @('L2','L3','default','reuse')
-    $taskExpectedCalls=if($taskMode -eq 'default'){'L1,NativePreflight,Controlled,Cases'}elseif($taskMode -in @('compile-fail','zero-match')){'NativePreflight'}else{'NativePreflight,Cases'}
+    $taskReuse=$taskMode -like 'reuse*'
+    $taskSuccess=$taskMode -in @('L2','L3','default','reuse','reuse-L3','reuse-L3-all','reuse-L3-repeat')
+    $taskNoCases=$taskMode -in @('compile-fail','zero-match','reuse-L3-compile-fail','reuse-L3-zero-match','reuse-L3-proof-before')
+    $taskExpectedCalls=if($taskMode -eq 'default'){'L1,NativePreflight,Controlled,Cases'}elseif($taskNoCases){'NativePreflight'}else{'NativePreflight,Cases'}
     if($taskCalls -cne $taskExpectedCalls -or (($taskCode -eq 0) -ne $taskSuccess) -or (($taskSummary.status -eq 'passed') -ne $taskSuccess)){throw "Entry dispatch/result mismatch: $taskMode ($taskCalls); inspect dispatch log"}
-    if($taskMode -notin @('default','reuse')) {
+    if($taskReuse) {
+        if($taskSummary.validation_scope -ne 'complete' -or $taskSummary.prerequisite_execution_counts.l1_core -ne 0 -or $taskSummary.prerequisite_execution_counts.controlled -ne 0 -or $taskSummary.prerequisite_execution_counts.native_preflight -ne 1 -or @($taskSummary.prerequisite_stages | Where-Object {$_.PSObject.Properties['kind'] -and $_.kind -eq 'reused'}).Count -ne 2){throw "Reuse did not retain verified prerequisites and fresh driver: $taskMode"}
+        if($taskMode -like 'reuse-L3*') {
+            if($taskSummary.baseline.l2_verified -or $taskSummary.levels.L3.complete_level_passed -ne ($taskMode -eq 'reuse-L3-all')){throw "L3 selection or failure gained qualification: $taskMode"}
+            $taskCaseCount=if($taskNoCases){0}elseif($taskMode -in @('reuse-L3-all','reuse-L3-proof-after','reuse-L3-driver-after')){@(Get-SRCaseRegistry | Where-Object {$_.level -eq 'L3'} | ForEach-Object {$_.cases}).Count}elseif($taskMode -eq 'reuse-L3-repeat'){2}else{1}
+            if($taskSummary.executed_case_count -ne $taskCaseCount){throw "L3 cases/repeats were dropped or duplicated: $taskMode"}
+        } elseif(-not $taskSummary.levels.L2.complete_level_passed -or -not $taskSummary.baseline.l2_verified){throw 'L2 reuse qualification regressed'}
+    } elseif($taskMode -ne 'default') {
         if($taskSummary.validation_scope -ne 'focused' -or $taskSummary.prerequisite_execution_counts.l1_core -ne 0 -or $taskSummary.prerequisite_execution_counts.controlled -ne 0 -or $taskSummary.baseline.l2_verified -or @($taskSummary.levels.PSObject.Properties | Where-Object {$_.Value.complete_level_passed}).Count){throw "Focused gained complete qualification: $taskMode"}
-    } elseif(-not $taskSummary.levels.L2.complete_level_passed -or -not $taskSummary.baseline.l2_verified -or $taskSummary.validation_scope -ne 'complete'){throw "Default/reuse qualification regressed: $taskMode"}
+    } elseif(-not $taskSummary.levels.L2.complete_level_passed -or -not $taskSummary.baseline.l2_verified -or $taskSummary.validation_scope -ne 'complete'){throw 'Default qualification regressed'}
     $taskChecks.Add('dispatch-'+$taskMode)
 }
 

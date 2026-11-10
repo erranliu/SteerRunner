@@ -226,12 +226,33 @@ foreach($variant in @('partial','wrong-hash','wrong-level')) {
     if($code -ne 1 -or $result.status -ne 'failed' -or $result.error -notmatch 'native driver' -or $result.PSObject.Properties['git_boundary']){throw 'Unverified native driver reached fixture effects'}
     $taskChecks.Add('driver-'+$variant)
 }
-foreach($level in @('L1','Controlled','L3','L4')) {
+foreach($level in @('L1','Controlled','L4')) {
     $output=Join-Path $taskRoot ('invalid-'+$level)
     & $shell -NoProfile -File (Join-Path $Repository 'scripts/test.ps1') -Level $level -PrerequisitesFrom $taskOut -OutDir $output *> (Join-Path $taskRoot ($level+'.log'))
     $summary=Get-Content -LiteralPath (Join-Path $output 'summary.json') -Raw | ConvertFrom-Json
-    if($LASTEXITCODE -ne 2 -or $summary.status -ne 'failed' -or $summary.results.Count -ne 0 -or $summary.error -notmatch 'only supports -Level L2' -or (Test-Path (Join-Path $output 'framework'))){throw 'Unsupported reuse level reached execution'}
+    if($LASTEXITCODE -ne 2 -or $summary.status -ne 'failed' -or $summary.results.Count -ne 0 -or $summary.error -notmatch 'only supports one L2 or L3' -or (Test-Path (Join-Path $output 'framework'))){throw 'Unsupported reuse level reached execution'}
     $taskChecks.Add('reject-level-'+$level)
+}
+# Preserve array parameters for mixed/duplicate levels; reject before reading
+# evidence or launching any prerequisite/native stage.
+$argumentLauncher=Join-Path $taskRoot 'reuse-arguments.ps1'
+Put $argumentLauncher 'param($Entry,$Request); $p=Get-Content -LiteralPath $Request -Raw|ConvertFrom-Json -AsHashtable; & $Entry @p; exit $LASTEXITCODE'
+foreach($variant in @(
+    @{name='mixed-live';levels=@('L2','L3')},
+    @{name='mixed-edge';levels=@('L3','L4')},
+    @{name='duplicate-L3';levels=@('L3','L3')},
+    @{name='custom-catalog';levels=@('L3');catalog=$true},
+    @{name='availability';levels=@('L3');availability=$true}
+)) {
+    $output=Join-Path $taskRoot ('invalid-'+$variant.name)
+    $arguments=@{Level=$variant.levels;PrerequisitesFrom=$taskOut;OutDir=$output}
+    if($variant.ContainsKey('catalog')){$arguments['Catalog']=Join-Path $Repository 'tests/catalog.json'}
+    if($variant.ContainsKey('availability')){$arguments['ListAvailability']=$true}
+    $request=Join-Path $taskRoot 'reuse-arguments.json';JSON $request $arguments
+    & $shell -NoProfile -File $argumentLauncher -Entry (Join-Path $Repository 'scripts/test.ps1') -Request $request *> (Join-Path $taskRoot ($variant.name+'.log'))
+    $summary=Get-Content -LiteralPath (Join-Path $output 'summary.json') -Raw | ConvertFrom-Json
+    if($LASTEXITCODE -ne 2 -or $summary.status -ne 'failed' -or $summary.error -notmatch 'only supports one L2 or L3' -or $summary.results.Count -ne 0 -or $summary.prerequisite_execution_counts.l1_core -ne 0 -or $summary.prerequisite_execution_counts.controlled -ne 0 -or $summary.prerequisite_execution_counts.native_preflight -ne 0){throw 'Unsupported reuse arguments reached execution'}
+    $taskChecks.Add('reject-'+$variant.name)
 }
 # Exercise the actual independent entry dispatcher with process-local stage
 # doubles; no production switches, model process or qualifying proof is created.
