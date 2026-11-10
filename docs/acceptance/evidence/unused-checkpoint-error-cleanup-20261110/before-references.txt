@@ -1,0 +1,24 @@
+internal\execution\publication\provider.go:41:func providerError(code, message string) error { return &Error{Code: code, Message: message} }
+internal\execution\adapters\orcatransport\control_checkpoint.go:10:type controlCheckpoint struct {
+internal\execution\adapters\orcatransport\workspace_initial_terminal.go:7:type initialTerminalCheckpoint struct {
+
+internal/execution/publication\command.go:25:	message := err.Error()
+internal/execution/publication\command.go:33:	if message == err.Error() {
+internal/execution/publication\policy_test.go:34:		if err == nil || strings.Contains(err.Error(), "secret-canary") {
+internal/execution/publication\policy_test.go:40:		if err == nil || strings.Contains(err.Error(), "secret-canary") || strings.Contains(err.Error(), "a9N2v7L8p4Q6") {
+internal/execution/publication\pr_test.go:115:		if !strings.Contains(err.Error(), want) {
+internal/execution/publication\pr_test.go:161:	if err == nil || strings.Contains(err.Error(), secret) || !strings.Contains(err.Error(), "[REDACTED]") {
+internal/execution/publication\provider.go:34:type Error struct {
+internal/execution/publication\provider.go:39:func (e *Error) Error() string { return e.Code + ": " + e.Message }
+internal/execution/publication\provider.go:41:func providerError(code, message string) error { return &Error{Code: code, Message: message} }
+
+internal\application\freeze.go:17:	"github.com/erranliu/SteerRunner/internal/execution/publication"
+internal\application\results.go:8:	"github.com/erranliu/SteerRunner/internal/execution/publication"
+
+internal/execution/adapters/orcatransport\control_checkpoint.go:17:func (l *Lifecycle) inspectionGate(ctx context.Context) (func(), error) {
+internal/execution/adapters/orcatransport\control_checkpoint.go:18:	l.inspectionOnce.Do(func() { l.inspectionSerial = make(chan struct{}, 1) })
+internal/execution/adapters/orcatransport\control_checkpoint.go:23:	case l.inspectionSerial <- struct{}{}:
+internal/execution/adapters/orcatransport\control_checkpoint.go:24:		return func() { <-l.inspectionSerial }, nil
+internal/execution/adapters/orcatransport\lifecycle.go:68:	inspectionOnce   sync.Once
+internal/execution/adapters/orcatransport\lifecycle.go:69:	inspectionSerial chan struct{}
+internal/execution/adapters/orcatransport\workspace_audit.go:31:	release, err := l.inspectionGate(ctx)

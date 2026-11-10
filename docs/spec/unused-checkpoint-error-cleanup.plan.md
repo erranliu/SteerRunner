@@ -1,15 +1,15 @@
 # Plan：零消费者 checkpoint／错误声明清尾
 
-日期：2026-11-10。状态：设计，未实施。依据 [Spec](unused-checkpoint-error-cleanup.spec.md)，调查主线 `5ccc3f0aa07764657b3346aa6023b73b878d76e0`；本地 HEAD `f3668b37` 文件树相同。原设计轮仅写文档，以下代码修改、命令及验收均未执行；用户后续仅授权提交本设计并创建文档 PR，未授权实施、合并或部署。
+日期：2026-11-10。状态：独立设计审计完成，实施及合并前最小验收已完成，见[独立记录](../acceptance/unused-checkpoint-error-cleanup.md)。依据 [Spec](unused-checkpoint-error-cleanup.spec.md)，调查主线 `5ccc3f0aa07764657b3346aa6023b73b878d76e0`；本地 HEAD `f3668b37` 文件树相同。原设计轮仅写文档，用户先授权提交设计并创建 PR，随后授权独立审计、修正确认问题并实施；原设计轮的命令未执行，当前实际结果见独立验收。实施验收阶段未授权新的提交/PR、合并或部署；用户随后另行授权提交并创建实现 PR，未授权合并或部署。
 
 ## P0：基线及实际消费者复核
 
-- [ ] 后续获得实施授权后刷新 main，记录 HEAD/目标提交、工作树和实际差异；上游变化先核对。按 AGENTS.md 处理真实冲突，不为 Rebase 提示改写已验证历史。
-- [ ] 全仓核对 controlCheckpoint/initialTerminalCheckpoint/providerError 的直接引用与函数值，以及 publication.Error 的包内构造、导入 alias、类型断言/errors.As/反射注册。包含 cmd/tests/scripts/helpers/experiments、生成代码、各 build tag 与平台源文件；区分方法实现与调用。发现真实消费者先修订 Spec，不迁移/删除消费者来维持零引用结论。
-- [ ] 核对 inspectionGate 的真实审计调用与字段、原 context 取消/释放，追踪当前 creation owner、frozen reader/停止、ControlTerminal/RemoteControl*、application 的 provider 装配/结果核验。记录实际入口，不能因文件名或类型名含 checkpoint/Error 就合并清理。
-- [ ] 保存三个原文件、引用/入口记录和源码/全部测试/JS/脚本/driver/helper 清单及 SHA；未来独立验收逐项对照原字节。登记本批没有测试消费者需迁移，现有全部测试与共享装配保持；不新增声明存在性或删除镜像测试。
-- [ ] 实施前捕获保留声明、固定 capabilities/schema/resource_digest 及原真实持久格式的代表编码：Record/operation、ControlTerminal/State/Profile、RemoteControlRequest/Response/Setup、creation plan/started/result。私有类型可复用现有固定夹具/一次性捕获；不为取证增加生产 API。明确排除批准删除的 controlCheckpoint/initialTerminalCheckpoint/publication.Error，原定义另存，不要求整个类型集合不变；所有编码/读取错误检查，不忽略失败。
-- [ ] 在 Windows/amd64 运行 P2 的原十一项 adapter 定向和完整 publication，保存 JSON、stderr、退出码、实际顶层/子例及失败/skip 为原基线。原失败先记录，不改写为通过、不通过修改原断言压过失败。本轮不执行这些命令。
+- [x] 后续获得实施授权后刷新 main，记录 HEAD/目标提交、工作树和实际差异；上游变化先核对。按 AGENTS.md 处理真实冲突，不为 Rebase 提示改写已验证历史。
+- [x] 全仓核对 controlCheckpoint/initialTerminalCheckpoint/providerError 的直接引用与函数值，以及 publication.Error 的包内构造、导入 alias、类型断言/errors.As/反射注册。包含 cmd/tests/scripts/helpers/experiments、生成代码、各 build tag 与平台源文件；区分方法实现与调用。发现真实消费者先修订 Spec，不迁移/删除消费者来维持零引用结论。
+- [x] 核对 inspectionGate 的真实审计调用与字段、原 context 取消/释放，追踪当前 creation owner、frozen reader/停止、ControlTerminal/RemoteControl*、application 的 provider 装配/结果核验。记录实际入口，不能因文件名或类型名含 checkpoint/Error 就合并清理。
+- [x] 保存三个原文件、引用/入口记录和源码/全部测试/JS/脚本/driver/helper 清单及 SHA；未来独立验收逐项对照原字节。登记本批没有测试消费者需迁移，现有全部测试与共享装配保持；不新增声明存在性或删除镜像测试。
+- [x] 实施前捕获保留声明、固定 capabilities/schema/resource_digest 及原真实持久格式的代表编码：Record/operation、ControlTerminal/State/Profile、RemoteControlRequest/Response/Setup、creation plan/started/result。私有类型可复用现有固定夹具/一次性捕获；不为取证增加生产 API。明确排除批准删除的 controlCheckpoint/initialTerminalCheckpoint/publication.Error，原定义另存，不要求整个类型集合不变；所有编码/读取错误检查，不忽略失败。
+- [x] 在 Windows/amd64 运行 P2 的原十一项 adapter 定向和完整 publication，保存 JSON、stderr、退出码、实际顶层/子例及失败/skip 为原基线。原失败先记录，不改写为通过、不通过修改原断言压过失败。实施按用户后续授权执行，原输出分别保留。
 
 ## P1：按批准闭包删除并静态对照
 
@@ -21,7 +21,7 @@
 
 ## P2：最小实施验收
 
-仓库根目录 PowerShell 7、Windows/amd64；以下是未来实施清单，本轮不运行。Go count=1；原基线与删除后的输出分别落到本批新目录，不覆盖历史结果。每条独立检查退出，保存原失败/skip，普通宿主复验不抹去沙箱/环境失败。
+仓库根目录 PowerShell 7、Windows/amd64；以下实施清单已按用户后续授权执行，原/新输出与实际结果见独立验收。Go count=1；原基线与删除后的输出分别落到本批新目录，不覆盖历史结果。每条独立检查退出，保存原失败/skip，普通宿主复验不抹去沙箱/环境失败。
 
 ### P2.1 Adapter 十一项现有定向
 
@@ -55,11 +55,19 @@ go test ./internal/execution/publication -count=1 -timeout=5m -json
 
 ## P3：独立验收与结束
 
-- [ ] UCE-01–06 在 docs/acceptance/unused-checkpoint-error-cleanup.md 独立登记：引用/合法入口证据、删除闭包、保留方法/格式/错误、测试与共享工具未变证明、原/新基线及实际集合、命令/退出/失败/skip/未验、源码和产物身份。需要保留原证据时沿 .gitattributes 保护原字节，不替换原验收。
-- [ ] 复核生产只改批准三文件、仅一个预计删文件；没有测试迁移、无新旧声明镜像，没有删除历史磁盘数据或误删 inspectionGate/RemoteControl*/creation owner。固定保留编码/声明和公开资源摘要相同；声明集合的批准减少单列，不伪称所有原声明均存在。
-- [ ] 实际验收后才更新 Spec/Plan 状态、索引及必要长期实施说明；本轮仅设计，不预写实现完成，不给中央 README 验收表插行，不开展目录/归档大整理。
-- [ ] UCE-01–06 完成即结束，不自动进入 CLI 恒真参数等其它批次，不提交/推送/创建 PR/合并/部署。若后续另获 PR 授权，创建和最终交付前刷新目标并核对 GitHub 实际文件合并状态，优先 Squash and merge，不因 Rebase 提示改写已验证历史。
+- [x] UCE-01–06 在 docs/acceptance/unused-checkpoint-error-cleanup.md 独立登记：引用/合法入口证据、删除闭包、保留方法/格式/错误、测试与共享工具未变证明、原/新基线及实际集合、命令/退出/失败/skip/未验、源码和产物身份。需要保留原证据时沿 .gitattributes 保护原字节，不替换原验收。
+- [x] 复核生产只改批准三文件、仅一个预计删文件；没有测试迁移、无新旧声明镜像，没有删除历史磁盘数据或误删 inspectionGate/RemoteControl*/creation owner。固定保留编码/声明和公开资源摘要相同；声明集合的批准减少单列，不伪称所有原声明均存在。
+- [x] 实际验收后才更新 Spec/Plan 状态、索引及必要长期实施说明；原设计轮未预写实现完成，实施后按实际结果更新；不给中央 README 验收表插行，不开展目录/归档大整理。
+- [x] UCE-01–06 完成即结束，不自动进入 CLI 恒真参数等其它批次，不提交/推送/创建 PR/合并/部署。若后续另获 PR 授权，创建和最终交付前刷新目标并核对 GitHub 实际文件合并状态，优先 Squash and merge，不因 Rebase 提示改写已验证历史。
 
 ## P4：设计 PR 交付说明
 
-2026-11-10，按用户后续提 PR 授权，仅提交 Spec/Plan 与索引。已刷新并核对 main `91507d7e78c4e89598a0f20a967062d888104a3f` 的 #137 变更，消费者和测试声明保持，详情见 Spec §6；全部实施复选框仍未执行，不将静态复核或上游验收记为本批通过。
+2026-11-10，按用户后续提 PR 授权，仅提交 Spec/Plan 与索引。已刷新并核对 main `91507d7e78c4e89598a0f20a967062d888104a3f` 的 #137 变更，消费者和测试声明保持，详情见 Spec §6；设计 PR 交付时全部实施复选框未执行，后续按新增授权实施；不将原静态复核或上游验收记为本批通过。
+
+## P5：独立设计审计与实施基线
+
+独立只读子代理未确认设计修订问题，未编辑/运行测试。#138 合入后实施主线 `344d3e83eef2c34397d2cae6c02c6c95f805bd2f` 与本地 HEAD `13f3500b` 文件树相同；实际前后运行与身份另记独立验收，原设计 PR 静态核对不计作实施通过。
+
+## P6：实际完成说明
+
+独立设计/实施复核均未确认新问题。原基线和删除后复验均为 adapter 十一项、publication 九项通过，无失败/skip；批准三文件净删 42 行、保留字节与编码对照通过，正式 EXE 构建及来源摘要核对通过。所有测试/工具未改，无测试迁移或新增镜像测试。UCE-01–06 完成，原证据与未验范围见独立验收；验收冻结时尚未提交/推送/创建新 PR/合并/部署；用户后续实现 PR 授权与交付见验收补记。

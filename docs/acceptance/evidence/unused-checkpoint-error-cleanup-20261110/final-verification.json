@@ -1,0 +1,22 @@
+{
+  "head": "13f3500b8d31ff77d46bf786160582a25120d04c",
+  "refreshed_origin_main": "344d3e83eef2c34397d2cae6c02c6c95f805bd2f",
+  "head_and_origin_main_base_file_trees_equal": true,
+  "final_source_test_tool_entries_checked": 810,
+  "original_entries": 811,
+  "approved_modified_files": 2,
+  "approved_deleted_files": 1,
+  "unchanged_source_test_tool_files": 808,
+  "source_test_tool_bytes_unchanged_since_final_validation": true,
+  "raw_compressed_evidence_matches_originals": true,
+  "actual_adapter_top_level_matches_plan": 11,
+  "actual_publication_top_level": 9,
+  "build_exe_sha256": "8d26b5dbd1c1f508032f74a7d97163da62d201fe40f34e1b32c54ee48ff1cb31",
+  "design_audit_confirmed_findings": 0,
+  "implementation_narrow_recheck_confirmed_findings": 0,
+  "runtime_repeated_after_document_only_updates": false,
+  "committed": false,
+  "pushed": false,
+  "new_PR_created": false,
+  "deployed": false
+}

@@ -31,15 +31,6 @@ func NewClient(config Config, runner CommandRunner, timeout time.Duration) *Clie
 	return &Client{Config: config, Runner: runner, Timeout: timeout}
 }
 
-type Error struct {
-	Code    string
-	Message string
-}
-
-func (e *Error) Error() string { return e.Code + ": " + e.Message }
-
-func providerError(code, message string) error { return &Error{Code: code, Message: message} }
-
 func (c *Client) validateKind(operation string) error {
 	switch c.Config.Kind {
 	case "command", "gitea":
