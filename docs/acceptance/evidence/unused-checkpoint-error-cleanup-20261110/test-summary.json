@@ -1,0 +1,110 @@
+{
+  "before-adapter": {
+    "exit_code": 0,
+    "packages": {
+      "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport": {
+        "top_level": {
+          "pass": 11
+        },
+        "nodes": {
+          "pass": 39
+        },
+        "tests": [
+          "TestStructuredWorkspaceRecoversOriginalOwnerOutput",
+          "TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch",
+          "TestCreationOwnerIncompleteLaunchClaimNeverRetries",
+          "TestCreationOwnerStartupUsesOriginalDeadline",
+          "TestRetiredExecutionFactoryKeepsFrozenProof",
+          "TestFrozenReaderHasNoExecutionAndRejectsMutation",
+          "TestFrozenReaderKeepsConstructorFaultPriority",
+          "TestHostNativeStateCodecRejectsRetiredAndAmbiguousFields",
+          "TestHostNativeStateCodecRoundTripRetainsOriginalBinding",
+          "TestHostNativeStateCodecRetainsWaitingWithoutRecomputing",
+          "TestStructuredWorkspaceAuditReadsOriginalChangedTree"
+        ],
+        "skipped": [],
+        "status": "pass"
+      }
+    }
+  },
+  "before-publication": {
+    "exit_code": 0,
+    "packages": {
+      "github.com/erranliu/SteerRunner/internal/execution/publication": {
+        "top_level": {
+          "pass": 9
+        },
+        "nodes": {
+          "pass": 19
+        },
+        "tests": [
+          "TestPublicationPolicyValidatesProviderValues",
+          "TestPublicationSecretsRejectedBeforeFreeze",
+          "TestPRRequiresExactIdentityAndMergeEvidence",
+          "TestPRURLsAndRemotes",
+          "TestWorkerPRIdentityRequiresExecutionBranch",
+          "TestWorkerPRIdentityReportsAllMismatchedFields",
+          "TestGiteaQueryReadsPRHeadIdentity",
+          "TestCommandProviderErrorsRedactReferencedCredential",
+          "TestUnsupportedProviderDoesNoNetworkOperation"
+        ],
+        "skipped": [],
+        "status": "pass"
+      }
+    }
+  },
+  "after-adapter": {
+    "exit_code": 0,
+    "packages": {
+      "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport": {
+        "top_level": {
+          "pass": 11
+        },
+        "nodes": {
+          "pass": 39
+        },
+        "tests": [
+          "TestStructuredWorkspaceRecoversOriginalOwnerOutput",
+          "TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch",
+          "TestCreationOwnerIncompleteLaunchClaimNeverRetries",
+          "TestCreationOwnerStartupUsesOriginalDeadline",
+          "TestRetiredExecutionFactoryKeepsFrozenProof",
+          "TestFrozenReaderHasNoExecutionAndRejectsMutation",
+          "TestFrozenReaderKeepsConstructorFaultPriority",
+          "TestHostNativeStateCodecRejectsRetiredAndAmbiguousFields",
+          "TestHostNativeStateCodecRoundTripRetainsOriginalBinding",
+          "TestHostNativeStateCodecRetainsWaitingWithoutRecomputing",
+          "TestStructuredWorkspaceAuditReadsOriginalChangedTree"
+        ],
+        "skipped": [],
+        "status": "pass"
+      }
+    }
+  },
+  "after-publication": {
+    "exit_code": 0,
+    "packages": {
+      "github.com/erranliu/SteerRunner/internal/execution/publication": {
+        "top_level": {
+          "pass": 9
+        },
+        "nodes": {
+          "pass": 19
+        },
+        "tests": [
+          "TestPublicationPolicyValidatesProviderValues",
+          "TestPublicationSecretsRejectedBeforeFreeze",
+          "TestPRRequiresExactIdentityAndMergeEvidence",
+          "TestPRURLsAndRemotes",
+          "TestWorkerPRIdentityRequiresExecutionBranch",
+          "TestWorkerPRIdentityReportsAllMismatchedFields",
+          "TestGiteaQueryReadsPRHeadIdentity",
+          "TestCommandProviderErrorsRedactReferencedCredential",
+          "TestUnsupportedProviderDoesNoNetworkOperation"
+        ],
+        "skipped": [],
+        "status": "pass"
+      }
+    }
+  }
+}

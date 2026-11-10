@@ -1,0 +1,2 @@
+rg controlCheckpoint|initialTerminalCheckpoint|providerError over internal/cmd/tests/scripts: exit 1, no matches.
+publication/provider.go has no deleted Error type/method; actual Query/validateKind preserved byte-for-byte.
