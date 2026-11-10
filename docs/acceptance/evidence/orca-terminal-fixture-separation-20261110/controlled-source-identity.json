@@ -1,0 +1,15 @@
+{
+  "pid": 44600,
+  "process_started_at": "2026-11-10T04:19:17.4405600Z",
+  "pattern": "^TestSRNativeUnknownAndStop$",
+  "result_file_cases": [],
+  "controlled_cases": [],
+  "runner_sha256": "C26B421907D4148368D246C64FABF241693E732451AC66E185F1BD8672DC857D",
+  "fixture_sha256": "CFBAA14253B39D1F8814D409999DFBD02ADC473C8D243A17DF314DAAF957D90C",
+  "native_fixture_sha256": "7888598CAC93C1B7E1F756E6077B3E5147FE55CE1A425E77DF48E85C77AE45CE",
+  "source_commit": "c69493a1e65d9792326c448c898cec95c5ee9d42",
+  "source_dirty": true,
+  "go_version": "go version go1.26.4 windows/amd64",
+  "os_version": "Microsoft Windows NT 10.0.26200.0",
+  "machine": "LIUMING-ASUS"
+}

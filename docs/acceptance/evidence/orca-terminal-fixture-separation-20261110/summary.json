@@ -1,0 +1,364 @@
+{
+  "original-baseline": {
+    "exit_code": 0,
+    "packages": {
+      "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport": {
+        "top_level": {
+          "pass": 4
+        },
+        "nodes": {
+          "pass": 23
+        },
+        "tests": [
+          "TestOrcaCLICommandEncodingAndConsumers",
+          "TestRetiredExecutionFactoryKeepsFrozenProof",
+          "TestOriginalTerminalConcurrency",
+          "TestCodexStoppedRequiresNativeExitProofBeyondPTY"
+        ],
+        "skipped": [],
+        "status": "pass"
+      }
+    },
+    "build_errors": [],
+    "measurement_diagnostics": []
+  },
+  "migrated-baseline": {
+    "exit_code": 1,
+    "packages": {
+      "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport": {
+        "top_level": {},
+        "nodes": {},
+        "tests": [],
+        "skipped": [],
+        "status": "fail"
+      }
+    },
+    "build_errors": [
+      "# github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport [github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport.test]\n",
+      "internal\\execution\\adapters\\orcatransport\\verify_stopped_test.go:65:28: cannot use structuredFixture(t) (value of struct type backend.LifecycleSnapshot) as *backend.ProcessIdentity value in assignment\n",
+      "internal\\execution\\adapters\\orcatransport\\verify_stopped_test.go:66:41: cannot use current (variable of type *backend.ProcessIdentity) as backend.LifecycleSnapshot value in argument to port.agentState\n",
+      "internal\\execution\\adapters\\orcatransport\\verify_stopped_test.go:71:12: current.Implementation undefined (type *backend.ProcessIdentity has no field or method Implementation)\n",
+      "internal\\execution\\adapters\\orcatransport\\verify_stopped_test.go:71:53: cannot use current (variable of type *backend.ProcessIdentity) as backend.LifecycleSnapshot value in argument to port.agentEnvelope\n",
+      "internal\\execution\\adapters\\orcatransport\\verify_stopped_test.go:75:69: cannot use current (variable of type *backend.ProcessIdentity) as backend.LifecycleSnapshot value in argument to request\n",
+      "internal\\execution\\adapters\\orcatransport\\verify_stopped_test.go:79:22: cannot use reliable.ApplySessionReceipt(current, nil, receipt, false) (value of struct type backend.LifecycleSnapshot) as *backend.ProcessIdentity value in assignment\n",
+      "internal\\execution\\adapters\\orcatransport\\verify_stopped_test.go:79:51: cannot use current (variable of type *backend.ProcessIdentity) as backend.LifecycleSnapshot value in argument to reliable.ApplySessionReceipt\n",
+      "internal\\execution\\adapters\\orcatransport\\verify_stopped_test.go:88:63: cannot use current (variable of type *backend.ProcessIdentity) as backend.LifecycleSnapshot value in argument to port.ShutdownLifecycle\n"
+    ],
+    "measurement_diagnostics": []
+  },
+  "migrated-baseline-fixed": {
+    "exit_code": 0,
+    "packages": {
+      "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport": {
+        "top_level": {
+          "pass": 8
+        },
+        "nodes": {
+          "pass": 54
+        },
+        "tests": [
+          "TestOrcaCLICommandEncodingAndConsumers",
+          "TestRetiredExecutionFactoryKeepsFrozenProof",
+          "TestCurrentFixtureUsesIsolatedHostWithInvalidPairingStore",
+          "TestStructuredConstructorFacts",
+          "TestStructuredConstructorFaultPriority",
+          "TestOriginalTerminalConcurrency",
+          "TestOriginalTerminalQueryIdentity",
+          "TestCodexStoppedRequiresNativeExitProofBeyondPTY"
+        ],
+        "skipped": [],
+        "status": "pass"
+      }
+    },
+    "build_errors": [],
+    "measurement_diagnostics": [
+      "terminal_query_windows_test.go:193: scope=direct-terminal-capability callers=1 reads=6 elapsed_ms=137.234 pair_p95_ms=52.839 reads_per_sec=43.72 rpc_calls=6",
+      "terminal_query_windows_test.go:193: scope=direct-terminal-capability callers=5 reads=30 elapsed_ms=166.300 pair_p95_ms=83.401 reads_per_sec=180.40 rpc_calls=30",
+      "terminal_query_windows_test.go:193: scope=direct-terminal-capability callers=10 reads=60 elapsed_ms=240.046 pair_p95_ms=126.490 reads_per_sec=249.95 rpc_calls=60",
+      "terminal_query_windows_test.go:193: scope=direct-terminal-capability callers=20 reads=120 elapsed_ms=270.574 pair_p95_ms=104.114 reads_per_sec=443.50 rpc_calls=120"
+    ]
+  },
+  "components": {
+    "exit_code": 0,
+    "packages": {
+      "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport": {
+        "top_level": {
+          "pass": 83
+        },
+        "nodes": {
+          "pass": 364
+        },
+        "tests": [
+          "TestOriginalTerminalOwnerNeverInfersMissingBundleFromCurrentBuild",
+          "TestPreparationVersionsRejectMixedFieldsIncludingNull",
+          "TestStructuredDevelopmentFollowUp",
+          "TestStructuredFilesWhileNextInputQueued",
+          "TestStructuredRunningActivityUsesOriginalTurn",
+          "TestStructuredObserverProjectsAndDeduplicatesActivity",
+          "TestStructuredAtomicCreateAndReadOnlyRecovery",
+          "TestStructuredRemoteStopRetainsOriginalTurnAndReusesReceipt",
+          "TestStructuredHistoryFailsClosed",
+          "TestStructuredLostCloseRemainsUnknownWithoutReplay",
+          "TestStructuredObserverBindsDelayedNativeStart",
+          "TestStructuredObserverKeepsOriginalDiagnosticBindingDuringHistoryGap",
+          "TestStructuredServiceShutdownOnlyDetaches",
+          "TestStructuredRecordedPublicResults",
+          "TestStructuredCloseAcknowledgementSettlesOnlySessionScope",
+          "TestStructuredDurableCloseReceiptReconcilesWithoutReplay",
+          "TestStructuredInvalidCloseResponseDoesNotSettle",
+          "TestStructuredStopBeforeCreateDoesNotInventCloseReceipt",
+          "TestStructuredSavedCloseRejectsChangedResource",
+          "TestStructuredUsageBindsExactOriginalInputAndNativeSource",
+          "TestOrcaCLICommandEncodingAndConsumers",
+          "TestStructuredWorkspaceRecoversOriginalOwnerOutput",
+          "TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch",
+          "TestCreationOwnerIncompleteLaunchClaimNeverRetries",
+          "TestCreationOwnerStartupUsesOriginalDeadline",
+          "TestRetiredExecutionFactoryKeepsFrozenProof",
+          "TestCurrentFixtureUsesIsolatedHostWithInvalidPairingStore",
+          "TestFrozenReaderHasNoExecutionAndRejectsMutation",
+          "TestFrozenReaderKeepsConstructorFaultPriority",
+          "TestLocalCodexStoppedRootsAndInventory",
+          "TestWorkspaceNamePrefixCreationAndRecovery",
+          "TestLocalNativeProbeCensusKeepsOriginalHostScope",
+          "TestPreparationReadRecoveryRetainsBudget",
+          "TestPreparationTransientEligibility",
+          "TestPreparationRevokedBeforeOwnerClaimSettlesWithoutDispatch",
+          "TestStructuredConstructorFacts",
+          "TestStructuredConstructorFaultPriority",
+          "TestProgressHostLegacyRouting",
+          "TestProgressHostRejectsStructuredAccessBeforeReturningLocal",
+          "TestResultFileRPCUsesOriginalSelectorAndIndependentPath",
+          "TestRuntimeArtifactStagingScope",
+          "TestReadonlyCloseStaleDisconnectedCardUsesOriginalInventory",
+          "TestNativeReceiptPublicationAcrossWindowsReaders",
+          "TestRecoveryProfileQualificationMatchesConstructorWithoutNativeCapabilities",
+          "TestRepositoryCacheConflictClassification",
+          "TestRepositoryQueryRetryBudget",
+          "TestRepositoryCacheRetryNeverReplaysMutations",
+          "TestRepositoryQueryScopeRevocationPreventsCreation",
+          "TestWorkspaceRepositoryFollowsProject",
+          "TestRemoteRepositoryDiscoveryRejectsBeforeCreation",
+          "TestRemoteRepositoryCreationRetainsReceiptOnMismatch",
+          "TestWorkspaceCreationFacts",
+          "TestWorkspaceCreationCodecPreservesCheckpoint",
+          "TestWorkspaceCreationBindsCLIResult",
+          "TestResultFileOriginalIPCBoundaries",
+          "TestSharedNativeProfileAndScope",
+          "TestSharedNativeProfileCodecIsolation",
+          "TestHostNativeStateCodecRejectsRetiredAndAmbiguousFields",
+          "TestHostNativeStateCodecRoundTripRetainsOriginalBinding",
+          "TestHostNativeStateCodecRetainsWaitingWithoutRecomputing",
+          "TestStopContractMarkersPreserveOriginalClassification",
+          "TestConfirmedStopDiagnosticUsesSavedScope",
+          "TestTerminalStoppedRequiresCompleteOriginalHost",
+          "TestTerminalsStoppedUseOneCompleteOriginalInventory",
+          "TestOriginalTerminalConcurrency",
+          "TestOriginalTerminalQueryIdentity",
+          "TestExtensionStateKeepsPreparationSeparateFromCodexProof",
+          "TestTerminalReceiptRejectsMissingUnboundedAndUnknownFields",
+          "TestManagedReadinessRequiresEffectiveThinkingForNewSources",
+          "TestTerminalResourceErrorMapping",
+          "TestUsagePreparedLocalCodexInitialization",
+          "TestUsageFullAccessTerminalProfileVersions",
+          "TestUsageHistoricalBindingDoesNotGrantLaunchQualification",
+          "TestUsageRecordedCodexIDsUseOriginalTurnAndWireDigest",
+          "TestUsageHistoricalCodexWireAndInitialization",
+          "TestUsageScopedReadinessUsesItsOwnWireDigest",
+          "TestUsageTeaWrappedCodexInitialization",
+          "TestUsageProgressAndShellWrappedInitialization",
+          "TestCodexStoppedRequiresNativeExitProofBeyondPTY",
+          "TestLocalCodexStoppedUsesRegisteredResources",
+          "TestHostNativeReadinessRejectsRetiredFullAccessContract",
+          "TestStructuredWorkspaceAuditReadsOriginalChangedTree",
+          "TestWorkspaceCreationUsesConfiguredTimeout"
+        ],
+        "skipped": [],
+        "status": "pass"
+      },
+      "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca": {
+        "top_level": {
+          "pass": 62,
+          "skip": 4
+        },
+        "nodes": {
+          "pass": 360,
+          "skip": 4
+        },
+        "tests": [
+          "TestRemoteAgentSendWireAndDispatch",
+          "TestStructuredUsageChannelDeclaresAuthAndRequestCapabilities",
+          "TestStructuredUsageScopeOperationsKeepCapabilities",
+          "TestRemoteAgentSessionWireAndDispatch",
+          "TestRemoteAgentDispatchRechecksAfterWriterQueue",
+          "TestAgentSendPublishedFingerprints",
+          "TestAgentSendBindsBodySelectionAndOriginalFenceBeforeCall",
+          "TestAgentSendPreservesWireShapeAndInnerRefusal",
+          "TestAgentSendRequiresItsAdvertisedCapabilities",
+          "TestLocalAgentCreateSupportKeepsAgentCapabilities",
+          "TestLocalAgentSendWireAndDispatch",
+          "TestAgentFingerprintPublicVectors",
+          "TestAgentCreationRequiresAdvertisedAtomicCapabilities",
+          "TestAgentHistoryRequiresCompletePublicEnvelope",
+          "TestAgentCreationPreservesOneBlockAndInnerRefusal",
+          "TestAgentIPCDispatchCheckpointPrecedesEveryByte",
+          "TestLocalOrcaCatalog",
+          "TestNativeCatalogMetadataBoundaries",
+          "TestOrcaCapabilityWire",
+          "TestOrcaCatalogRejectsInvalidIdentities",
+          "TestOrcaCLICommandConstruction",
+          "TestOrcaCLIResultDecoding",
+          "TestOrcaCLISerializesProcessesWithoutRetryOrDispatchAfterCancellation",
+          "TestOrcaCLIPreparationSharesMutexAndRecoversKilledOwner",
+          "TestBoundTerminalRejectsRuntimeAndIncarnationReplacement",
+          "TestTerminalCloseRequiresExactRuntimeHandleAndPtyProof",
+          "TestOrcaCloseInventoryCapability",
+          "TestDispatchCheckpointRequiresSuccessfulSingleDurableWrite",
+          "TestOrcaLocalPipeNativeEvidence",
+          "TestOrcaCLIFIFOAndCanceledTicket",
+          "TestOrcaPreparationQueueBeyondOldExecutionLimit",
+          "TestOrcaQueueErrorDoesNotParseEmptyOutput",
+          "TestScopedFileWireBytesAndBounds",
+          "TestOrcaResourceCreateCapability",
+          "TestOrcaResourceQueries",
+          "TestWorkspaceFilesUseTheVerifiedPairingSnapshot",
+          "TestOrcaScopedFileCapability",
+          "TestOrcaSessionReadCapability",
+          "TestOrcaInputLocalRuntime",
+          "TestStateConnectionFailureClassification",
+          "TestStateConnectionRejectionIsNotRetryable",
+          "TestOrcaNativeStateIdentity",
+          "TestOrcaLocalIPCNativeProbe",
+          "TestOrcaLocalIPCQueryAndUpload",
+          "TestOrcaLocalIPCFrameFailuresAndCancellation",
+          "TestOrcaLocalIPCConcurrentClose",
+          "TestObservationExplicitIncarnationSurvivesRoundTrip",
+          "TestObservationMissingIncarnationDoesNotBecomeExplicitZero",
+          "TestStatePairingHostID",
+          "TestOriginalAgentQueryProviderMetadataAvailability",
+          "TestOriginalAgentQueryCoversLimitedSnapshot",
+          "TestOriginalAgentQueryRetainedStampRequiresSameMainRecord",
+          "TestOrcaLocalOriginalQuery",
+          "TestOrcaNativeStateStream",
+          "TestOrcaTerminalQueryLive",
+          "TestQueryBoundTerminalMissingIdentityDoesNotConnect",
+          "TestQueryBoundTerminalHandshakeCancellation",
+          "TestTerminalQueryCancellationCannotHideKnownIdentityConflict",
+          "TestOrcaTerminalReadCapability",
+          "TestOrcaTerminalSendCapability",
+          "TestOrcaTerminalWaitCapability",
+          "TestUsageFilesRejectOriginalIdentityBeforeDial",
+          "TestUsageGroupReferenceProof",
+          "TestUsageIncompleteInventoriesFailClosed",
+          "TestUsageFileRPCBoundAndRevocationProof",
+          "TestUsageLocalAcceptanceRepoCleanupLive"
+        ],
+        "skipped": [
+          "TestOrcaLocalPipeNativeEvidence",
+          "TestOrcaLocalIPCNativeProbe",
+          "TestOrcaTerminalQueryLive",
+          "TestUsageLocalAcceptanceRepoCleanupLive"
+        ],
+        "status": "pass"
+      }
+    },
+    "build_errors": [],
+    "measurement_diagnostics": [
+      "terminal_query_windows_test.go:193: scope=direct-terminal-capability callers=1 reads=6 elapsed_ms=138.635 pair_p95_ms=53.186 reads_per_sec=43.28 rpc_calls=6",
+      "terminal_query_windows_test.go:193: scope=direct-terminal-capability callers=5 reads=30 elapsed_ms=198.206 pair_p95_ms=93.987 reads_per_sec=151.36 rpc_calls=30",
+      "terminal_query_windows_test.go:193: scope=direct-terminal-capability callers=10 reads=60 elapsed_ms=206.739 pair_p95_ms=72.075 reads_per_sec=290.22 rpc_calls=60",
+      "terminal_query_windows_test.go:193: scope=direct-terminal-capability callers=20 reads=120 elapsed_ms=228.201 pair_p95_ms=113.022 reads_per_sec=525.85 rpc_calls=120"
+    ]
+  },
+  "application": {
+    "exit_code": 0,
+    "packages": {
+      "github.com/erranliu/SteerRunner/internal/application": {
+        "top_level": {
+          "pass": 3
+        },
+        "nodes": {
+          "pass": 7
+        },
+        "tests": [
+          "TestStopContractOnlineAndOfflineKeepScopeAndDecoderOrder",
+          "TestStopContractKeepsWorkflowAndSavedScopeRules",
+          "TestStructuredDevelopmentStopBeforeResourceKeepsAdmissionOrder"
+        ],
+        "skipped": [],
+        "status": "pass"
+      }
+    },
+    "build_errors": [],
+    "measurement_diagnostics": []
+  },
+  "controlled": {
+    "exit_code": 0,
+    "scenario_count": 1,
+    "case": "TestSRNativeUnknownAndStop",
+    "foundation_packages": 4,
+    "foundation_top_level_passed": 5,
+    "duration_seconds": 17.57,
+    "same_runner_sha256": "c26b421907d4148368d246c64fabf241693e732451ac66e185f1bd8672dc857d"
+  },
+  "compile_artifacts": {
+    "native_driver": {
+      "exit_code": 0,
+      "sha256": "d89ffa56d3ee257327393ae162f5a5ad4ef245c33dbd8cb209776f18a1d876bc"
+    },
+    "native_helper": {
+      "exit_code": 0,
+      "sha256": "7888598cac93c1b7e1f756e6077b3e5147fe55ce1a425e77df48e85c77ae45ce"
+    },
+    "stability_helper": {
+      "exit_code": 0,
+      "sha256": "ad91d777e17e52db27249ad55a5f5e11cb865d5b6b6696c538a32aa428b2693f"
+    }
+  },
+  "build": {
+    "schema": "steerrunner-build/v1",
+    "component": "runner",
+    "source_digest": "c3c35ef0170667cd600be64eb3307fd93c3cd844beb7e978a7d9b239b2b5d82f",
+    "version": "0.2.0-dev.4",
+    "source_commit": "c69493a1e65d9792326c448c898cec95c5ee9d42",
+    "source_dirty": true,
+    "protocol": "steerrunner-cli/v1",
+    "platform": "windows/amd64",
+    "sha256": "c26b421907d4148368d246c64fabf241693e732451ac66e185f1bd8672dc857d"
+  },
+  "scope": {
+    "changed_files": [
+      "internal/execution/adapters/orcatransport/cli_command_test.go",
+      "internal/execution/adapters/orcatransport/frozen_fixture_test.go",
+      "internal/execution/adapters/orcatransport/lifecycle.go",
+      "internal/execution/adapters/orcatransport/terminal_query_windows_test.go",
+      "internal/execution/adapters/orcatransport/verify_stopped_test.go"
+    ],
+    "production_changed": [
+      "internal/execution/adapters/orcatransport/lifecycle.go"
+    ],
+    "unchanged_source_test_tool_files": 803,
+    "retained_production_text_exact": true,
+    "shared_pipe_helpers_exact": true,
+    "cli_golden_and_arguments_exact": true,
+    "capture_bytes": 301874,
+    "capture_sha256": "4f01d1ac561e2be5d1756ea99a59b2b01b949303fce1a586d4e12f29299b1444",
+    "capture_equal": true,
+    "resource_digest": "910c7fa06b933be3632f862062e966200fd581b34873a395268826d44c1bbbe7"
+  },
+  "final_manifest_sha256": "b490694e1660dc5cea9fc7eb4cdf9ee8688b80bb41e0badcece23592748e35a0",
+  "design_audit": {
+    "confirmed_P2": 1,
+    "description": "ShutdownLifecycle negative needed same-entry positive control",
+    "status": "closed after independent document recheck"
+  },
+  "qualification": {
+    "scope": "pre-merge targeted components/application and one generic controlled scenario",
+    "full_L1": false,
+    "full_Controlled": false,
+    "L2_L3_L4": false,
+    "real_Orca_or_models": false,
+    "Node": false,
+    "deployed": false
+  }
+}

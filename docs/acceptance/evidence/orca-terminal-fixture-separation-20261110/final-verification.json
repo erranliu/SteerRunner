@@ -1,0 +1,17 @@
+{
+  "source_manifest_files_checked": 808,
+  "source_test_tool_bytes_unchanged_since_final_validation": true,
+  "compressed_evidence_original_bytes_equal": true,
+  "local_document_links_checked": 28,
+  "document_fences_and_whitespace_valid": true,
+  "same_runner_sha256": "c26b421907d4148368d246c64fabf241693e732451ac66e185f1bd8672dc857d",
+  "source_digest": "c3c35ef0170667cd600be64eb3307fd93c3cd844beb7e978a7d9b239b2b5d82f",
+  "head": "c69493a1e65d9792326c448c898cec95c5ee9d42",
+  "refreshed_origin_main": "2f6e623efdc414b9d7a601c0c91c6bcf186c60b6",
+  "head_and_origin_main_base_file_trees_equal": true,
+  "runtime_repeated_after_document_only_updates": false,
+  "committed": false,
+  "pushed": false,
+  "new_PR_created": false,
+  "deployed": false
+}

@@ -3,14 +3,11 @@ package orcatransport
 
 import (
 	"context"
-	"errors"
-	"fmt"
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	m "github.com/erranliu/SteerRunner/internal/execution/model"
 
-	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -103,45 +100,6 @@ func command(s b.LifecycleSnapshot) string {
 		return s.Session.PendingCommandID
 	}
 	return s.Session.CurrentCommandID
-}
-
-func (l *Lifecycle) boundTerminal(ctx context.Context, p b.ProcessIdentity) (native.Terminal, error) {
-	if !l.nativeAccess {
-		// Package fixtures supply an isolated original-resource CLI client.
-		return InspectBoundTerminal(ctx, l.client, p)
-	}
-	t, err := native.QueryBoundTerminal(ctx, l.profile.Environment, native.TerminalIdentity{RuntimeID: p.RuntimeID, Handle: p.Terminal, IncarnationID: p.Incarnation})
-	var identity *native.TerminalIdentityError
-	if errors.As(err, &identity) {
-		err = &b.BackendError{Code: b.BackendIdentityMismatch, Diagnostic: identity.Error(), Cause: err}
-	}
-	return t, err
-}
-
-func (l *Lifecycle) original(ctx context.Context, s b.LifecycleSnapshot) (native.Terminal, error) {
-	state, stateErr := l.frozenRecord().state(s)
-	if stateErr != nil {
-		return native.Terminal{}, stateErr
-	}
-	initializing := l.setup.AgentLaunchCommand != "" && !state.LaunchConfirmed
-	t, err := l.boundTerminal(ctx, s.Ref.External)
-	if err != nil {
-		return t, err
-	}
-	if t.WorktreePath != s.Workspace.Path || strings.TrimPrefix(t.Branch, "refs/heads/") != s.Workspace.Branch && !(initializing && t.Branch == "") {
-		return t, errors.New("original Orca workspace or branch changed")
-	}
-	// A connected native background terminal can be unadopted by the UI
-	// (orphaned=true). Its original runtime/incarnation/worktree and agent must
-	// still match; adoption into a visible tab is not execution identity.
-	// Agent labels are display heuristics, not execution ownership evidence.
-	// Managed agents instead require their original OS owner and native receipt
-	// before every business input/observation. PTY/runtime/incarnation still bind.
-	unknownNativeAgent := l.profile.Terminal != nil
-	if t.WorktreeID != s.Ref.External.WorktreeID || t.AgentIdentity != s.Ref.Agent.Name && !(initializing && t.AgentIdentity == "") && !unknownNativeAgent || !t.Connected || t.Exited() {
-		return t, fmt.Errorf("original Orca agent/worktree changed (worktree=%q expected=%q agent=%q orphaned=%t)", t.WorktreeID, s.Ref.External.WorktreeID, t.AgentIdentity, t.Orphaned)
-	}
-	return t, nil
 }
 
 func (l *Lifecycle) PreparationFacts(ctx context.Context, s b.LifecycleSnapshot) (b.PreparationFacts, error) {

@@ -1,0 +1,101 @@
+// One-shot acceptance capture, outside product/test entry points.
+package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"go/ast"
+	"go/format"
+	"go/parser"
+	"go/token"
+	"io/fs"
+	"os"
+	"path/filepath"
+	"strings"
+
+	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
+	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
+	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	"github.com/erranliu/SteerRunner/internal/resources"
+	"github.com/erranliu/SteerRunner/internal/runstate"
+)
+
+func main() {
+	types := map[string]string{}
+	for _, dir := range []string{"internal/execution/adapters/orcatransport", "internal/execution/adapters/protocol/orca", "internal/execution/backend", "internal/runstate"} {
+		must(filepath.WalkDir(dir, func(path string, entry fs.DirEntry, err error) error {
+			if err != nil {
+				return err
+			}
+			if entry.IsDir() || !strings.HasSuffix(path, ".go") || strings.HasSuffix(path, "_test.go") {
+				return nil
+			}
+			set := token.NewFileSet()
+			file, err := parser.ParseFile(set, path, nil, 0)
+			if err != nil {
+				return err
+			}
+			for _, decl := range file.Decls {
+				g, ok := decl.(*ast.GenDecl)
+				if !ok {
+					continue
+				}
+				for _, spec := range g.Specs {
+					t, ok := spec.(*ast.TypeSpec)
+					if !ok {
+						continue
+					}
+					var buf bytes.Buffer
+					if err := format.Node(&buf, set, t); err != nil {
+						return err
+					}
+					types[filepath.ToSlash(path)+"::"+t.Name.Name] = buf.String()
+				}
+			}
+			return nil
+		}))
+	}
+	process := b.ProcessIdentity{Kind: "orca_terminal", Executable: "orca.exe", RuntimeID: "runtime", WorktreeID: "worktree", Terminal: "terminal", Incarnation: "incarnation", ExecutionHost: "local"}
+	state := orca.State{Process: process, Turns: []orca.Turn{{Command: strings.Repeat("a", 32), Prompt: "original 中文", InputDigest: strings.Repeat("b", 64), Native: orca.NativeProof{Agent: "codex", Pane: "pane", Provider: "provider", Revision: 1, Outcome: "succeeded"}}}}
+	profile := orca.Profile{Executable: "orca.exe", WaitTimeout: "30s"}
+	legacyProfile, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{CodecVersion: orca.ProfileVersion, Purpose: b.ImplementationConfigPurpose, ImplementationKey: orca.ProfileKey, ProjectID: "project", ProfileID: "profile", AcceptedConfigVersion: "config"}, marshal(profile))
+	must(err)
+	legacyState, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{CodecVersion: orca.LocalStateVersion, Purpose: b.ImplementationResourcePurpose, ImplementationKey: orca.StateKey, ProjectID: "project", ExecutionID: "execution", AttemptID: "attempt", Generation: "generation", ConfigDigest: "config"}, marshal(state))
+	must(err)
+	var structuredProfiles []b.ImplementationDataEnvelope
+	for _, version := range []int{orca.AgentSessionVersion, orca.AgentSessionCloseProfileVersion} {
+		p := orca.AgentSessionProfile{Transport: profile, AccessMode: "full_access", Model: "model", ReasoningEffort: "medium", Development: true}
+		e, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{CodecVersion: version, Purpose: b.ImplementationConfigPurpose, ImplementationKey: orca.AgentSessionProfileKey, ProjectID: "project", ProfileID: "profile", AcceptedConfigVersion: "config"}, marshal(p))
+		must(err)
+		structuredProfiles = append(structuredProfiles, e)
+	}
+	// The private state declaration is captured above. These literal original
+	// payloads exercise envelope canonicalization, not a replacement decoder.
+	var structuredStates []b.ImplementationDataEnvelope
+	for _, raw := range []string{
+		`{"runtime_id":"runtime","worktree":{"id":"worktree","instanceId":"instance","path":"C:/original"},"session_id":"original-session","runtime_fence":0,"close_attempted":true,"close_receipt":{"ok":true}}`,
+		`{"runtime_id":"runtime","worktree":{"id":"worktree","instanceId":"instance","path":"C:/original"},"session_id":"original-session","runtime_fence":7,"close_attempted":true,"close_receipt":{"ok":true}}`,
+	} {
+		e, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{CodecVersion: orca.AgentSessionVersion, Purpose: b.ImplementationResourcePurpose, ImplementationKey: orca.AgentSessionStateKey, ProjectID: "project", ExecutionID: "execution", AttemptID: "attempt", Generation: "generation", ConfigDigest: "config"}, []byte(raw))
+		must(err)
+		structuredStates = append(structuredStates, e)
+	}
+	zero, seven := int64(0), int64(7)
+	snapshot := b.LifecycleSnapshot{Ref: b.ExecutionRef{RunID: "run", AttemptID: "attempt", External: process}, Session: b.SessionContext{ProjectID: "project", ExecutionID: "execution", AttemptID: "attempt"}, ConfigurationDigest: "config", ResourceGeneration: "generation", Implementation: []b.ImplementationDataEnvelope{legacyState}}
+	values := map[string]any{
+		"types": types, "legacy_profile": legacyProfile, "legacy_state": legacyState,
+		"structured_profiles": structuredProfiles, "structured_state_raw_envelopes": structuredStates,
+		"runtime_fence_envelopes": []native.AgentMutationEnvelope{{SessionID: "session", ExpectedRuntimeFence: &zero}, {SessionID: "session", ExpectedRuntimeFence: &seven}},
+		"snapshot":                snapshot, "record": runstate.Record{ID: "run", Snapshot: snapshot},
+		"stop_receipt": b.LifecycleReceipt{Disposition: b.OperationConfirmed, State: b.LifecycleStateFacts{Stopped: true, WorkerAbsent: true}},
+		"capabilities": resources.Capabilities(), "schemas": json.RawMessage(resources.ConfigurationSchemas()), "resource_digest": resources.Digest(),
+	}
+	must(os.WriteFile(os.Args[1], marshal(values), 0600))
+}
+
+func marshal(value any) []byte { raw, err := json.Marshal(value); must(err); return raw }
+func must(err error) {
+	if err != nil {
+		panic(err)
+	}
+}

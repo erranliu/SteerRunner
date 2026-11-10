@@ -1,0 +1,25 @@
+Original baseline (normal host, production and tests unchanged):
+go test ./internal/execution/adapters/orcatransport -run '^(TestOriginalTerminalConcurrency|TestOrcaCLICommandEncodingAndConsumers|TestCodexStoppedRequiresNativeExitProofBeyondPTY|TestRetiredExecutionFactoryKeepsFrozenProof)$' -count=1 -timeout=5m -json
+
+Migrated baseline (normal host, two old production methods still retained):
+go test ./internal/execution/adapters/orcatransport -run '^(TestOriginalTerminalConcurrency|TestOriginalTerminalQueryIdentity|TestOrcaCLICommandEncodingAndConsumers|TestCodexStoppedRequiresNativeExitProofBeyondPTY|TestRetiredExecutionFactoryKeepsFrozenProof|TestStructuredConstructorFacts|TestStructuredConstructorFaultPriority|TestCurrentFixtureUsesIsolatedHostWithInvalidPairingStore)$' -count=1 -timeout=5m -json
+First migrated-baseline failed to compile due to a test local variable name collision; migrated-baseline-fixed runs the same selection after renaming the snapshot variable. Production remained unchanged until that rerun passed.
+
+Final components (normal host):
+go test ./internal/execution/adapters/orcatransport ./internal/execution/adapters/protocol/orca -count=1 -timeout=5m -json
+
+Application (normal host):
+go test ./internal/application -run '^(TestStopContractOnlineAndOfflineKeepScopeAndDecoderOrder|TestStopContractKeepsWorkflowAndSavedScopeRules|TestStructuredDevelopmentStopBeforeResourceKeepsAdmissionOrder)$' -count=1 -timeout=10m -json
+
+Independent before/after type/serialization/resource captures:
+go run ./.evidence/orca-terminal-fixture-separation/capture.go .evidence/orca-terminal-fixture-separation/before-capture.json
+go run ./.evidence/orca-terminal-fixture-separation/capture.go .evidence/orca-terminal-fixture-separation/after-capture.json
+
+Compile-only, each exit code checked independently:
+go test -tags=live -c -o .evidence/orca-terminal-fixture-separation/compile/native.test.exe ./tests/native
+go build -o .evidence/orca-terminal-fixture-separation/compile/native-fixture.exe ./tests/helpers/native
+go build -o .evidence/orca-terminal-fixture-separation/compile/stability-helper.exe ./tests/helpers/stability
+
+Formal build and one generic public controlled scenario:
+./scripts/build.ps1 -OutFile .evidence/orca-terminal-fixture-separation/final/steerrunner.exe
+./scripts/test-foundation.ps1 -RunnerExe .evidence/orca-terminal-fixture-separation/final/steerrunner.exe -Pattern '^TestSRNativeUnknownAndStop$' -OutDir .evidence/orca-terminal-fixture-separation/controlled-new

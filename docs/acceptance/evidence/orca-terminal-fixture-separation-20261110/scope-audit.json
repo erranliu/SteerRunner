@@ -1,0 +1,20 @@
+{
+  "changed_files": [
+    "internal/execution/adapters/orcatransport/cli_command_test.go",
+    "internal/execution/adapters/orcatransport/frozen_fixture_test.go",
+    "internal/execution/adapters/orcatransport/lifecycle.go",
+    "internal/execution/adapters/orcatransport/terminal_query_windows_test.go",
+    "internal/execution/adapters/orcatransport/verify_stopped_test.go"
+  ],
+  "production_changed": [
+    "internal/execution/adapters/orcatransport/lifecycle.go"
+  ],
+  "unchanged_source_test_tool_files": 803,
+  "retained_production_text_exact": true,
+  "shared_pipe_helpers_exact": true,
+  "cli_golden_and_arguments_exact": true,
+  "capture_bytes": 301874,
+  "capture_sha256": "4f01d1ac561e2be5d1756ea99a59b2b01b949303fce1a586d4e12f29299b1444",
+  "capture_equal": true,
+  "resource_digest": "910c7fa06b933be3632f862062e966200fd581b34873a395268826d44c1bbbe7"
+}
