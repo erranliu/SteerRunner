@@ -73,6 +73,10 @@ func TestUsageCachedAttributionDoesNotReopenLogsOrRewriteSnapshot(t *testing.T) 
 	if err != nil {
 		t.Fatal(err)
 	}
+	old, err = store.CommitUsage(ctx, old, []api.Event{{ID: "internal-event", RunID: run, Scope: "runner_internal", CallID: "parser-call", CallSource: "llm_parser", SourceResultID: "original-audit-result", CoverageStatus: "covered", SourceRef: "internal-source", AttemptID: "attempt", CommandID: command, StepID: "audit.code.parse", ConfiguredModel: "parser-model", SessionID: "parser-session", ResponseID: "parser-response", Tokens: api.Tokens{InputTotal: api.Number(20), Output: api.Number(3), Total: api.Number(23)}}})
+	if err != nil {
+		t.Fatal(err)
+	}
 	c := Collector{Store: store, StateDir: dir, Policy: api.DefaultPolicy(), Instance: "writer"}
 	authorizedTick(t, &c, ctx)
 	latest, err := store.GetRunUsage(ctx, run, 0)
@@ -80,7 +84,7 @@ func TestUsageCachedAttributionDoesNotReopenLogsOrRewriteSnapshot(t *testing.T) 
 		t.Fatal(latest, err)
 	}
 	page, err := store.ListRunUsageEvents(ctx, run, latest.Revision, "", 500)
-	if err != nil || len(page.Events) != 1 || page.Events[0].ConfiguredModel != "reviewer" {
+	if err != nil || len(page.Events) != 2 || page.Events[0].ConfiguredModel != "reviewer" || page.Events[1].ConfiguredModel != "parser-model" || page.Events[1].StepID != "audit.code.parse" || page.Events[1].Decision != "counted" || latest.ModelCallCoverage.InternalCovered != 1 {
 		t.Fatal(page, err)
 	}
 	history, err := store.ListRunUsageEvents(ctx, run, old.Revision, "", 500)

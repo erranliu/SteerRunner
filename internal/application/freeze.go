@@ -107,9 +107,19 @@ func (commandHost) Output(ctx context.Context, command b.Command, args ...string
 }
 
 func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate.Record, error) {
+	return freezeWithWorkspace(ctx, dir, input, nil)
+}
+
+func freezeWithWorkspace(ctx context.Context, dir string, input contracts.Request, source *runstate.Record) (*runstate.Record, error) {
 	var request contracts.RunRequest
 	if err := contracts.DecodeStrict(input.Input, &request); err != nil {
 		return nil, err
+	}
+	if (source != nil || request.ReuseWorktreeFromRunID != "") && (source == nil || source.ID != request.ReuseWorktreeFromRunID || request.Workflow.ID != workflow.SingleExecution) {
+		return nil, contracts.Fail(2, "invalid_input", "Worktree reuse requires an explicit source Run and execute/1.")
+	}
+	if source != nil && (request.Repository != source.Request.Repository || request.Execution.Adapter != source.Request.Execution.Adapter || request.Execution.Target != source.Request.Execution.Target) {
+		return nil, contracts.Fail(5, "workspace_identity_conflict", "Repository, adapter and execution target must match the source Run.")
 	}
 	if err := contracts.ValidateProgress(request); err != nil {
 		return nil, err
@@ -228,107 +238,14 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 	if workflow.Content(request.Workflow.ID) {
 		return freezeContent(ctx, dir, r, attempt, generation, payload)
 	}
-	git := gitHost()
-	cache := repositoryCache(dir, request.Repository)
-	entry, _ := repositoryLocks.LoadOrStore(cache, &sync.Mutex{})
-	cacheLock := entry.(*sync.Mutex)
-	cacheLock.Lock()
-	defer cacheLock.Unlock()
-	if _, err := os.Stat(cache); os.IsNotExist(err) {
-		if err := os.MkdirAll(filepath.Dir(cache), 0700); err != nil {
-			return nil, err
-		}
-		source := request.Repository.URL
-		if request.Repository.LocalPath != "" {
-			if !filepath.IsAbs(request.Repository.LocalPath) {
-				return nil, contracts.Fail(2, "invalid_input", "repository.local_path must be absolute.")
-			}
-			source = request.Repository.LocalPath
-			remote, err := git.Output(ctx, source, "config", "--get", "remote."+request.Repository.Remote+".url")
-			if err != nil || strings.TrimSpace(string(remote)) != request.Repository.URL {
-				return nil, contracts.Fail(2, "invalid_input", "The local repository remote differs from the frozen URL.")
-			}
-		}
-		staging, err := os.MkdirTemp(filepath.Dir(cache), ".clone-")
+	var repo workspace.Repository
+	if source != nil {
+		repo = workspace.Repository{Path: source.RepositoryPath, CommonDir: source.RepositoryCommon}
+	} else {
+		repo, err = freezeRepository(ctx, dir, r)
 		if err != nil {
 			return nil, err
 		}
-		defer os.RemoveAll(staging) // Only the private directory created above.
-		if _, err := git.Output(ctx, dir, "clone", "--no-checkout", "--no-hardlinks", "--origin", request.Repository.Remote, "--", source, staging); err != nil {
-			return nil, contracts.Fail(4, "environment_unavailable", "Cannot prepare the repository cache; no run was accepted. "+redactDiagnostic(r, err.Error()))
-		}
-		if _, err := git.Output(ctx, staging, "remote", "set-url", request.Repository.Remote, request.Repository.URL); err != nil {
-			return nil, err
-		}
-		if err := os.Rename(staging, cache); err != nil {
-			return nil, err
-		}
-	} else if err != nil {
-		return nil, err
-	}
-	remote, err := git.Output(ctx, cache, "config", "--get", "remote."+request.Repository.Remote+".url")
-	if err != nil || strings.TrimSpace(string(remote)) != request.Repository.URL {
-		return nil, contracts.Fail(5, "repository_conflict", "Repository cache identity does not match.")
-	}
-	if _, err := git.Output(ctx, cache, "check-ref-format", "refs/heads/"+request.Repository.BaseBranch); err != nil {
-		return nil, contracts.Fail(2, "invalid_input", "Invalid base branch.")
-	}
-	baseRef := "refs/remotes/" + request.Repository.Remote + "/" + request.Repository.BaseBranch
-	base := request.Repository.BaseRevision
-	callerPrepared := request.Workflow.ProjectPolicySlots != nil || request.Workflow.ID == workflow.SingleExecution
-	hasCommit := func(dir string) bool {
-		kind, err := git.Output(ctx, dir, "--no-replace-objects", "cat-file", "-t", base)
-		return err == nil && strings.TrimSpace(string(kind)) == "commit"
-	}
-	if !callerPrepared || !hasCommit(cache) {
-		_, err := git.Output(ctx, cache, "fetch", "--no-tags", "--no-write-fetch-head", "--", request.Repository.Remote, "+refs/heads/"+request.Repository.BaseBranch+":"+baseRef)
-		if err != nil && !callerPrepared {
-			return nil, contracts.Fail(4, "environment_unavailable", "Cannot refresh the configured base branch; no run was accepted. "+redactDiagnostic(r, err.Error()))
-		}
-	}
-	if !hasCommit(cache) {
-		if _, err := git.Output(ctx, cache, "fetch", "--no-tags", "--no-write-fetch-head", "--", request.Repository.Remote, base); err != nil || !hasCommit(cache) {
-			return nil, contracts.Fail(2, "invalid_input", "The pinned base commit is unavailable.")
-		}
-	}
-	if !callerPrepared {
-		if _, err := git.Output(ctx, cache, "merge-base", "--is-ancestor", base, baseRef); err != nil {
-			return nil, contracts.Fail(2, "invalid_input", "Pinned base is not in the configured base branch.")
-		}
-	}
-	if request.Execution.Adapter == "codex-app-server" {
-		private := privateRunRepository(dir, request.Repository, id)
-		staging, err := os.MkdirTemp(filepath.Dir(private), ".run-clone-")
-		if err != nil {
-			return nil, err
-		}
-		defer os.RemoveAll(staging) // Only the private directory allocated above.
-		if _, err = git.Output(ctx, dir, "clone", "--no-checkout", "--no-hardlinks", "--dissociate", "--origin", request.Repository.Remote, "--", cache, staging); err != nil {
-			return nil, contracts.Fail(4, "environment_unavailable", "Cannot prepare the private Run repository; no run was accepted. "+redactDiagnostic(r, err.Error()))
-		}
-		if _, err = git.Output(ctx, staging, "remote", "set-url", request.Repository.Remote, request.Repository.URL); err != nil {
-			return nil, err
-		}
-		// A local clone copies branch heads. The fixed object may only be in
-		// the cache, independently of the tracking ref used for publication.
-		if _, refErr := git.Output(ctx, cache, "show-ref", "--verify", "--quiet", baseRef); refErr == nil {
-			if _, err = git.Output(ctx, staging, "fetch", "--no-tags", "--no-write-fetch-head", "--", cache, "+"+baseRef+":"+baseRef); err != nil {
-				return nil, err
-			}
-		}
-		if !hasCommit(staging) {
-			if _, err = git.Output(ctx, staging, "fetch", "--no-tags", "--no-write-fetch-head", "--", cache, base); err != nil || !hasCommit(staging) {
-				return nil, contracts.Fail(4, "environment_unavailable", "Cannot copy the pinned base commit to the private Run repository.")
-			}
-		}
-		if err = os.Rename(staging, private); err != nil {
-			return nil, err
-		}
-		cache = private
-	}
-	repo, err := workspace.ResolveRepository(ctx, git, cache)
-	if err != nil {
-		return nil, err
 	}
 	r.RepositoryPath, r.RepositoryCommon = repo.Path, repo.CommonDir
 	profile, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{ImplementationKey: key, CodecVersion: codec, Purpose: b.ImplementationConfigPurpose, ProjectID: repo.CommonDir, ProfileID: id, AcceptedConfigVersion: r.InputDigest}, payload)
@@ -365,6 +282,11 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		namePrefix = "sr"
 	}
 	r.Snapshot = b.LifecycleSnapshot{Ref: b.ExecutionRef{Version: 1, Backend: kind, Protocol: protocol, Target: target, Agent: b.AgentSpec{Name: agent}, RunID: id, AttemptID: attempt, WorkspacePath: worktree, WorkspaceBranch: branch, BaseCommit: request.Repository.BaseRevision}, Session: b.SessionContext{ProjectID: repo.CommonDir, NamePrefix: namePrefix, WorkflowRunID: id, ExecutionID: id, AttemptID: attempt, Agent: b.AgentSpec{Name: agent}, Target: target, AttemptNumber: 1}, ConfigurationDigest: r.InputDigest, ResourceGeneration: generation, WorkspacePlan: b.WorkspaceIntent{Path: worktree, Branch: branch, BaseCommit: request.Repository.BaseRevision}}
+	if source != nil {
+		if err := inheritWorkspace(ctx, r, source); err != nil {
+			return nil, err
+		}
+	}
 	r.Workflow = workflow.Snapshot{StepID: flowProfile.Initial, Config: &flowProfile}
 	if request.Workflow.ID != workflow.SingleExecution {
 		if err := freezeProjectPolicies(ctx, r); err != nil {
@@ -386,6 +308,113 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		r.Workflow.AuditModel = &model
 	}
 	return r, nil
+}
+
+func freezeRepository(ctx context.Context, dir string, r *runstate.Record) (workspace.Repository, error) {
+	git := gitHost()
+	cache := repositoryCache(dir, r.Request.Repository)
+	entry, _ := repositoryLocks.LoadOrStore(cache, &sync.Mutex{})
+	cacheLock := entry.(*sync.Mutex)
+	cacheLock.Lock()
+	defer cacheLock.Unlock()
+	if _, err := os.Stat(cache); os.IsNotExist(err) {
+		if err := os.MkdirAll(filepath.Dir(cache), 0700); err != nil {
+			return workspace.Repository{}, err
+		}
+		source := r.Request.Repository.URL
+		if r.Request.Repository.LocalPath != "" {
+			if !filepath.IsAbs(r.Request.Repository.LocalPath) {
+				return workspace.Repository{}, contracts.Fail(2, "invalid_input", "repository.local_path must be absolute.")
+			}
+			source = r.Request.Repository.LocalPath
+			remote, err := git.Output(ctx, source, "config", "--get", "remote."+r.Request.Repository.Remote+".url")
+			if err != nil || strings.TrimSpace(string(remote)) != r.Request.Repository.URL {
+				return workspace.Repository{}, contracts.Fail(2, "invalid_input", "The local repository remote differs from the frozen URL.")
+			}
+		}
+		staging, err := os.MkdirTemp(filepath.Dir(cache), ".clone-")
+		if err != nil {
+			return workspace.Repository{}, err
+		}
+		defer os.RemoveAll(staging) // Only the private directory created above.
+		if _, err := git.Output(ctx, dir, "clone", "--no-checkout", "--no-hardlinks", "--origin", r.Request.Repository.Remote, "--", source, staging); err != nil {
+			return workspace.Repository{}, contracts.Fail(4, "environment_unavailable", "Cannot prepare the repository cache; no run was accepted. "+redactDiagnostic(r, err.Error()))
+		}
+		if _, err := git.Output(ctx, staging, "remote", "set-url", r.Request.Repository.Remote, r.Request.Repository.URL); err != nil {
+			return workspace.Repository{}, err
+		}
+		if err := os.Rename(staging, cache); err != nil {
+			return workspace.Repository{}, err
+		}
+	} else if err != nil {
+		return workspace.Repository{}, err
+	}
+	remote, err := git.Output(ctx, cache, "config", "--get", "remote."+r.Request.Repository.Remote+".url")
+	if err != nil || strings.TrimSpace(string(remote)) != r.Request.Repository.URL {
+		return workspace.Repository{}, contracts.Fail(5, "repository_conflict", "Repository cache identity does not match.")
+	}
+	if _, err := git.Output(ctx, cache, "check-ref-format", "refs/heads/"+r.Request.Repository.BaseBranch); err != nil {
+		return workspace.Repository{}, contracts.Fail(2, "invalid_input", "Invalid base branch.")
+	}
+	baseRef := "refs/remotes/" + r.Request.Repository.Remote + "/" + r.Request.Repository.BaseBranch
+	base := r.Request.Repository.BaseRevision
+	callerPrepared := r.Request.Workflow.ProjectPolicySlots != nil || r.Request.Workflow.ID == workflow.SingleExecution
+	hasCommit := func(dir string) bool {
+		kind, err := git.Output(ctx, dir, "--no-replace-objects", "cat-file", "-t", base)
+		return err == nil && strings.TrimSpace(string(kind)) == "commit"
+	}
+	if !callerPrepared || !hasCommit(cache) {
+		_, err := git.Output(ctx, cache, "fetch", "--no-tags", "--no-write-fetch-head", "--", r.Request.Repository.Remote, "+refs/heads/"+r.Request.Repository.BaseBranch+":"+baseRef)
+		if err != nil && !callerPrepared {
+			return workspace.Repository{}, contracts.Fail(4, "environment_unavailable", "Cannot refresh the configured base branch; no run was accepted. "+redactDiagnostic(r, err.Error()))
+		}
+	}
+	if !hasCommit(cache) {
+		if _, err := git.Output(ctx, cache, "fetch", "--no-tags", "--no-write-fetch-head", "--", r.Request.Repository.Remote, base); err != nil || !hasCommit(cache) {
+			return workspace.Repository{}, contracts.Fail(2, "invalid_input", "The pinned base commit is unavailable.")
+		}
+	}
+	if !callerPrepared {
+		if _, err := git.Output(ctx, cache, "merge-base", "--is-ancestor", base, baseRef); err != nil {
+			return workspace.Repository{}, contracts.Fail(2, "invalid_input", "Pinned base is not in the configured base branch.")
+		}
+	}
+	if r.Request.Execution.Adapter == "codex-app-server" {
+		private := privateRunRepository(dir, r.Request.Repository, r.ID)
+		staging, err := os.MkdirTemp(filepath.Dir(private), ".run-clone-")
+		if err != nil {
+			return workspace.Repository{}, err
+		}
+		defer os.RemoveAll(staging) // Only the private directory allocated above.
+		if _, err = git.Output(ctx, dir, "clone", "--no-checkout", "--no-hardlinks", "--dissociate", "--origin", r.Request.Repository.Remote, "--", cache, staging); err != nil {
+			return workspace.Repository{}, contracts.Fail(4, "environment_unavailable", "Cannot prepare the private Run repository; no run was accepted. "+redactDiagnostic(r, err.Error()))
+		}
+		if _, err = git.Output(ctx, staging, "remote", "set-url", r.Request.Repository.Remote, r.Request.Repository.URL); err != nil {
+			return workspace.Repository{}, err
+		}
+		// A local clone copies branch heads. The fixed object may only be in
+		// the cache, independently of the tracking ref used for publication.
+		if _, refErr := git.Output(ctx, cache, "show-ref", "--verify", "--quiet", baseRef); refErr == nil {
+			if _, err = git.Output(ctx, staging, "fetch", "--no-tags", "--no-write-fetch-head", "--", cache, "+"+baseRef+":"+baseRef); err != nil {
+				return workspace.Repository{}, err
+			}
+		}
+		if !hasCommit(staging) {
+			if _, err = git.Output(ctx, staging, "fetch", "--no-tags", "--no-write-fetch-head", "--", cache, base); err != nil || !hasCommit(staging) {
+				return workspace.Repository{}, contracts.Fail(4, "environment_unavailable", "Cannot copy the pinned base commit to the private Run repository.")
+			}
+		}
+		if err = os.Rename(staging, private); err != nil {
+			return workspace.Repository{}, err
+		}
+		cache = private
+	}
+	repo, err := workspace.ResolveRepository(ctx, git, cache)
+	if err != nil {
+		return workspace.Repository{}, err
+	}
+
+	return repo, nil
 }
 
 func writeFixed(path string, content []byte) error {

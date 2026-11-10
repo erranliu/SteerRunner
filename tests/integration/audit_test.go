@@ -6,8 +6,10 @@ import (
 	"encoding/json"
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
+	"github.com/erranliu/SteerRunner/internal/usage/api"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -60,7 +62,7 @@ func TestSRResultAcquisition(t *testing.T) {
 				if scenario == "parser-unsupported" {
 					exe = "missing-parser.exe"
 				}
-				config, _ := json.Marshal(map[string]any{"codex_parser": map[string]any{"enabled": true, "executable": exe}})
+				config, _ := json.Marshal(map[string]any{"codex_parser": map[string]any{"enabled": true, "executable": exe, "model": "internal-parser", "reasoning_effort": "low"}})
 				if err := os.WriteFile(filepath.Join(dir, "service", "result-acquisition.json"), config, 0600); err != nil {
 					t.Fatal(err)
 				}
@@ -156,6 +158,38 @@ func TestSRResultAcquisition(t *testing.T) {
 					}
 					if !found {
 						t.Fatal("independent result not accepted")
+					}
+				}
+				if scenario == "parser-complete" || scenario == "parser-tool" {
+					var usage api.Snapshot
+					if err := json.Unmarshal(marshalEvidence(t, call(t, dir, []string{"run-usage", "--run-id", id}, "", 0).Data), &usage); err != nil {
+						t.Fatal(err)
+					}
+					if usage.Scope != "main_session" || usage.ModelCallCoverage == nil || usage.ModelCallCoverage.InternalRecorded != 1 {
+						t.Fatal("internal call coverage missing", usage)
+					}
+					var page api.Page
+					if err := json.Unmarshal(marshalEvidence(t, call(t, dir, []string{"run-usage-events", "--run-id", id, "--snapshot-revision", strconv.FormatUint(usage.Revision, 10)}, "", 0).Data), &page); err != nil {
+						t.Fatal(err)
+					}
+					internal := 0
+					for _, event := range page.Events {
+						if event.Scope != "runner_internal" {
+							continue
+						}
+						internal++
+						if event.CallID == "" || event.CallSource != "llm_parser" || event.CommandID != a.CommandID || event.SourceResultID == "" || event.StepID != workflow.StepAuditParse || event.ConfiguredModel != "internal-parser" || event.ConfiguredReasoningEffort != "low" || event.SessionID == ready.Execution.SessionID {
+							t.Fatal("internal call lost original source or model", event)
+						}
+						if scenario == "parser-complete" && (event.Decision != "counted" || event.CoverageStatus != "covered" || event.Tokens.Total == nil || *event.Tokens.Total != 2) {
+							t.Fatal("parser usage lost or reattributed", event)
+						}
+						if scenario == "parser-tool" && (event.Decision != "uncovered" || event.CoverageStatus != "uncovered" || event.Tokens.Total != nil) {
+							t.Fatal("uncovered model call became zero", event)
+						}
+					}
+					if internal != 1 {
+						t.Fatal("internal call missing or duplicated", page)
 					}
 				}
 			}

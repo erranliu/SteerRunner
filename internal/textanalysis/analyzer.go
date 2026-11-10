@@ -11,12 +11,19 @@ import (
 	"unicode/utf8"
 
 	ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
+	"github.com/erranliu/SteerRunner/internal/usage/api"
 	"github.com/santhosh-tekuri/jsonschema/v6"
 )
 
 type Request struct {
 	Text, Instruction string
 	Schema            []byte
+	BeginCall         func() (func(CallObservation), error)
+}
+
+type CallObservation struct {
+	SessionID, ResponseID string
+	Tokens                api.Tokens
 }
 type Analyzer struct {
 	mu      sync.Mutex

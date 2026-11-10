@@ -43,7 +43,7 @@ R2 覆盖原报告/日志、实际 Git 状态、限额/越界/幂等/跨 Run 隔
 
 ResourceCreationRecovery 按 structured 契约保留七个故障窗口：正常/强杀停服、创建事实未提交、响应丢失、owner 崩溃、缺 terminal 字段、缺创建计划。只按原回执和完整 inventory 结算原 shell，未知分支零发现/收养/关闭，创建一次、零替换或业务输入；[目录边界验收](archive/2026-11/implementation/acceptance/native-catalog-boundary.md)登记当前夹具及复验。
 
-SingleExecutionColdStop 覆盖活动 execute 离线原 request 查询、PendingStops 启动前受理、原输入一次、closed/stopped、原 stop 完成及 result-file 封存。它属于默认 Controlled，不额外增加 L3/L4 或模型/PR case。
+SingleExecutionColdStop 覆盖活动 execute 离线原 request 查询、PendingStops 启动前受理、原输入一次、closed/stopped、原 stop 完成及 result-file 封存；新增同 worktree/分支四 Run 累积成果与新 Run 提交遗留修改、停止后遗留修改、并发接管唯一胜者、重复请求、活动来源拒绝、旧 stop 隔离与原 Run/结果不变断言。它属于默认 Controlled，不额外增加 L3/L4 或模型/PR case。
 
 ## L2：最小核心 smoke
 

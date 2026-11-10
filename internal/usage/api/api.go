@@ -48,18 +48,31 @@ type Coverage struct {
 }
 
 type Snapshot struct {
-	Schema              string    `json:"schema"`
-	RunID               string    `json:"run_id"`
-	Revision            uint64    `json:"snapshot_revision"`
-	Status              string    `json:"status"`
-	Scope               string    `json:"scope"`
-	Tokens              *Tokens   `json:"tokens"`
-	Coverage            Coverage  `json:"coverage"`
-	Issues              []Issue   `json:"issues"`
-	AccessCleanupStatus string    `json:"access_cleanup_status"`
-	ObservedAt          time.Time `json:"observed_at"`
+	ModelCallCoverage   *ModelCallCoverage `json:"model_call_coverage,omitempty"`
+	Schema              string             `json:"schema"`
+	RunID               string             `json:"run_id"`
+	Revision            uint64             `json:"snapshot_revision"`
+	Status              string             `json:"status"`
+	Scope               string             `json:"scope"`
+	Tokens              *Tokens            `json:"tokens"`
+	Coverage            Coverage           `json:"coverage"`
+	Issues              []Issue            `json:"issues"`
+	AccessCleanupStatus string             `json:"access_cleanup_status"`
+	ObservedAt          time.Time          `json:"observed_at"`
+}
+type ModelCallCoverage struct {
+	InternalRecorded  int64    `json:"internal_recorded"`
+	InternalCovered   int64    `json:"internal_covered"`
+	InternalUncovered int64    `json:"internal_uncovered"`
+	InternalPending   int64    `json:"internal_pending"`
+	Untracked         []string `json:"untracked"`
 }
 type Event struct {
+	Scope          string     `json:"scope,omitempty"`
+	CallID         string     `json:"call_id,omitempty"`
+	CallSource     string     `json:"call_source,omitempty"`
+	SourceResultID string     `json:"source_result_id,omitempty"`
+	CoverageStatus string     `json:"coverage_status,omitempty"`
 	ID             string     `json:"event_id"`
 	SourceRef      string     `json:"source_ref"`
 	RunID          string     `json:"run_id"`

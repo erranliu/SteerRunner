@@ -29,6 +29,7 @@ type ManualPause struct {
 }
 
 type Record struct {
+	ManagedWorkspace    *ManagedWorkspace              `json:"managed_workspace,omitempty"`
 	StopEvidenceScope   string                         `json:"stop_evidence_scope,omitempty"`
 	ManualPause         *ManualPause                   `json:"manual_pause,omitempty"`
 	ObservationDeadline time.Time                      `json:"observation_deadline,omitempty"`
@@ -92,6 +93,14 @@ type Record struct {
 	UpdatedAt           time.Time                      `json:"updated_at"`
 }
 
+// The incarnation is captured at creation, never inferred from a reuse request.
+type ManagedWorkspace struct {
+	Identity    string               `json:"identity"`
+	OriginRunID string               `json:"origin_run_id"`
+	SourceRunID string               `json:"source_run_id,omitempty"`
+	Local       *b.WorkspaceIdentity `json:"local,omitempty"`
+}
+
 // Immutable program bytes share the Run's existing atomic durable boundary.
 type Artifact struct {
 	contracts.Artifact
@@ -138,6 +147,11 @@ func (r *Record) View() contracts.RunView {
 				v.Audit.Results = append(v.Audit.Results, a)
 			}
 		}
+	}
+	if r.ManagedWorkspace != nil {
+		v.ReuseWorktreeFromRunID = r.ManagedWorkspace.SourceRunID
+		v.WorkspaceOriginRunID = r.ManagedWorkspace.OriginRunID
+		v.WorkspaceIdentity = r.ManagedWorkspace.Identity
 	}
 	if r.WorkspaceFact != nil {
 		v.Execution.Workspace, v.Execution.Branch, v.Execution.WorkspaceScope = r.WorkspaceFact.Worktree, r.WorkspaceFact.Branch, r.WorkspaceFact.InspectionScope

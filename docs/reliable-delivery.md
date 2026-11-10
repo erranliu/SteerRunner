@@ -38,7 +38,7 @@ SteerRunner 的可靠性交付需要回答四件事：请求是否收下、原�
 flowchart TD
     A[调用方提交固定输入与 request_id] --> B[校验并冻结请求 配置与流程]
     B --> C[原子保存 Run 命令与受理回执]
-    C --> D[准备独立工作区 权限与原生会话]
+    C --> D[准备受管工作区 或核实停止后复用 绑定新会话]
     D --> E[保存原操作意图]
     E --> F[首次外发]
     F --> G[补收原回执 原生终态与完整 final]
@@ -71,6 +71,8 @@ flowchart TD
 ### 2.2 准备和首次派发
 
 开发 Run 准备自己的工作区和分支，核验固定 base/head、目标和权限。本机及 Orca local 开发路径直接使用执行主机已有 Git/gh/SSH 登录；新远端 Run 使用已有 Orca 原生认证。内容 workflow 使用本机 read_only，不要求开发仓库、Spec/Plan 或 publication。
+
+新 execute/1 可通过 `reuse_worktree_from_run_id` 引用已停止的最后持有者。原写者、操作及停止义务结算后，沿原服务 lease/gate/事务按工作区 incarnation 排他接管；保留 Git 内容及进行中状态，创建独立会话和用量身份，原 Run 不恢复。未知先沿原请求对账，旧控制/清理不得影响后继。详见[复用契约](worktree-reuse.md)。
 
 **首次副作用前先持久化原操作 ID、输入摘要和身份绑定。** 新提交的意图才进入 Execute；已有的 in_flight、accepted pending 或 outcome_unknown 进入原操作 Reconcile。重启后即使怀疑“上次还没来得及调用”，也不能把普通 in_flight 当作未发送。独立 parser 是内存文本任务，不属于原生操作账本，其生命周期不能推广为业务动作的未派发判断。
 

@@ -52,7 +52,9 @@ type worker struct {
 	freshWorkspace          bool // guarded by gate and mu; never restored from a receipt
 	startupWorkspaceChecked bool // guarded by gate; local recovery checked this workspace
 	filesPreparationStarted bool // guarded by Engine.mu; also consumes a failed metadata save
+	filePreparationsActive  int  // guarded by Engine.mu; includes timed-out physical writers through close
 	acquisition             *textTask
+	analysisTasks           int // guarded by mu; includes cancelled tasks still exiting
 	ownedInputs             map[string]bool
 	checkpoints             map[string]*workflow.WorkspaceSource
 	gate                    sync.Mutex         // serializes new native dispatch with committed revocation
@@ -117,6 +119,9 @@ func (e *Engine) signal(w *worker) {
 }
 func (e *Engine) commitLocked(next *runstate.Record, command *storage.Command, events ...string) error {
 	prior := e.runs[next.ID]
+	if prior != nil && e.workspaceSuperseded(prior) {
+		return contracts.Fail(5, "workspace_transferred", "Source Run is terminal and its managed workspace has a successor.")
+	}
 	if next.ManualPause != nil && !next.Closed && next.PendingStop == "" && next.StopStatus != "stopped" {
 		next.Status, next.Phase = "blocked", manualIntervention
 		next.Allowed, next.ResumeRequired = false, true
@@ -184,7 +189,21 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 			return original
 		}
 		if command == "submit" {
-			r, err := freeze(e.ctx, e.dir, *input)
+			var request contracts.RunRequest
+			if err := contracts.DecodeStrict(input.Input, &request); err != nil {
+				return reject(err)
+			}
+			var source *runstate.Record
+			if request.ReuseWorktreeFromRunID != "" {
+				var unlock func()
+				var err error
+				source, unlock, err = e.reusableSource(request.ReuseWorktreeFromRunID)
+				if err != nil {
+					return reject(err)
+				}
+				defer unlock()
+			}
+			r, err := freezeWithWorkspace(e.ctx, e.dir, *input, source)
 			if err != nil {
 				return reject(err)
 			}
@@ -200,7 +219,14 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 			if e.ctx.Err() != nil {
 				return reject(contracts.Fail(4, "service_unavailable", "Service is stopping; submission was not accepted."))
 			}
-			if err := e.commitLocked(r, &receipt, "run_accepted"); err != nil {
+			if source != nil && (e.runs[source.ID].Revision != source.Revision || e.workspaceSuperseded(source)) {
+				return reject(contracts.Fail(5, "workspace_already_reused", "Source Run changed or its workspace already has a successor."))
+			}
+			events := []string{"run_accepted"}
+			if source != nil {
+				events = append(events, "worktree_reused")
+			}
+			if err := e.commitLocked(r, &receipt, events...); err != nil {
 				return reject(contracts.Fail(6, "request_outcome_unknown", "Submission commit could not be verified; inspect the original request_id."))
 			}
 			w := &worker{wake: make(chan struct{}, 1)}
@@ -224,6 +250,9 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 			return reject(contracts.Fail(4, "service_unavailable", "Service is stopping; command was not accepted."))
 		}
 		r := e.runs[runID]
+		if e.workspaceSuperseded(r) {
+			return reject(contracts.Fail(5, "workspace_transferred", "This terminal Run transferred its workspace; controls cannot affect its successor."))
+		}
 		isContent := workflow.Content(r.Request.Workflow.ID)
 		single := r.Request.Workflow.ID == workflow.SingleExecution
 		if single && (command == "reply" || command == "resume" || command == "message" || command == "interrupt" || command == "close") {

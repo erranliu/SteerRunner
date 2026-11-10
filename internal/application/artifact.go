@@ -63,6 +63,9 @@ func verifyOriginalWorkspace(ctx context.Context, git workspace.Git, r *runstate
 			return workspace.VerifyFileSource(ctx, git, repo, &s.Workspace, !fresh)
 		}
 	}
+	if r.Request.Execution.Adapter == "codex-app-server" && r.ManagedWorkspace != nil && r.ManagedWorkspace.SourceRunID != "" {
+		verify = func() error { return workspace.VerifyRetained(ctx, git, repo, &s.Workspace, r.ManagedWorkspace.Local) }
+	}
 	if err := verify(); err != nil {
 		return contracts.Fail(4, "workspace_unavailable", "Original Run workspace cannot be verified: "+redactDiagnostic(r, err.Error()))
 	}

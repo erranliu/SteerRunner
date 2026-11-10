@@ -14,7 +14,7 @@ func (e *Engine) acceptMessage(id string, m b.PublicMessage) error {
 	e.mu.Lock()
 	defer e.mu.Unlock()
 	r := e.runs[id]
-	if r == nil {
+	if r == nil || e.workspaceSuperseded(r) {
 		return nil
 	}
 	s := r.Snapshot.Session

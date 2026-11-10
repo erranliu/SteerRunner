@@ -55,6 +55,9 @@ func (e *Engine) verifyPolicyResources(r *runstate.Record, fresh bool) error {
 }
 
 func (e *Engine) verifyRecoveredStartup(r *runstate.Record) error {
+	if r.ManagedWorkspace != nil && r.ManagedWorkspace.SourceRunID != "" {
+		return verifyRetainedWorkspace(e.ctx, r)
+	}
 	repo := workspace.Repository{Path: r.RepositoryPath, CommonDir: r.RepositoryCommon}
 	return workspace.VerifyInitialClean(e.ctx, gitHost(), repo, &r.Snapshot.Workspace)
 }
@@ -70,6 +73,12 @@ func (e *Engine) attachWriteRoots(r *runstate.Record, fresh bool) error {
 	if fresh {
 		resolve = workspace.ResolveFreshLinkedResources
 	}
+	if r.ManagedWorkspace != nil && r.ManagedWorkspace.SourceRunID != "" {
+		if err := verifyRetainedWorkspace(e.ctx, r); err != nil {
+			return err
+		}
+		resolve = workspace.ResolveFreshLinkedResources
+	}
 	roots, err := resolve(e.ctx, gitHost(), workspace.Repository{Path: r.RepositoryPath, CommonDir: r.RepositoryCommon}, &r.Snapshot.Workspace)
 	if err != nil {
 		return err
@@ -77,7 +86,11 @@ func (e *Engine) attachWriteRoots(r *runstate.Record, fresh bool) error {
 	args, err := codex.LinkedWorktreePaths(roots.Objects, roots.Refs, roots.Logs, roots.Admin)
 	// Never broaden an old shared cache's frozen authorization. Only the new
 	// per-Run repository identity can receive root-level Git lockfile access.
-	if strings.EqualFold(filepath.Clean(r.RepositoryPath), privateRunRepository(e.dir, r.Request.Repository, r.ID)) &&
+	origin := r.ID
+	if r.ManagedWorkspace != nil {
+		origin = r.ManagedWorkspace.OriginRunID
+	}
+	if strings.EqualFold(filepath.Clean(r.RepositoryPath), privateRunRepository(e.dir, r.Request.Repository, origin)) &&
 		strings.EqualFold(filepath.Clean(r.RepositoryCommon), filepath.Join(r.RepositoryPath, ".git")) {
 		args, err = codex.PrivateLinkedWorktreePaths(roots.Objects, roots.Refs, roots.Logs, roots.Admin)
 	}

@@ -92,12 +92,14 @@ func (e *Engine) prepareRuntimeFiles(original *runstate.Record) {
 	if r.Request.ProgressFile != nil && (r.Progress == nil || !r.Progress.InitializationAttempted && !r.Progress.Initialized) {
 		p := fileState(r, false)
 		p.InitializationAttempted = true
+		p.InitializationWriteStatus = "not_started"
 		next.Progress = p
 		channels = append(channels, false)
 	}
 	if r.Request.ResultFile != nil && (r.ResultFile == nil || !r.ResultFile.InitializationAttempted && !r.ResultFile.Initialized && !r.ResultFile.Sealed) {
 		p := fileState(r, true)
 		p.InitializationAttempted = true
+		p.InitializationWriteStatus = "not_started"
 		next.ResultFile = &runstate.ResultFile{Progress: *p}
 		channels = append(channels, true)
 	}
@@ -169,11 +171,87 @@ func (e *Engine) publishFilePreparationLocked(original *runstate.Record, sample 
 	}
 }
 
+// Preserve durable write settlement when an earlier read/preparation snapshot
+// arrives after the physical writer exited. File observation has its own revision.
+func preserveInitializationSettlement(next, prior *runstate.Progress) {
+	if next == nil || prior == nil {
+		return
+	}
+	rank := map[string]int{"": 0, "not_started": 1, "pending": 2, "settled": 3}
+	if rank[prior.InitializationWriteStatus] > rank[next.InitializationWriteStatus] {
+		next.InitializationWriteStatus = prior.InitializationWriteStatus
+	}
+	next.InitializationAttempted = next.InitializationAttempted || prior.InitializationAttempted
+}
+
+// Persist the obligation before any directory/exclude/seed mutation. Stop keeps
+// its existing deadline; only transfer waits for physical write settlement.
+func (e *Engine) beginFilePreparation(r *runstate.Record, result bool) (*worker, error) {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+	current, w := e.runs[r.ID], e.workers[r.ID]
+	if current == nil || w == nil || !current.Allowed || current.ResumeRequired || current.PendingStop != "" || progressTerminal(current) || e.ctx.Err() != nil || progressBinding(current) != progressBinding(r) || e.workspaceSuperseded(current) {
+		return nil, errors.New("binding_invalid")
+	}
+	p := fileState(current, result)
+	if p.InitializationWriteStatus != "not_started" {
+		return nil, errors.New("initialization_unverified")
+	}
+	p.InitializationWriteStatus = "pending"
+	var err error
+	if result {
+		sealed := current.ResultFile != nil && current.ResultFile.Sealed
+		if sealed {
+			return nil, errors.New("binding_invalid")
+		}
+		err = e.saveResultLocked(r.ID, &runstate.ResultFile{Progress: *p})
+	} else {
+		err = e.saveProgressLocked(current, p)
+	}
+	if err != nil {
+		return nil, err
+	}
+	w.filePreparationsActive++
+	return w, nil
+}
+
+func (e *Engine) finishFilePreparation(r *runstate.Record, w *worker, result, settled bool) {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+	defer func() { w.filePreparationsActive-- }()
+	current := e.runs[r.ID]
+	if !settled || current == nil || progressBinding(current) != progressBinding(r) || e.workspaceSuperseded(current) {
+		return
+	}
+	p := fileState(current, result)
+	p.InitializationWriteStatus = "settled"
+	// Settlement remains necessary after stop/sealing; never publish late bytes.
+	var err error
+	if result {
+		next := *current.ResultFile
+		next.Progress = *p
+		err = e.saveResultLocked(r.ID, &next)
+	} else {
+		err = e.saveProgressLocked(current, p)
+	}
+	if err != nil && e.logger != nil {
+		e.logger.Printf("optional file write settlement unavailable run=%s result=%t", r.ID, result)
+	}
+}
+
 // A non-cooperating filesystem/transport cannot extend the channel deadline.
-// The goroutine only owns private values and its channel; late results are ignored.
+// Late bytes are ignored, but physical write obligations survive the deadline.
 func (e *Engine) sampleRuntimeFile(ctx context.Context, r *runstate.Record, result, prepare bool) runtimeFileSample {
 	if err := ctx.Err(); err != nil {
 		return runtimeFileSample{err: err}
+	}
+	var preparer *worker
+	if prepare {
+		var err error
+		preparer, err = e.beginFilePreparation(r, result)
+		if err != nil {
+			return runtimeFileSample{err: err}
+		}
 	}
 	var reader *worker
 	if !result && !prepare {
@@ -190,6 +268,10 @@ func (e *Engine) sampleRuntimeFile(ctx context.Context, r *runstate.Record, resu
 	}
 	done := make(chan runtimeFileSample, 1)
 	go func() {
+		settled := true
+		if preparer != nil {
+			defer func() { e.finishFilePreparation(r, preparer, result, settled) }()
+		}
 		if reader != nil {
 			defer func() { e.mu.Lock(); reader.progressReadActive = false; e.mu.Unlock() }()
 		}
@@ -206,7 +288,10 @@ func (e *Engine) sampleRuntimeFile(ctx context.Context, r *runstate.Record, resu
 			}
 			data, _ := base64.StdEncoding.DecodeString(seed.InitialContentBase64)
 			if err = ctx.Err(); err == nil {
+				// A lost remote reply cannot prove the remote write has exited.
+				settled = r.Request.Execution.Adapter != "orca-terminal"
 				err = c.initialize(ctx, data)
+				settled = settled || err == nil
 			}
 			if result && err == nil {
 				c.state.Initialized = true

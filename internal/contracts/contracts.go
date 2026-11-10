@@ -77,6 +77,8 @@ func ExitCode(response Response) int {
 		return 1
 	}
 	switch response.Error.Code {
+	case "workspace_not_settled", "workspace_already_reused", "workspace_transferred", "workspace_identity_unavailable", "workspace_identity_conflict":
+		return 5
 	case "artifact_path_invalid", "artifact_limit_exceeded":
 		return 2
 	case "workspace_unavailable", "artifact_unavailable":

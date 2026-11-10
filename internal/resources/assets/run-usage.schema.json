@@ -214,6 +214,41 @@
     "observed_at": {
       "type": "string",
       "format": "date-time"
+    },
+    "model_call_coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "internal_recorded",
+        "internal_covered",
+        "internal_uncovered",
+        "internal_pending",
+        "untracked"
+      ],
+      "properties": {
+        "internal_recorded": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "internal_covered": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "internal_uncovered": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "internal_pending": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "untracked": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
     }
   },
   "$schema": "https://json-schema.org/draft/2020-12/schema"

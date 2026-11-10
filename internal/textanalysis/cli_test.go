@@ -68,10 +68,43 @@ func TestMain(m *testing.M) {
 		os.WriteFile(output, []byte(body), 0600)
 		event, _ := json.Marshal(map[string]any{"type": "item.completed", "item": map[string]string{"type": "agent_message", "text": body}})
 		fmt.Println(string(event))
-		fmt.Println(`{"type":"turn.completed"}`)
+		if mode == "bad-usage" {
+			fmt.Println(`{"type":"turn.completed","usage":{"input_tokens":"bad","output_tokens":4}}`)
+		} else if mode == "conflicting-usage" || mode == "truncated-usage" {
+			fmt.Println(`{"type":"turn.completed","usage":{"input_tokens":12,"output_tokens":4}}`)
+			if mode == "conflicting-usage" {
+				fmt.Println(`{"type":"turn.completed","usage":{"input_tokens":999,"output_tokens":1}}`)
+			} else {
+				fmt.Println(`{"type":"unfinished`)
+			}
+		} else {
+			fmt.Println(`{"type":"turn.completed"}`)
+		}
 		os.Exit(0)
 	}
 	os.Exit(m.Run())
+}
+
+func TestCLIOptionalUsageFailureAndConflictedCallCoverage(t *testing.T) {
+	for _, mode := range []string{"bad-usage", "conflicting-usage", "truncated-usage"} {
+		t.Run(mode, func(t *testing.T) {
+			config, _ := fixture(t, mode)
+			input := request()
+			var observed CallObservation
+			input.BeginCall = func() (func(CallObservation), error) { return func(v CallObservation) { observed = v }, nil }
+			var analyzer Analyzer
+			body, err := analyzer.Analyze(context.Background(), input, config)
+			if mode == "bad-usage" && (err != nil || body != `{"value":"supplied"}`) {
+				t.Fatal("optional usage invalidated business result", body, err)
+			}
+			if mode != "bad-usage" && err == nil {
+				t.Fatal("conflicted stream was accepted")
+			}
+			if observed.SessionID == "" || observed.Tokens.Total != nil {
+				t.Fatal("unknown usage became countable", observed)
+			}
+		})
+	}
 }
 
 func fixture(t *testing.T, mode string) (ra.ParserConfig, string) {
@@ -94,7 +127,10 @@ func TestCLITextAndInternalFailures(t *testing.T) {
 		t.Run(mode, func(t *testing.T) {
 			c, home := fixture(t, mode)
 			var a Analyzer
-			body, err := a.Analyze(context.Background(), request(), c)
+			input := request()
+			begins, ends := 0, 0
+			input.BeginCall = func() (func(CallObservation), error) { begins++; return func(CallObservation) { ends++ }, nil }
+			body, err := a.Analyze(context.Background(), input, c)
 			if mode == "good" && (err != nil || body != `{"value":"supplied"}`) {
 				t.Fatal(body, err)
 			}
@@ -104,6 +140,9 @@ func TestCLITextAndInternalFailures(t *testing.T) {
 			calls, err := os.ReadFile(filepath.Join(home, "calls"))
 			if err != nil || string(calls) != "call\n" {
 				t.Fatal("bad result retried", string(calls), err)
+			}
+			if begins != 1 || ends != 1 {
+				t.Fatal("parser call lost usage attribution", begins, ends)
 			}
 		})
 	}
@@ -190,7 +229,10 @@ func TestCLITransientRetryIsLocalAndBounded(t *testing.T) {
 		t.Run(mode, func(t *testing.T) {
 			c, home := fixture(t, mode)
 			var a Analyzer
-			body, err := a.Analyze(context.Background(), request(), c)
+			input := request()
+			begins, ends := 0, 0
+			input.BeginCall = func() (func(CallObservation), error) { begins++; return func(CallObservation) { ends++ }, nil }
+			body, err := a.Analyze(context.Background(), input, c)
 			if mode == "transient-once" && (err != nil || body != `{"value":"supplied"}`) {
 				t.Fatal(body, err)
 			}
@@ -200,6 +242,9 @@ func TestCLITransientRetryIsLocalAndBounded(t *testing.T) {
 			calls, _ := os.ReadFile(filepath.Join(home, "calls"))
 			if string(calls) != "call\ncall\n" {
 				t.Fatal("transient retry not bounded to two attempts", string(calls))
+			}
+			if begins != 2 || ends != 2 {
+				t.Fatal("physical parser retry lost usage attribution", begins, ends)
 			}
 		})
 	}

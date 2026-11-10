@@ -116,10 +116,19 @@ func (e *Engine) advanceAcquisition(id string, w *worker, _ *runstate.Record) bo
 		ctx, cancel := context.WithCancel(e.ctx)
 		task = &textTask{source: workflow.Source(*source), implementation: input.ImplementationResultID, cancel: cancel, done: make(chan struct{})}
 		w.acquisition = task
+		w.analysisTasks++
 		parse, _ := r.Workflow.CurrentState()
 		request := textanalysis.Request{Text: source.Final, Instruction: parse.Prompt, Schema: ra.ParserSchema()}
+		usageSource := r.Clone()
+		usageResult := ""
+		for _, acquired := range r.Workflow.Results {
+			if acquired.Source == workflow.Source(*source) {
+				usageResult = acquired.ID
+			}
+		}
 		e.mu.Unlock()
 		go func() {
+			defer func() { e.mu.Lock(); w.analysisTasks--; e.mu.Unlock() }()
 			defer cancel()
 			config, err := ra.LoadConfig(e.dir)
 			if err != nil {
@@ -129,6 +138,7 @@ func (e *Engine) advanceAcquisition(id string, w *worker, _ *runstate.Record) bo
 			} else if e.analyzeText != nil {
 				task.body, task.err = e.analyzeText(ctx, request, config.Config.CodexParser)
 			} else {
+				request.BeginCall = e.parserUsage(usageSource, input, usageResult, config.Config.CodexParser)
 				task.body, task.err = e.textAnalyzer.Analyze(ctx, request, config.Config.CodexParser)
 			}
 			close(task.done)

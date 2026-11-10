@@ -347,11 +347,36 @@ func structuredDevelopmentClose(r *runstate.Record) bool {
 
 func settleRunStop(r *runstate.Record) {
 	r.StopStatus, r.Status, r.Phase = "stopped", "stopped", "stopped"
+	// Revocation can precede the first queueInput, so closeContent has no
+	// PendingTurn from which to settle submit. A bound definitive rejection
+	// also proves no initial business input was accepted; a status label alone
+	// cannot provide that proof after reconciliation.
+	status := r.CommandStates[r.SubmitCommandID]
+	if r.SubmitCommandID != "" && (status == "pending" || status == "unknown") && initialInputNeverAccepted(r) {
+		r.CommandStates[r.SubmitCommandID] = "failed"
+	}
 	if structuredDevelopmentClose(r) {
 		// A confirmed close ends the original session; there is no resource to resume.
 		r.ResumeRequired = false
 	}
 	settleContentStatus(r)
+}
+
+func initialInputNeverAccepted(r *runstate.Record) bool {
+	if r.NativeStarted || r.Snapshot.Session.CurrentTurnID != "" || r.Snapshot.Session.PendingTurnID != "" || unknown(r) {
+		return false
+	}
+	for _, intent := range r.Intents {
+		if !nativeInputAction(b.LifecycleAction(intent.Request.Operation.Action)) {
+			continue
+		}
+		receipt := intent.Receipt
+		if intent.Request.Operation.Status != b.OperationRejected || receipt == nil || receipt.Disposition != b.OperationRejected || receipt.ValidateFor(intent.Request) != nil ||
+			receipt.State.InputAccepted || receipt.State.TurnStarted || receipt.State.TurnCompleted || receipt.State.TurnID != "" || receipt.TurnEvidence != nil {
+			return false
+		}
+	}
+	return true
 }
 
 func (e *Engine) failControl(id, command string, err error) {
@@ -375,7 +400,15 @@ func (e *Engine) failControl(id, command string, err error) {
 	_ = e.commitLocked(r, nil, "control_rejected")
 }
 func (e *Engine) closeWorker(id string, w *worker) {
+	// Transfer and cleanup share the dispatch gate, including the identity
+	// check: a successor cannot be accepted between that check and shutdown.
+	w.gate.Lock()
+	defer w.gate.Unlock()
 	e.mu.Lock()
+	if e.workspaceSuperseded(e.runs[id]) {
+		e.mu.Unlock()
+		return
+	}
 	parent := e.shutdownContext
 	e.mu.Unlock()
 	if parent == nil {

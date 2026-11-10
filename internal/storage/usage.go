@@ -245,10 +245,15 @@ func (s *Store) commitUsageWithPermit(ctx context.Context, next api.Snapshot, in
 	affected := map[string]bool{next.RunID: true}
 	for _, e := range incoming {
 		claimedSource := e.SourceRef
-		if e.ID == "" || e.RunID != next.RunID || e.SourceRef == "" || e.SessionID == "" || e.ResponseID == "" || usage.Validate(e.Tokens) != nil {
+		internal := e.Scope == "runner_internal" && e.CallID != "" && e.CallSource == "llm_parser" && e.CommandID != "" && e.SourceResultID != "" &&
+			(e.CoverageStatus == "covered" && usage.Validate(e.Tokens) == nil && e.SessionID != "" || (e.CoverageStatus == "pending" || e.CoverageStatus == "uncovered") && e.Tokens == (api.Tokens{}))
+		if e.ID == "" || e.RunID != next.RunID || e.SourceRef == "" || !internal && (e.Scope != "" && e.Scope != "main_session" || e.SessionID == "" || e.ResponseID == "" || usage.Validate(e.Tokens) != nil) {
 			return next, errors.New("invalid usage event")
 		}
 		e.Decision = "counted"
+		if internal && e.CoverageStatus != "covered" {
+			e.Decision = "uncovered"
+		}
 		if e.MetadataIssues == nil {
 			e.MetadataIssues = []api.Issue{}
 		}
@@ -298,6 +303,15 @@ func (s *Store) commitUsageWithPermit(ctx context.Context, next api.Snapshot, in
 			return next, err
 		}
 		projection := next
+		// Internal call publication must retain the latest collector coverage,
+		// even if the caller read its main-session snapshot before a collector commit.
+		internalOnly := len(incoming) > 0
+		for _, event := range incoming {
+			internalOnly = internalOnly && event.Scope == "runner_internal"
+		}
+		if internalOnly && prior.RunID != "" {
+			projection = prior
+		}
 		// Quarantine is permanent. A rejected cross-Run claim has no event row
 		// under the claimant, so a cached source observation must retain its
 		// persisted conflict rather than infer complete coverage from that absence.
