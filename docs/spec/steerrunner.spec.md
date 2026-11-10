@@ -189,6 +189,8 @@ A 验收和源码归档后，再按 [B Spec](orca-helper-producer-retirement.spe
 
 2026-11-09 按收窄后的状态读取增量实施：文件通道保留结构化开发模式事实，合法多轮待派发窗口可继续读取原工作区文件；执行、usage、文件和原冻结证明使用同一纯校验逻辑，减少各处手工拼装旧 reader 的知识。持久格式、原错误/身份拒绝、构造及停止证明规则保持，PC-R01–R10 不变；可选通道读取不成为业务完成/停止的替代证明，见[验收](../acceptance/orca-structured-state-read.md)。B 迁移和无引用声明清理仍未实施。
 
+2026-11-10，B 项旧终端测试与当前执行器分离已实施：三处测试分别直接消费终端查询能力、真实构造的当前执行器和原历史 reader，删除两项由旧测试维持的生产方法及旧测试工厂；历史格式、冻结停止 scope、当前绑定和原 close 判据保持。独立设计审计补齐同入口 Shutdown 成功/拒绝控制，修正后实施并完成合并前最小验收，见[Spec](orca-terminal-fixture-separation.spec.md)、[Plan](orca-terminal-fixture-separation.plan.md)与[验收](../acceptance/orca-terminal-fixture-separation.md)。该定向结果不扩大真实 Orca/模型或完整恢复资格；其它无引用声明清理仍未实施。
+
 ### 文档分工与维护规则
 
 - 本节是能力及可靠性承诺的长期总入口。CLI 字段/退出码、Workflow 和专项 Spec 细化机制；[可靠性交付链路](../reliable-delivery.md)解释运行路径；[操作指南](../cli-guide.md)描述如何使用；acceptance 保存具体构建的验证事实。

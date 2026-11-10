@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"reflect"
 	"strings"
 	"testing"
 	"time"
@@ -13,6 +14,7 @@ import (
 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
+	"github.com/erranliu/SteerRunner/internal/execution/reliable"
 )
 
 func TestCodexStoppedRequiresNativeExitProofBeyondPTY(t *testing.T) {
@@ -39,8 +41,13 @@ func TestCodexStoppedRequiresNativeExitProofBeyondPTY(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			before, _ := json.Marshal(s)
+			before, err := json.Marshal(s)
+			if err != nil {
+				t.Fatal(err)
+			}
+			inventoryCalls := 0
 			l.client = native.New(native.Config{Output: func(_ context.Context, _ time.Duration, args ...string) ([]byte, error) {
+				inventoryCalls++
 				if len(args) != 5 || args[0] != "terminal" || args[1] != "list" {
 					t.Fatalf("verification caused an effect: %v", args)
 				}
@@ -55,15 +62,51 @@ func TestCodexStoppedRequiresNativeExitProofBeyondPTY(t *testing.T) {
 			}
 			// Retain the separate current-port rejection: a legacy reader is not
 			// itself executable, and an old snapshot cannot settle this port.
-			port, err := capabilityFixtureLifecycle(l.setup)
+			port, currentSnapshot, agent := structuredFixture(t)
+			currentState, err := port.agentState(currentSnapshot)
 			if err != nil {
 				t.Fatal(err)
 			}
-			facts, err := port.ShutdownLifecycle(context.Background(), s, nil)
-			if err == nil || facts.Stopped {
+			currentState.Attempted = true
+			currentSnapshot.Implementation, err = port.agentEnvelope(currentSnapshot, currentState)
+			if err != nil {
+				t.Fatal(err)
+			}
+			receipt, err := port.StopLifecycle(context.Background(), request(currentSnapshot, b.LifecycleStopExecution, b.LifecycleInput{Stop: &b.StopInput{TurnID: "native-turn"}}), nil)
+			if err != nil || !receipt.State.Stopped || agent.closes != 1 {
+				t.Fatal("original close was not acknowledged", receipt, err, agent.closes)
+			}
+			currentSnapshot, _, err = reliable.ApplySessionReceipt(currentSnapshot, nil, receipt, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			currentBefore, err := json.Marshal(currentSnapshot)
+			if err != nil {
+				t.Fatal(err)
+			}
+			setupBefore := port.setup.Clone()
+			facts, err := port.ShutdownLifecycle(context.Background(), currentSnapshot, nil)
+			if err != nil || !facts.Stopped {
+				t.Fatal("acknowledged current session did not settle", facts, err)
+			}
+			facts, err = port.ShutdownLifecycle(context.Background(), s, nil)
+			if err == nil || err.Error() != "Orca terminal execution binding changed" || facts.Stopped {
 				t.Fatal("shutdown overstated native resource settlement", facts, err)
 			}
-			after, _ := json.Marshal(s)
+			if agent.closes != 1 || agent.creates != 0 || agent.reads != 0 || agent.details != 0 || len(port.setup.ProcessHost.(*fakeHost).calls) != 0 || inventoryCalls != 1 {
+				t.Fatal("shutdown proof caused extra native I/O", agent, inventoryCalls)
+			}
+			currentAfter, err := json.Marshal(currentSnapshot)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if string(currentBefore) != string(currentAfter) || !reflect.DeepEqual(port.setup.Clone(), setupBefore) {
+				t.Fatal("shutdown changed the current snapshot or setup")
+			}
+			after, err := json.Marshal(s)
+			if err != nil {
+				t.Fatal(err)
+			}
 			if string(before) != string(after) {
 				t.Fatal("read-only probe changed snapshot")
 			}

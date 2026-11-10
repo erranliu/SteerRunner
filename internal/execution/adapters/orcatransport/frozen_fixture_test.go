@@ -3,23 +3,9 @@ package orcatransport
 import (
 	"encoding/json"
 	"testing"
-	"time"
 
-	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
-
-// Capability fixtures retain only the original-terminal RPC and shared CLI/
-// creation tests. They are not current execution or generic historical readers.
-func capabilityFixtureLifecycle(setup b.LifecycleSetup) (*Lifecycle, error) {
-	r, err := decodeFrozenRecord(setup)
-	if err != nil {
-		return nil, err
-	}
-	l := &Lifecycle{setup: r.setup, profile: r.profile, profileVersion: r.profileVersion, agentDevelopment: r.agentDevelopment, agentHostID: r.agentHostID, agentAudited: r.agentAudited, probeProcess: r.probeProcess, clock: func() time.Time { return time.Now().UTC() }}
-	l.client = native.New(native.Config{CommandTimeout: "40s", Output: orcaCLIOutput(r.setup, r.profile, r.agentHostID, func() bool { return false })})
-	return l, nil
-}
 
 // Only test code can encode an old terminal state; production retains decoding.
 func (r *frozenRecord) envelope(s b.LifecycleSnapshot, state State) ([]b.ImplementationDataEnvelope, error) {
