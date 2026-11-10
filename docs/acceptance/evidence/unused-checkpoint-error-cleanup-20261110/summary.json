@@ -1,0 +1,163 @@
+{
+  "before-adapter": {
+    "exit_code": 0,
+    "packages": {
+      "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport": {
+        "top_level": {
+          "pass": 11
+        },
+        "nodes": {
+          "pass": 39
+        },
+        "tests": [
+          "TestStructuredWorkspaceRecoversOriginalOwnerOutput",
+          "TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch",
+          "TestCreationOwnerIncompleteLaunchClaimNeverRetries",
+          "TestCreationOwnerStartupUsesOriginalDeadline",
+          "TestRetiredExecutionFactoryKeepsFrozenProof",
+          "TestFrozenReaderHasNoExecutionAndRejectsMutation",
+          "TestFrozenReaderKeepsConstructorFaultPriority",
+          "TestHostNativeStateCodecRejectsRetiredAndAmbiguousFields",
+          "TestHostNativeStateCodecRoundTripRetainsOriginalBinding",
+          "TestHostNativeStateCodecRetainsWaitingWithoutRecomputing",
+          "TestStructuredWorkspaceAuditReadsOriginalChangedTree"
+        ],
+        "skipped": [],
+        "status": "pass"
+      }
+    }
+  },
+  "before-publication": {
+    "exit_code": 0,
+    "packages": {
+      "github.com/erranliu/SteerRunner/internal/execution/publication": {
+        "top_level": {
+          "pass": 9
+        },
+        "nodes": {
+          "pass": 19
+        },
+        "tests": [
+          "TestPublicationPolicyValidatesProviderValues",
+          "TestPublicationSecretsRejectedBeforeFreeze",
+          "TestPRRequiresExactIdentityAndMergeEvidence",
+          "TestPRURLsAndRemotes",
+          "TestWorkerPRIdentityRequiresExecutionBranch",
+          "TestWorkerPRIdentityReportsAllMismatchedFields",
+          "TestGiteaQueryReadsPRHeadIdentity",
+          "TestCommandProviderErrorsRedactReferencedCredential",
+          "TestUnsupportedProviderDoesNoNetworkOperation"
+        ],
+        "skipped": [],
+        "status": "pass"
+      }
+    }
+  },
+  "after-adapter": {
+    "exit_code": 0,
+    "packages": {
+      "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport": {
+        "top_level": {
+          "pass": 11
+        },
+        "nodes": {
+          "pass": 39
+        },
+        "tests": [
+          "TestStructuredWorkspaceRecoversOriginalOwnerOutput",
+          "TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch",
+          "TestCreationOwnerIncompleteLaunchClaimNeverRetries",
+          "TestCreationOwnerStartupUsesOriginalDeadline",
+          "TestRetiredExecutionFactoryKeepsFrozenProof",
+          "TestFrozenReaderHasNoExecutionAndRejectsMutation",
+          "TestFrozenReaderKeepsConstructorFaultPriority",
+          "TestHostNativeStateCodecRejectsRetiredAndAmbiguousFields",
+          "TestHostNativeStateCodecRoundTripRetainsOriginalBinding",
+          "TestHostNativeStateCodecRetainsWaitingWithoutRecomputing",
+          "TestStructuredWorkspaceAuditReadsOriginalChangedTree"
+        ],
+        "skipped": [],
+        "status": "pass"
+      }
+    }
+  },
+  "after-publication": {
+    "exit_code": 0,
+    "packages": {
+      "github.com/erranliu/SteerRunner/internal/execution/publication": {
+        "top_level": {
+          "pass": 9
+        },
+        "nodes": {
+          "pass": 19
+        },
+        "tests": [
+          "TestPublicationPolicyValidatesProviderValues",
+          "TestPublicationSecretsRejectedBeforeFreeze",
+          "TestPRRequiresExactIdentityAndMergeEvidence",
+          "TestPRURLsAndRemotes",
+          "TestWorkerPRIdentityRequiresExecutionBranch",
+          "TestWorkerPRIdentityReportsAllMismatchedFields",
+          "TestGiteaQueryReadsPRHeadIdentity",
+          "TestCommandProviderErrorsRedactReferencedCredential",
+          "TestUnsupportedProviderDoesNoNetworkOperation"
+        ],
+        "skipped": [],
+        "status": "pass"
+      }
+    }
+  },
+  "scope": {
+    "changed_files": [
+      "internal/execution/adapters/orcatransport/control_checkpoint.go",
+      "internal/execution/publication/provider.go"
+    ],
+    "deleted_files": [
+      "internal/execution/adapters/orcatransport/workspace_initial_terminal.go"
+    ],
+    "added_files": [],
+    "production_net_lines_removed": 42,
+    "original_source_test_tool_files": 811,
+    "final_source_test_tool_files": 810,
+    "unchanged_source_test_tool_files": 808,
+    "inspection_gate_bytes_exact": true,
+    "control_file_only_approved_deletion_and_import_collapse": true,
+    "provider_retained_bytes_exact": true,
+    "tests_and_shared_tools_bytes_exact": true,
+    "capture_bytes": 338087,
+    "capture_sha256": "a22bcab27292aa398b1e0306a746b1fad4b8f482e7bd3fdf82a9ae2594b684ee",
+    "capture_equal": true,
+    "retained_type_declarations": 299,
+    "resource_digest": "910c7fa06b933be3632f862062e966200fd581b34873a395268826d44c1bbbe7",
+    "final_manifest_sha256": "8630b68aff3fa90372546fcdd343adedd37501bf866f83f5711435bd1b58f6be"
+  },
+  "build": {
+    "schema": "steerrunner-build/v1",
+    "component": "runner",
+    "source_digest": "c909c2cc00bc36b3d580dd1d6b3990e0442612449f83a3f647ee761bb7d86c39",
+    "version": "0.2.0-dev.4",
+    "source_commit": "13f3500b8d31ff77d46bf786160582a25120d04c",
+    "source_dirty": true,
+    "protocol": "steerrunner-cli/v1",
+    "platform": "windows/amd64",
+    "sha256": "8d26b5dbd1c1f508032f74a7d97163da62d201fe40f34e1b32c54ee48ff1cb31"
+  },
+  "design_audit": {
+    "confirmed_findings": 0,
+    "implementation_narrow_recheck_findings": 0,
+    "readonly": true,
+    "agent_ran_tests": false
+  },
+  "qualification": {
+    "scope": "pre-merge targeted adapter, complete publication package and formal build only",
+    "full_adapter": false,
+    "full_application": false,
+    "full_L1": false,
+    "public_Controlled": false,
+    "L2_L3_L4": false,
+    "real_Orca_or_models_or_PR": false,
+    "live_driver_helper_separate_compile": false,
+    "Node": false,
+    "deployed": false
+  }
+}

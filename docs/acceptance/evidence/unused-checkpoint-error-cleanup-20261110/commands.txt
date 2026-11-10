@@ -1,0 +1,14 @@
+Windows/amd64; PowerShell 7; repository root. All Go tests count=1.
+
+Before deletion, and repeated independently after deletion:
+go test ./internal/execution/adapters/orcatransport -run '^(TestStructuredWorkspaceAuditReadsOriginalChangedTree|TestFrozenReaderHasNoExecutionAndRejectsMutation|TestFrozenReaderKeepsConstructorFaultPriority|TestRetiredExecutionFactoryKeepsFrozenProof|TestHostNativeStateCodecRejectsRetiredAndAmbiguousFields|TestHostNativeStateCodecRoundTripRetainsOriginalBinding|TestHostNativeStateCodecRetainsWaitingWithoutRecomputing|TestStructuredWorkspaceRecoversOriginalOwnerOutput|TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch|TestCreationOwnerIncompleteLaunchClaimNeverRetries|TestCreationOwnerStartupUsesOriginalDeadline)$' -count=1 -timeout=5m -json
+go test ./internal/execution/publication -count=1 -timeout=5m -json
+
+Before and after independent capture:
+go run .evidence/unused-checkpoint-error-cleanup/capture.go .evidence/unused-checkpoint-error-cleanup/before-capture.json
+go run .evidence/unused-checkpoint-error-cleanup/capture.go .evidence/unused-checkpoint-error-cleanup/after-capture.json
+
+Final build:
+./scripts/build.ps1 -OutFile .evidence/unused-checkpoint-error-cleanup/final/steerrunner.exe
+
+JSON/stderr/exit files retained independently; no public controlled or live/model tests requested by this minimum scope.

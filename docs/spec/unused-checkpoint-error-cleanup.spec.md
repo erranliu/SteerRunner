@@ -1,6 +1,6 @@
 # Spec：零消费者 checkpoint／错误声明清尾
 
-日期：2026-11-10。状态：设计，未实施。原设计轮只编写 Spec/Plan 和必要索引，不改生产或测试代码、不运行实施验收；用户随后仅授权提交并创建本设计文档 PR，未授权实施、合并或部署。调查主线 `5ccc3f0aa07764657b3346aa6023b73b878d76e0`（#136 已合入）；调查时工作副本 HEAD `f3668b37` 与该主线文件树相同。配套 [Plan](unused-checkpoint-error-cleanup.plan.md)，依据[长期产品承诺](steerrunner.spec.md#长期产品承诺)、[Orca 能力边界](orca-capability-layer.spec.md)、[原执行与停止范围](../orca-execution.md)及[测试指南](../testing.md)。
+日期：2026-11-10。状态：独立设计审计完成并已实施，合并前最小验收完成，见[独立记录](../acceptance/unused-checkpoint-error-cleanup.md)。原设计轮只编写 Spec/Plan 和必要索引，不改生产或测试代码、不运行实施验收；用户先授权创建本设计 PR，随后明确授权独立审计、修正确认问题并实施；实施验收阶段未授权新的提交/PR、合并或部署，用户随后另行授权提交并创建实现 PR。调查主线 `5ccc3f0aa07764657b3346aa6023b73b878d76e0`（#136 已合入）；调查时工作副本 HEAD `f3668b37` 与该主线文件树相同。配套 [Plan](unused-checkpoint-error-cleanup.plan.md)，依据[长期产品承诺](steerrunner.spec.md#长期产品承诺)、[Orca 能力边界](orca-capability-layer.spec.md)、[原执行与停止范围](../orca-execution.md)及[测试指南](../testing.md)。
 
 ## 1. 目标与范围
 
@@ -59,8 +59,16 @@ state/v8、SQLite user_version=8、Record/Request/Operation/Receipt、原 Profil
 
 由于批准变更不触及运行规则，本批不额外要求公开受控、application 全组、protocol 全组、live driver/helper 单独编译或真实后端测试；正式构建覆盖实际生产装配编译，不能冒充这些运行资格。若发现实际消费者或 diff 必须触及保留逻辑/共享测试，先修订范围并按影响补验，不以最小清单继续签收。
 
-本轮只交付文档，以上均为后续实施要求，未运行验收、未取得新资格。最小结果不代表完整 adapter/application、L1/Controlled、L2–L4、全恢复、真实 Orca/模型/PR 或合并后通过。UCE-01–06 完成即结束，不自动展开下一批、提交/推送/创建 PR/合并/部署。
+原设计轮只交付文档；用户随后授权实施，实际结果见独立验收，不以原设计静态复核代替运行结果。最小结果不代表完整 adapter/application、L1/Controlled、L2–L4、全恢复、真实 Orca/模型/PR 或合并后通过。UCE-01–06 完成即结束，不自动展开下一批、提交/推送/创建 PR/合并/部署。
 
 ## 6. 设计 PR 交付复核
 
 2026-11-10，用户在设计完成后授权提 PR，本次交付仅含本 Spec、Plan 和索引，设计保持未实施。创建分支前刷新 main 至 `91507d7e78c4e89598a0f20a967062d888104a3f`（#137），核对新增 owner 读取重试与 Git 核验变更：批准删除的三个文件、inspectionGate/审计调用、publication 装配及原十一项/九项测试声明均未变，实际消费者结论与最小范围保持。交付分支从该主线建立，无内容冲突；仅静态核对引用、名字与文档链接，未运行实施测试或构建，不继承 #137 的运行资格。
+
+## 7. 独立设计审计与实施基线
+
+2026-11-10，独立只读子代理核对实际消费者、删除/保留、最小集合和资格边界，未确认需修订问题；未改文件、未运行测试。设计 PR #138 已合入，实施主线刷新为 `344d3e83eef2c34397d2cae6c02c6c95f805bd2f`，本地 HEAD `13f3500b` 文件树相同。后续修改只按批准闭包进行，不扩大到其它精简。
+
+## 8. 实施状态
+
+2026-11-10，UCE-01–06 完成。按批准三文件删除未消费类型/错误闭包，生产净删 42 行，所有测试及共享工具保持。独立设计审计与实施窄复核均未确认需修正问题；删除前后各十一项 adapter、完整 publication 九项均通过，无失败/skip，正式构建通过。保留声明/代表编码及固定资源摘要前后相同，实际范围与资格见[验收](../acceptance/unused-checkpoint-error-cleanup.md)。验收冻结时尚未提交/推送/创建新 PR/合并/部署；后续实现 PR 授权与交付见验收补记。
