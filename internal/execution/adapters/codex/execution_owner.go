@@ -390,7 +390,7 @@ func ExecutionOwner(snapshot b.LifecycleSnapshot) *ExecutionOwnerIdentity {
 
 func (l ExecutionLifecycle) callOwner(ctx context.Context, request b.LifecycleRequest, method string) (b.LifecycleReceipt, error) {
 	dir := l.ownerDirectory()
-	raw, err := os.ReadFile(filepath.Join(dir, ExecutionOwnerConfigFile))
+	raw, err := readOwnerDispatchFile(ctx, filepath.Join(dir, ExecutionOwnerConfigFile))
 	if err != nil {
 		return b.LifecycleReceipt{}, err
 	}
@@ -398,7 +398,7 @@ func (l ExecutionLifecycle) callOwner(ctx context.Context, request b.LifecycleRe
 	if err = b.DecodeStrictJSON(raw, &cfg, "invalid owner configuration"); err != nil {
 		return b.LifecycleReceipt{}, err
 	}
-	raw, err = os.ReadFile(filepath.Join(dir, "owner-ready.json"))
+	raw, err = readOwnerDispatchFile(ctx, filepath.Join(dir, "owner-ready.json"))
 	if err != nil {
 		return b.LifecycleReceipt{}, err
 	}

@@ -22,19 +22,20 @@ type Repository struct {
 }
 
 func ResolveRepository(ctx context.Context, git Git, checkout string) (Repository, error) {
-	root, err := git.Output(ctx, checkout, "rev-parse", "--show-toplevel")
+	// Both paths come from one Git observation. Require two unambiguous records.
+	out, err := git.Output(ctx, checkout, "rev-parse", "--path-format=absolute", "--show-toplevel", "--git-common-dir")
 	if err != nil {
 		return Repository{}, err
 	}
-	path, err := resolveGitPath(strings.TrimSpace(string(root)))
+	paths := strings.Split(strings.TrimSpace(string(out)), "\n")
+	if len(paths) != 2 {
+		return Repository{}, errors.New("Git repository paths are incomplete or ambiguous")
+	}
+	path, err := resolveGitPath(strings.TrimSpace(paths[0]))
 	if err != nil {
 		return Repository{}, err
 	}
-	common, err := git.Output(ctx, path, "rev-parse", "--path-format=absolute", "--git-common-dir")
-	if err != nil {
-		return Repository{}, err
-	}
-	commonPath, err := resolveGitPath(strings.TrimSpace(string(common)))
+	commonPath, err := resolveGitPath(strings.TrimSpace(paths[1]))
 	if err != nil {
 		return Repository{}, err
 	}
@@ -69,30 +70,19 @@ func Verify(ctx context.Context, git Git, repository Repository, intent *executi
 	if canonical(real) != canonical(intent.Path) {
 		return errors.New("worktree path was redirected")
 	}
-	for _, check := range []struct {
-		args []string
-		want string
-		path bool
-	}{
-		{[]string{"rev-parse", "--show-toplevel"}, intent.Path, true},
-		{[]string{"rev-parse", "--path-format=absolute", "--git-common-dir"}, repository.CommonDir, true},
-		{[]string{"symbolic-ref", "--quiet", "HEAD"}, "refs/heads/" + intent.Branch, false},
-	} {
-		out, err := git.Output(ctx, intent.Path, check.args...)
-		if err != nil {
-			return err
-		}
-		got, want := strings.TrimSpace(string(out)), check.want
-		if check.path {
-			got, err = resolveGitPath(got)
-			if err != nil {
-				return err
-			}
-			got, want = canonical(got), canonical(want)
-		}
-		if got != want {
-			return fmt.Errorf("worktree identity mismatch: expected %s", want)
-		}
+	actual, err := ResolveRepository(ctx, git, intent.Path)
+	if err != nil {
+		return err
+	}
+	if canonical(actual.Path) != canonical(intent.Path) || canonical(actual.CommonDir) != canonical(repository.CommonDir) {
+		return errors.New("worktree checkout or common directory differs from its fixed identity")
+	}
+	branch, err := git.Output(ctx, intent.Path, "symbolic-ref", "--quiet", "HEAD")
+	if err != nil {
+		return err
+	}
+	if strings.TrimSpace(string(branch)) != "refs/heads/"+intent.Branch {
+		return errors.New("worktree branch differs from its fixed identity")
 	}
 	if initial {
 		out, err := git.Output(ctx, intent.Path, "rev-parse", "HEAD")

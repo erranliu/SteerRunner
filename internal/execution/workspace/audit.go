@@ -21,21 +21,20 @@ func InspectAudit(ctx context.Context, git Git, repo Repository, intent *b.Works
 	if strings.TrimSpace(string(sparse)) != "false" {
 		return fact, errors.New("sparse worktree is not qualified for audited provenance")
 	}
-	index, err := git.Output(ctx, intent.Path, "ls-files", "-v", "-z")
+	// -v and --stage share one index traversal; -z keeps pathnames out of
+	// record parsing, including names that resemble Git metadata.
+	index, err := git.Output(ctx, intent.Path, "ls-files", "-v", "--stage", "-z")
 	if err != nil {
 		return fact, err
 	}
 	for _, entry := range strings.Split(string(index), "\x00") {
-		if entry != "" && (entry[0] == 'S' || entry[0] >= 'a' && entry[0] <= 'z') {
+		if entry == "" {
+			continue
+		}
+		if entry[0] == 'S' || entry[0] >= 'a' && entry[0] <= 'z' {
 			return fact, errors.New("hidden index flags are not qualified for audited provenance")
 		}
-	}
-	stages, err := git.Output(ctx, intent.Path, "ls-files", "--stage", "-z")
-	if err != nil {
-		return fact, err
-	}
-	for _, entry := range strings.Split(string(stages), "\x00") {
-		if strings.HasPrefix(entry, "160000 ") {
+		if len(entry) > 2 && strings.HasPrefix(entry[2:], "160000 ") {
 			return fact, errors.New("gitlinks/submodules are not qualified for audited provenance")
 		}
 	}
