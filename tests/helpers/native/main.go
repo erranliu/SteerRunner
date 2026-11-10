@@ -4,6 +4,7 @@ package main
 import (
 	"bufio"
 	"context"
+	"crypto/rand"
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/hex"
@@ -247,8 +248,11 @@ func (s *server) call(request rpc) (map[string]any, []map[string]any) {
 	case "config/read":
 		response["result"] = map[string]any{"config": map[string]any{"mcp_servers": map[string]any{"fixture_external": map[string]any{"enabled": true}}}, "layers": []any{map[string]any{"name": map[string]any{"type": "system"}, "config": map[string]any{"mcp_servers": map[string]any{"fixture_external": map[string]any{"url": "https://unused.invalid"}}}}}}
 	case "thread/start":
-		sum := sha256.Sum256([]byte(str("cwd")))
-		id := hex.EncodeToString(sum[:16])
+		var session [16]byte
+		if _, err := rand.Read(session[:]); err != nil {
+			return fail(err)
+		}
+		id := hex.EncodeToString(session[:])
 		id = id[:8] + "-" + id[8:12] + "-" + id[12:16] + "-" + id[16:20] + "-" + id[20:]
 		s.thread = thread{ID: id, Cwd: str("cwd"), Turns: []map[string]any{}}
 		if err := appendCall(map[string]any{"method": "thread/start", "thread": id, "cwd": s.thread.Cwd}); err != nil {
@@ -346,6 +350,21 @@ func (s *server) call(request rpc) (map[string]any, []map[string]any) {
 		content := ""
 		var err error
 		if os.Getenv("STEERRUNNER_CONTENT_FIXTURE") == "1" {
+			if strings.HasPrefix(prompt, "CONTROLLED_REUSE_FINISH") {
+				for name, want := range map[string]string{"leftover": "untracked must survive", "plan.md": "unfinished must survive"} {
+					body, err := os.ReadFile(filepath.Join(s.thread.Cwd, name))
+					if err != nil || string(body) != want {
+						return fail(fmt.Errorf("retained closeout lost %s", name))
+					}
+				}
+				for _, args := range [][]string{{"add", "--", "plan.md", "leftover"}, {"commit", "-m", "finish retained modifications"}} {
+					cmd := exec.Command("git", args...)
+					cmd.Dir = s.thread.Cwd
+					if out, err := cmd.CombinedOutput(); err != nil {
+						return fail(fmt.Errorf("retained closeout: %s: %w", out, err))
+					}
+				}
+			}
 			body, readErr := os.ReadFile(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "content-final"))
 			if readErr != nil {
 				return fail(readErr)

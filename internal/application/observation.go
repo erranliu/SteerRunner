@@ -80,6 +80,9 @@ func (e *Engine) acceptEvent(id string, event b.LifecycleEvent) error {
 	e.mu.Lock()
 	defer e.mu.Unlock()
 	r := e.runs[id].Clone()
+	if e.workspaceSuperseded(r) {
+		return reliable.ErrStale
+	}
 	if f.SessionID != "" && f.SessionID != r.Snapshot.Session.SessionID {
 		return reliable.ErrStale
 	}

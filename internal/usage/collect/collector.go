@@ -334,7 +334,7 @@ func (c *Collector) observe(ctx context.Context, r *runstate.Record) {
 // Attribute only an exact original command, never the current workflow role or
 // the observed provider model. Initialization and unbound history stay unknown.
 func attributeUsage(r *runstate.Record, event *api.Event) {
-	if event.Phase == "initialization" || event.CommandID == "" {
+	if event.Scope == "runner_internal" || event.Phase == "initialization" || event.CommandID == "" {
 		return
 	}
 	var matched int

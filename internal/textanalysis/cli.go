@@ -9,6 +9,8 @@ import (
 	"fmt"
 	native "github.com/erranliu/SteerRunner/internal/codexcommand"
 	ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
+	"github.com/erranliu/SteerRunner/internal/usage"
+	"github.com/erranliu/SteerRunner/internal/usage/api"
 	"io"
 	"os"
 	"os/exec"
@@ -81,6 +83,22 @@ func invoke(ctx context.Context, in Request, prompt string, config ra.ParserConf
 	if err != nil {
 		return "", errors.New("parser output unavailable")
 	}
+	stream := Stream{}
+	if err := ctx.Err(); err != nil {
+		return "", err
+	}
+	if in.BeginCall != nil {
+		finish, err := in.BeginCall()
+		if err != nil {
+			return "", errors.New("parser usage attribution unavailable")
+		}
+		defer func() {
+			finish(CallObservation{SessionID: stream.SessionID, ResponseID: stream.ResponseID, Tokens: stream.Tokens})
+		}()
+	}
+	if err := ctx.Err(); err != nil {
+		return "", err
+	}
 	cleanup, err := start(cmd)
 	if err != nil {
 		return "", errors.New("parser process could not start")
@@ -99,7 +117,6 @@ func invoke(ctx context.Context, in Request, prompt string, config ra.ParserConf
 	}()
 	scan := bufio.NewScanner(stdout)
 	scan.Buffer(make([]byte, 4096), max(config.MaxOutputBytes+8192, 262144))
-	stream := Stream{}
 	total := 0
 	var streamErr error
 	for scan.Scan() {
@@ -114,6 +131,7 @@ func invoke(ctx context.Context, in Request, prompt string, config ra.ParserConf
 		}
 	}
 	if streamErr != nil || scan.Err() != nil {
+		stream.Tokens = api.Tokens{}
 		stop()
 	}
 	waitErr := cmd.Wait()
@@ -280,15 +298,23 @@ type Stream struct {
 	SessionID, Final  string
 	FailureCode       string
 	Complete, Started bool
+	ResponseID        string
+	Tokens            api.Tokens
 }
 
-func (s *Stream) Accept(line []byte) error {
+func (s *Stream) Accept(line []byte) (acceptErr error) {
+	defer func() {
+		if acceptErr != nil {
+			s.Tokens = api.Tokens{}
+		}
+	}()
 	var v struct {
 		Type, ThreadID string
 		Thread         string `json:"thread_id"`
 		Item           struct{ Type, Text, ID, Message string }
 		Error          struct{ Message string }
 		Message        string
+		Usage          json.RawMessage
 	}
 	if json.Unmarshal(line, &v) != nil {
 		return errors.New("parser JSONL invalid")
@@ -309,6 +335,20 @@ func (s *Stream) Accept(line []byte) error {
 			return errors.New("parser duplicate/incomplete turn")
 		}
 		s.Complete = true
+		var counts struct {
+			Input  *int64 `json:"input_tokens"`
+			Cached *int64 `json:"cached_input_tokens"`
+			Output *int64 `json:"output_tokens"`
+		}
+		if json.Unmarshal(v.Usage, &counts) == nil && counts.Input != nil && counts.Output != nil {
+			tokens := api.Tokens{InputTotal: counts.Input, CacheRead: counts.Cached, Output: counts.Output}
+			if *tokens.InputTotal >= 0 && *tokens.Output >= 0 && *tokens.InputTotal <= int64(^uint64(0)>>1)-*tokens.Output {
+				tokens.Total = api.Number(*tokens.InputTotal + *tokens.Output)
+			}
+			if usage.Validate(tokens) == nil {
+				s.Tokens = tokens
+			}
+		}
 	case "turn.failed", "error":
 		s.FailureCode = classifyFailure(v.Error.Message + " " + v.Message)
 		return errors.New("parser native turn failed")
@@ -330,6 +370,7 @@ func (s *Stream) Accept(line []byte) error {
 					return errors.New("parser ambiguous multiple final messages")
 				}
 				s.Final = v.Item.Text
+				s.ResponseID = v.Item.ID
 			}
 		default:
 			return errors.New("parser tool event rejected")

@@ -80,6 +80,17 @@ func Merge(old, next api.Event) api.Event {
 	if old.Decision == "quarantined" {
 		return old
 	}
+	if old.Scope != next.Scope || old.CallID != next.CallID || old.CallSource != next.CallSource || old.SourceResultID != next.SourceResultID {
+		old.Decision = "quarantined"
+		return old
+	}
+	if old.Scope == "runner_internal" && (old.AttemptID != next.AttemptID || old.Generation != next.Generation || old.SourceRef != next.SourceRef) {
+		old.Decision = "quarantined"
+		return old
+	}
+	if old.Scope == "runner_internal" && old.CoverageStatus == "pending" && old.RunID == next.RunID && old.CommandID == next.CommandID && old.AttemptID == next.AttemptID && old.Generation == next.Generation && old.StepID == next.StepID && old.ConfiguredModel == next.ConfiguredModel && old.ConfiguredReasoningEffort == next.ConfiguredReasoningEffort {
+		return next
+	}
 	// Conflicting frozen attribution cannot be safely assigned to either model.
 	for _, pair := range [][2]string{{old.StepID, next.StepID}, {old.ConfiguredModel, next.ConfiguredModel}, {old.ConfiguredReasoningEffort, next.ConfiguredReasoningEffort}} {
 		if pair[0] != "" && pair[1] != "" && pair[0] != pair[1] {
@@ -167,6 +178,7 @@ func Project(s api.Snapshot, events []api.Event) api.Snapshot {
 	s.Schema = api.Version
 	s.Scope = "main_session"
 	s.Tokens = nil
+	s.ModelCallCoverage = &api.ModelCallCoverage{Untracked: []string{"subagents", "tool_internal_models", "unobserved_provider_calls"}}
 	s.Coverage.CountedResponses = 0
 	s.Coverage.ThroughEventID = ""
 	if s.Issues == nil {
@@ -189,6 +201,18 @@ func Project(s api.Snapshot, events []api.Event) api.Snapshot {
 		}
 	}
 	for _, e := range events {
+		if e.Scope == "runner_internal" {
+			s.ModelCallCoverage.InternalRecorded++
+			switch {
+			case e.CoverageStatus == "covered" && e.Decision == "counted" && Validate(e.Tokens) == nil:
+				s.ModelCallCoverage.InternalCovered++
+			case e.CoverageStatus == "pending" && e.Decision != "quarantined":
+				s.ModelCallCoverage.InternalPending++
+			default:
+				s.ModelCallCoverage.InternalUncovered++
+			}
+			continue
+		}
 		if e.Decision != "counted" {
 			gap = true
 			failure = true

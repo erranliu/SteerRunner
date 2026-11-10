@@ -28,6 +28,9 @@ func (e *Engine) saveResultLocked(id string, p *runstate.ResultFile) error {
 	next := current.Clone()
 	next.ResultFile = p
 	next = next.Clone()
+	if next.ResultFile != nil && current.ResultFile != nil {
+		preserveInitializationSettlement(&next.ResultFile.Progress, &current.ResultFile.Progress)
+	}
 	next.Progress = current.Progress
 	if err := e.store.SaveProgress(next); err != nil {
 		return err
@@ -189,7 +192,7 @@ func boundedResultRead(ctx context.Context, read func() ([]byte, error)) ([]byte
 func (e *Engine) publishResultLocked(original *runstate.Record, data []byte, readErr error) error {
 	current := e.runs[original.ID]
 	if current == nil || current.Request.ResultFile == nil || !resultEndEligible(current) ||
-		resultEndIdentity(current) != resultEndIdentity(original) || !reflect.DeepEqual(current.ResultFile, original.ResultFile) || current.ResultFile != nil && current.ResultFile.Sealed {
+		resultEndIdentity(current) != resultEndIdentity(original) || !sameResultFileObservation(current.ResultFile, original.ResultFile) || current.ResultFile != nil && current.ResultFile.Sealed {
 		return nil
 	}
 	p := current.Clone().ResultFile
@@ -210,4 +213,15 @@ func (e *Engine) publishResultLocked(original *runstate.Record, data []byte, rea
 		p.View.ObservedAt = &now
 	}
 	return e.saveResultLocked(original.ID, p)
+}
+
+// Physical write settlement can finish during a bounded read after stop. It
+// changes no observed bytes and must not consume the only seal attempt.
+func sameResultFileObservation(a, b *runstate.ResultFile) bool {
+	if a == nil || b == nil {
+		return a == b
+	}
+	left, right := *a, *b
+	left.InitializationWriteStatus, right.InitializationWriteStatus = "", ""
+	return reflect.DeepEqual(left, right)
 }

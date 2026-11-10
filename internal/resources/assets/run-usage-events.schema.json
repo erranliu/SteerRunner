@@ -75,7 +75,10 @@
           },
           "phase": {
             "type": "string",
-            "enum": ["command", "initialization"]
+            "enum": [
+              "command",
+              "initialization"
+            ]
           },
           "agent": {
             "type": "string"
@@ -234,6 +237,21 @@
                 }
               }
             }
+          },
+          "scope": {
+            "type": "string"
+          },
+          "call_id": {
+            "type": "string"
+          },
+          "call_source": {
+            "type": "string"
+          },
+          "source_result_id": {
+            "type": "string"
+          },
+          "coverage_status": {
+            "type": "string"
           }
         }
       }

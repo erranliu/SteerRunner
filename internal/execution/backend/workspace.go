@@ -20,6 +20,12 @@ type WorkspaceIntent struct {
 	BaseCommit string `json:"base_commit"`
 }
 
+type WorkspaceIdentity struct {
+	Directory      string `json:"directory"`
+	Admin          string `json:"admin"`
+	AdminDirectory string `json:"admin_directory"`
+}
+
 type WorkspaceInspection struct {
 	Tree            string    `json:"tree,omitempty"`
 	Qualified       bool      `json:"qualified,omitempty"`

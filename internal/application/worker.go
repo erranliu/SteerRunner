@@ -74,6 +74,10 @@ func (e *Engine) advance(id string, w *worker) bool {
 	}
 	e.mu.Lock()
 	r := e.runs[id].Clone()
+	if e.workspaceSuperseded(r) {
+		e.mu.Unlock()
+		return false
+	}
 	if r.PendingStop != "" || r.PendingResume != "" || r.ResumeRequired {
 		w.freshWorkspace, w.startupWorkspaceChecked = false, false
 	}
@@ -322,6 +326,11 @@ func (e *Engine) invoke(id string, w *worker, p b.LifecyclePort, index int, reco
 	if err := merge(next, result.Receipt); err != nil {
 		status = string(b.OperationUnknown)
 		diagnostic = "Native receipt did not match the original execution identity"
+	}
+	if status == string(b.OperationConfirmed) && intent.Request.Operation.Action == string(b.LifecyclePrepareWorkspace) {
+		captureCtx, captureCancel := context.WithTimeout(e.ctx, 30*time.Second)
+		captureManagedWorkspace(captureCtx, next)
+		captureCancel()
 	}
 	savedReceipt := result.Receipt.Clone()
 	savedReceipt.Operation.Diagnostic = e.redact(next, savedReceipt.Operation.Diagnostic)

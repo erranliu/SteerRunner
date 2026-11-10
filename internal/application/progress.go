@@ -32,6 +32,7 @@ func (e *Engine) saveProgressLocked(r *runstate.Record, p *runstate.Progress) er
 	next := current.Clone()
 	next.Progress = p
 	next = next.Clone() // do not publish mutable preparation-local pointers
+	preserveInitializationSettlement(next.Progress, current.Progress)
 	next.ResultFile = current.ResultFile
 	if err := e.store.SaveProgress(next); err != nil {
 		return err

@@ -152,6 +152,7 @@ func Capabilities() any {
 		"run_observation":         map[string]any{"contract": contracts.RunObservationContract, "same_snapshot": true, "max_events": 500},
 		"recovery":                map[string]any{"state_format": "steerrunner-state/v8", "same_build_restart": true, "resource_rebuild": false, "upgrade": "drain original resources and unresolved operations with the original executable; use a fresh state directory", "manual_reconciliation": "resume queries original operations for at most 30 seconds; no replacement resources"},
 		"run_usage":               UsageCapabilities(),
+		"worktree_reuse":          map[string]any{"input_property": "reuse_worktree_from_run_id", "workflow": "execute/1", "source": "latest stopped and reconciled managed Run in the same state directory", "exclusive_identity": "original filesystem or Orca worktree incarnation", "preserves": []string{"branch", "commits", "dirty_files", "untracked_files", "git_operations"}, "new_session": true, "arbitrary_directory": false, "unknown_outcome": "reconcile the original request before reuse", "optional_file_writes": "physical writer and close must settle; unverified writes block transfer", "orca_transport": "retain executable and arguments", "qualification": "implementation; current validation recorded separately"},
 		"run_usage_schema":        json.RawMessage(Read("run-usage.schema.json")),
 		"run_usage_events_schema": json.RawMessage(Read("run-usage-events.schema.json")),
 		"service_start_schema":    json.RawMessage(Read("service-start.schema.json")),

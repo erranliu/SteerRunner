@@ -62,18 +62,19 @@ type Publication struct {
 }
 
 type RunRequest struct {
-	ProgressFile *ProgressFileInput `json:"progress_file,omitempty"`
-	ResultFile   *ResultFileInput   `json:"result_file,omitempty"`
-	Conversation *ConversationInput `json:"conversation,omitempty"`
-	Generate     *GenerateInput     `json:"generate,omitempty"`
-	Title        string             `json:"title"`
-	NamePrefix   string             `json:"name_prefix,omitempty"`
-	Correlation  map[string]string  `json:"correlation,omitempty"`
-	Repository   Repository         `json:"repository,omitzero"`
-	Documents    Documents          `json:"documents,omitzero"`
-	Workflow     Workflow           `json:"workflow"`
-	Execution    Execution          `json:"execution"`
-	Publication  Publication        `json:"publication,omitzero"`
+	ReuseWorktreeFromRunID string             `json:"reuse_worktree_from_run_id,omitempty"`
+	ProgressFile           *ProgressFileInput `json:"progress_file,omitempty"`
+	ResultFile             *ResultFileInput   `json:"result_file,omitempty"`
+	Conversation           *ConversationInput `json:"conversation,omitempty"`
+	Generate               *GenerateInput     `json:"generate,omitempty"`
+	Title                  string             `json:"title"`
+	NamePrefix             string             `json:"name_prefix,omitempty"`
+	Correlation            map[string]string  `json:"correlation,omitempty"`
+	Repository             Repository         `json:"repository,omitzero"`
+	Documents              Documents          `json:"documents,omitzero"`
+	Workflow               Workflow           `json:"workflow"`
+	Execution              Execution          `json:"execution"`
+	Publication            Publication        `json:"publication,omitzero"`
 }
 
 type AgentSettings struct {
@@ -245,6 +246,11 @@ func ValidateRun(data []byte) *Fault {
 	}
 	var fields map[string]json.RawMessage
 	_ = json.Unmarshal(data, &fields)
+	if raw, present := fields["reuse_worktree_from_run_id"]; present {
+		if string(raw) == "null" || !plain(value.ReuseWorktreeFromRunID) || value.Workflow.ID != workflow.SingleExecution {
+			return invalid
+		}
+	}
 	if _, present := fields["name_prefix"]; present && (len(value.NamePrefix) > MaxNamePrefixLength || !namePrefixPattern.MatchString(value.NamePrefix)) {
 		return invalid
 	}

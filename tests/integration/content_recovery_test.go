@@ -5,8 +5,10 @@ package integration
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
+	"sync"
 	"testing"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
@@ -167,6 +169,14 @@ func TestSRSingleExecutionColdStop(t *testing.T) {
 	raw, _ := json.Marshal(request)
 	id := call(t, dir, []string{"submit", "--input", "-"}, string(raw), 0).Data.(map[string]any)["run_id"].(string)
 	original := waitRun(t, dir, id, func(v contracts.RunView) bool { return v.Execution.TurnID != "" })
+	activeReuse := request
+	activeInput := input
+	activeInput.ReuseWorktreeFromRunID = id
+	activeReuse.RequestID = "reuse-active-source"
+	activeReuse.Input, _ = json.Marshal(activeInput)
+	if denied := call(t, dir, []string{"submit", "--input", "-"}, string(marshalEvidence(t, activeReuse)), 5); denied.Error.Code != "workspace_not_settled" {
+		t.Fatal("active writer was reusable", denied)
+	}
 	call(t, dir, []string{"service", "stop", "--input", "-"}, stopRequest("single-detach", service.InstanceID), 0)
 	if err := waitOwnedService(service); err != nil {
 		t.Fatal(err)
@@ -196,4 +206,125 @@ func TestSRSingleExecutionColdStop(t *testing.T) {
 	if json.Unmarshal(marshalEvidence(t, result.Data), &file) != nil || file.CollectionStatus != "closed" {
 		t.Fatal("final result was not sealed", result)
 	}
+	oldResult := marshalEvidence(t, result.Data)
+	oldView := marshalEvidence(t, settled)
+	root, branch := settled.Execution.Workspace, settled.Execution.Branch
+	if settled.WorkspaceIdentity == "" {
+		t.Fatal("creation did not retain workspace identity")
+	}
+	git(t, root, "config", "user.name", "Reuse Fixture")
+	git(t, root, "config", "user.email", "fixture@example.invalid")
+	for round := 1; round <= 2; round++ {
+		if err := os.WriteFile(filepath.Join(root, "spec.md"), []byte(fmt.Sprintf("round %d", round)), 0600); err != nil {
+			t.Fatal(err)
+		}
+		git(t, root, "add", "spec.md")
+		git(t, root, "commit", "-m", fmt.Sprintf("retained round %d", round))
+		if err := os.WriteFile(filepath.Join(root, "leftover"), []byte("untracked must survive"), 0600); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(filepath.Join(root, "plan.md"), []byte("unfinished must survive"), 0600); err != nil {
+			t.Fatal(err)
+		}
+		head, dirty := git(t, root, "rev-parse", "HEAD"), git(t, root, "status", "--porcelain")
+		input.ReuseWorktreeFromRunID = settled.RunID
+		input.Workflow.PromptOverrides["execute"] = fmt.Sprintf("Finish retained work round %d", round)
+		request.RequestID = fmt.Sprintf("reuse-%d", round)
+		request.Input, _ = json.Marshal(input)
+		raw, _ = json.Marshal(request)
+		var responses [2]contracts.Response
+		var exits [2]int
+		var failures [2]error
+		var submissions [2]contracts.Request
+		var racing sync.WaitGroup
+		for index := range submissions {
+			submissions[index] = request
+			submissions[index].RequestID += fmt.Sprintf("-racer-%d", index)
+			racing.Add(1)
+			go func(index int) {
+				defer racing.Done()
+				responses[index], exits[index], _, failures[index] = invoke(runnerEXE, []string{"submit", "--state-dir", dir, "--input", "-", "--json"}, string(marshalEvidence(t, submissions[index])))
+			}(index)
+		}
+		racing.Wait()
+		winner := -1
+		for index := range responses {
+			if failures[index] != nil {
+				t.Fatal(failures[index])
+			}
+			if exits[index] == 0 {
+				if winner >= 0 {
+					t.Fatal("two workspace writers accepted")
+				}
+				winner = index
+			} else if exits[index] != 5 {
+				t.Fatal("unexpected reuse failure", responses[index], exits[index])
+			}
+		}
+		if winner < 0 {
+			t.Fatal("no reuse request accepted", responses)
+		}
+		request = submissions[winner]
+		raw = marshalEvidence(t, request)
+		reused := responses[winner]
+		nextID := reused.Data.(map[string]any)["run_id"].(string)
+		replay := call(t, dir, []string{"submit", "--input", "-"}, string(raw), 0)
+		if replay.Data.(map[string]any)["run_id"] != nextID {
+			t.Fatal("duplicate request transferred twice")
+		}
+		active := waitRun(t, dir, nextID, func(v contracts.RunView) bool { return v.Execution.TurnID != "" })
+		if active.Execution.Workspace != root || active.Execution.Branch != branch || active.ReuseWorktreeFromRunID != settled.RunID || active.Execution.SessionID == settled.Execution.SessionID || active.WorkspaceIdentity != settled.WorkspaceIdentity || git(t, root, "rev-parse", "HEAD") != head || git(t, root, "status", "--porcelain") != dirty {
+			t.Fatal("reuse lost state or reused a session", active)
+		}
+		// A different request cannot fork the same ancestor while its successor writes.
+		conflict := request
+		conflict.RequestID += "-conflict"
+		conflictRaw, _ := json.Marshal(conflict)
+		call(t, dir, []string{"submit", "--input", "-"}, string(conflictRaw), 5)
+		oldStop := contracts.Request{Protocol: contracts.Protocol, RequestID: fmt.Sprintf("old-stop-%d", round), Input: marshalEvidence(t, contracts.RevisionInput{ExpectedRevision: settled.Revision})}
+		call(t, dir, []string{"stop", "--run-id", settled.RunID, "--input", "-"}, string(marshalEvidence(t, oldStop)), 5)
+		if round == 1 {
+			call(t, dir, []string{"service", "stop", "--input", "-"}, stopRequest("reuse-active-detach", next.InstanceID), 0)
+			if err := waitOwnedService(next); err != nil {
+				t.Fatal(err)
+			}
+			next = serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))
+			cleanupService(t, dir, next)
+			active = waitRun(t, dir, nextID, func(v contracts.RunView) bool { return v.Execution.TurnID != "" })
+		}
+		stopNext := contracts.Request{Protocol: contracts.Protocol, RequestID: fmt.Sprintf("reuse-stop-%d", round), Input: marshalEvidence(t, contracts.RevisionInput{ExpectedRevision: active.Revision})}
+		call(t, dir, []string{"stop", "--run-id", nextID, "--input", "-"}, string(marshalEvidence(t, stopNext)), 0)
+		settled = waitRun(t, dir, nextID, func(v contracts.RunView) bool { return v.StopStatus == "stopped" })
+		waitResultSealed(t, dir, nextID)
+	}
+	if err := os.Remove(filepath.Join(native, "hold-turn")); err != nil {
+		t.Fatal(err)
+	}
+	input.ReuseWorktreeFromRunID = settled.RunID
+	input.Workflow.PromptOverrides["execute"] = "CONTROLLED_REUSE_FINISH: commit the retained modifications"
+	request.RequestID = "reuse-closeout"
+	request.Input, _ = json.Marshal(input)
+	closedID := call(t, dir, []string{"submit", "--input", "-"}, string(marshalEvidence(t, request)), 0).Data.(map[string]any)["run_id"].(string)
+	closed := waitRun(t, dir, closedID, func(v contracts.RunView) bool { return v.StopStatus == "stopped" })
+	if !closed.Closed || closed.Execution.Workspace != root || closed.Execution.Branch != branch || git(t, root, "status", "--porcelain") != "" || git(t, root, "log", "-1", "--format=%s") != "finish retained modifications" {
+		t.Fatal("new execute could not finish retained work", closed)
+	}
+	if countNative(t, "turn/start") != 4 || countNative(t, "thread/start") != 4 {
+		t.Fatal("reuse resent original inputs or sessions")
+	}
+	if got := marshalEvidence(t, call(t, dir, []string{"result-file", "--run-id", id}, "", 0).Data); !bytes.Equal(got, oldResult) {
+		t.Fatal("source result changed after reuse")
+	}
+	if got := marshalEvidence(t, runView(t, call(t, dir, []string{"inspect", "--run-id", id}, "", 0))); !bytes.Equal(got, oldView) {
+		t.Fatal("source Run changed after transfer")
+	}
+}
+
+func waitResultSealed(t *testing.T, dir, id string) {
+	t.Helper()
+	waitRun(t, dir, id, func(v contracts.RunView) bool {
+		var file contracts.ResultFileView
+		response := call(t, dir, []string{"result-file", "--run-id", id}, "", 0)
+		return json.Unmarshal(marshalEvidence(t, response.Data), &file) == nil && file.CollectionStatus == "closed"
+	})
 }

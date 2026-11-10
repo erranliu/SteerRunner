@@ -90,7 +90,7 @@ Orca 远端 Codex 的 SessionStart 可能清空输入预览并改变显示回合
 
 ### SteerLine Git 型新 Run 的启动边界
 
-调用方负责选定固定 commit 及准备项目材料。Runner 从该 commit 新建专属 worktree，保留创建操作、回执及原资源身份绑定。创建成功后进入 Workflow，省去单独的 HEAD、diff、工作区洁净度及材料交付核验。运行期文件走既有传输渠道，由 Agent 在使用时读取。Runner 自主推进所选 Workflow，旧 Run 恢复继续使用原资源和原恢复流程。
+调用方负责选定固定 commit 及准备项目材料。默认从该 commit 新建专属 worktree，保留创建操作、回执及原资源身份绑定。新 `execute/1` 也可用 `reuse_worktree_from_run_id` 复用同一 state-dir 中最后持有该受管 worktree 的已停止 Run；须先核实原停止及操作义务，保留分支、修改和 Git 状态，建立新会话。并发接管排他，未知先沿原请求对账，旧 Run 控制不影响新写者。完整字段、拒绝条件和计量边界见[工作区复用契约](worktree-reuse.md)。运行期文件走既有传输渠道，由 Agent 在使用时读取。旧 Run 恢复继续使用原资源和原恢复流程。
 
 开发请求使用 `workflow.project_policy_slots` 显式提供固定槽位，空数组表示调用方已完成预检且没有适用槽位。调用方从固定 EXE 的 `capabilities.data.model_input_contract.workflow.project_policies.slots` 读取唯一生产定义的 `{slot,path}` 有序目录，在候选固定 commit 预检后按原顺序提交，例如 `"project_policy_slots":[]`。省略该字段的独立调用方继续现行 Workflow 默认行为。目录缺失/非法仅阻断需要预检的新开发请求，不能阻断旧请求观察或停止。跨仓交付与验收由 SteerLine 的 `SteerlineFlow/spec/fresh-worktree-startup.spec.md` 定义。
 

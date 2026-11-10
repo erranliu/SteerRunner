@@ -85,6 +85,7 @@ func ConfigurationSchemas() json.RawMessage {
 	delete(development, "$id")
 	development["properties"].(map[string]any)["conversation"] = false
 	development["properties"].(map[string]any)["generate"] = false
+	development["properties"].(map[string]any)["reuse_worktree_from_run_id"] = false
 	development["properties"].(map[string]any)["workflow"] = map[string]any{"allOf": []any{schemas["workflow"], map[string]any{"properties": map[string]any{"id": map[string]any{"enum": []string{"development", "development-audited"}}}}}}
 	schemas["conversation_input"] = contentInputSchema(schemas, "conversation")
 	schemas["generate_input"] = contentInputSchema(schemas, "generate")

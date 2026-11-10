@@ -55,6 +55,7 @@ func runInputSchema(schemas map[string]any) map[string]any {
 	properties["result_file"] = progressInputSchema()
 	properties["title"] = map[string]any{"type": "string", "minLength": 1, "pattern": `\S`}
 	properties["name_prefix"] = namePrefixSchema()
+	properties["reuse_worktree_from_run_id"] = map[string]any{"type": "string", "minLength": 1, "pattern": `^[^\x00\r\n]+$`, "description": "Latest stopped Run whose managed worktree is to be retained; execute/1 only."}
 	properties["execution"] = schemas["run_configuration"].(map[string]any)["properties"].(map[string]any)["execution"]
 	properties["workflow"] = schemas["workflow"]
 	result["allOf"] = schemas["run_configuration"].(map[string]any)["allOf"]
