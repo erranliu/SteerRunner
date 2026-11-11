@@ -61,7 +61,19 @@ func Prepare(ctx context.Context, git Git, repository Repository, root string, i
 		return result, err
 	}
 	result.PathCreated = true
-	if _, err = git.Output(ctx, repository.Path, "--no-replace-objects", "-c", "core.hooksPath=/dev/null", "worktree", "add", "--no-track", "-b", intent.Branch, "--", intent.Path, intent.BaseCommit); err != nil {
+	checkout := git
+	if deadline, ok := ctx.Deadline(); ok {
+		// Checkout includes LFS materialization and can use the remaining
+		// preparation budget. The other Git commands keep their own limits.
+		checkout.Timeout = max(time.Until(deadline), time.Nanosecond)
+	}
+	if _, err = checkout.Output(ctx, repository.Path, "--no-replace-objects", "-c", "core.hooksPath=/dev/null", "worktree", "add", "--no-track", "-b", intent.Branch, "--", intent.Path, intent.BaseCommit); err != nil {
+		if errors.Is(err, context.DeadlineExceeded) {
+			// The owned Git invocation has exited. It did not prove checkout
+			// completion, and there is no native session to reconcile.
+			result.Status = executionbackend.OperationRejected
+			return result, fmt.Errorf("worktree checkout timed out: %w", err)
+		}
 		result = observePreparation(ctx, git, repository, intent, result)
 		return result, err
 	}

@@ -26,14 +26,20 @@ func (l ExecutionLifecycle) prepareWorkspace(ctx context.Context, request execut
 	git := workspace.Git{Command: executionbackend.LaunchCommand{Executable: l.setup.GitExecutable, Args: append([]string(nil), l.setup.GitArgs...)}, Timeout: timeout, Start: l.setup.ProcessHost.StartManaged}
 	repository := workspace.Repository{Path: l.setup.RepositoryPath, CommonDir: request.Snapshot.Session.ProjectID}
 	if reconcile {
-		inspection, err := workspace.Inspect(ctx, git, repository, intent)
+		inspection, err := workspace.InspectPrepared(ctx, git, repository, intent)
 		if err != nil {
+			if errors.Is(err, workspace.ErrCheckoutIncomplete) {
+				receipt.Disposition = executionbackend.OperationRejected
+			}
 			return receipt, err
 		}
 		receipt.Disposition, receipt.Workspace = executionbackend.OperationConfirmed, &inspection
 		return receipt, nil
 	}
 	prepared, err := workspace.Prepare(ctx, git, repository, filepath.Dir(intent.Path), intent)
-	receipt.Disposition, receipt.Workspace = prepared.Status, prepared.Inspection
+	receipt.Disposition = prepared.Status
+	if prepared.Status == executionbackend.OperationConfirmed {
+		receipt.Workspace = prepared.Inspection
+	}
 	return receipt, err
 }
