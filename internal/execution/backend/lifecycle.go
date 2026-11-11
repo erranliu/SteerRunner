@@ -51,11 +51,12 @@ type LifecycleInput struct {
 }
 
 type FeedbackInput struct {
-	Budget     *m.InputBudget `json:"input_budget,omitempty"`
-	DecisionID string         `json:"decision_id,omitempty"`
-	QuestionID string         `json:"question_id,omitempty"`
-	Message    string         `json:"message,omitempty"`
-	Answer     *Answer        `json:"answer,omitempty"`
+	Budget         *m.InputBudget `json:"input_budget,omitempty"`
+	DecisionID     string         `json:"decision_id,omitempty"`
+	QuestionID     string         `json:"question_id,omitempty"`
+	Message        string         `json:"message,omitempty"`
+	PreparedAnswer string         `json:"prepared_answer,omitempty"`
+	Answer         *Answer        `json:"answer,omitempty"`
 }
 
 // ResourceIntent describes one generic resource creation. Purpose is a closed

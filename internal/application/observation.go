@@ -23,7 +23,7 @@ func canReconnectObservation(r *runstate.Record) bool {
 	s := r.Snapshot.Session
 	return r.Request.Execution.Adapter == "orca-terminal" && r.NativeStarted &&
 		s.SessionID != "" && s.CurrentTurnID != "" && s.CurrentTurnID != s.LastStoppedTurnID &&
-		r.Status == "running" && r.Allowed && !r.ResumeRequired && !r.Closed &&
+		(r.Status == "running" || r.Status == "waiting_input" && r.Snapshot.QuestionRoute != nil) && r.Allowed && !r.ResumeRequired && !r.Closed &&
 		r.PendingStop == "" && r.PendingResume == "" && r.StopStatus == "" && !unknown(r)
 }
 
@@ -162,7 +162,7 @@ func (e *Engine) acceptEvent(id string, event b.LifecycleEvent) error {
 		return e.acceptMessage(id, *event.PublicMessage)
 	}
 	f := event.Fact
-	if f.Kind != b.EventWorkObserved && f.Kind != b.EventQuestion && f.Kind != b.EventCompleted && f.Kind != b.EventStarted && f.Kind != b.EventGap && event.Observation == nil && len(event.Implementation) == 0 {
+	if f.Kind != b.EventWorkObserved && f.Kind != b.EventQuestion && f.Kind != b.EventQuestionResolved && f.Kind != b.EventCompleted && f.Kind != b.EventStarted && f.Kind != b.EventGap && event.Observation == nil && len(event.Implementation) == 0 {
 		return nil
 	}
 	e.mu.Lock()
@@ -231,6 +231,9 @@ func (e *Engine) acceptEvent(id string, event b.LifecycleEvent) error {
 			return errors.New("another native question cannot replace the original pending answer")
 		}
 		question := &contracts.QuestionView{ID: route.QuestionID, Text: f.QuestionText, AllowFreeText: f.AllowFreeText}
+		if r.Snapshot.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 && f.InteractionKind == "async" {
+			question.InteractionKind = f.InteractionKind
+		}
 		for _, option := range f.QuestionOptions {
 			question.Options = append(question.Options, contracts.QuestionOption{ID: option.ID, Label: option.Label, Detail: option.Detail})
 		}
@@ -254,6 +257,9 @@ func (e *Engine) acceptEvent(id string, event b.LifecycleEvent) error {
 		r.Snapshot.QuestionRoute = &route
 		r.Snapshot.PendingQuestions = f.Questions
 		r.Status, r.Phase = "waiting_input", "question"
+		if question.InteractionKind == "async" {
+			r.Status = "running"
+		}
 		if workflow.Content(r.Request.Workflow.ID) || r.DevelopmentMessage() || r.Request.Workflow.ID == workflow.SingleExecution {
 			r.History = append(r.History, contracts.HistoryEntry{CommandID: r.Snapshot.Session.CurrentCommandID, SessionID: r.Snapshot.Session.SessionID, TurnID: r.Snapshot.Session.CurrentTurnID, Role: "question", Question: question})
 			if r.Request.Workflow.ID == "generate" || r.Request.Workflow.ID == workflow.SingleExecution {
@@ -261,6 +267,15 @@ func (e *Engine) acceptEvent(id string, event b.LifecycleEvent) error {
 				r.Diagnostic = "human_input_required"
 				closeContent(r, "generate:question:"+route.QuestionID)
 			}
+		}
+	} else if f.Kind == b.EventQuestionResolved {
+		if f.QuestionRoute == nil || r.Snapshot.QuestionRoute == nil || f.QuestionRoute.Digest != r.Snapshot.QuestionRoute.Digest ||
+			r.PendingAnswer != nil || f.SessionID != r.Snapshot.Session.SessionID || f.StartedTurnID != r.Snapshot.Session.CurrentTurnID {
+			return nil
+		}
+		r.Question, r.Snapshot.QuestionRoute, r.Snapshot.PendingQuestions = nil, nil, nil
+		if r.Phase == "question" {
+			r.Status, r.Phase, r.Diagnostic = "running", "observing", ""
 		}
 	} else if f.Kind == b.EventGap {
 		r.Diagnostic = "Original observation reported a result gap"

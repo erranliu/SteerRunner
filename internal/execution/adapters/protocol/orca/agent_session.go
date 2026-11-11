@@ -165,8 +165,8 @@ type AgentCreate struct {
 }
 
 // Send has no separate message ID: the public host uses ClientOperationID for
-// both the operation and its user message. No queue/steer or unknown retry is
-// requested; the lifecycle must first qualify the original session as idle.
+// both the operation and its user message. The lifecycle qualifies an idle
+// session for workflow input or an active original turn for an async reply.
 type AgentSend struct {
 	Envelope  AgentMutationEnvelope `json:"envelope"`
 	Body      AgentMessage          `json:"body"`
@@ -194,7 +194,11 @@ type AgentSubmission struct {
 	PayloadFingerprint string `json:"payloadFingerprint"`
 	DispatchState      string `json:"dispatchState"`
 	ProviderItemID     string `json:"providerItemId"`
-	Fence              int64  `json:"fence"`
+	QueuedMessageID    string `json:"queuedMessageId"`
+	AnsweredTurn       struct {
+		TurnItemID string `json:"turnItemId"`
+	} `json:"answeredInTurn"`
+	Fence int64 `json:"fence"`
 }
 type AgentTurn struct {
 	TurnID      string `json:"turnId"`
