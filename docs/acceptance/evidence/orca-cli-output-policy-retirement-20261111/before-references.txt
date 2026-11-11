@@ -1,0 +1,14 @@
+internal\execution\adapters\orcatransport\frozen_record.go:68:	output := orcaCLIOutput(r.setup, r.profile, r.agentHostID, func() bool { return true })
+internal\execution\adapters\orcatransport\frozen_record.go:84:func orcaCLIOutput(setup b.LifecycleSetup, p Profile, host string, nativeAccess func() bool) func(context.Context, time.Duration, ...string) ([]byte, error) {
+internal\execution\adapters\orcatransport\frozen_record.go:99:		if native.PreparationOwnsCLI(ctx) {
+internal\execution\adapters\orcatransport\frozen_record.go:102:		if nativeAccess() {
+internal\execution\adapters\orcatransport\fixture_setup_test.go:80:	// Dedicated IPC/queue tests still exercise nativeAccess on production ports.
+internal\execution\adapters\orcatransport\fixture_setup_test.go:81:	l.nativeAccess = false
+internal\execution\adapters\orcatransport\fixture_setup_test.go:103:			if l.nativeAccess {
+internal\execution\adapters\orcatransport\lifecycle.go:67:	nativeAccess     bool
+internal\execution\adapters\orcatransport\lifecycle.go:80:	l := &Lifecycle{setup: r.setup, profile: r.profile, profileVersion: r.profileVersion, agentHostID: r.agentHostID, agentDevelopment: r.agentDevelopment, agentAudited: r.agentAudited, probeProcess: r.probeProcess, clock: func() time.Time { return time.Now().UTC() }, nativeAccess: true}
+internal\execution\adapters\orcatransport\lifecycle.go:81:	l.client = native.New(native.Config{CommandTimeout: "40s", Output: orcaCLIOutput(r.setup, l.profile, l.agentHostID, func() bool { return true })})
+internal\execution\adapters\orcatransport\profile_construction_test.go:73:			if execution.clock == nil || !execution.nativeAccess || execution.agentAudited != tc.audited {
+internal\execution\adapters\protocol\orca\preparation_call.go:12:func PreparationOwnsCLI(ctx context.Context) bool { return ctx.Value(preparationChannelKey{}) == true }
+internal\execution\adapters\orcatransport\repository_query.go:137:			result, err = l.client.PreparationCall(ctx, l.nativeAccess, func() error {
+internal\execution\adapters\orcatransport\workspace.go:195:		if l.nativeAccess && l.structured() {

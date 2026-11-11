@@ -1,0 +1,32 @@
+before-adapter
+go test ./internal/execution/adapters/orcatransport -run '^(TestOrcaCLICommandEncodingAndConsumers|TestStructuredConstructorFacts|TestStructuredConstructorFaultPriority|TestCurrentFixtureUsesIsolatedHostWithInvalidPairingStore|TestFrozenReaderHasNoExecutionAndRejectsMutation|TestFrozenReaderKeepsConstructorFaultPriority|TestRetiredExecutionFactoryKeepsFrozenProof|TestRepositoryQueryRetryBudget|TestPreparationReadRecoveryRetainsBudget|TestPreparationRevokedBeforeOwnerClaimSettlesWithoutDispatch)$' -count=1 -timeout=5m -json
+
+before-workspace-reuse
+go test ./internal/execution/adapters/orcatransport -run '^TestOrcaWorktreeReuseRebindsOnlyWorkspaceAndRequiresStop$' -count=1 -timeout=5m -json
+
+before-protocol
+go test ./internal/execution/adapters/protocol/orca -run '^(TestOrcaCLISerializesProcessesWithoutRetryOrDispatchAfterCancellation|TestOrcaCLIPreparationSharesMutexAndRecoversKilledOwner|TestOrcaCLIFIFOAndCanceledTicket|TestOrcaPreparationQueueBeyondOldExecutionLimit|TestOrcaQueueErrorDoesNotParseEmptyOutput|TestDispatchCheckpointRequiresSuccessfulSingleDurableWrite|TestAgentIPCDispatchCheckpointPrecedesEveryByte)$' -count=1 -timeout=5m -json
+
+before-new-wiring-initial
+go test ./internal/execution/adapters/orcatransport -run '^(TestOrcaCLIOutputConstructorsKeepTransport|TestOrcaCLIOutputOrdinaryCallWaitsForQueue|TestOrcaCLIOutputPreparationOwnsCLI)$' -count=1 -timeout=5m -json
+
+before-new-wiring
+go test ./internal/execution/adapters/orcatransport -run '^(TestOrcaCLIOutputConstructorsKeepTransport|TestOrcaCLIOutputOrdinaryCallWaitsForQueue|TestOrcaCLIOutputPreparationOwnsCLI)$' -count=1 -timeout=5m -json
+
+after-adapter
+go test ./internal/execution/adapters/orcatransport -run '^(TestOrcaCLIOutputConstructorsKeepTransport|TestOrcaCLIOutputOrdinaryCallWaitsForQueue|TestOrcaCLIOutputPreparationOwnsCLI|TestOrcaCLICommandEncodingAndConsumers|TestStructuredConstructorFacts|TestStructuredConstructorFaultPriority|TestCurrentFixtureUsesIsolatedHostWithInvalidPairingStore|TestFrozenReaderHasNoExecutionAndRejectsMutation|TestFrozenReaderKeepsConstructorFaultPriority|TestRetiredExecutionFactoryKeepsFrozenProof|TestRepositoryQueryRetryBudget|TestPreparationReadRecoveryRetainsBudget|TestPreparationRevokedBeforeOwnerClaimSettlesWithoutDispatch|TestOrcaWorktreeReuseRebindsOnlyWorkspaceAndRequiresStop)$' -count=1 -timeout=5m -json
+
+after-protocol
+go test ./internal/execution/adapters/protocol/orca -run '^(TestOrcaCLISerializesProcessesWithoutRetryOrDispatchAfterCancellation|TestOrcaCLIPreparationSharesMutexAndRecoversKilledOwner|TestOrcaCLIFIFOAndCanceledTicket|TestOrcaPreparationQueueBeyondOldExecutionLimit|TestOrcaQueueErrorDoesNotParseEmptyOutput|TestDispatchCheckpointRequiresSuccessfulSingleDurableWrite|TestAgentIPCDispatchCheckpointPrecedesEveryByte)$' -count=1 -timeout=5m -json
+
+build
+./scripts/build.ps1 -OutFile .evidence/orca-cli-output-policy-retirement/final/steerrunner.exe
+
+before-capture
+go run .evidence/orca-cli-output-policy-retirement/capture.go .evidence/orca-cli-output-policy-retirement/before-capture.json
+
+after-capture
+go run .evidence/orca-cli-output-policy-retirement/capture.go .evidence/orca-cli-output-policy-retirement/after-capture.json
+
+delivery-source
+git fetch origin main

@@ -51,6 +51,8 @@ calls_started 是持久提交并进入调用边界的保守次数；崩溃可能
 
 创建 owner 子进程保留原互斥路径，父进程不得持锁等待也要取锁的子进程。跨服务/owner 进程不承诺全局 FIFO，不绕锁、删锁或杀无关进程。不增加加权优先级、后台合并器或统一采样退避。
 
+2026-11-11，输出闭包的恒真回调退役。普通调用直接进入原超时与 `SerializeCLI`；准备查询持锁后经 `PreparationOwnsCLI` 直接调用同一输出路径。两个原构造及持锁接线的定向结果见[验收](../acceptance/orca-cli-output-policy-retirement.md)。
+
 ### 3.2 原记录与恢复
 
 在本查询所属原 Run/operation 聚合保留起点、deadline、次数、next_attempt_at、阶段与原因；最多一个当前准备查询。复用原操作 ID、PreparationDeadline、事务和历史事件。只增加确实缺失的字段，不建 wait 表、重试账本、子操作、第二 revision 或窗口历史库。

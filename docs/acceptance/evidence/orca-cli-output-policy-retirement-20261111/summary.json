@@ -1,0 +1,299 @@
+{
+  "after-adapter": {
+    "command": "go test ./internal/execution/adapters/orcatransport -run '^(TestOrcaCLIOutputConstructorsKeepTransport|TestOrcaCLIOutputOrdinaryCallWaitsForQueue|TestOrcaCLIOutputPreparationOwnsCLI|TestOrcaCLICommandEncodingAndConsumers|TestStructuredConstructorFacts|TestStructuredConstructorFaultPriority|TestCurrentFixtureUsesIsolatedHostWithInvalidPairingStore|TestFrozenReaderHasNoExecutionAndRejectsMutation|TestFrozenReaderKeepsConstructorFaultPriority|TestRetiredExecutionFactoryKeepsFrozenProof|TestRepositoryQueryRetryBudget|TestPreparationReadRecoveryRetainsBudget|TestPreparationRevokedBeforeOwnerClaimSettlesWithoutDispatch|TestOrcaWorktreeReuseRebindsOnlyWorkspaceAndRequiresStop)$' -count=1 -timeout=5m -json",
+    "exit_code": 0,
+    "nodes": {
+      "pass": 73
+    },
+    "tests": {
+      "TestCurrentFixtureUsesIsolatedHostWithInvalidPairingStore": "pass",
+      "TestCurrentFixtureUsesIsolatedHostWithInvalidPairingStore/#00": "pass",
+      "TestCurrentFixtureUsesIsolatedHostWithInvalidPairingStore/paired-worker": "pass",
+      "TestFrozenReaderHasNoExecutionAndRejectsMutation": "pass",
+      "TestFrozenReaderKeepsConstructorFaultPriority": "pass",
+      "TestFrozenReaderKeepsConstructorFaultPriority/agent": "pass",
+      "TestFrozenReaderKeepsConstructorFaultPriority/host": "pass",
+      "TestFrozenReaderKeepsConstructorFaultPriority/profile": "pass",
+      "TestOrcaCLICommandEncodingAndConsumers": "pass",
+      "TestOrcaCLICommandEncodingAndConsumers/#00": "pass",
+      "TestOrcaCLICommandEncodingAndConsumers/paired_host": "pass",
+      "TestOrcaCLIOutputConstructorsKeepTransport": "pass",
+      "TestOrcaCLIOutputConstructorsKeepTransport/current/local": "pass",
+      "TestOrcaCLIOutputConstructorsKeepTransport/current/paired": "pass",
+      "TestOrcaCLIOutputConstructorsKeepTransport/frozen-reader/local": "pass",
+      "TestOrcaCLIOutputConstructorsKeepTransport/frozen-reader/paired": "pass",
+      "TestOrcaCLIOutputOrdinaryCallWaitsForQueue": "pass",
+      "TestOrcaCLIOutputOrdinaryCallWaitsForQueue/current": "pass",
+      "TestOrcaCLIOutputOrdinaryCallWaitsForQueue/frozen-reader": "pass",
+      "TestOrcaCLIOutputPreparationOwnsCLI": "pass",
+      "TestOrcaCLIOutputPreparationOwnsCLI/checkpoint-rejected": "pass",
+      "TestOrcaCLIOutputPreparationOwnsCLI/held-lock-and-marker": "pass",
+      "TestOrcaWorktreeReuseRebindsOnlyWorkspaceAndRequiresStop": "pass",
+      "TestOrcaWorktreeReuseRebindsOnlyWorkspaceAndRequiresStop/#00": "pass",
+      "TestOrcaWorktreeReuseRebindsOnlyWorkspaceAndRequiresStop/paired-worker": "pass",
+      "TestPreparationReadRecoveryRetainsBudget": "pass",
+      "TestPreparationReadRecoveryRetainsBudget/attempts": "pass",
+      "TestPreparationReadRecoveryRetainsBudget/backoff": "pass",
+      "TestPreparationReadRecoveryRetainsBudget/clock-rollback": "pass",
+      "TestPreparationReadRecoveryRetainsBudget/expired": "pass",
+      "TestPreparationRevokedBeforeOwnerClaimSettlesWithoutDispatch": "pass",
+      "TestRepositoryQueryRetryBudget": "pass",
+      "TestRepositoryQueryRetryBudget/already-canceled": "pass",
+      "TestRepositoryQueryRetryBudget/attempt-limit": "pass",
+      "TestRepositoryQueryRetryBudget/caller-deadline": "pass",
+      "TestRepositoryQueryRetryBudget/cancel-backoff": "pass",
+      "TestRepositoryQueryRetryBudget/permanent-after-conflict": "pass",
+      "TestRepositoryQueryRetryBudget/shared-deadline": "pass",
+      "TestRepositoryQueryRetryBudget/slow-call": "pass",
+      "TestRetiredExecutionFactoryKeepsFrozenProof": "pass",
+      "TestRetiredExecutionFactoryKeepsFrozenProof//absent": "pass",
+      "TestRetiredExecutionFactoryKeepsFrozenProof//foreign-runtime": "pass",
+      "TestRetiredExecutionFactoryKeepsFrozenProof//incomplete": "pass",
+      "TestRetiredExecutionFactoryKeepsFrozenProof//live": "pass",
+      "TestRetiredExecutionFactoryKeepsFrozenProof//missing-host": "pass",
+      "TestRetiredExecutionFactoryKeepsFrozenProof/paired-worker/absent": "pass",
+      "TestRetiredExecutionFactoryKeepsFrozenProof/paired-worker/foreign-runtime": "pass",
+      "TestRetiredExecutionFactoryKeepsFrozenProof/paired-worker/incomplete": "pass",
+      "TestRetiredExecutionFactoryKeepsFrozenProof/paired-worker/live": "pass",
+      "TestRetiredExecutionFactoryKeepsFrozenProof/paired-worker/missing-host": "pass",
+      "TestStructuredConstructorFacts": "pass",
+      "TestStructuredConstructorFacts/local-audited": "pass",
+      "TestStructuredConstructorFacts/local-development-v1": "pass",
+      "TestStructuredConstructorFacts/local-development-v2": "pass",
+      "TestStructuredConstructorFacts/local-execute": "pass",
+      "TestStructuredConstructorFacts/local-pi": "pass",
+      "TestStructuredConstructorFacts/paired-development": "pass",
+      "TestStructuredConstructorFacts/paired-execute-v1": "pass",
+      "TestStructuredConstructorFacts/paired-execute-v2": "pass",
+      "TestStructuredConstructorFaultPriority": "pass",
+      "TestStructuredConstructorFaultPriority/codec-before-json": "pass",
+      "TestStructuredConstructorFaultPriority/duplicate": "pass",
+      "TestStructuredConstructorFaultPriority/identity": "pass",
+      "TestStructuredConstructorFaultPriority/invalid-audited": "pass",
+      "TestStructuredConstructorFaultPriority/json": "pass",
+      "TestStructuredConstructorFaultPriority/json-before-identity": "pass",
+      "TestStructuredConstructorFaultPriority/local-host": "pass",
+      "TestStructuredConstructorFaultPriority/missing": "pass",
+      "TestStructuredConstructorFaultPriority/pi-v1": "pass",
+      "TestStructuredConstructorFaultPriority/retired-launch": "pass",
+      "TestStructuredConstructorFaultPriority/target": "pass",
+      "TestStructuredConstructorFaultPriority/trailing-json": "pass",
+      "TestStructuredConstructorFaultPriority/unknown-field": "pass"
+    },
+    "top_level": [
+      "TestCurrentFixtureUsesIsolatedHostWithInvalidPairingStore",
+      "TestFrozenReaderHasNoExecutionAndRejectsMutation",
+      "TestFrozenReaderKeepsConstructorFaultPriority",
+      "TestOrcaCLICommandEncodingAndConsumers",
+      "TestOrcaCLIOutputConstructorsKeepTransport",
+      "TestOrcaCLIOutputOrdinaryCallWaitsForQueue",
+      "TestOrcaCLIOutputPreparationOwnsCLI",
+      "TestOrcaWorktreeReuseRebindsOnlyWorkspaceAndRequiresStop",
+      "TestPreparationReadRecoveryRetainsBudget",
+      "TestPreparationRevokedBeforeOwnerClaimSettlesWithoutDispatch",
+      "TestRepositoryQueryRetryBudget",
+      "TestRetiredExecutionFactoryKeepsFrozenProof",
+      "TestStructuredConstructorFacts",
+      "TestStructuredConstructorFaultPriority"
+    ]
+  },
+  "after-protocol": {
+    "command": "go test ./internal/execution/adapters/protocol/orca -run '^(TestOrcaCLISerializesProcessesWithoutRetryOrDispatchAfterCancellation|TestOrcaCLIPreparationSharesMutexAndRecoversKilledOwner|TestOrcaCLIFIFOAndCanceledTicket|TestOrcaPreparationQueueBeyondOldExecutionLimit|TestOrcaQueueErrorDoesNotParseEmptyOutput|TestDispatchCheckpointRequiresSuccessfulSingleDurableWrite|TestAgentIPCDispatchCheckpointPrecedesEveryByte)$' -count=1 -timeout=5m -json",
+    "exit_code": 0,
+    "nodes": {
+      "pass": 9
+    },
+    "tests": {
+      "TestAgentIPCDispatchCheckpointPrecedesEveryByte": "pass",
+      "TestAgentIPCDispatchCheckpointPrecedesEveryByte/commit-failed": "pass",
+      "TestAgentIPCDispatchCheckpointPrecedesEveryByte/revoked": "pass",
+      "TestDispatchCheckpointRequiresSuccessfulSingleDurableWrite": "pass",
+      "TestOrcaCLIFIFOAndCanceledTicket": "pass",
+      "TestOrcaCLIPreparationSharesMutexAndRecoversKilledOwner": "pass",
+      "TestOrcaCLISerializesProcessesWithoutRetryOrDispatchAfterCancellation": "pass",
+      "TestOrcaPreparationQueueBeyondOldExecutionLimit": "pass",
+      "TestOrcaQueueErrorDoesNotParseEmptyOutput": "pass"
+    },
+    "top_level": [
+      "TestAgentIPCDispatchCheckpointPrecedesEveryByte",
+      "TestDispatchCheckpointRequiresSuccessfulSingleDurableWrite",
+      "TestOrcaCLIFIFOAndCanceledTicket",
+      "TestOrcaCLIPreparationSharesMutexAndRecoversKilledOwner",
+      "TestOrcaCLISerializesProcessesWithoutRetryOrDispatchAfterCancellation",
+      "TestOrcaPreparationQueueBeyondOldExecutionLimit",
+      "TestOrcaQueueErrorDoesNotParseEmptyOutput"
+    ]
+  },
+  "before-adapter": {
+    "command": "go test ./internal/execution/adapters/orcatransport -run '^(TestOrcaCLICommandEncodingAndConsumers|TestStructuredConstructorFacts|TestStructuredConstructorFaultPriority|TestCurrentFixtureUsesIsolatedHostWithInvalidPairingStore|TestFrozenReaderHasNoExecutionAndRejectsMutation|TestFrozenReaderKeepsConstructorFaultPriority|TestRetiredExecutionFactoryKeepsFrozenProof|TestRepositoryQueryRetryBudget|TestPreparationReadRecoveryRetainsBudget|TestPreparationRevokedBeforeOwnerClaimSettlesWithoutDispatch)$' -count=1 -timeout=5m -json",
+    "exit_code": 0,
+    "nodes": {
+      "pass": 59
+    },
+    "tests": {
+      "TestCurrentFixtureUsesIsolatedHostWithInvalidPairingStore": "pass",
+      "TestCurrentFixtureUsesIsolatedHostWithInvalidPairingStore/#00": "pass",
+      "TestCurrentFixtureUsesIsolatedHostWithInvalidPairingStore/paired-worker": "pass",
+      "TestFrozenReaderHasNoExecutionAndRejectsMutation": "pass",
+      "TestFrozenReaderKeepsConstructorFaultPriority": "pass",
+      "TestFrozenReaderKeepsConstructorFaultPriority/agent": "pass",
+      "TestFrozenReaderKeepsConstructorFaultPriority/host": "pass",
+      "TestFrozenReaderKeepsConstructorFaultPriority/profile": "pass",
+      "TestOrcaCLICommandEncodingAndConsumers": "pass",
+      "TestOrcaCLICommandEncodingAndConsumers/#00": "pass",
+      "TestOrcaCLICommandEncodingAndConsumers/paired_host": "pass",
+      "TestPreparationReadRecoveryRetainsBudget": "pass",
+      "TestPreparationReadRecoveryRetainsBudget/attempts": "pass",
+      "TestPreparationReadRecoveryRetainsBudget/backoff": "pass",
+      "TestPreparationReadRecoveryRetainsBudget/clock-rollback": "pass",
+      "TestPreparationReadRecoveryRetainsBudget/expired": "pass",
+      "TestPreparationRevokedBeforeOwnerClaimSettlesWithoutDispatch": "pass",
+      "TestRepositoryQueryRetryBudget": "pass",
+      "TestRepositoryQueryRetryBudget/already-canceled": "pass",
+      "TestRepositoryQueryRetryBudget/attempt-limit": "pass",
+      "TestRepositoryQueryRetryBudget/caller-deadline": "pass",
+      "TestRepositoryQueryRetryBudget/cancel-backoff": "pass",
+      "TestRepositoryQueryRetryBudget/permanent-after-conflict": "pass",
+      "TestRepositoryQueryRetryBudget/shared-deadline": "pass",
+      "TestRepositoryQueryRetryBudget/slow-call": "pass",
+      "TestRetiredExecutionFactoryKeepsFrozenProof": "pass",
+      "TestRetiredExecutionFactoryKeepsFrozenProof//absent": "pass",
+      "TestRetiredExecutionFactoryKeepsFrozenProof//foreign-runtime": "pass",
+      "TestRetiredExecutionFactoryKeepsFrozenProof//incomplete": "pass",
+      "TestRetiredExecutionFactoryKeepsFrozenProof//live": "pass",
+      "TestRetiredExecutionFactoryKeepsFrozenProof//missing-host": "pass",
+      "TestRetiredExecutionFactoryKeepsFrozenProof/paired-worker/absent": "pass",
+      "TestRetiredExecutionFactoryKeepsFrozenProof/paired-worker/foreign-runtime": "pass",
+      "TestRetiredExecutionFactoryKeepsFrozenProof/paired-worker/incomplete": "pass",
+      "TestRetiredExecutionFactoryKeepsFrozenProof/paired-worker/live": "pass",
+      "TestRetiredExecutionFactoryKeepsFrozenProof/paired-worker/missing-host": "pass",
+      "TestStructuredConstructorFacts": "pass",
+      "TestStructuredConstructorFacts/local-audited": "pass",
+      "TestStructuredConstructorFacts/local-development-v1": "pass",
+      "TestStructuredConstructorFacts/local-development-v2": "pass",
+      "TestStructuredConstructorFacts/local-execute": "pass",
+      "TestStructuredConstructorFacts/local-pi": "pass",
+      "TestStructuredConstructorFacts/paired-development": "pass",
+      "TestStructuredConstructorFacts/paired-execute-v1": "pass",
+      "TestStructuredConstructorFacts/paired-execute-v2": "pass",
+      "TestStructuredConstructorFaultPriority": "pass",
+      "TestStructuredConstructorFaultPriority/codec-before-json": "pass",
+      "TestStructuredConstructorFaultPriority/duplicate": "pass",
+      "TestStructuredConstructorFaultPriority/identity": "pass",
+      "TestStructuredConstructorFaultPriority/invalid-audited": "pass",
+      "TestStructuredConstructorFaultPriority/json": "pass",
+      "TestStructuredConstructorFaultPriority/json-before-identity": "pass",
+      "TestStructuredConstructorFaultPriority/local-host": "pass",
+      "TestStructuredConstructorFaultPriority/missing": "pass",
+      "TestStructuredConstructorFaultPriority/pi-v1": "pass",
+      "TestStructuredConstructorFaultPriority/retired-launch": "pass",
+      "TestStructuredConstructorFaultPriority/target": "pass",
+      "TestStructuredConstructorFaultPriority/trailing-json": "pass",
+      "TestStructuredConstructorFaultPriority/unknown-field": "pass"
+    },
+    "top_level": [
+      "TestCurrentFixtureUsesIsolatedHostWithInvalidPairingStore",
+      "TestFrozenReaderHasNoExecutionAndRejectsMutation",
+      "TestFrozenReaderKeepsConstructorFaultPriority",
+      "TestOrcaCLICommandEncodingAndConsumers",
+      "TestPreparationReadRecoveryRetainsBudget",
+      "TestPreparationRevokedBeforeOwnerClaimSettlesWithoutDispatch",
+      "TestRepositoryQueryRetryBudget",
+      "TestRetiredExecutionFactoryKeepsFrozenProof",
+      "TestStructuredConstructorFacts",
+      "TestStructuredConstructorFaultPriority"
+    ]
+  },
+  "before-new-wiring": {
+    "command": "go test ./internal/execution/adapters/orcatransport -run '^(TestOrcaCLIOutputConstructorsKeepTransport|TestOrcaCLIOutputOrdinaryCallWaitsForQueue|TestOrcaCLIOutputPreparationOwnsCLI)$' -count=1 -timeout=5m -json",
+    "exit_code": 0,
+    "nodes": {
+      "pass": 11
+    },
+    "tests": {
+      "TestOrcaCLIOutputConstructorsKeepTransport": "pass",
+      "TestOrcaCLIOutputConstructorsKeepTransport/current/local": "pass",
+      "TestOrcaCLIOutputConstructorsKeepTransport/current/paired": "pass",
+      "TestOrcaCLIOutputConstructorsKeepTransport/frozen-reader/local": "pass",
+      "TestOrcaCLIOutputConstructorsKeepTransport/frozen-reader/paired": "pass",
+      "TestOrcaCLIOutputOrdinaryCallWaitsForQueue": "pass",
+      "TestOrcaCLIOutputOrdinaryCallWaitsForQueue/current": "pass",
+      "TestOrcaCLIOutputOrdinaryCallWaitsForQueue/frozen-reader": "pass",
+      "TestOrcaCLIOutputPreparationOwnsCLI": "pass",
+      "TestOrcaCLIOutputPreparationOwnsCLI/checkpoint-rejected": "pass",
+      "TestOrcaCLIOutputPreparationOwnsCLI/held-lock-and-marker": "pass"
+    },
+    "top_level": [
+      "TestOrcaCLIOutputConstructorsKeepTransport",
+      "TestOrcaCLIOutputOrdinaryCallWaitsForQueue",
+      "TestOrcaCLIOutputPreparationOwnsCLI"
+    ]
+  },
+  "before-new-wiring-initial": {
+    "command": "go test ./internal/execution/adapters/orcatransport -run '^(TestOrcaCLIOutputConstructorsKeepTransport|TestOrcaCLIOutputOrdinaryCallWaitsForQueue|TestOrcaCLIOutputPreparationOwnsCLI)$' -count=1 -timeout=5m -json",
+    "exit_code": 1,
+    "nodes": {
+      "fail": 11
+    },
+    "tests": {
+      "TestOrcaCLIOutputConstructorsKeepTransport": "fail",
+      "TestOrcaCLIOutputConstructorsKeepTransport/current/local": "fail",
+      "TestOrcaCLIOutputConstructorsKeepTransport/current/paired": "fail",
+      "TestOrcaCLIOutputConstructorsKeepTransport/frozen-reader/local": "fail",
+      "TestOrcaCLIOutputConstructorsKeepTransport/frozen-reader/paired": "fail",
+      "TestOrcaCLIOutputOrdinaryCallWaitsForQueue": "fail",
+      "TestOrcaCLIOutputOrdinaryCallWaitsForQueue/current": "fail",
+      "TestOrcaCLIOutputOrdinaryCallWaitsForQueue/frozen-reader": "fail",
+      "TestOrcaCLIOutputPreparationOwnsCLI": "fail",
+      "TestOrcaCLIOutputPreparationOwnsCLI/checkpoint-rejected": "fail",
+      "TestOrcaCLIOutputPreparationOwnsCLI/held-lock-and-marker": "fail"
+    },
+    "top_level": [
+      "TestOrcaCLIOutputConstructorsKeepTransport",
+      "TestOrcaCLIOutputOrdinaryCallWaitsForQueue",
+      "TestOrcaCLIOutputPreparationOwnsCLI"
+    ]
+  },
+  "before-protocol": {
+    "command": "go test ./internal/execution/adapters/protocol/orca -run '^(TestOrcaCLISerializesProcessesWithoutRetryOrDispatchAfterCancellation|TestOrcaCLIPreparationSharesMutexAndRecoversKilledOwner|TestOrcaCLIFIFOAndCanceledTicket|TestOrcaPreparationQueueBeyondOldExecutionLimit|TestOrcaQueueErrorDoesNotParseEmptyOutput|TestDispatchCheckpointRequiresSuccessfulSingleDurableWrite|TestAgentIPCDispatchCheckpointPrecedesEveryByte)$' -count=1 -timeout=5m -json",
+    "exit_code": 0,
+    "nodes": {
+      "pass": 9
+    },
+    "tests": {
+      "TestAgentIPCDispatchCheckpointPrecedesEveryByte": "pass",
+      "TestAgentIPCDispatchCheckpointPrecedesEveryByte/commit-failed": "pass",
+      "TestAgentIPCDispatchCheckpointPrecedesEveryByte/revoked": "pass",
+      "TestDispatchCheckpointRequiresSuccessfulSingleDurableWrite": "pass",
+      "TestOrcaCLIFIFOAndCanceledTicket": "pass",
+      "TestOrcaCLIPreparationSharesMutexAndRecoversKilledOwner": "pass",
+      "TestOrcaCLISerializesProcessesWithoutRetryOrDispatchAfterCancellation": "pass",
+      "TestOrcaPreparationQueueBeyondOldExecutionLimit": "pass",
+      "TestOrcaQueueErrorDoesNotParseEmptyOutput": "pass"
+    },
+    "top_level": [
+      "TestAgentIPCDispatchCheckpointPrecedesEveryByte",
+      "TestDispatchCheckpointRequiresSuccessfulSingleDurableWrite",
+      "TestOrcaCLIFIFOAndCanceledTicket",
+      "TestOrcaCLIPreparationSharesMutexAndRecoversKilledOwner",
+      "TestOrcaCLISerializesProcessesWithoutRetryOrDispatchAfterCancellation",
+      "TestOrcaPreparationQueueBeyondOldExecutionLimit",
+      "TestOrcaQueueErrorDoesNotParseEmptyOutput"
+    ]
+  },
+  "before-workspace-reuse": {
+    "command": "go test ./internal/execution/adapters/orcatransport -run '^TestOrcaWorktreeReuseRebindsOnlyWorkspaceAndRequiresStop$' -count=1 -timeout=5m -json",
+    "exit_code": 0,
+    "nodes": {
+      "pass": 3
+    },
+    "tests": {
+      "TestOrcaWorktreeReuseRebindsOnlyWorkspaceAndRequiresStop": "pass",
+      "TestOrcaWorktreeReuseRebindsOnlyWorkspaceAndRequiresStop/#00": "pass",
+      "TestOrcaWorktreeReuseRebindsOnlyWorkspaceAndRequiresStop/paired-worker": "pass"
+    },
+    "top_level": [
+      "TestOrcaWorktreeReuseRebindsOnlyWorkspaceAndRequiresStop"
+    ]
+  }
+}
