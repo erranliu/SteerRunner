@@ -376,6 +376,11 @@ func (s *server) dispatch(wire wireRequest) (contracts.Response, bool) {
 			return reject(contracts.Fail(5, "invalid_state", "Native viewer requires a ready service and exact original target."))
 		}
 		return s.engine.OpenNativeSession(*wire.Options.NativeSession), false
+	case contracts.WorkspaceAcquire, contracts.WorkspaceRelease:
+		if wire.Request == nil {
+			return reject(contracts.Fail(2, "invalid_request", "A write handoff request is required."))
+		}
+		return s.engine.Handle(wire.Options.Command, wire.Options.RunID, "", "", "", 0, wire.Request), false
 	case "submit", "inspect", "last-message", "events", "reply", "resume", "stop", "message", "interrupt", "close", "history":
 		return s.engine.Handle(wire.Options.Command, wire.Options.RunID, wire.Options.RequestID, wire.Options.CommandID, wire.Options.After, wire.Options.Limit, wire.Request), false
 	}

@@ -248,7 +248,15 @@ func TestSRWorkflowDiscoveryAndSelection(t *testing.T) {
 	info := serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))
 	cleanupService(t, dir, info)
 	capabilities := call(t, dir, []string{"capabilities"}, "", 0).Data.(map[string]any)
-	expected := map[string]int{"development": 2, "development-audited": 2, "conversation": 1, "generate": 1, "execute": 1}
+	type selection struct {
+		id      string
+		version float64
+	}
+	expected := map[selection]bool{
+		{"development", 2}: true, {"development-audited", 2}: true,
+		{"conversation", 1}: true, {"conversation", 2}: true,
+		{"generate", 1}: true, {"execute", 1}: true,
+	}
 	profiles := capabilities["workflows"].([]any)
 	if len(profiles) != len(expected) || capabilities["workflow"].(map[string]any)["id"] != "development" {
 		t.Fatal("workflow catalog missing")
@@ -257,10 +265,11 @@ func TestSRWorkflowDiscoveryAndSelection(t *testing.T) {
 		item := profile.(map[string]any)
 		id, _ := item["id"].(string)
 		version, _ := item["version"].(float64)
-		if want, found := expected[id]; !found || version != float64(want) {
+		key := selection{id, version}
+		if !expected[key] {
 			t.Fatal("missing, duplicate or unsupported workflow", item)
 		}
-		delete(expected, id)
+		delete(expected, key)
 	}
 	if len(expected) != 0 {
 		t.Fatal("workflow catalog omitted an expected workflow", expected)

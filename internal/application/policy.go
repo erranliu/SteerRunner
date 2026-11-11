@@ -63,7 +63,7 @@ func (e *Engine) verifyRecoveredStartup(r *runstate.Record) error {
 }
 
 func (e *Engine) attachWriteRoots(r *runstate.Record, fresh bool) error {
-	if r.Request.Conversation != nil || r.Request.Generate != nil {
+	if !r.ManagedConversation() && (r.Request.Conversation != nil || r.Request.Generate != nil) {
 		return verifyContentDirectory(r)
 	}
 	if r.Request.Execution.Adapter != "codex-app-server" {

@@ -82,7 +82,7 @@ func (e *Engine) advance(id string, w *worker) bool {
 	}
 	e.mu.Lock()
 	r := e.runs[id].Clone()
-	if e.workspaceSuperseded(r) {
+	if e.workspaceSuperseded(r) || r.WorkspaceWriteLeaseID != "" {
 		e.mu.Unlock()
 		return false
 	}
@@ -177,7 +177,7 @@ func (e *Engine) advance(id string, w *worker) bool {
 		return false
 	}
 	if !r.DevelopmentMessage() && r.Request.Execution.Adapter == "codex-app-server" && r.Snapshot.Workspace.Path != "" {
-		if !workflow.Content(r.Request.Workflow.ID) && !w.freshWorkspace && !w.startupWorkspaceChecked && r.WorkspaceFact != nil && !fileInputDispatched(r) {
+		if (!workflow.Content(r.Request.Workflow.ID) || r.ManagedConversation()) && !w.freshWorkspace && !w.startupWorkspaceChecked && r.WorkspaceFact != nil && !fileInputDispatched(r) {
 			if err := e.verifyRecoveredStartup(r); err != nil {
 				e.block(id, "workspace_unverified", err, false)
 				return false
@@ -212,7 +212,7 @@ func (e *Engine) saveIntent(id string, r *runstate.Record, candidate b.Lifecycle
 	e.mu.Lock()
 	defer e.mu.Unlock()
 	current := e.runs[id]
-	if current.Revision != r.Revision || current.Snapshot.Session.AttemptID != r.Snapshot.Session.AttemptID || b.LifecycleBindingDigest(current.Snapshot) != b.LifecycleBindingDigest(r.Snapshot) {
+	if current.WorkspaceWriteLeaseID != "" || current.Revision != r.Revision || current.Snapshot.Session.AttemptID != r.Snapshot.Session.AttemptID || b.LifecycleBindingDigest(current.Snapshot) != b.LifecycleBindingDigest(r.Snapshot) {
 		return 0, reliable.ErrStale
 	}
 	next := current.Clone()

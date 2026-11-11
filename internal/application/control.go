@@ -392,13 +392,16 @@ func (e *Engine) failControl(id, command string, err error) {
 	r.CommandStates[command] = "failed"
 	r.Diagnostic = e.redact(r, err.Error())
 	r.PendingResume = ""
+	idleManagedMessage := r.ManagedConversation() && r.Status == "waiting_input" && r.PendingFeedback != nil && r.PendingFeedback.CommandID == command
 	if r.PendingFeedback != nil && r.PendingFeedback.CommandID == command {
 		r.PendingFeedback = nil
 	}
 	if r.PendingAnswer != nil && r.PendingAnswer.CommandID == command {
 		r.PendingAnswer = nil
 	}
-	r.Status = "blocked"
+	if !idleManagedMessage {
+		r.Status = "blocked"
+	}
 	r.Phase = "control_rejected"
 	_ = e.commitLocked(r, nil, "control_rejected")
 }

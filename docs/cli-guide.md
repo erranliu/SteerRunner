@@ -96,7 +96,9 @@ Orca 远端 Codex 的 SessionStart 可能清空输入预览并改变显示回合
 
 ## 选择 workflow 与审计模型
 
-当前持久格式为 state/v8、资源版本 3；开发流程使用 development/2 或 development-audited/2，内容流程使用 conversation/1 或 generate/1。旧格式整体拒绝，不迁移、不兼容读取。先由原版本结算全部旧资源并保留证据，再使用新独立状态目录；v8 保留同构建原资源重启重连；不重建丢失资源，不支持混合构建活动所有权。删除后的契约与客户端配套要求见[退役记录](archive/2026-11/implementation/acceptance/check-retirement.md)。
+当前持久格式为 state/v8、资源版本 3；开发流程使用 development/2 或 development-audited/2，内容流程使用 conversation/1、conversation/2 或 generate/1。旧格式整体拒绝，不迁移、不兼容读取。先由原版本结算全部旧资源并保留证据，再使用新独立状态目录；v8 保留同构建原资源重启重连；不重建丢失资源，不支持混合构建活动所有权。删除后的契约与客户端配套要求见[退役记录](archive/2026-11/implementation/acceptance/check-retirement.md)。
+
+`conversation/2` 通过 `workspace acquire` 和 `workspace release` 交接受管 worktree 写入权。两个命令都使用 `--run-id R --input -` 和标准写信封。在线及离线 `inspect` 返回当前持有者。字段和调用顺序见[写入权交接](workflows/conversation.md#写入权交接)。
 
 独立解析采用显式开启的 Windows / Codex >= 0.159.2 受限 exec：原生只读权限、独立会话和工具事件事后拒收；不承诺空工具面或零隐式上下文。支持程序提取与一次原 agent 报告；审计可选独立解析，明确获取失败且资源结算后转一次原审计补报。可选 Runner 配置在 `<state-dir>/service/result-acquisition.json`，不增加 SteerLine 配置；启用配置也不会绕过原生门槛。[实施与验收记录](archive/2026-11/implementation/acceptance/result-acquisition.md)。
 

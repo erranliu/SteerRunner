@@ -350,6 +350,18 @@ func (s *server) call(request rpc) (map[string]any, []map[string]any) {
 		content := ""
 		var err error
 		if os.Getenv("STEERRUNNER_CONTENT_FIXTURE") == "1" {
+			if os.Getenv("STEERRUNNER_WORKSPACE_WRITE_FIXTURE") == "1" {
+				if len(s.thread.Turns) > 0 {
+					body, err := os.ReadFile(filepath.Join(s.thread.Cwd, "spec.md"))
+					if err != nil || !strings.Contains(string(body), "<<<<<<<") {
+						return fail(fmt.Errorf("original worktree conflict missing: %v", err))
+					}
+				}
+				path := filepath.Join(s.thread.Cwd, fmt.Sprintf("native-write-%d", len(s.thread.Turns)+1))
+				if err := os.WriteFile(path, []byte(s.thread.ID), 0600); err != nil {
+					return fail(err)
+				}
+			}
 			if strings.HasPrefix(prompt, "CONTROLLED_REUSE_FINISH") {
 				for name, want := range map[string]string{"leftover": "untracked must survive", "plan.md": "unfinished must survive"} {
 					body, err := os.ReadFile(filepath.Join(s.thread.Cwd, name))

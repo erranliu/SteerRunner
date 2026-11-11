@@ -59,9 +59,7 @@ func runInputSchema(schemas map[string]any) map[string]any {
 	properties["execution"] = schemas["run_configuration"].(map[string]any)["properties"].(map[string]any)["execution"]
 	properties["workflow"] = schemas["workflow"]
 	result["allOf"] = schemas["run_configuration"].(map[string]any)["allOf"]
-	repo := properties["repository"].(map[string]any)
-	repo["required"] = []string{"url", "base_revision", "remote", "base_branch"}
-	repo["properties"].(map[string]any)["base_revision"] = map[string]any{"type": "string", "pattern": `^(?:[0-9a-fA-F]{40}|[0-9a-fA-F]{64})$`}
+	properties["repository"] = repositoryInputSchema()
 	docs := properties["documents"].(map[string]any)
 	docs["required"] = []string{"spec", "plan"}
 	doc := shapeSchema(reflect.TypeFor[contracts.Document]())
@@ -84,6 +82,13 @@ func runInputSchema(schemas map[string]any) map[string]any {
 	}
 	publication["oneOf"] = choices
 	return result
+}
+
+func repositoryInputSchema() map[string]any {
+	repo := shapeSchema(reflect.TypeFor[contracts.Repository]())
+	repo["required"] = []string{"url", "base_revision", "remote", "base_branch"}
+	repo["properties"].(map[string]any)["base_revision"] = map[string]any{"type": "string", "pattern": `^(?:[0-9a-fA-F]{40}|[0-9a-fA-F]{64})$`}
+	return repo
 }
 
 func namePrefixSchema() map[string]any {

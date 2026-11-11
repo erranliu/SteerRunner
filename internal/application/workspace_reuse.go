@@ -61,7 +61,7 @@ func (e *Engine) reusableSource(id string) (*runstate.Record, func(), error) {
 		unlock()
 		return nil, nil, contracts.Fail(5, "workspace_already_reused", "Reference the latest Run holding this workspace.")
 	}
-	if r.StopStatus != "stopped" || r.Allowed || (r.Status != "stopped" && r.Status != "completed" && !r.Closed) || r.PendingStop != "" || r.PendingResume != "" || r.PendingInterrupt != "" || unknown(r) || w.analysisTasks != 0 || w.filePreparationsActive != 0 {
+	if r.WorkspaceWriteLeaseID != "" || r.StopStatus != "stopped" || r.Allowed || (r.Status != "stopped" && r.Status != "completed" && !r.Closed) || r.PendingStop != "" || r.PendingResume != "" || r.PendingInterrupt != "" || unknown(r) || w.analysisTasks != 0 || w.filePreparationsActive != 0 {
 		e.signal(w)
 		unlock()
 		return nil, nil, contracts.Fail(5, "workspace_not_settled", "Stop and reconcile the original Run before reusing its workspace.")

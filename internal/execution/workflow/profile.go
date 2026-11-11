@@ -39,8 +39,8 @@ func Lookup(id string, version int) (Profile, bool) {
 	if id == SingleExecution && version == 1 {
 		return Profile{ID: id, Version: 1, Initial: "execute", Description: "Execute one caller operation in a fixed writable worktree, without publication.", SupportedAdapters: []string{"codex-app-server", "orca-terminal"}, PromptSteps: []string{"execute"}, States: map[string]State{"execute": {Kind: "execute", Contract: "final", ModelRole: "execution", PromptKey: "execute", Prompt: "执行调用方指定的操作一次，保留原始结果与失败。", Next: "closed", PolicySlots: []string{}}, "closed": {Kind: "terminal", PolicySlots: []string{}}}}, true
 	}
-	if version == 1 && (id == "conversation" || id == "generate") {
-		return contentProfile(id), true
+	if version == 1 && Content(id) || ManagedConversation(id, version) {
+		return contentProfile(id, version), true
 	}
 	if version != 2 {
 		return Profile{}, false
@@ -66,9 +66,10 @@ func Catalog() []Profile {
 	p, _ := Lookup("development", 2)
 	a, _ := Lookup(AuditedDevelopment, 2)
 	c, _ := Lookup("conversation", 1)
+	w, _ := Lookup("conversation", 2)
 	g, _ := Lookup("generate", 1)
 	x, _ := Lookup(SingleExecution, 1)
-	return []Profile{p, a, c, g, x}
+	return []Profile{p, a, c, w, g, x}
 }
 func AuditStep(step string) bool {
 	return step == StepAuditCode || step == StepAuditReport || step == StepAuditParse || step == StepAuditInput || step == "audit.code"

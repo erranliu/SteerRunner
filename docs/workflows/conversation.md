@@ -1,4 +1,4 @@
-# conversation/1
+# 原生 Codex 会话
 
 一个 Run 是一个持续的原生 Codex 会话。首版仅本机 `codex-app-server`，复用 Run/Record、
 可靠执行与原生问答/恢复；没有第二运行时或规划/发布阶段。
@@ -14,7 +14,9 @@ execute/input → closed（显式 close 或 stop）
 回到 input。`close` 和原 `stop` 都关闭整个会话，接受后永久拒绝新消息、回答和 resume。
 close 的资源结算与原轮结果分别返回，不把接收关闭命令当作已停止。
 
-最小请求（目录须已存在；UTF-8，经 `submit --input - --json`）：
+## conversation/1 只读目录
+
+目录须已存在。以下 UTF-8 信封通过 `submit --input - --json` 发送。
 
 ```json
 {
@@ -61,3 +63,31 @@ turn、原生 outcome、final item/source 和 verified。历史不收集完整�
 发送/回答/中断不能靠 resume 解除未知；旧 epoch 答案仍需人工确认。详见
 [服务换代恢复](../archive/2026-11/spec/service-generation-recovery.spec.md)和[可靠性交付链路](../reliable-delivery.md)。
 目录及原生只读权限边界沿 [generate](generate.md)。正式规划文档由调用方保存。
+
+## conversation/2 受管可写 worktree
+
+使用本机 `codex-app-server` 和显式 `access_mode: "full_access"`。提交时提供
+`repository`（`url`、`remote`、`base_branch`、固定提交 `base_revision`，可选
+`local_path`），以及 `conversation.instruction` 和 `conversation.materials`（可为空数组）。
+省略 `conversation.directory`、`documents`、`publication` 和 worktree 复用字段。
+Runner 创建独立受管 worktree，并将 Run、原生 session 和 worktree 身份绑定。后续输入仍使用
+`message`，各轮结果可通过 `inspect` 和 `history` 查看。该版本的原生交互入口由 Runner 管理。
+
+### 写入权交接
+
+1. 通过 `inspect --run-id R` 等待 `run.workspace_write.can_acquire=true`。用同一
+   `run.revision` 发送 `workspace acquire --run-id R --input -`，信封的 `input`
+   为 `{"expected_revision":12}`。Runner 在派发门内验证原 worktree 和原生会话空闲。
+2. 成功回执的 `command_id` 即 `lease_id`。写入前确认当前 `workspace_write.owner`
+   为 `steerline`、`lease_id` 与回执一致，并使用 `run.execution.workspace` 对应
+   的 worktree。持有期间新的 Run 控制请求会被拒绝，包括 `message`、`close` 和 `stop`。
+3. SteerLine 完成自己的写入后，用当前 revision 和相同 lease ID 发送
+   `workspace release --run-id R --input -`，信封的 `input` 为
+   `{"expected_revision":13,"lease_id":"<acquire command_id>"}`。
+   归还后 `workspace_write.owner` 恢复为 `runner`，可发送显式 `message` 继续原会话。
+   原分支的 Rebase 停在冲突时也可归还和续作。Rebase、冲突处理与 Git 结果核验由 SteerLine 负责。
+
+写入权随 Run 持久化，无自动过期。服务换代后可用在线 `inspect` 核对，也可在服务退出时用
+`inspect --offline` 查看。响应丢失时用原 `request_id` 对账。重放旧请求返回原回执，
+当前持有者以 Run 的 `workspace_write` 为准。排他边界覆盖 Runner 派发和遵守该租约的
+SteerLine 写入，本机其他进程的文件权限沿主机设置。

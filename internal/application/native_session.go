@@ -36,6 +36,9 @@ func (e *Engine) OpenNativeSession(target contracts.NativeSessionTarget) contrac
 	r := e.runs[target.RunID].Clone()
 	e.mu.Unlock()
 
+	if r.ManagedConversation() {
+		return reject("unsupported_capability", "Use Run history and message for managed conversations; interactive native viewing bypasses write handoff.", 3)
+	}
 	s := r.Snapshot
 	if s.Session.AttemptID != target.AttemptID || s.Session.SessionID != target.SessionID || s.ResourceGeneration != target.Generation {
 		return reject("stale_revision", "Original native session target changed; refresh before opening.", 5)
