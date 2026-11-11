@@ -42,6 +42,7 @@ type QuestionOption struct {
 	Detail string `json:"detail,omitempty"`
 }
 type QuestionView struct {
+	InteractionKind string           `json:"interaction_kind,omitempty"`
 	Source          string           `json:"source,omitempty"`
 	ID              string           `json:"id"`
 	Text            string           `json:"text"`

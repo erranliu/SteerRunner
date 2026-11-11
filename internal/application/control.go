@@ -53,12 +53,15 @@ func (e *Engine) answer(id string, w *worker, p b.LifecyclePort) bool {
 		e.failControl(id, saved.CommandID, err)
 		return false
 	}
-	_, budget, err := m.FreezeInput(parts...)
+	prepared, budget, err := m.FreezeInput(parts...)
 	if err != nil {
 		e.failControl(id, saved.CommandID, err)
 		return false
 	}
 	input := b.LifecycleInput{Feedback: &b.FeedbackInput{Budget: budget, DecisionID: saved.CommandID, QuestionID: saved.QuestionID, Message: saved.Text, Answer: &b.Answer{Answers: answers}}}
+	if r.Snapshot.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 {
+		input.Feedback.PreparedAnswer = prepared
+	}
 	index, err := e.saveIntent(id, r, b.LifecycleCandidate{Action: b.LifecycleDeliverFeedback, Input: input})
 	if err != nil {
 		return false

@@ -24,6 +24,7 @@ type agentFixture struct {
 	lost                            bool
 	closeRaw                        json.RawMessage
 	send                            func(native.AgentSend) error
+	respond                         func(native.AgentQuestionReply) (json.RawMessage, error)
 	historyErr                      error
 }
 
@@ -62,6 +63,12 @@ func (f *agentFixture) History(_ context.Context, session string, before *native
 		i = 1
 	}
 	return f.pages[i], nil
+}
+func (f *agentFixture) RespondToQuestion(_ context.Context, request native.AgentQuestionReply) (json.RawMessage, error) {
+	if f.respond == nil {
+		return nil, errors.New("unexpected structured question reply")
+	}
+	return f.respond(request)
 }
 func (f *agentFixture) Item(context.Context, string, string) (native.AgentItem, error) {
 	f.details++
