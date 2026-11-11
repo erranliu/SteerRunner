@@ -87,8 +87,10 @@ func TestAgentHistoryRequiresCompletePublicEnvelope(t *testing.T) {
 		c := AgentSessionClient{call: func(context.Context, string, any, bool) (json.RawMessage, error) {
 			return json.RawMessage(response), nil
 		}}
-		if _, err := c.History(context.Background(), "original", nil, 200); err == nil {
-			t.Fatal("incomplete/foreign envelope admitted", response)
+		_, err := c.History(context.Background(), "original", nil, 200)
+		foreign := strings.Contains(response, `"sessionId":"foreign"`)
+		if err == nil || errors.Is(err, ErrStateIdentityChanged) != foreign {
+			t.Fatal("incomplete/foreign envelope was misclassified", response, err)
 		}
 	}
 }

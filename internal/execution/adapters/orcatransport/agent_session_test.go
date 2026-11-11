@@ -24,6 +24,7 @@ type agentFixture struct {
 	lost                            bool
 	closeRaw                        json.RawMessage
 	send                            func(native.AgentSend) error
+	historyErr                      error
 }
 
 func (f *agentFixture) SupportsCreate(context.Context, string, string) error { return nil }
@@ -53,6 +54,9 @@ func (f *agentFixture) Send(_ context.Context, request native.AgentSend) (json.R
 }
 func (f *agentFixture) History(_ context.Context, session string, before *native.AgentCursor, _ int) (native.AgentPage, error) {
 	f.reads++
+	if f.historyErr != nil {
+		return native.AgentPage{}, f.historyErr
+	}
 	i := 0
 	if before != nil {
 		i = 1
@@ -116,6 +120,15 @@ func TestStructuredObservationRecoversPagedCompletedTurn(t *testing.T) {
 		evidence.SessionID != f.pages[0].SessionID || evidence.TurnID != "native-turn" ||
 		evidence.LastMessage != "tool preamble\n\n"+strings.Repeat("complete result 中文😀\n", 300) {
 		t.Fatal("paged observation did not recover the complete original result")
+	}
+}
+
+func TestStructuredObservationPreservesNativeIdentityMismatch(t *testing.T) {
+	l, s, f := structuredFixture(t)
+	f.historyErr = fmt.Errorf("paired host changed: %w", native.ErrStateIdentityChanged)
+	_, observer, err := l.structuredObserveLifecycle(context.Background(), s)
+	if observer != nil || !b.IsAdapterError(err, b.AdapterIdentityMismatch) || !errors.Is(err, native.ErrStateIdentityChanged) {
+		t.Fatal("native identity mismatch was treated as transient", err)
 	}
 }
 

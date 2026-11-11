@@ -443,6 +443,9 @@ func (l *Lifecycle) readStructuredActivity(ctx context.Context, s b.LifecycleSna
 	}
 	items, page, err := l.agentHistory(ctx, state)
 	if err != nil {
+		if errors.Is(err, native.ErrStateIdentityChanged) {
+			err = &b.AdapterError{Kind: b.AdapterIdentityMismatch, Operation: "observe", Diagnostic: "original Orca history identity changed", Cause: err}
+		}
 		return receipt, nil, err
 	}
 	return l.verifyAgentActivity(s, state, items, page)
