@@ -25,7 +25,7 @@ import (
 // This is admission into the existing aggregate and lifecycle, not a second
 // session runner. Native initialization still goes through reliable.Next.
 func freezeContent(ctx context.Context, dir string, r *runstate.Record, attempt, generation string, payload []byte) (*runstate.Record, error) {
-	_, docs, access := r.Request.ContentInput()
+	_, _, access := r.Request.ContentInput()
 	path := filepath.Join(dir, "runs", r.ID, "content")
 	if r.Request.Generate != nil && r.Request.Generate.Repository != nil {
 		if err := os.MkdirAll(filepath.Dir(path), 0700); err != nil {
@@ -55,25 +55,8 @@ func freezeContent(ctx context.Context, dir string, r *runstate.Record, attempt,
 		return nil, err
 	}
 	r.Profile = []b.ImplementationDataEnvelope{profile}
-	for _, doc := range docs {
-		content := []byte(*doc.Content)
-		if !utf8.Valid(content) || len(content) > contracts.MaxRequestBytes {
-			return nil, contracts.Fail(2, "invalid_input", "Material must be bounded UTF-8 text.")
-		}
-		fixed := filepath.Join(dir, "inputs", r.ID, filepath.FromSlash(doc.Path))
-		if doc.Kind == "file" {
-			if err := checkMaterialParents(filepath.Join(dir, "inputs", r.ID), fixed); err != nil {
-				return nil, err
-			}
-		}
-		if err := writeFixed(fixed, content); err != nil {
-			return nil, err
-		}
-		location := "prompt:" + doc.Path
-		if doc.Kind == "file" {
-			location = fixed
-		}
-		r.Materials = append(r.Materials, runstate.Material{MaterialView: contracts.MaterialView{Kind: doc.Kind, Path: doc.Path, Digest: reliable.Digest(content), SnapshotPath: fixed, ExecutionLocation: location}, Content: string(content)})
+	if err := freezeContentMaterials(dir, r); err != nil {
+		return nil, err
 	}
 	target := b.ExecutionTarget{ID: "local", ExecutionHost: "local"}
 	agent := b.AgentSpec{Name: "codex"}
@@ -83,9 +66,33 @@ func freezeContent(ctx context.Context, dir string, r *runstate.Record, attempt,
 	var settings contracts.CodexSettings
 	_ = json.Unmarshal(r.Request.Execution.Settings, &settings)
 	r.Workflow = workflow.Snapshot{Config: &p, StepID: p.Initial, ExecutionModel: &workflow.ModelSettings{Model: settings.Model, ReasoningEffort: settings.ReasoningEffort}}
-	instruction, _, _ := r.Request.ContentInput()
-	r.History = []contracts.HistoryEntry{{Role: "user", Text: instruction}}
 	return r, nil
+}
+
+func freezeContentMaterials(dir string, r *runstate.Record) error {
+	instruction, docs, _ := r.Request.ContentInput()
+	for _, doc := range docs {
+		content := []byte(*doc.Content)
+		if !utf8.Valid(content) || len(content) > contracts.MaxRequestBytes {
+			return contracts.Fail(2, "invalid_input", "Material must be bounded UTF-8 text.")
+		}
+		fixed := filepath.Join(dir, "inputs", r.ID, filepath.FromSlash(doc.Path))
+		if doc.Kind == "file" {
+			if err := checkMaterialParents(filepath.Join(dir, "inputs", r.ID), fixed); err != nil {
+				return err
+			}
+		}
+		if err := writeFixed(fixed, content); err != nil {
+			return err
+		}
+		location := "prompt:" + doc.Path
+		if doc.Kind == "file" {
+			location = fixed
+		}
+		r.Materials = append(r.Materials, runstate.Material{MaterialView: contracts.MaterialView{Kind: doc.Kind, Path: doc.Path, Digest: reliable.Digest(content), SnapshotPath: fixed, ExecutionLocation: location}, Content: string(content)})
+	}
+	r.History = []contracts.HistoryEntry{{Role: "user", Text: instruction}}
+	return nil
 }
 
 func verifyContentDirectory(r *runstate.Record) error {
@@ -323,7 +330,7 @@ func (e *Engine) interruptContent(id string, w *worker, p b.LifecyclePort, r *ru
 }
 
 func (e *Engine) contentMessage(id string, w *worker, p b.LifecyclePort, r *runstate.Record, answer *runstate.Answer) bool {
-	if err := verifyContentDirectory(r); err != nil {
+	if err := e.verifyConversationWorkspace(r); err != nil {
 		e.failControl(id, answer.CommandID, err)
 		return false
 	}
@@ -346,4 +353,13 @@ func (e *Engine) contentMessage(id string, w *worker, p b.LifecyclePort, r *runs
 		return false
 	}
 	return e.commitLocked(r, nil, "message_frozen") == nil
+}
+
+func (e *Engine) verifyConversationWorkspace(r *runstate.Record) error {
+	if r.ManagedConversation() {
+		ctx, cancel := context.WithTimeout(e.ctx, 10*time.Second)
+		defer cancel()
+		return verifyRetainedWorkspace(ctx, r)
+	}
+	return verifyContentDirectory(r)
 }

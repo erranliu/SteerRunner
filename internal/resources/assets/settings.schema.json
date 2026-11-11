@@ -131,13 +131,12 @@
         },
         "then": {
           "properties": {
-            "version": {
-              "const": 1
-            },
             "prompt_overrides": {
               "maxProperties": 0
             }
-          }
+          },
+          "if": {"properties": {"id": {"const": "generate"}}},
+          "then": {"properties": {"version": {"const": 1}}}
         },
         "else": {
           "if": {

@@ -93,6 +93,8 @@ type Record struct {
 	Summary             string                         `json:"summary,omitempty"`
 	CreatedAt           time.Time                      `json:"created_at"`
 	UpdatedAt           time.Time                      `json:"updated_at"`
+
+	WorkspaceWriteLeaseID string `json:"workspace_write_lease_id,omitempty"`
 }
 
 // The incarnation is captured at creation, never inferred from a reuse request.
@@ -199,6 +201,20 @@ func (r *Record) View() contracts.RunView {
 		settled := false
 		v.ResourcesSettled = &settled
 	}
+	if r.ManagedConversation() {
+		session := s.Session
+		v.Controls.CanMessage = v.Controls.CanMessage && r.Status == "waiting_input" &&
+			r.StopStatus == "" && r.PendingStop == "" && r.PendingResume == "" &&
+			r.NextStage == nil && r.Question == nil && r.ManagedWorkspace != nil && r.ManagedWorkspace.Local != nil &&
+			s.PendingTurn == nil && session.PendingCommandID == "" && session.PendingTurnID == "" &&
+			session.SessionID != "" && session.CurrentTurnID != "" && session.CurrentTurnID == session.LastStoppedTurnID
+		v.WorkspaceWrite = &contracts.WorkspaceWriteView{Owner: "runner", CanAcquire: v.Controls.CanMessage}
+		if r.WorkspaceWriteLeaseID != "" {
+			v.WorkspaceWrite = &contracts.WorkspaceWriteView{Owner: "steerline", LeaseID: r.WorkspaceWriteLeaseID}
+			v.NewInputsAllowed = false
+			v.Controls = contracts.Controls{Reason: "SteerLine holds the managed worktree write lease."}
+		}
+	}
 	if r.Request.Workflow.ID == workflow.SingleExecution {
 		v.Closed = r.Closed
 		if s.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 {
@@ -211,6 +227,10 @@ func (r *Record) View() contracts.RunView {
 		v.Controls.CanClose = false
 	}
 	return v
+}
+
+func (r *Record) ManagedConversation() bool {
+	return workflow.ManagedConversation(r.Request.Workflow.ID, r.Request.Workflow.Version)
 }
 
 // DevelopmentMessage identifies the completed development cursor, not a new workflow.

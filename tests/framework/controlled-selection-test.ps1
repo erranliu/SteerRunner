@@ -17,7 +17,7 @@ function Reject([string]$Name,[scriptblock]$Action) {
 function JSON([string]$Path,$Value) { [IO.File]::WriteAllText($Path,($Value | ConvertTo-Json -Depth 40),[Text.UTF8Encoding]::new($false)) }
 Assert-SRControlledSelectionCatalog $taskCatalog
 $taskAll=Resolve-SRControlledSelection $taskCatalog @($taskCatalog.controlled_selection.groups.PSObject.Properties.Name)
-if (($taskAll.tests -join ',') -cne ($taskCatalog.controlled_scenarios -join ',') -or $taskAll.tests.Count -ne 29) { throw 'Primary groups lost or reordered complete Controlled tests' }
+if (($taskAll.tests -join ',') -cne ($taskCatalog.controlled_scenarios -join ',') -or $taskAll.tests.Count -ne 30) { throw 'Primary groups lost or reordered complete Controlled tests' }
 foreach ($kind in @('groups','combinations')) {
     foreach ($definition in $taskCatalog.controlled_selection.$kind.PSObject.Properties) {
         $selection=if($kind -eq 'groups'){Resolve-SRControlledSelection $taskCatalog @($definition.Name)}else{Resolve-SRControlledSelection $taskCatalog @() @($definition.Name)}
@@ -151,7 +151,7 @@ foreach ($id in @('execute-stop','all-mock','acceptance-control','result-plain',
     if ($summary.status -ne 'passed' -or $summary.validation_scope -ne 'controlled-selection' -or $summary.complete_controlled_passed -or $summary.qualification_eligible -or (Test-Path (Join-Path $output 'prerequisites.json')) -or (Test-Path (Join-Path $output 'controlled/prerequisites.json'))) {throw 'Selected execution gained complete qualification'}
     Reject ('not-reusable-'+$id) {Read-SRPrerequisites $Repository $output}
 }
-$taskChecks.Add('all-29-selected-still-no-qualification')
+$taskChecks.Add('all-30-selected-still-no-qualification')
 $taskCaseSource=Join-Path $taskRoot 'execute-stop/controlled'
 $caseProof=Get-SRResultFileCaseEvidence $taskCaseSource @('final-seal')
 if($caseProof.required_paths.Count -ne 5){throw 'Enable variants were not required'}
@@ -191,8 +191,8 @@ $partialLog=@(Get-Content (Join-Path $taskFullSubset 'integration.log') | Where-
 $caseGateRejected=$false
 try {Assert-SRControlledEvidence $taskFullSubset @($taskCatalog.controlled_scenarios) | Out-Null}
 catch {$caseGateRejected=$_.Exception.Message -like '*Actual ResultFile cases differ*' -or $_.Exception.Message -like '*ResultFile legacy and per-parent receipts differ*'}
-if(-not $caseGateRejected){throw 'Complete 29-test count bypassed the actual ResultFile case gate'}
-$taskChecks.Add('full-29-count-cannot-hide-partial-result-cases')
+if(-not $caseGateRejected){throw 'Complete 30-test count bypassed the actual ResultFile case gate'}
+$taskChecks.Add('full-30-count-cannot-hide-partial-result-cases')
 $acqSource=Join-Path $taskRoot 'result-parser/controlled'
 $acqProof=Get-SRControlledCaseEvidence $acqSource 'TestSRResultAcquisition' @('parser-unsupported','parser-complete','parser-tool')
 if($acqProof.required_paths.Count -ne 3){throw 'Parser subset was not verified by actual paths'}
@@ -227,7 +227,7 @@ JSON (Join-Path $acqFullNegative 'result.json') $partial
 $acqGateRejected=$false
 try{Assert-SRControlledEvidence $acqFullNegative @($taskCatalog.controlled_scenarios) | Out-Null}catch{$acqGateRejected=$_.Exception.Message -like '*Actual ResultAcquisition cases differ*'}
 if(-not $acqGateRejected){throw 'Full parent count hid incomplete acquisition cases'}
-$taskChecks.Add('full-29-count-requires-all-eight-acquisition-cases')
+$taskChecks.Add('full-30-count-requires-all-eight-acquisition-cases')
 $restartSource=Join-Path $taskRoot 'restart-continuation/controlled'
 $restartProof=Get-SRControlledCaseEvidence $restartSource $restartParent @('graceful','kill')
 if($restartProof.required_paths.Count -ne 2){throw 'Restart continuation lost actual two-case proof'}
@@ -253,17 +253,17 @@ foreach($mode in @('parent-only','missing-case','skipped-case','foreign-case','d
     JSON (Join-Path $restartNegative 'result.json') $result
     Reject ('restart-proof-'+$mode) {Get-SRControlledCaseEvidence $restartNegative $restartParent @('graceful','kill')}
 }
-# Check the complete gate both in the full 29 and when Restart is the only
+# Check the complete gate both in the full 30 and when Restart is the only
 # expected supported parent, so the case guard cannot depend on ResultFile/Acquisition.
-foreach($scope in @('full-29','restart-only')) {
+foreach($scope in @('full-30','restart-only')) {
     $negative=Join-Path $taskRoot ('partial-restart-'+$scope)
     $null=New-Item -ItemType Directory -Path $negative
-    $sourceDirectory=if($scope -eq 'full-29'){$taskFullSource}else{$restartSource}
+    $sourceDirectory=if($scope -eq 'full-30'){$taskFullSource}else{$restartSource}
     foreach($name in @('integration.log','result.json','source-identity.json')){Copy-Item -LiteralPath (Join-Path $sourceDirectory $name) -Destination (Join-Path $negative $name)}
     $partial=Get-Content (Join-Path $negative 'result.json') -Raw|ConvertFrom-Json
     $partial.controlled_cases.$restartParent=@($partial.controlled_cases.$restartParent | Where-Object {$_.id -eq 'graceful'})
     JSON (Join-Path $negative 'result.json') $partial
-    $expected=if($scope -eq 'full-29'){@($taskCatalog.controlled_scenarios)}else{@($restartParent)}
+    $expected=if($scope -eq 'full-30'){@($taskCatalog.controlled_scenarios)}else{@($restartParent)}
     $rejected=$false
     try{Assert-SRControlledEvidence $negative $expected | Out-Null}catch{$rejected=$_.Exception.Message -like '*Actual RestartPreservesAuthorization cases differ*'}
     if(-not $rejected){throw "Complete $scope count bypassed Restart case proof"}

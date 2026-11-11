@@ -88,13 +88,18 @@ func Catalog() CapabilityCatalog {
 						selection.AuditModel = nil
 						selection.PromptOverrides = nil
 						operations := []string{"submit", "reply", "resume", "stop"}
+						schema := "/configuration_schemas/run_configuration"
+						if workflow.ManagedConversation(profile.ID, profile.Version) {
+							operations = append(operations, "inspect", "history", "message", "interrupt", "close", contracts.WorkspaceAcquire, contracts.WorkspaceRelease)
+							schema = "/configuration_schemas/managed_conversation_input"
+						}
 						if profile.ID == "development" || profile.ID == "development-audited" {
 							operations = append(operations, "message", "history")
 						}
 						if structured {
 							operations = []string{"submit", "inspect", "stop"}
 						}
-						result.Combinations = append(result.Combinations, Combination{adapter, target, agent, selection, mode, operations, "/configuration_schemas/run_configuration", needed})
+						result.Combinations = append(result.Combinations, Combination{adapter, target, agent, selection, mode, operations, schema, needed})
 					}
 
 				}

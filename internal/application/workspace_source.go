@@ -128,7 +128,7 @@ func (e *Engine) checkDispatchSource(r *runstate.Record, input workflow.StageInp
 		if err := verifyFrozenDocuments(r); err != nil {
 			return err
 		}
-		return verifyContentDirectory(r)
+		return e.verifyConversationWorkspace(r)
 	}
 	if err := verifyFrozenMaterials(r); err != nil {
 		return err

@@ -1,6 +1,6 @@
 # Workflow 定义与统一能力
 
-当前内置流程为 development/2、development-audited/2、conversation/1、generate/1、execute/1。本目录解释现有实现；执行定义与默认提示分别见[工作流源码](../../internal/execution/workflow)和[内嵌提示资源](../../internal/resources/assets/prompts.json)，不加载本目录 Markdown。当前文档入口见[项目文档索引](../README.md)。
+当前内置流程为 development/2、development-audited/2、conversation/1、conversation/2、generate/1、execute/1。本目录解释现有实现。执行定义与默认提示分别见[工作流源码](../../internal/execution/workflow)和[内嵌提示资源](../../internal/resources/assets/prompts.json)。当前文档入口见[项目文档索引](../README.md)。
 
 ## 项目策略槽位
 
@@ -20,7 +20,7 @@
 | development-audited/2 的 `audit.code.execute` | `git`、`command`、`testing` |
 | 两种开发流程的 `publish.execute` | `git`、`command` |
 | 两种开发流程的所有 report、parse、input、verify、milestone 步骤 | 无 |
-| conversation/1、generate/1、execute/1 的所有步骤 | 无 |
+| conversation/1、conversation/2、generate/1、execute/1 的所有步骤 | 无 |
 
 未提供 `workflow.project_policy_slots` 时，Runner 从本次固定的 `repository.base_revision` Git 对象读取这三个精确路径，在原 Run 的 `workflow.project_policies` 中一起固定 commit、各槽位路径、`exists` 和存在文件的 SHA-256（原始 blob 字节）。不读取调用方工作区或当前 HEAD，不搜索其他目录，也不自动生成策略文档。空文件算存在；缺失文件保存 `exists=false` 并沿用原规则；已存在但不能读取的 blob、目录或符号链接明确以 `project_policy_unreadable` 拒绝。读取失败不会把槽位降级为缺失或接受部分观察。后续输入与恢复复用原记录，文件后来增删或修改不重新决定本 Run 的槽位。
 

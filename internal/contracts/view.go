@@ -131,6 +131,8 @@ type RunView struct {
 	Final                  *FinalView        `json:"final,omitempty"`
 	CreatedAt              time.Time         `json:"created_at"`
 	UpdatedAt              time.Time         `json:"updated_at"`
+
+	WorkspaceWrite *WorkspaceWriteView `json:"workspace_write,omitempty"`
 }
 
 // AcquisitionView intentionally omits private raw candidate text. Native final

@@ -1,18 +1,21 @@
 package resources
 
 import (
-	"github.com/erranliu/SteerRunner/internal/contracts"
 	"reflect"
+
+	"github.com/erranliu/SteerRunner/internal/contracts"
+	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 )
 
-func contentInputSchema(schemas map[string]any, id string) map[string]any {
+func contentInputSchema(schemas map[string]any, id string, version int) map[string]any {
+	managed := workflow.ManagedConversation(id, version)
 	shape := any(shapeSchema(reflect.TypeFor[contracts.GenerateInput]()))
 	if id == "conversation" {
 		shape = shapeSchema(reflect.TypeFor[contracts.ConversationInput]())
 	}
 	input := shape.(map[string]any)
 	input["required"] = []string{"instruction", "materials"}
-	if id == "conversation" {
+	if id == "conversation" && !managed {
 		input["required"] = []string{"instruction", "materials", "directory"}
 	}
 	p := input["properties"].(map[string]any)
@@ -26,10 +29,17 @@ func contentInputSchema(schemas map[string]any, id string) map[string]any {
 	if id == "generate" {
 		p["materials"].(map[string]any)["items"].(map[string]any)["properties"].(map[string]any)["kind"] = map[string]any{"enum": []string{"inline", "file"}}
 	}
-	return map[string]any{"type": "object", "required": []string{"title", "workflow", "execution", id}, "additionalProperties": false, "allOf": schemas["run_configuration"].(map[string]any)["allOf"], "properties": map[string]any{
+	required := []string{"title", "workflow", "execution", id}
+	properties := map[string]any{
 		"title": map[string]any{"type": "string", "minLength": 1, "pattern": `\S`}, "correlation": shapeSchema(reflect.TypeFor[map[string]string]()), id: input,
 		"name_prefix": namePrefixSchema(),
-		"workflow":    map[string]any{"type": "object", "required": []string{"id", "version"}, "additionalProperties": false, "properties": map[string]any{"id": map[string]any{"const": id}, "version": map[string]any{"const": 1}}},
+		"workflow":    map[string]any{"type": "object", "required": []string{"id", "version"}, "additionalProperties": false, "properties": map[string]any{"id": map[string]any{"const": id}, "version": map[string]any{"const": version}}},
 		"execution":   schemas["run_configuration"].(map[string]any)["properties"].(map[string]any)["execution"],
-	}}
+	}
+	if managed {
+		delete(p, "directory")
+		required = append(required, "repository")
+		properties["repository"] = repositoryInputSchema()
+	}
+	return map[string]any{"type": "object", "required": required, "additionalProperties": false, "allOf": schemas["run_configuration"].(map[string]any)["allOf"], "properties": properties}
 }

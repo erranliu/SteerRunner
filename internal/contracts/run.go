@@ -257,7 +257,7 @@ func ValidateRun(data []byte) *Fault {
 	if workflow.Content(value.Workflow.ID) {
 		return validateContentRun(data, value)
 	}
-	if value.Conversation != nil || value.Generate != nil || !safeURL(value.Repository.URL) || !commitPattern.MatchString(value.Repository.BaseRevision) || !plain(value.Repository.Remote) || !plain(value.Repository.BaseBranch) {
+	if value.Conversation != nil || value.Generate != nil || !validRepository(value.Repository) {
 		return invalid
 	}
 	if !safeDocument(value.Documents.Spec) || !safeDocument(value.Documents.Plan) || strings.EqualFold(value.Documents.Spec.Path, value.Documents.Plan.Path) {
@@ -284,6 +284,10 @@ func ValidateRun(data []byte) *Fault {
 		return nil
 	}
 	return ValidatePublication(value.Repository, value.Publication)
+}
+
+func validRepository(r Repository) bool {
+	return safeURL(r.URL) && commitPattern.MatchString(r.BaseRevision) && plain(r.Remote) && plain(r.BaseBranch)
 }
 
 // RunConfiguration is the execution/workflow portion shared by presets and submit.
@@ -355,7 +359,11 @@ func validateRunConfiguration(data []byte, complete bool) *Fault {
 			return Fail(3, "unsupported_capability", "Content workflows require local codex-app-server.")
 		}
 		var settings CodexSettings
-		if DecodeStrict(value.Execution.Settings, &settings) != nil || settings.AccessMode != "read_only" || len(value.Workflow.PromptOverrides) != 0 || value.Workflow.AuditModel != nil {
+		mode := "read_only"
+		if workflow.ManagedConversation(profile.ID, profile.Version) {
+			mode = "full_access"
+		}
+		if DecodeStrict(value.Execution.Settings, &settings) != nil || settings.AccessMode != mode || len(value.Workflow.PromptOverrides) != 0 || value.Workflow.AuditModel != nil {
 			return invalid
 		}
 	} else {
@@ -593,9 +601,14 @@ func ValidateInput(command string, data []byte) *Fault {
 		if DecodeStrict(data, &value) != nil || !plain(value.ExpectedInstanceID) {
 			return invalid
 		}
-	case "resume", "stop", "interrupt", "close":
+	case "resume", "stop", "interrupt", "close", WorkspaceAcquire:
 		var value RevisionInput
 		if DecodeStrict(data, &value) != nil || value.ExpectedRevision == 0 {
+			return invalid
+		}
+	case WorkspaceRelease:
+		var value WorkspaceReleaseInput
+		if DecodeStrict(data, &value) != nil || value.ExpectedRevision == 0 || !ValidRequestID(value.LeaseID) {
 			return invalid
 		}
 	case "reply":

@@ -253,6 +253,13 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 		if e.workspaceSuperseded(r) {
 			return reject(contracts.Fail(5, "workspace_transferred", "This terminal Run transferred its workspace; controls cannot affect its successor."))
 		}
+		workspaceWrite := command == contracts.WorkspaceAcquire || command == contracts.WorkspaceRelease
+		if workspaceWrite && !r.ManagedConversation() {
+			return reject(contracts.Fail(3, "unsupported_capability", "Workspace write handoff requires conversation/2."))
+		}
+		if r.WorkspaceWriteLeaseID != "" && command != contracts.WorkspaceRelease {
+			return reject(contracts.Fail(5, "workspace_write_held", "SteerLine holds the worktree write lease. Return it before sending Run controls."))
+		}
 		isContent := workflow.Content(r.Request.Workflow.ID)
 		single := r.Request.Workflow.ID == workflow.SingleExecution
 		if single && (command == "reply" || command == "resume" || command == "message" || command == "interrupt" || command == "close") {
@@ -283,6 +290,32 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 		receipt := storage.NewCommand(command, runID, *input)
 		next.CommandStates[receipt.ID] = "pending"
 		switch command {
+		case contracts.WorkspaceAcquire:
+			if !r.View().WorkspaceWrite.CanAcquire {
+				return reject(contracts.Fail(5, "workspace_not_idle", "The original conversation must be settled and ready for a new turn."))
+			}
+			e.mu.Unlock()
+			qualification := e.qualifyWorkspaceWrite(r, w)
+			e.mu.Lock()
+			if qualification != nil {
+				return reject(qualification)
+			}
+			if e.ctx.Err() != nil {
+				return reject(contracts.Fail(4, "service_unavailable", "Service is stopping; write lease was not granted."))
+			}
+			if current := e.runs[runID]; current.Revision != r.Revision || e.workspaceSuperseded(current) {
+				return reject(contracts.Fail(5, "stale_revision", "Run changed during verification; inspect before a new request."))
+			}
+			next.WorkspaceWriteLeaseID = receipt.ID
+			next.CommandStates[receipt.ID] = "completed"
+		case contracts.WorkspaceRelease:
+			var release contracts.WorkspaceReleaseInput
+			_ = json.Unmarshal(input.Input, &release)
+			if r.WorkspaceWriteLeaseID == "" || release.LeaseID != r.WorkspaceWriteLeaseID {
+				return reject(contracts.Fail(5, "workspace_write_lease_mismatch", "The supplied lease does not hold the current worktree write right."))
+			}
+			next.WorkspaceWriteLeaseID = ""
+			next.CommandStates[receipt.ID] = "completed"
 		case "stop", "close":
 			if next.PendingResume != "" {
 				next.CommandStates[next.PendingResume] = "failed"
@@ -383,7 +416,16 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 		default:
 			return reject(contracts.Fail(2, "invalid_arguments", "Unknown Run command."))
 		}
-		if err := e.commitLocked(next, &receipt, command+"_accepted"); err != nil {
+		event := command + "_accepted"
+		if workspaceWrite {
+			receipt.Status = "completed"
+			receipt.Response.Data.(map[string]any)["action_status"] = receipt.Status
+			event = "workspace_write_acquired"
+			if command == contracts.WorkspaceRelease {
+				event = "workspace_write_released"
+			}
+		}
+		if err := e.commitLocked(next, &receipt, event); err != nil {
 			return reject(contracts.Fail(6, "request_outcome_unknown", "The command commit is unverified; inspect its original request_id."))
 		}
 		if (command == "stop" || command == "close") && w.queryCancel != nil {

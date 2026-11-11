@@ -9,7 +9,7 @@
 | 范围 | 场景/测试数 | Case 数或范围 |
 | --- | --- | --- |
 | L1 | 按实际批次报告 | framework、`./internal/...`、当前 Pi Node 扩展、native driver 编译/零匹配保护 |
-| Controlled | 29 个顶层测试 | 六个主分组；完整资格还要求规定的子场景实际覆盖 |
+| Controlled | 30 个顶层测试 | 六个主分组；完整资格还要求规定的子场景实际覆盖 |
 | L2 | 1 场景 | 1 case |
 | L3 | 25 场景 | 33 case |
 | L4 | 4 场景 | 4 case |
@@ -33,7 +33,7 @@
 | foundation | 7 | `TestSRStandalonePackage`、`TestSRServiceOwnership`、`TestSRInputFreeze`、`TestSRPermissionQualification`、`TestSRStorageLogsEvents`、`TestSRNativeCatalogPublicCLI`、`TestSRExecutionConfigurationPublicCLI` |
 | workflow | 5 | `TestSRRunWorkflow`、`TestSRPublicationIdentity`、`TestSRPublicationBeforeWorkflowReady`、`TestSRWorkflowDiscoveryAndSelection`、`TestSRResultAcquisition` |
 | recovery | 7 | `TestSRNativeUnknownAndStop`、`TestSRRestartPreservesAuthorization`、`TestSRStabilityLostSubmitResponse`、`TestSRStabilityRevocationAcrossRestart`、`TestSRMultipleRunsIsolation`、`TestSRResourceCreationRecovery`、`TestSRManualReconciliation` |
-| content | 5 | `TestSRContentGenerate`、`TestSRContentRepository`、`TestSRContentConversation`、`TestSRContentQuestionAndUnknown`、`TestSRContentGenerationRecovery` |
+| content | 6 | `TestSRContentGenerate`、`TestSRContentRepository`、`TestSRContentConversation`、`TestSRManagedConversationWorkspaceWrite`、`TestSRContentQuestionAndUnknown`、`TestSRContentGenerationRecovery` |
 | files | 4 | `TestSRRunEvidenceR2`、`TestSRProgressFile`、`TestSRResultFile`、`TestSRSingleExecutionColdStop` |
 | orca-cli | 1 | `TestSROrcaCLIWaitRetry` |
 

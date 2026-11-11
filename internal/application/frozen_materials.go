@@ -27,8 +27,10 @@ func verifyFrozenMaterials(r *runstate.Record) error {
 
 // verifyContentInputs is used when the original directory is also required.
 func verifyContentInputs(r *runstate.Record) error {
-	if err := verifyContentDirectory(r); err != nil {
-		return err
+	if !r.ManagedConversation() {
+		if err := verifyContentDirectory(r); err != nil {
+			return err
+		}
 	}
 	return verifyFrozenDocuments(r)
 }

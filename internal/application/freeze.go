@@ -235,7 +235,7 @@ func freezeWithWorkspace(ctx context.Context, dir string, input contracts.Reques
 		key, payload = orca.AgentSessionProfileKey, canonical(structuredProfile)
 	}
 	r.InputDigest = reliable.Digest(canonical(r.Request))
-	if workflow.Content(request.Workflow.ID) {
+	if workflow.Content(request.Workflow.ID) && !r.ManagedConversation() {
 		return freezeContent(ctx, dir, r, attempt, generation, payload)
 	}
 	var repo workspace.Repository
@@ -256,15 +256,21 @@ func freezeWithWorkspace(ctx context.Context, dir string, input contracts.Reques
 	if structured {
 		r.StopEvidenceScope = orca.AgentSessionStopScope
 	}
-	seen := map[string]bool{}
-	for _, doc := range append([]contracts.Document{request.Documents.Spec, request.Documents.Plan}, request.Documents.References...) {
-		if seen[strings.ToLower(doc.Path)] {
-			return nil, contracts.Fail(2, "invalid_input", "Material paths must be distinct.")
+	if r.ManagedConversation() {
+		if err := freezeContentMaterials(dir, r); err != nil {
+			return nil, err
 		}
-		seen[strings.ToLower(doc.Path)] = true
-		// Development documents belong to the execution worktree. The caller
-		// supplies their paths; admission does not read or prepare their files.
-		r.Materials = append(r.Materials, runstate.Material{MaterialView: contracts.MaterialView{Kind: "worktree", Path: doc.Path, Commit: request.Repository.BaseRevision, ExecutionLocation: doc.Path}})
+	} else {
+		seen := map[string]bool{}
+		for _, doc := range append([]contracts.Document{request.Documents.Spec, request.Documents.Plan}, request.Documents.References...) {
+			if seen[strings.ToLower(doc.Path)] {
+				return nil, contracts.Fail(2, "invalid_input", "Material paths must be distinct.")
+			}
+			seen[strings.ToLower(doc.Path)] = true
+			// Development documents belong to the execution worktree. The caller
+			// supplies their paths; admission does not read or prepare their files.
+			r.Materials = append(r.Materials, runstate.Material{MaterialView: contracts.MaterialView{Kind: "worktree", Path: doc.Path, Commit: request.Repository.BaseRevision, ExecutionLocation: doc.Path}})
+		}
 	}
 	r.PromptBodies = map[string]string{}
 	for _, state := range flowProfile.States {
@@ -288,7 +294,7 @@ func freezeWithWorkspace(ctx context.Context, dir string, input contracts.Reques
 		}
 	}
 	r.Workflow = workflow.Snapshot{StepID: flowProfile.Initial, Config: &flowProfile}
-	if request.Workflow.ID != workflow.SingleExecution {
+	if !workflow.Content(request.Workflow.ID) && request.Workflow.ID != workflow.SingleExecution {
 		if err := freezeProjectPolicies(ctx, r); err != nil {
 			return nil, err
 		}

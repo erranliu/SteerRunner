@@ -3,6 +3,7 @@ package contracts
 import (
 	"encoding/json"
 	ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
+	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"path/filepath"
 	"strings"
 	"unicode/utf8"
@@ -15,7 +16,7 @@ type DirectoryAccess struct {
 type ConversationInput struct {
 	Instruction string          `json:"instruction"`
 	Materials   []Document      `json:"materials"`
-	Directory   DirectoryAccess `json:"directory"`
+	Directory   DirectoryAccess `json:"directory,omitzero"`
 }
 type GenerateInput struct {
 	Repository   *GenerateRepository `json:"repository,omitempty"`
@@ -58,6 +59,9 @@ type RepositorySource struct {
 
 func (r RunRequest) ContentInput() (string, []Document, *DirectoryAccess) {
 	if r.Conversation != nil {
+		if workflow.ManagedConversation(r.Workflow.ID, r.Workflow.Version) {
+			return r.Conversation.Instruction, r.Conversation.Materials, nil
+		}
 		return r.Conversation.Instruction, r.Conversation.Materials, &r.Conversation.Directory
 	}
 	if r.Generate != nil {
@@ -67,10 +71,10 @@ func (r RunRequest) ContentInput() (string, []Document, *DirectoryAccess) {
 }
 
 func validateContentRun(data []byte, r RunRequest) *Fault {
-	invalid := Fail(2, "invalid_input", "Content input must match its workflow, inline materials and explicit read-only directory access.")
+	invalid := Fail(2, "invalid_input", "Content input must match its workflow, materials and directory or repository contract.")
 	var fields map[string]json.RawMessage
 	_ = json.Unmarshal(data, &fields)
-	for _, key := range []string{"repository", "documents", "publication"} {
+	for _, key := range []string{"documents", "publication"} {
 		if _, ok := fields[key]; ok {
 			return invalid
 		}
@@ -81,6 +85,14 @@ func validateContentRun(data []byte, r RunRequest) *Fault {
 	instruction, materials, directory := r.ContentInput()
 	var contentFields map[string]json.RawMessage
 	_ = json.Unmarshal(fields[r.Workflow.ID], &contentFields)
+	_, hasRepository := fields["repository"]
+	if workflow.ManagedConversation(r.Workflow.ID, r.Workflow.Version) {
+		if _, hasDirectory := contentFields["directory"]; hasDirectory || !validRepository(r.Repository) {
+			return invalid
+		}
+	} else if hasRepository {
+		return invalid
+	}
 	if _, present := contentFields["materials"]; !present {
 		return invalid
 	}
