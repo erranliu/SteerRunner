@@ -65,7 +65,7 @@ func newFrozenReader(setup b.LifecycleSetup) (*frozenRecord, error) {
 	if err != nil {
 		return nil, err
 	}
-	output := orcaCLIOutput(r.setup, r.profile, r.agentHostID, func() bool { return true })
+	output := orcaCLIOutput(r.setup, r.profile, r.agentHostID)
 	r.client = native.New(native.Config{CommandTimeout: "40s", Output: func(ctx context.Context, timeout time.Duration, args ...string) ([]byte, error) {
 		if len(args) < 2 || args[0] != "terminal" || args[1] != "list" && args[1] != "show" {
 			return nil, errors.New("frozen Orca proof does not permit mutation")
@@ -81,7 +81,7 @@ func (l *Lifecycle) frozenRecord() *frozenRecord {
 	return &frozenRecord{setup: l.setup, profile: l.profile, profileVersion: l.profileVersion, client: l.client, probeProcess: l.probeProcess, agentHostID: l.agentHostID, agentDevelopment: l.agentDevelopment, agentAudited: l.agentAudited}
 }
 
-func orcaCLIOutput(setup b.LifecycleSetup, p Profile, host string, nativeAccess func() bool) func(context.Context, time.Duration, ...string) ([]byte, error) {
+func orcaCLIOutput(setup b.LifecycleSetup, p Profile, host string) func(context.Context, time.Duration, ...string) ([]byte, error) {
 	return func(ctx context.Context, timeout time.Duration, args ...string) ([]byte, error) {
 		command := cliLaunchCommand(p, p.Executable, setup.RepositoryPath, timeout, args...)
 		if err := process.CheckCommandLine(command.Executable, command.Args); err != nil {
@@ -99,15 +99,9 @@ func orcaCLIOutput(setup b.LifecycleSetup, p Profile, host string, nativeAccess 
 		if native.PreparationOwnsCLI(ctx) {
 			return invoke(ctx)
 		}
-		if nativeAccess() {
-			callCtx, cancel := context.WithTimeout(ctx, timeout)
-			defer cancel()
-			return native.SerializeCLI(callCtx, invoke)
-		}
-		if err := native.CheckpointDispatch(ctx); err != nil {
-			return nil, err
-		}
-		return invoke(ctx)
+		callCtx, cancel := context.WithTimeout(ctx, timeout)
+		defer cancel()
+		return native.SerializeCLI(callCtx, invoke)
 	}
 }
 

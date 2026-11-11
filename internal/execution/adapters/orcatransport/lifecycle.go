@@ -78,7 +78,7 @@ func NewLifecycle(setup b.LifecycleSetup) (b.LifecyclePort, error) {
 		return nil, err
 	}
 	l := &Lifecycle{setup: r.setup, profile: r.profile, profileVersion: r.profileVersion, agentHostID: r.agentHostID, agentDevelopment: r.agentDevelopment, agentAudited: r.agentAudited, probeProcess: r.probeProcess, clock: func() time.Time { return time.Now().UTC() }, nativeAccess: true}
-	l.client = native.New(native.Config{CommandTimeout: "40s", Output: orcaCLIOutput(r.setup, l.profile, l.agentHostID, func() bool { return true })})
+	l.client = native.New(native.Config{CommandTimeout: "40s", Output: orcaCLIOutput(r.setup, l.profile, l.agentHostID)})
 	return l, nil
 }
 

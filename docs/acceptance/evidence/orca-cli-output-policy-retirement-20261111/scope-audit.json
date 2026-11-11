@@ -1,0 +1,17 @@
+{
+  "added_tests": [
+    "internal/execution/adapters/orcatransport/cli_output_policy_test.go"
+  ],
+  "approved_exact_byte_transform": true,
+  "baseline_file_count": 849,
+  "capture_bytes": 340855,
+  "capture_sha256": "3cad9f3838682a35febe71c9bc2bafa479733c5857588b28fa206ff730fe6741",
+  "changed_production": [
+    "internal/execution/adapters/orcatransport/frozen_record.go",
+    "internal/execution/adapters/orcatransport/lifecycle.go"
+  ],
+  "final_file_count": 850,
+  "resource_digest": "732a1c7e211563648ea5b4d5c155345419693f4c78e29c724bb3168244714502",
+  "type_count": 301,
+  "unchanged_count": 847
+}
