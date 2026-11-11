@@ -13,11 +13,8 @@ import (
 )
 
 type Preparation struct {
-	Status             executionbackend.OperationStatus      `json:"status"`
-	PathCreated        bool                                  `json:"path_created"`
-	WorktreeRegistered bool                                  `json:"worktree_registered"`
-	BranchPresent      bool                                  `json:"branch_present"`
-	Inspection         *executionbackend.WorkspaceInspection `json:"inspection,omitempty"`
+	Status     executionbackend.OperationStatus      `json:"status"`
+	Inspection *executionbackend.WorkspaceInspection `json:"inspection,omitempty"`
 }
 
 func Prepare(ctx context.Context, git Git, repository Repository, root string, intent *executionbackend.WorkspaceIntent) (Preparation, error) {
@@ -54,13 +51,12 @@ func Prepare(ctx context.Context, git Git, repository Repository, root string, i
 		return result, err
 	}
 	if containsExactLine(string(refs), "refs/heads/"+intent.Branch) {
-		result.BranchPresent, result.Status = true, executionbackend.OperationRejected
+		result.Status = executionbackend.OperationRejected
 		return result, errors.New("worktree branch already exists")
 	}
 	if err = os.Mkdir(intent.Path, 0700); err != nil {
 		return result, err
 	}
-	result.PathCreated = true
 	checkout := git
 	if deadline, ok := ctx.Deadline(); ok {
 		// Checkout includes LFS materialization and can use the remaining
@@ -74,10 +70,9 @@ func Prepare(ctx context.Context, git Git, repository Repository, root string, i
 			result.Status = executionbackend.OperationRejected
 			return result, fmt.Errorf("worktree checkout timed out: %w", err)
 		}
-		result = observePreparation(ctx, git, repository, intent, result)
 		return result, err
 	}
-	result.Status, result.WorktreeRegistered, result.BranchPresent = executionbackend.OperationConfirmed, true, true
+	result.Status = executionbackend.OperationConfirmed
 	// A successful creation binds the requested revision. No worktree scan
 	// took place, so this receipt only reports revision provenance.
 	result.Inspection = &executionbackend.WorkspaceInspection{
@@ -85,28 +80,6 @@ func Prepare(ctx context.Context, git Git, repository Repository, root string, i
 		Branch: intent.Branch, Base: intent.BaseCommit, Head: intent.BaseCommit, CheckedAt: time.Now().UTC(),
 	}
 	return result, nil
-}
-
-func observePreparation(ctx context.Context, git Git, repository Repository, intent *executionbackend.WorkspaceIntent, result Preparation) Preparation {
-	worktrees, err := git.Output(ctx, repository.Path, "worktree", "list", "--porcelain", "-z")
-	if err == nil {
-		for _, record := range strings.Split(string(worktrees), "\x00") {
-			if strings.HasPrefix(record, "worktree ") && canonical(strings.TrimPrefix(record, "worktree ")) == canonical(intent.Path) {
-				result.WorktreeRegistered = true
-				break
-			}
-		}
-	}
-	refs, err := git.Output(ctx, repository.Path, "for-each-ref", "--format=%(refname)", "refs/heads/"+intent.Branch)
-	if err == nil {
-		result.BranchPresent = containsExactLine(string(refs), "refs/heads/"+intent.Branch)
-	}
-	if result.WorktreeRegistered {
-		if inspection, inspectErr := Inspect(ctx, git, repository, intent); inspectErr == nil {
-			result.Inspection = &inspection
-		}
-	}
-	return result
 }
 
 func containsExactLine(value, expected string) bool {
