@@ -340,8 +340,11 @@ func (c AgentSessionClient) History(ctx context.Context, session string, before 
 			Items                       *[]json.RawMessage
 		}
 	}
-	if json.Unmarshal(raw, &presence) != nil || presence.Page.HasOlder == nil || presence.Page.HasNewer == nil || presence.Page.Working == nil || presence.Page.Items == nil || json.Unmarshal(raw, &result) != nil || result.Page.SessionID != session || result.Page.Epoch == "" || len(result.Page.Items) > limit {
+	if json.Unmarshal(raw, &presence) != nil || presence.Page.HasOlder == nil || presence.Page.HasNewer == nil || presence.Page.Working == nil || presence.Page.Items == nil || json.Unmarshal(raw, &result) != nil || result.Page.SessionID == "" || result.Page.Epoch == "" || len(result.Page.Items) > limit {
 		return AgentPage{}, errors.New("agent history identity or page bounds changed")
+	}
+	if result.Page.SessionID != session {
+		return AgentPage{}, stateIdentityError("original agent history belongs to a different session")
 	}
 	return result.Page, nil
 }
