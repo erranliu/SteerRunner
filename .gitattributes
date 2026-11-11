@@ -76,3 +76,4 @@ docs/acceptance/evidence/orca-terminal-fixture-separation-20261110/** -text -whi
 docs/acceptance/evidence/application-pending-stage-retirement-20261110/** -text -whitespace
 docs/acceptance/evidence/unused-checkpoint-error-cleanup-20261110/** -text -whitespace
 docs/acceptance/evidence/orca-cli-output-policy-retirement-20261111/** -text -whitespace
+docs/acceptance/evidence/orca-legacy-terminal-wrapper-retirement-20261111/** -text -whitespace

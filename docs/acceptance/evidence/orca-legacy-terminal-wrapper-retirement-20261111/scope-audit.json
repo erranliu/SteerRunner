@@ -1,0 +1,30 @@
+{
+  "after_capture_sha256": "72b695f499be4164dc7a0df47c1e38b46a34623f2d9dc5aed028b13247c94225",
+  "after_files": 878,
+  "before_capture_sha256": "3cad9f3838682a35febe71c9bc2bafa479733c5857588b28fa206ff730fe6741",
+  "before_files": 882,
+  "deleted_files": [
+    "internal/execution/adapters/protocol/orca/terminal_read.go",
+    "internal/execution/adapters/protocol/orca/terminal_read_test.go",
+    "internal/execution/adapters/protocol/orca/terminal_send.go",
+    "internal/execution/adapters/protocol/orca/terminal_send_test.go"
+  ],
+  "exact_deletion": true,
+  "modified_files": [
+    "internal/execution/adapters/protocol/orca/resource_create.go",
+    "internal/execution/adapters/protocol/orca/resource_create_test.go"
+  ],
+  "normalized_capture_identical": true,
+  "removed_types": [
+    "internal/execution/adapters/protocol/orca/resource_create.go::TerminalCreate",
+    "internal/execution/adapters/protocol/orca/resource_create.go::TerminalCreation",
+    "internal/execution/adapters/protocol/orca/terminal_read.go::TerminalRead",
+    "internal/execution/adapters/protocol/orca/terminal_read.go::TerminalReadPage",
+    "internal/execution/adapters/protocol/orca/terminal_send.go::TerminalPromptReceipt",
+    "internal/execution/adapters/protocol/orca/terminal_send.go::TerminalSend",
+    "internal/execution/adapters/protocol/orca/terminal_send.go::TerminalSendReceipt"
+  ],
+  "resource_digest": "732a1c7e211563648ea5b4d5c155345419693f4c78e29c724bb3168244714502",
+  "retained_types": 294,
+  "unchanged_files": 876
+}

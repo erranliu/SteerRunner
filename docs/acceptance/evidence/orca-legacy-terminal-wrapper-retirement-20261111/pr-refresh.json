@@ -1,0 +1,76 @@
+{
+  "artifact_hashes": {
+    "native.test.exe": "1de04842d31d43a05992c53262c787bb24816e3fd8bb54ba2a0c9b7760bbe73d",
+    "stability.exe": "cd3cd1a7f5e30f885a39463ab1dad0d44a251833b63816c3ca3eadca2629e1c9",
+    "steerrunner.exe": "b273c1f0915a49271803827f6e59ad65334d46b20e75e674adf0ebca6f4f7253"
+  },
+  "base": "2de536cbe5d0cf4b0011568becf0a070bdc8520c",
+  "build": {
+    "component": "runner",
+    "platform": "windows/amd64",
+    "protocol": "steerrunner-cli/v1",
+    "schema": "steerrunner-build/v1",
+    "sha256": "b273c1f0915a49271803827f6e59ad65334d46b20e75e674adf0ebca6f4f7253",
+    "source_commit": "2de536cbe5d0cf4b0011568becf0a070bdc8520c",
+    "source_digest": "a7a8ae4c34bc7f1936309a984723f1aacd8e555be24482b16bfe41d30bc782c0",
+    "source_dirty": true,
+    "version": "0.2.0-dev.4"
+  },
+  "original_deleted_type_set_unchanged": true,
+  "resource_digest": "54393f64d674e77ab6f86ffe58c08ed0ab85609734e938cb7c874a1a416c56b1",
+  "results": {
+    "adapter": {
+      "command": "go test ./internal/execution/adapters/orcatransport -run '^(TestWorkspaceCreationFacts|TestWorkspaceCreationCodecPreservesCheckpoint|TestWorkspaceCreationBindsCLIResult|TestStructuredWorkspaceRecoversOriginalOwnerOutput|TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch|TestFrozenReaderHasNoExecutionAndRejectsMutation|TestTerminalStoppedRequiresCompleteOriginalHost|TestLocalCodexStoppedUsesRegisteredResources|TestStructuredObservationRecoversPagedCompletedTurn|TestStructuredObservationPreservesNativeIdentityMismatch)$' -count=1 -timeout=5m -json",
+      "failed": 0,
+      "nodes": 59,
+      "skipped": 0,
+      "top_level": [
+        "TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch",
+        "TestFrozenReaderHasNoExecutionAndRejectsMutation",
+        "TestLocalCodexStoppedUsesRegisteredResources",
+        "TestStructuredObservationPreservesNativeIdentityMismatch",
+        "TestStructuredObservationRecoversPagedCompletedTurn",
+        "TestStructuredWorkspaceRecoversOriginalOwnerOutput",
+        "TestTerminalStoppedRequiresCompleteOriginalHost",
+        "TestWorkspaceCreationBindsCLIResult",
+        "TestWorkspaceCreationCodecPreservesCheckpoint",
+        "TestWorkspaceCreationFacts"
+      ]
+    },
+    "livetest": {
+      "command": "go test ./internal/testkit/livetest -run '^(TestDiagnosticReadNeverReplaysMutation|TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory)$' -count=1 -timeout=5m -json",
+      "failed": 0,
+      "nodes": 12,
+      "skipped": 0,
+      "top_level": [
+        "TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory",
+        "TestDiagnosticReadNeverReplaysMutation"
+      ]
+    },
+    "observation": {
+      "command": "go test ./internal/application -run '^(TestSROrcaObservationStopCancelsReconnectAndRejectsLateReceipt|TestSROrcaObservationReconnectsOnlyTheConfirmedTurn)$' -count=1 -timeout=5m -json",
+      "failed": 0,
+      "nodes": 7,
+      "skipped": 0,
+      "top_level": [
+        "TestSROrcaObservationReconnectsOnlyTheConfirmedTurn",
+        "TestSROrcaObservationStopCancelsReconnectAndRejectsLateReceipt"
+      ]
+    },
+    "protocol": {
+      "command": "go test ./internal/execution/adapters/protocol/orca -run '^(TestOrcaResourceCreateCapability|TestOrcaCloseInventoryCapability|TestBoundTerminalRejectsRuntimeAndIncarnationReplacement|TestTerminalCloseRequiresExactRuntimeHandleAndPtyProof|TestOrcaResourceQueries|TestAgentHistoryRequiresCompletePublicEnvelope)$' -count=1 -timeout=5m -json",
+      "failed": 0,
+      "nodes": 65,
+      "skipped": 0,
+      "top_level": [
+        "TestAgentHistoryRequiresCompletePublicEnvelope",
+        "TestBoundTerminalRejectsRuntimeAndIncarnationReplacement",
+        "TestOrcaCloseInventoryCapability",
+        "TestOrcaResourceCreateCapability",
+        "TestOrcaResourceQueries",
+        "TestTerminalCloseRequiresExactRuntimeHandleAndPtyProof"
+      ]
+    }
+  },
+  "retained_types": 294
+}

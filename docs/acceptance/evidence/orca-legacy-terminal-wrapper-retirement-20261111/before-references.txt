@@ -1,0 +1,51 @@
+internal/execution/adapters/protocol/orca/resource_create.go:28:type TerminalCreate struct {
+internal/execution/adapters/protocol/orca/resource_create.go:33:func TerminalCreateArgs(request TerminalCreate) []string {
+internal/execution/adapters/protocol/orca/resource_create.go:53:type TerminalCreation struct{ Terminal Terminal }
+internal/execution/adapters/protocol/orca/resource_create.go:55:func DecodeTerminalCreation(result Result) (TerminalCreation, error) {
+internal/execution/adapters/protocol/orca/resource_create.go:56:	var value TerminalCreation
+internal/execution/adapters/protocol/orca/resource_create_test.go:23:	for _, command := range []*string{nil, ptrString("& 'runtime path' '参数'"), ptrString("")} {
+internal/execution/adapters/protocol/orca/resource_create_test.go:29:			options := TerminalCreate{Worktree: "id:repo::C:/work tree", Title: "执行 title", Command: command}
+internal/execution/adapters/protocol/orca/resource_create_test.go:35:			got := TerminalCreateArgs(options)
+internal/execution/adapters/protocol/orca/resource_create_test.go:40:			if TerminalCreateArgs(options)[0] != "terminal" {
+internal/execution/adapters/protocol/orca/resource_create_test.go:89:			got, err := DecodeTerminalCreation(Result{Payload: payload})
+internal/execution/adapters/protocol/orca/resource_create_test.go:97:func ptrString(value string) *string { return &value }
+internal/execution/adapters/protocol/orca/terminal_read.go:10:type TerminalRead struct {
+internal/execution/adapters/protocol/orca/terminal_read.go:16:// TerminalReadPage preserves one raw page. Cursor interpretation, retained
+internal/execution/adapters/protocol/orca/terminal_read.go:18:type TerminalReadPage struct {
+internal/execution/adapters/protocol/orca/terminal_read.go:26:func (p TerminalReadPage) Matches(runtime, handle string) bool {
+internal/execution/adapters/protocol/orca/terminal_read.go:32:func (p TerminalReadPage) CursorsDecoded() bool { return p.cursorsDecoded }
+internal/execution/adapters/protocol/orca/terminal_read.go:34:func (c Client) ReadTerminal(ctx context.Context, read TerminalRead) (Result, TerminalReadPage, error) {
+internal/execution/adapters/protocol/orca/terminal_read.go:36:		return Result{}, TerminalReadPage{}, errors.New("Orca terminal read requires an explicit terminal and positive limit")
+internal/execution/adapters/protocol/orca/terminal_read.go:39:	var full struct{ Terminal TerminalReadPage }
+internal/execution/adapters/protocol/orca/terminal_read_test.go:12:func TestOrcaTerminalReadCapability(t *testing.T) {
+internal/execution/adapters/protocol/orca/terminal_read_test.go:58:			nativeResult, got, err := client.ReadTerminal(context.Background(), TerminalRead{Handle: "terminal", Cursor: 7, Limit: 1000})
+internal/execution/adapters/protocol/orca/terminal_read_test.go:82:		for _, read := range []TerminalRead{{Handle: "terminal"}, {Limit: 1000}, {}} {
+internal/execution/adapters/protocol/orca/terminal_read_test.go:83:			_, page, err := client.ReadTerminal(context.Background(), read)
+internal/execution/adapters/protocol/orca/terminal_read_test.go:90:		var page TerminalReadPage
+internal/execution/adapters/protocol/orca/terminal_send.go:11:// TerminalSend describes the text-plus-enter operation used by current callers.
+internal/execution/adapters/protocol/orca/terminal_send.go:13:type TerminalSend struct {
+internal/execution/adapters/protocol/orca/terminal_send.go:18:type TerminalPromptReceipt struct {
+internal/execution/adapters/protocol/orca/terminal_send.go:29:func (p TerminalPromptReceipt) Decoded() bool { return p.decoded }
+internal/execution/adapters/protocol/orca/terminal_send.go:31:type TerminalSendReceipt struct {
+internal/execution/adapters/protocol/orca/terminal_send.go:35:	Prompt    TerminalPromptReceipt `json:"prompt"`
+internal/execution/adapters/protocol/orca/terminal_send.go:41:func (r TerminalSendReceipt) Matches(p TerminalIdentity, request string) bool {
+internal/execution/adapters/protocol/orca/terminal_send.go:46:func (s TerminalSend) arguments() []string {
+internal/execution/adapters/protocol/orca/terminal_send.go:54:func (s TerminalSend) validate() error {
+internal/execution/adapters/protocol/orca/terminal_send.go:61:func decodeTerminalSend(result Result, callErr error) (Result, TerminalSendReceipt, error) {
+internal/execution/adapters/protocol/orca/terminal_send.go:62:	var value struct{ Send TerminalSendReceipt }
+internal/execution/adapters/protocol/orca/terminal_send.go:82:func (c Client) SendTerminal(ctx context.Context, send TerminalSend) (Result, TerminalSendReceipt, error) {
+internal/execution/adapters/protocol/orca/terminal_send.go:84:		return Result{}, TerminalSendReceipt{}, err
+internal/execution/adapters/protocol/orca/terminal_send.go:86:	return decodeTerminalSend(c.MetaCall(ctx, send.arguments()...))
+internal/execution/adapters/protocol/orca/terminal_send.go:89:func (c Client) SendTerminalWithTimeout(ctx context.Context, timeout time.Duration, send TerminalSend) (Result, TerminalSendReceipt, error) {
+internal/execution/adapters/protocol/orca/terminal_send.go:91:		return Result{}, TerminalSendReceipt{}, err
+internal/execution/adapters/protocol/orca/terminal_send.go:93:	return decodeTerminalSend(c.MetaCallWithTimeout(ctx, timeout, send.arguments()...))
+internal/execution/adapters/protocol/orca/terminal_send_test.go:12:func TestOrcaTerminalSendCapability(t *testing.T) {
+internal/execution/adapters/protocol/orca/terminal_send_test.go:72:			input := TerminalSend{Handle: "terminal", Text: "中文 'quoted'\r\rnext", RequestID: "request"}
+internal/execution/adapters/protocol/orca/terminal_send_test.go:74:			var receipt TerminalSendReceipt
+internal/execution/adapters/protocol/orca/terminal_send_test.go:78:				result, receipt, err = client.SendTerminalWithTimeout(context.Background(), 50*time.Second, input)
+internal/execution/adapters/protocol/orca/terminal_send_test.go:80:				result, receipt, err = client.SendTerminal(context.Background(), input)
+internal/execution/adapters/protocol/orca/terminal_send_test.go:104:		var receipt TerminalSendReceipt
+internal/execution/adapters/protocol/orca/terminal_send_test.go:119:		for _, send := range []TerminalSend{{Handle: "terminal"}, {RequestID: "request"}, {}} {
+internal/execution/adapters/protocol/orca/terminal_send_test.go:122:				var receipt TerminalSendReceipt
+internal/execution/adapters/protocol/orca/terminal_send_test.go:125:					result, receipt, err = client.SendTerminalWithTimeout(context.Background(), time.Second, send)
+internal/execution/adapters/protocol/orca/terminal_send_test.go:127:					result, receipt, err = client.SendTerminal(context.Background(), send)

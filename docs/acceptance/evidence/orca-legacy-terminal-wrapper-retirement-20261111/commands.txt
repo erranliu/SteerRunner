@@ -1,0 +1,35 @@
+before-protocol
+go test ./internal/execution/adapters/protocol/orca -run '^(TestOrcaResourceCreateCapability|TestOrcaTerminalSendCapability|TestOrcaTerminalReadCapability|TestOrcaCloseInventoryCapability|TestBoundTerminalRejectsRuntimeAndIncarnationReplacement|TestTerminalCloseRequiresExactRuntimeHandleAndPtyProof|TestOrcaResourceQueries)$' -count=1 -timeout=5m -json
+
+before-adapter
+go test ./internal/execution/adapters/orcatransport -run '^(TestWorkspaceCreationFacts|TestWorkspaceCreationCodecPreservesCheckpoint|TestWorkspaceCreationBindsCLIResult|TestStructuredWorkspaceRecoversOriginalOwnerOutput|TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch|TestFrozenReaderHasNoExecutionAndRejectsMutation|TestTerminalStoppedRequiresCompleteOriginalHost|TestLocalCodexStoppedUsesRegisteredResources)$' -count=1 -timeout=5m -json
+
+before-livetest
+go test ./internal/testkit/livetest -run '^(TestDiagnosticReadNeverReplaysMutation|TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory)$' -count=1 -timeout=5m -json
+
+after-protocol
+go test ./internal/execution/adapters/protocol/orca -run '^(TestOrcaResourceCreateCapability|TestOrcaCloseInventoryCapability|TestBoundTerminalRejectsRuntimeAndIncarnationReplacement|TestTerminalCloseRequiresExactRuntimeHandleAndPtyProof|TestOrcaResourceQueries)$' -count=1 -timeout=5m -json
+
+after-adapter
+go test ./internal/execution/adapters/orcatransport -run '^(TestWorkspaceCreationFacts|TestWorkspaceCreationCodecPreservesCheckpoint|TestWorkspaceCreationBindsCLIResult|TestStructuredWorkspaceRecoversOriginalOwnerOutput|TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch|TestFrozenReaderHasNoExecutionAndRejectsMutation|TestTerminalStoppedRequiresCompleteOriginalHost|TestLocalCodexStoppedUsesRegisteredResources)$' -count=1 -timeout=5m -json
+
+after-livetest
+go test ./internal/testkit/livetest -run '^(TestDiagnosticReadNeverReplaysMutation|TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory)$' -count=1 -timeout=5m -json
+
+before-capture
+go run .evidence/orca-legacy-terminal-wrapper-retirement/capture.go .evidence/orca-legacy-terminal-wrapper-retirement/before-capture.json
+
+after-capture
+go run .evidence/orca-legacy-terminal-wrapper-retirement/capture.go .evidence/orca-legacy-terminal-wrapper-retirement/after-capture.json
+
+pi-parse
+PowerShell Parser.ParseFile for scripts/probe-orca-pi.ps1 (Plan P2.2)
+
+stability-build
+go build -trimpath -o .evidence/orca-legacy-terminal-wrapper-retirement/final/stability.exe ./tests/helpers/stability
+
+native-compile
+go test -tags=live -c -o .evidence/orca-legacy-terminal-wrapper-retirement/final/native.test.exe ./tests/native
+
+runner-build
+./scripts/build.ps1 -OutFile .evidence/orca-legacy-terminal-wrapper-retirement/final/steerrunner.exe
