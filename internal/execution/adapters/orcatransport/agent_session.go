@@ -353,6 +353,7 @@ func (l *Lifecycle) agentHistory(ctx context.Context, state agentSessionState) (
 	client := l.agentClient(state.RuntimeID)
 	var before *native.AgentCursor
 	var tail native.AgentPage
+	var originalSubmission *native.AgentSubmission
 	items := map[string]native.AgentItem{}
 	bytesRead := 0
 	for pageNo := 0; pageNo < 64; pageNo++ {
@@ -362,6 +363,7 @@ func (l *Lifecycle) agentHistory(ctx context.Context, state agentSessionState) (
 		}
 		if pageNo == 0 {
 			tail = page
+			tail.Submissions = nil
 			if state.Epoch != "" && state.Epoch != page.Epoch {
 				return nil, tail, &b.AdapterError{Kind: b.AdapterIdentityMismatch, Operation: "observe", Diagnostic: "original agent history epoch changed"}
 			}
@@ -372,6 +374,19 @@ func (l *Lifecycle) agentHistory(ctx context.Context, state agentSessionState) (
 		// A before page can have newer items: those are the pages already read.
 		if page.Epoch != tail.Epoch || (before == nil && page.HasNewer) || len(page.RemovedItemIDs) > 0 {
 			return nil, tail, errors.New("original agent history is incomplete or changed")
+		}
+		// Submissions may appear only on the page containing the original input.
+		// Keep live session fields from the latest page.
+		submissionOnPage := false
+		for _, submission := range page.Submissions {
+			if submission.ClientMessageID != state.MessageID {
+				continue
+			}
+			if submissionOnPage || (originalSubmission != nil && *originalSubmission != submission) {
+				return nil, tail, &b.AdapterError{Kind: b.AdapterIdentityMismatch, Operation: "observe", Diagnostic: "original agent submission binding changed"}
+			}
+			submissionOnPage = true
+			originalSubmission = &submission
 		}
 		for _, item := range page.Items {
 			if item.ItemID == "" {
@@ -411,6 +426,9 @@ func (l *Lifecycle) agentHistory(ctx context.Context, state agentSessionState) (
 				if ordered[i-1].Sequence == ordered[i].Sequence && ordered[i-1].SequenceIndex == ordered[i].SequenceIndex {
 					return nil, tail, errors.New("agent history item order is ambiguous")
 				}
+			}
+			if originalSubmission != nil {
+				tail.Submissions = []native.AgentSubmission{*originalSubmission}
 			}
 			return ordered, tail, nil
 		}

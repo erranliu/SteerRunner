@@ -123,6 +123,46 @@ func TestStructuredObservationRecoversPagedCompletedTurn(t *testing.T) {
 	}
 }
 
+func TestStructuredObservationVerifiesSubmissionAcrossHistoryPages(t *testing.T) {
+	for _, scenario := range []string{"older-page", "same-receipt-on-both-pages", "conflicting-receipts", "missing-receipt"} {
+		t.Run(scenario, func(t *testing.T) {
+			l, s, f := structuredFixture(t)
+			submission := f.pages[0].Submissions[0]
+			switch scenario {
+			case "older-page":
+				f.pages[0].Submissions = nil
+				f.pages[1].Submissions = []native.AgentSubmission{submission}
+			case "same-receipt-on-both-pages":
+				f.pages[1].Submissions = []native.AgentSubmission{submission}
+			case "conflicting-receipts":
+				submission.ProviderItemID = "conflicting-provider-item"
+				f.pages[1].Submissions = []native.AgentSubmission{submission}
+			case "missing-receipt":
+				f.pages[0].Submissions = nil
+			}
+			receipt, err := l.readStructured(context.Background(), s)
+			if f.reads != 2 {
+				t.Fatalf("read %d pages, want 2", f.reads)
+			}
+			switch scenario {
+			case "conflicting-receipts":
+				if !b.IsAdapterError(err, b.AdapterIdentityMismatch) || receipt.TurnEvidence != nil {
+					t.Fatal("conflicting submission receipts were trusted", receipt, err)
+				}
+			case "missing-receipt":
+				if err != nil || receipt.Diagnostic == "" || receipt.TurnEvidence != nil {
+					t.Fatal("missing submission receipt was trusted", receipt, err)
+				}
+			default:
+				if err != nil || !receipt.State.InputAccepted || !receipt.State.TurnStarted ||
+					receipt.TurnEvidence == nil || !receipt.TurnEvidence.FinalVerified || receipt.TurnEvidence.TurnID != "native-turn" {
+					t.Fatal("original turn was not verified using its paged submission receipt", receipt, err)
+				}
+			}
+		})
+	}
+}
+
 func TestStructuredObservationPreservesNativeIdentityMismatch(t *testing.T) {
 	l, s, f := structuredFixture(t)
 	f.historyErr = fmt.Errorf("paired host changed: %w", native.ErrStateIdentityChanged)
