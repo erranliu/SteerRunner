@@ -2,6 +2,7 @@ package workspace
 
 import (
 	"context"
+	"errors"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -96,9 +97,29 @@ func TestLocalWorkspacePrepareInspectResourcesAndCleanup(t *testing.T) {
 	}
 
 	partialIntent := &executionbackend.WorkspaceIntent{Path: filepath.Join(worktreeRoot, "run-partial"), Branch: "codex/partial", BaseCommit: strings.Repeat("a", 40)}
+	start := git.Start
+	checkoutStarted := false
+	var commandsAfterCheckout [][]string
+	git.Start = func(cmd *exec.Cmd) (executionbackend.StopHandle, error) {
+		if checkoutStarted {
+			commandsAfterCheckout = append(commandsAfterCheckout, slices.Clone(cmd.Args))
+		}
+		if slices.Contains(cmd.Args, "worktree") && slices.Contains(cmd.Args, "add") {
+			checkoutStarted = true
+		}
+		return start(cmd)
+	}
 	partial, err := Prepare(ctx, git, repository, worktreeRoot, partialIntent)
-	if err == nil || partial.Status != executionbackend.OperationUnknown || !partial.PathCreated {
-		t.Fatalf("partial preparation facts were lost: result=%+v err=%v", partial, err)
+	var checkoutErr *exec.ExitError
+	if !checkoutStarted || !errors.As(err, &checkoutErr) || !strings.Contains(err.Error(), partialIntent.BaseCommit) ||
+		partial.Status != executionbackend.OperationUnknown || partial.Inspection != nil {
+		t.Fatalf("failed checkout did not preserve the original error and unknown disposition: result=%+v err=%v", partial, err)
+	}
+	if info, err := os.Stat(partialIntent.Path); err != nil || !info.IsDir() {
+		t.Fatalf("original worktree directory was not retained: %v", err)
+	}
+	if len(commandsAfterCheckout) != 0 {
+		t.Fatalf("failed checkout followed by Git commands: %v", commandsAfterCheckout)
 	}
 }
 
