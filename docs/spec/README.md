@@ -19,5 +19,6 @@
 | 应用层旧阶段重建规则退役（2026-11-10 已实施，定向验收） | [Spec](application-pending-stage-retirement.spec.md) · [Plan](application-pending-stage-retirement.plan.md) · [验收](../acceptance/application-pending-stage-retirement.md) |
 | 零消费者 checkpoint／错误声明清尾（2026-11-10 已实施，定向验收） | [Spec](unused-checkpoint-error-cleanup.spec.md) · [Plan](unused-checkpoint-error-cleanup.plan.md) · [验收](../acceptance/unused-checkpoint-error-cleanup.md) |
 | orcaCLIOutput 恒真策略参数退役（2026-11-11 已实施，定向验收） | [Spec](orca-cli-output-policy-retirement.spec.md) · [Plan](orca-cli-output-policy-retirement.plan.md) · [验收](../acceptance/orca-cli-output-policy-retirement.md) |
+| Orca 旧终端 create / send / read Go 包装器退役（2026-11-11 已实施，定向验收） | [Spec](orca-legacy-terminal-wrapper-retirement.spec.md) · [Plan](orca-legacy-terminal-wrapper-retirement.plan.md) · [验收](../acceptance/orca-legacy-terminal-wrapper-retirement.md) |
 
 长期契约及未结设计之外，目录中的归档导引只为原始证据固定引用保留，不作为当前契约。新任务材料仍按工作流写入 `docs/spec/`，完成实施后将一次性 Spec/Plan 归档，长期规则只在相应领域契约中维护。上述 Codex 退役、Orca 测试分离、应用层旧阶段重建规则退役、零消费者声明清尾及 CLI 恒真策略退役专项于 2026-11-10 新增，其余索引核对日期保持如上。

@@ -25,19 +25,6 @@ func WorktreeCreateArgs(request WorktreeCreate) []string {
 	return args
 }
 
-type TerminalCreate struct {
-	Worktree, Title string
-	Command         *string
-}
-
-func TerminalCreateArgs(request TerminalCreate) []string {
-	args := []string{"terminal", "create", "--worktree", request.Worktree, "--title", request.Title}
-	if request.Command != nil {
-		args = append(args, "--command", *request.Command)
-	}
-	return append(args, "--json")
-}
-
 type WorktreeCreation struct {
 	Worktree            Worktree `json:"worktree"`
 	AgentTerminalHandle string   `json:"agentTerminalHandle,omitempty"`
@@ -46,14 +33,6 @@ type WorktreeCreation struct {
 
 func DecodeWorktreeCreation(result Result) (WorktreeCreation, error) {
 	var value WorktreeCreation
-	err := json.Unmarshal(result.Payload, &value)
-	return value, err
-}
-
-type TerminalCreation struct{ Terminal Terminal }
-
-func DecodeTerminalCreation(result Result) (TerminalCreation, error) {
-	var value TerminalCreation
 	err := json.Unmarshal(result.Payload, &value)
 	return value, err
 }

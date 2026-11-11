@@ -20,28 +20,6 @@ func TestOrcaResourceCreateCapability(t *testing.T) {
 			}
 		})
 	}
-	for _, command := range []*string{nil, ptrString("& 'runtime path' '参数'"), ptrString("")} {
-		name := "initial"
-		if command != nil {
-			name = "command-" + *command
-		}
-		t.Run(name, func(t *testing.T) {
-			options := TerminalCreate{Worktree: "id:repo::C:/work tree", Title: "执行 title", Command: command}
-			want := []string{"terminal", "create", "--worktree", "id:repo::C:/work tree", "--title", "执行 title"}
-			if command != nil {
-				want = append(want, "--command", *command)
-			}
-			want = append(want, "--json")
-			got := TerminalCreateArgs(options)
-			if !reflect.DeepEqual(got, want) {
-				t.Fatal("original terminal argv changed", got)
-			}
-			got[0] = "mutated"
-			if TerminalCreateArgs(options)[0] != "terminal" {
-				t.Fatal("argv alias")
-			}
-		})
-	}
 	for _, scenario := range []string{"complete", "bare", "missing", "bad-worktree", "bad-agent", "bad-startup", "extension"} {
 		t.Run("worktree-"+scenario, func(t *testing.T) {
 			value := map[string]any{"worktree": Worktree{ID: "worktree", InstanceID: "instance", RepoID: "repo", Path: "C:/tree", Head: "head", Branch: "branch", BaseRef: "base", DisplayName: "name"}, "agentTerminalHandle": "agent", "startupTerminal": Terminal{Handle: "startup", IncarnationID: "incarnation"}}
@@ -74,24 +52,4 @@ func TestOrcaResourceCreateCapability(t *testing.T) {
 			}
 		})
 	}
-	for _, scenario := range []string{"complete", "missing", "bad-terminal", "bad-incarnation"} {
-		t.Run("terminal-"+scenario, func(t *testing.T) {
-			value := map[string]any{"terminal": map[string]any{"handle": "handle", "incarnationId": "incarnation", "worktreeId": "worktree"}}
-			switch scenario {
-			case "missing":
-				delete(value, "terminal")
-			case "bad-terminal":
-				value["terminal"] = "invalid"
-			case "bad-incarnation":
-				value["terminal"].(map[string]any)["incarnationId"] = true
-			}
-			payload, _ := json.Marshal(value)
-			got, err := DecodeTerminalCreation(Result{Payload: payload})
-			if (err != nil) != (scenario == "bad-terminal" || scenario == "bad-incarnation") || scenario == "complete" && (got.Terminal.Handle != "handle" || got.Terminal.IncarnationID != "incarnation" || got.Terminal.WorktreeID != "worktree") {
-				t.Fatal("terminal native facts changed", got, err)
-			}
-		})
-	}
 }
-
-func ptrString(value string) *string { return &value }

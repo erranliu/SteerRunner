@@ -1,0 +1,2 @@
+git grep -n -w -E TerminalCreate|TerminalCreateArgs|TerminalCreation|DecodeTerminalCreation|TerminalSend|TerminalSendReceipt|TerminalPromptReceipt|SendTerminal|SendTerminalWithTimeout|decodeTerminalSend|TerminalRead|TerminalReadPage|ReadTerminal|ptrString|TestOrcaTerminalSendCapability|TestOrcaTerminalReadCapability -- :!docs/**
+exit 1 (no matching references)
