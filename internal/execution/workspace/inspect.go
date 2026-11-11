@@ -16,6 +16,8 @@ import (
 
 var commitPattern = regexp.MustCompile(`^(?:[0-9a-f]{40}|[0-9a-f]{64})$`)
 
+var ErrCheckoutIncomplete = errors.New("original worktree checkout is incomplete")
+
 type Repository struct {
 	Path      string
 	CommonDir string
@@ -121,11 +123,47 @@ func Inspect(ctx context.Context, git Git, repository Repository, intent *execut
 	if err != nil {
 		return executionbackend.WorkspaceInspection{}, err
 	}
-	status, err := git.Output(ctx, intent.Path, "status", "--porcelain=v1", "-z", "--untracked-files=all")
+	status, err := git.Output(ctx, intent.Path, "--no-optional-locks", "status", "--porcelain=v1", "-z", "--untracked-files=all")
 	if err != nil {
 		return executionbackend.WorkspaceInspection{}, err
 	}
 	return executionbackend.WorkspaceInspection{InspectionScope: "working_tree", Repository: repository.Path, Worktree: intent.Path, Branch: intent.Branch, Base: intent.BaseCommit, Head: strings.TrimSpace(string(head)), Dirty: len(status) != 0, CheckedAt: time.Now().UTC()}, nil
+}
+
+// InspectPrepared qualifies a new checkout after an uncertain preparation receipt.
+func InspectPrepared(ctx context.Context, git Git, repository Repository, intent *executionbackend.WorkspaceIntent) (executionbackend.WorkspaceInspection, error) {
+	inspection, err := Inspect(ctx, git, repository, intent)
+	if err != nil {
+		return inspection, err
+	}
+	out, err := git.Output(ctx, intent.Path, "rev-parse", "--absolute-git-dir")
+	if err != nil {
+		return inspection, err
+	}
+	admin, err := resolveGitPath(strings.TrimSpace(string(out)))
+	if err != nil {
+		return inspection, err
+	}
+	index := filepath.Join(admin, "index")
+	info, err := os.Lstat(index)
+	switch {
+	case os.IsNotExist(err):
+		return inspection, fmt.Errorf("%w: Git index is missing", ErrCheckoutIncomplete)
+	case err != nil:
+		return inspection, err
+	case !info.Mode().IsRegular() || info.Size() == 0:
+		return inspection, fmt.Errorf("%w: Git index is not a populated regular file", ErrCheckoutIncomplete)
+	}
+	if _, err := os.Lstat(index + ".lock"); !os.IsNotExist(err) {
+		if err != nil {
+			return inspection, err
+		}
+		return inspection, errors.New("original worktree checkout cannot be confirmed while its Git index is locked")
+	}
+	if inspection.Head != intent.BaseCommit || inspection.Dirty {
+		return inspection, fmt.Errorf("%w: expected the pinned HEAD and a clean worktree", ErrCheckoutIncomplete)
+	}
+	return inspection, nil
 }
 
 // ValidateRoot resolves existing symlink ancestors before applying the original

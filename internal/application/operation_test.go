@@ -27,6 +27,55 @@ type operationCommitPort struct {
 
 type partialReceiptPort struct{ operationCommitPort }
 
+type localCheckoutPort struct {
+	operationCommitPort
+	deadline time.Time
+}
+
+func (*localCheckoutPort) PolicyCapabilities() b.LifecyclePolicyCapabilities {
+	return b.LifecyclePolicyCapabilities{Preparation: b.PreparationCapabilities{
+		Workspace: b.MechanismApplicable, Resource: b.MechanismNotApplicable, Session: b.MechanismNotApplicable,
+	}}
+}
+
+func (*localCheckoutPort) PreparationFacts(context.Context, b.LifecycleSnapshot) (b.PreparationFacts, error) {
+	return b.PreparationFacts{Workspace: b.GateRequired, Resource: b.GateNotApplicable, Session: b.GateNotApplicable}, nil
+}
+
+func (p *localCheckoutPort) Execute(ctx context.Context, request b.LifecycleRequest) (b.LifecycleReceipt, b.LifecycleObserver, error) {
+	p.deadline, _ = ctx.Deadline()
+	return b.LifecycleReceipt{Operation: request.Operation, Disposition: b.OperationRejected}, nil, errors.New("worktree checkout timed out")
+}
+
+func TestLocalCheckoutUsesSavedPreparationDeadlineAndBlocksInputOnFailure(t *testing.T) {
+	e, w, _ := operationEngine(t)
+	r := e.runs["run"].Clone()
+	r.Request.Execution.Adapter = "codex-app-server"
+	r.PreparationDeadline = time.Now().Add(2 * time.Minute).UTC()
+	r.Snapshot.WorkspacePlan = b.WorkspaceIntent{Path: "worktree", Branch: "fixture/checkout", BaseCommit: "0123456789abcdef0123456789abcdef01234567"}
+	if err := e.commitLocked(r, nil, "preparation_budget_saved"); err != nil {
+		t.Fatal(err)
+	}
+	port := &localCheckoutPort{}
+	w.port = port
+	candidate := b.LifecycleCandidate{Action: b.LifecyclePrepareWorkspace, Input: b.LifecycleInput{Workspace: &r.Snapshot.WorkspacePlan}}
+	index, err := e.saveIntent("run", r, candidate)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if e.invoke("run", w, port, index, false) || !port.deadline.Equal(r.PreparationDeadline) {
+		t.Fatalf("checkout did not use its saved deadline: %v, want %v", port.deadline, r.PreparationDeadline)
+	}
+	if e.advance("run", w) {
+		t.Fatal("failed checkout advanced toward native input")
+	}
+	failed := e.runs["run"]
+	if failed.Status != "blocked" || failed.Allowed || failed.WorkspaceFact != nil || len(failed.Intents) != 1 ||
+		failed.Intents[0].Request.Operation.Status != b.OperationRejected || failed.Diagnostic != "worktree checkout timed out" {
+		t.Fatalf("failed checkout published incorrect state: %s, %s, %+v", failed.Status, failed.Diagnostic, failed.Intents)
+	}
+}
+
 func (p *partialReceiptPort) Execute(_ context.Context, request b.LifecycleRequest) (b.LifecycleReceipt, b.LifecycleObserver, error) {
 	p.executes++
 	p.requests = append(p.requests, request.Clone())

@@ -262,6 +262,10 @@ func (e *Engine) invoke(id string, w *worker, p b.LifecyclePort, index int, reco
 	if reconcile && r.PendingStop == "" {
 		deadline = reconciliationDeadline(r, intent)
 	}
+	if !reconcile && request.Operation.Action == string(b.LifecyclePrepareWorkspace) &&
+		r.Request.Execution.Adapter == "codex-app-server" && !r.PreparationDeadline.IsZero() {
+		deadline = r.PreparationDeadline
+	}
 	if len(deadlines) > 0 {
 		deadline = deadlines[0]
 	}
