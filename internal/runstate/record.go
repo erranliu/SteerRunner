@@ -33,6 +33,8 @@ type Record struct {
 	StopEvidenceScope   string                         `json:"stop_evidence_scope,omitempty"`
 	ManualPause         *ManualPause                   `json:"manual_pause,omitempty"`
 	ObservationDeadline time.Time                      `json:"observation_deadline,omitempty"`
+	ObservationRetryAt  time.Time                      `json:"observation_retry_at,omitempty"`
+	ObservationFailures int                            `json:"observation_failures,omitempty"`
 	RepositorySource    *contracts.RepositorySource    `json:"repository_source,omitempty"`
 	ResultFile          *ResultFile                    `json:"result_file,omitempty"`
 	ResultFileContract  string                         `json:"result_file_contract,omitempty"`

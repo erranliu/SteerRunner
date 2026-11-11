@@ -141,6 +141,9 @@ func (e *Engine) resumeRun(id string, w *worker, p b.LifecyclePort) bool {
 			businessDiagnostic = r.ManualPause.Diagnostic
 		}
 		r.ManualPause = nil
+		r.ObservationDeadline = time.Time{}
+		r.ObservationRetryAt = time.Time{}
+		r.ObservationFailures = 0
 	}
 	r.Allowed = true
 	r.ResumeRequired = false

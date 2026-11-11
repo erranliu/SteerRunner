@@ -363,10 +363,13 @@ func (l *Lifecycle) agentHistory(ctx context.Context, state agentSessionState) (
 		if pageNo == 0 {
 			tail = page
 			if state.Epoch != "" && state.Epoch != page.Epoch {
-				return nil, tail, errors.New("original agent history epoch changed")
+				return nil, tail, &b.AdapterError{Kind: b.AdapterIdentityMismatch, Operation: "observe", Diagnostic: "original agent history epoch changed"}
 			}
 		}
-		if page.Epoch != tail.Epoch || page.SessionID != state.SessionID || page.HasNewer || len(page.RemovedItemIDs) > 0 {
+		if page.SessionID != state.SessionID {
+			return nil, tail, &b.AdapterError{Kind: b.AdapterIdentityMismatch, Operation: "observe", Diagnostic: "original agent history belongs to a different session"}
+		}
+		if page.Epoch != tail.Epoch || page.HasNewer || len(page.RemovedItemIDs) > 0 {
 			return nil, tail, errors.New("original agent history is incomplete or changed")
 		}
 		for _, item := range page.Items {
@@ -462,7 +465,7 @@ func (l *Lifecycle) verifyAgentActivity(s b.LifecycleSnapshot, state agentSessio
 		sub := &page.Submissions[i]
 		if sub.ClientMessageID == state.MessageID {
 			if submission != nil || sub.PayloadFingerprint != state.BodyFingerprint {
-				return receipt, nil, errors.New("original agent submission binding changed")
+				return receipt, nil, &b.AdapterError{Kind: b.AdapterIdentityMismatch, Operation: "observe", Diagnostic: "original agent submission binding changed"}
 			}
 			submission = sub
 		}
@@ -508,7 +511,7 @@ func (l *Lifecycle) verifyAgentActivity(s b.LifecycleSnapshot, state agentSessio
 		return receipt, nil, nil
 	}
 	if state.TurnID != "" && state.TurnID != turn.TurnID || state.TurnItemID != "" && state.TurnItemID != turnItem || state.ProviderItemID != "" && state.ProviderItemID != submission.ProviderItemID {
-		return receipt, nil, errors.New("original native turn identity changed")
+		return receipt, nil, &b.AdapterError{Kind: b.AdapterIdentityMismatch, Operation: "observe", Diagnostic: "original native turn identity changed"}
 	}
 	state.TurnID, state.TurnItemID, state.ProviderItemID, state.Epoch = turn.TurnID, turnItem, submission.ProviderItemID, page.Epoch
 	state.RuntimeFence = page.Fence

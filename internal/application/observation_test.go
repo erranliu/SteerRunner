@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"testing"
+	"time"
 
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
@@ -182,13 +183,145 @@ func (o *attachmentObserver) Close(context.Context) error {
 type observationAttachmentPort struct {
 	b.LifecyclePort
 	observer b.LifecycleObserver
+	state    b.LifecycleStateFacts
+	session  b.SessionContext
+	entered  chan context.Context
 	err      error
 	calls    int
 }
 
-func (p *observationAttachmentPort) ObserveLifecycle(context.Context, b.LifecycleSnapshot) (b.LifecycleReceipt, b.LifecycleObserver, error) {
+func (p *observationAttachmentPort) ObserveLifecycle(ctx context.Context, s b.LifecycleSnapshot) (b.LifecycleReceipt, b.LifecycleObserver, error) {
 	p.calls++
-	return b.LifecycleReceipt{State: b.LifecycleStateFacts{SessionID: "session", SessionGeneration: "observed-generation"}}, p.observer, p.err
+	p.session = s.Session
+	if p.entered != nil {
+		p.entered <- ctx
+		<-ctx.Done()
+	}
+	state := p.state
+	if state.SessionID == "" {
+		state = b.LifecycleStateFacts{SessionID: "session", SessionGeneration: "observed-generation"}
+	}
+	return b.LifecycleReceipt{State: state}, p.observer, p.err
+}
+
+func TestSROrcaObservationStopCancelsReconnectAndRejectsLateReceipt(t *testing.T) {
+	e, w, _ := operationEngine(t)
+	r := e.runs["run"].Clone()
+	r.NativeStarted, r.Phase = true, observationReconnecting
+	r.Snapshot.Session.SessionID, r.Snapshot.Session.CurrentTurnID = "session", "turn"
+	r.ObservationDeadline = time.Now().Add(5 * time.Second)
+	if err := e.commitLocked(r, nil, "turn_started"); err != nil {
+		t.Fatal(err)
+	}
+	observer := &attachmentObserver{}
+	p := &observationAttachmentPort{
+		entered:  make(chan context.Context, 1),
+		observer: observer,
+		state:    b.LifecycleStateFacts{SessionID: "session", TurnID: "turn", TurnStarted: true, InputAccepted: true},
+	}
+	w.port = p
+	done := make(chan bool, 1)
+	go func() { done <- e.advance("run", w) }()
+	var query context.Context
+	select {
+	case query = <-p.entered:
+	case <-time.After(3 * time.Second):
+		t.Fatal("reconnect query did not start")
+	}
+	response := contentControl(e, "stop", "stop-reconnect", map[string]uint64{"expected_revision": r.Revision})
+	if !response.OK || !errors.Is(query.Err(), context.Canceled) {
+		t.Fatal("accepted stop did not cancel observation", response, query.Err())
+	}
+	select {
+	case advanced := <-done:
+		if advanced || w.observer != nil || observer.closed != 1 || e.runs["run"].PendingStop == "" {
+			t.Fatal("late observation changed stop authorization or attached an observer")
+		}
+	case <-time.After(3 * time.Second):
+		t.Fatal("reconnect did not release after stop")
+	}
+}
+
+func TestSROrcaObservationReconnectsOnlyTheConfirmedTurn(t *testing.T) {
+	for _, outcome := range []string{"recovered", "foreign_turn", "unverified", "exhausted", "stop_requested"} {
+		t.Run(outcome, func(t *testing.T) {
+			e, w, _ := operationEngine(t)
+			r := e.runs["run"].Clone()
+			r.NativeStarted, r.Phase = true, "observing"
+			r.Snapshot.Session.SessionID = "session"
+			r.Snapshot.Session.CurrentTurnID = "turn"
+			r.Snapshot.Session.CurrentCommandID = "command"
+			if err := e.commitLocked(r, nil, "turn_started"); err != nil {
+				t.Fatal(err)
+			}
+			p := &observationAttachmentPort{err: errors.New("Orca state streaming connection failed: timeout")}
+			w.port = p
+			e.advance("run", w)
+			retrying := e.runs["run"]
+			if retrying.Phase != observationReconnecting || !retrying.Allowed || retrying.ResumeRequired ||
+				retrying.ObservationFailures != 1 || len(retrying.Intents) != 0 {
+				t.Fatalf("timeout did not enter read-only reconnect: %+v", retrying.View())
+			}
+			stored, err := e.store.Runs()
+			if err != nil || len(stored) != 1 || !stored[0].ObservationDeadline.Equal(retrying.ObservationDeadline) ||
+				!stored[0].ObservationRetryAt.Equal(retrying.ObservationRetryAt) {
+				t.Fatal("retry timing was not durable", err)
+			}
+			e.advance("run", w)
+			if p.calls != 1 {
+				t.Fatal("wake bypassed reconnect backoff")
+			}
+			next := retrying.Clone()
+			next.ObservationRetryAt = time.Now().Add(-time.Second)
+			if outcome == "exhausted" {
+				next.ObservationDeadline = next.ObservationRetryAt
+			}
+			if outcome == "stop_requested" {
+				next.Closed = true
+			}
+			if err := e.commitLocked(next, nil, "test_retry_due"); err != nil {
+				t.Fatal(err)
+			}
+			observer := &attachmentObserver{}
+			p.observer, p.err = observer, nil
+			p.state = b.LifecycleStateFacts{SessionID: "session", TurnID: "turn", TurnStarted: true, InputAccepted: true}
+			if outcome == "foreign_turn" {
+				p.state.TurnID = "different-turn"
+			}
+			if outcome == "unverified" {
+				p.state.InputAccepted = false
+			}
+			e.advance("run", w)
+			current := e.runs["run"]
+			if current.Snapshot.Session != r.Snapshot.Session || len(current.Intents) != 0 || p.session != r.Snapshot.Session {
+				t.Fatal("reconnect changed the original session, turn, or dispatched operations")
+			}
+			switch outcome {
+			case "recovered":
+				if p.calls != 2 || w.observer != observer || current.Phase != "observing" ||
+					current.Diagnostic != "" || !current.ObservationDeadline.IsZero() {
+					t.Fatalf("verified original observation was not restored: %+v", current.View())
+				}
+			case "exhausted":
+				if p.calls != 1 || current.Status != "blocked" || !current.ResumeRequired || current.Allowed {
+					t.Fatalf("exhausted retry did not require recovery: %+v", current.View())
+				}
+			case "foreign_turn":
+				if p.calls != 2 || w.observer != nil || observer.closed != 1 || current.Status != "blocked" || !current.ResumeRequired {
+					t.Fatalf("foreign turn was not blocked: %+v", current.View())
+				}
+			case "stop_requested":
+				if p.calls != 1 || w.observer != nil {
+					t.Fatal("closed execution was observed again")
+				}
+			default:
+				if p.calls != 2 || w.observer != nil || observer.closed != 1 || current.ObservationFailures != 2 ||
+					!current.ObservationDeadline.Equal(retrying.ObservationDeadline) {
+					t.Fatal("unverified read was accepted or restarted the retry budget")
+				}
+			}
+		})
+	}
 }
 
 func TestSRObservationAttachmentCommitsBeforePublishingObserver(t *testing.T) {
