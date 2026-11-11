@@ -291,7 +291,7 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 		next.CommandStates[receipt.ID] = "pending"
 		switch command {
 		case contracts.WorkspaceAcquire:
-			if !r.View().WorkspaceWrite.CanAcquire {
+			if !r.CanAcquireWorkspaceWrite() {
 				return reject(contracts.Fail(5, "workspace_not_idle", "The original conversation must be settled and ready for a new turn."))
 			}
 			e.mu.Unlock()
@@ -396,7 +396,7 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 				next.Phase = "feedback_saved"
 			}
 		case "message":
-			if !r.View().Controls.CanMessage {
+			if !r.CanMessage() {
 				return reject(contracts.Fail(5, "invalid_state", "The original Run must be idle, authorized and reconciled."))
 			}
 			var message contracts.MessageInput
