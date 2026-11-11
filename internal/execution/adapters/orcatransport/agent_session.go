@@ -369,7 +369,8 @@ func (l *Lifecycle) agentHistory(ctx context.Context, state agentSessionState) (
 		if page.SessionID != state.SessionID {
 			return nil, tail, &b.AdapterError{Kind: b.AdapterIdentityMismatch, Operation: "observe", Diagnostic: "original agent history belongs to a different session"}
 		}
-		if page.Epoch != tail.Epoch || page.HasNewer || len(page.RemovedItemIDs) > 0 {
+		// A before page can have newer items: those are the pages already read.
+		if page.Epoch != tail.Epoch || (before == nil && page.HasNewer) || len(page.RemovedItemIDs) > 0 {
 			return nil, tail, errors.New("original agent history is incomplete or changed")
 		}
 		for _, item := range page.Items {

@@ -93,7 +93,7 @@ func structuredFixture(t *testing.T) (*Lifecycle, b.LifecycleSnapshot, *agentFix
 	page := native.AgentPage{SessionID: state.SessionID, Epoch: "original-epoch", Submissions: []native.AgentSubmission{{ClientMessageID: state.MessageID, PayloadFingerprint: state.BodyFingerprint, DispatchState: "accepted", ProviderItemID: "provider-user-item"}}, Items: []native.AgentItem{last}}
 	page.HasOlder = true
 	page.Window.NextCursor = &native.AgentCursor{Epoch: page.Epoch, Sequence: 9}
-	older := native.AgentPage{SessionID: state.SessionID, Epoch: page.Epoch, Items: []native.AgentItem{user, turn, first, {ItemID: "tool", Sequence: 6, Body: json.RawMessage(`{"kind":"tool-call","status":"completed"}`)}}}
+	older := native.AgentPage{SessionID: state.SessionID, Epoch: page.Epoch, HasNewer: true, Items: []native.AgentItem{user, turn, first, {ItemID: "tool", Sequence: 6, Body: json.RawMessage(`{"kind":"tool-call","status":"completed"}`)}}}
 	fake := &agentFixture{pages: []native.AgentPage{page, older}}
 	l.agentSessions = func(runtime string) agentSessionPort {
 		if runtime != state.RuntimeID {
@@ -104,6 +104,20 @@ func structuredFixture(t *testing.T) (*Lifecycle, b.LifecycleSnapshot, *agentFix
 	return l, s, fake
 }
 func mustAgentJSON(v any) json.RawMessage { raw, _ := json.Marshal(v); return raw }
+
+func TestStructuredObservationRecoversPagedCompletedTurn(t *testing.T) {
+	l, s, f := structuredFixture(t)
+	receipt, observer, err := l.structuredObserveLifecycle(context.Background(), s)
+	if err != nil || observer != nil || f.reads != 2 || f.creates != 0 || f.closes != 0 {
+		t.Fatal("paged observation did not settle read-only", receipt, err, f.reads)
+	}
+	evidence := receipt.TurnEvidence
+	if evidence == nil || !evidence.FinalVerified || !evidence.Succeeded ||
+		evidence.SessionID != f.pages[0].SessionID || evidence.TurnID != "native-turn" ||
+		evidence.LastMessage != "tool preamble\n\n"+strings.Repeat("complete result 中文😀\n", 300) {
+		t.Fatal("paged observation did not recover the complete original result")
+	}
+}
 
 func TestStructuredRunningActivityUsesOriginalTurn(t *testing.T) {
 	for _, foreign := range []bool{false, true} {
