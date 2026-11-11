@@ -40,11 +40,19 @@ func (e *Engine) run(id string, w *worker) {
 					e.logger.Printf("event commit unavailable run=%s", id)
 				}
 			}
-		case _, ok := <-done:
+		case err, ok := <-done:
 			if ok || w.observer != nil {
 				if w.observer != nil {
 					_ = w.observer.Close(context.Background())
 					w.observer = nil
+				}
+				if err != nil {
+					w.gate.Lock()
+					e.mu.Lock()
+					current := e.runs[id]
+					e.mu.Unlock()
+					e.retryObservation(id, current, err, time.Now())
+					w.gate.Unlock()
 				}
 				e.signal(w)
 			}

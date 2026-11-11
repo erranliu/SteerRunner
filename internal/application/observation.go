@@ -13,19 +13,102 @@ import (
 	"time"
 )
 
-// advance holds the dispatch gate while attaching the original observation.
+const (
+	observationReconnecting    = "observation_reconnecting"
+	observationReconnectBudget = 2 * time.Minute
+	observationCallBudget      = 30 * time.Second
+)
+
+func canReconnectObservation(r *runstate.Record) bool {
+	s := r.Snapshot.Session
+	return r.Request.Execution.Adapter == "orca-terminal" && r.NativeStarted &&
+		s.SessionID != "" && s.CurrentTurnID != "" && s.CurrentTurnID != s.LastStoppedTurnID &&
+		r.Status == "running" && r.Allowed && !r.ResumeRequired && !r.Closed &&
+		r.PendingStop == "" && r.PendingResume == "" && r.StopStatus == "" && !unknown(r)
+}
+
+func (e *Engine) retryObservation(id string, original *runstate.Record, cause error, now time.Time) {
+	e.mu.Lock()
+	current := e.runs[id]
+	if current.Revision != original.Revision || !canReconnectObservation(current) || e.ctx.Err() != nil {
+		e.mu.Unlock()
+		return
+	}
+	if b.IsAdapterError(cause, b.AdapterIdentityMismatch) {
+		e.mu.Unlock()
+		e.requireManual(id, cause.Error())
+		return
+	}
+	defer e.mu.Unlock()
+	next := current.Clone()
+	if next.Phase != observationReconnecting || next.ObservationDeadline.IsZero() {
+		next.ObservationDeadline = now.Add(observationReconnectBudget)
+		next.ObservationFailures = 0
+	}
+	next.ObservationFailures++
+	delay := min(time.Second<<min(next.ObservationFailures-1, 4), 15*time.Second)
+	next.ObservationRetryAt = now.Add(delay)
+	next.Phase, next.Diagnostic = observationReconnecting, e.redact(next, cause.Error())
+	_ = e.commitLocked(next, nil, observationReconnecting)
+}
+
+// advance enters with the dispatch gate held.
 // Publish the observer and its handle only after its facts commit successfully.
 func (e *Engine) attachObservation(id string, w *worker, p b.LifecycleObservePort, r *runstate.Record) bool {
-	if w.observer != nil {
+	if w.observer != nil || r.Closed {
 		return false
 	}
-	deadline := r.ObservationDeadline
-	if deadline.IsZero() {
-		deadline = time.Now().Add(30 * time.Second)
+	now := time.Now()
+	reconnect := canReconnectObservation(r)
+	deadline := now.Add(observationCallBudget)
+	if reconnect && r.Phase == observationReconnecting && !r.ObservationDeadline.IsZero() {
+		if !now.Before(r.ObservationDeadline) {
+			e.requireManual(id, "Original resource observation deadline exhausted: "+r.Diagnostic)
+			return false
+		}
+		if now.Before(r.ObservationRetryAt) {
+			return false
+		}
+		if r.ObservationDeadline.Before(deadline) {
+			deadline = r.ObservationDeadline
+		}
+	} else if !reconnect && !r.ObservationDeadline.IsZero() {
+		deadline = r.ObservationDeadline
 	}
 	ctx, cancel := context.WithDeadline(e.ctx, deadline)
+	if reconnect {
+		w.queryCancel = cancel
+		w.gate.Unlock()
+	}
 	receipt, observer, err := p.ObserveLifecycle(ctx, r.Snapshot.Clone())
 	cancel()
+	if reconnect {
+		w.gate.Lock()
+		w.queryCancel = nil
+		e.mu.Lock()
+		current := e.runs[id]
+		valid := current.Revision == r.Revision && canReconnectObservation(current) && e.ctx.Err() == nil
+		e.mu.Unlock()
+		if !valid {
+			if observer != nil {
+				_ = observer.Close(context.Background())
+			}
+			return false
+		}
+		state := receipt.State
+		if err == nil && (state.SessionID != "" && state.SessionID != r.Snapshot.Session.SessionID ||
+			state.TurnID != "" && state.TurnID != r.Snapshot.Session.CurrentTurnID) {
+			err = &b.AdapterError{Kind: b.AdapterIdentityMismatch, Operation: "observe", Diagnostic: "Original session or turn identity changed"}
+		}
+		if err == nil && (state.SessionID == "" || state.TurnID == "" || !state.InputAccepted || !state.TurnStarted ||
+			(observer == nil && receipt.TurnEvidence == nil)) {
+			diagnostic := receipt.Diagnostic
+			if diagnostic == "" {
+				diagnostic = "Original session and turn could not be verified"
+			}
+			err = errors.New(diagnostic)
+		}
+	}
 	if err == nil && receipt.Disposition == b.OperationUnknown && observer == nil && receipt.TurnEvidence == nil {
 		err = errors.New("Original observation remains unverified: " + receipt.Diagnostic)
 	}
@@ -33,7 +116,9 @@ func (e *Engine) attachObservation(id string, w *worker, p b.LifecycleObservePor
 		if observer != nil {
 			_ = observer.Close(context.Background())
 		}
-		if !time.Now().Before(deadline) {
+		if reconnect {
+			e.retryObservation(id, r, err, time.Now())
+		} else if !time.Now().Before(deadline) {
 			e.requireManual(id, "Original resource observation deadline exhausted: "+err.Error())
 		} else if r.Status == "blocked" || r.Status == "waiting_input" || r.ResumeRequired {
 			e.logger.Printf("original observation unavailable run=%s diagnostic=%s", id, e.redact(r, err.Error()))
@@ -54,6 +139,9 @@ func (e *Engine) attachObservation(id string, w *worker, p b.LifecycleObservePor
 	if !e.applyObservation(id, r, receipt) {
 		if observer != nil {
 			_ = observer.Close(context.Background())
+		}
+		if reconnect {
+			e.retryObservation(id, r, errors.New("Original observation could not be committed"), time.Now())
 		}
 		return false
 	}
@@ -200,6 +288,11 @@ func (e *Engine) applyObservation(id string, original *runstate.Record, receipt 
 		return false
 	}
 	next.ObservationDeadline = time.Time{}
+	next.ObservationRetryAt = time.Time{}
+	next.ObservationFailures = 0
+	if original.Phase == observationReconnecting {
+		next.Diagnostic = ""
+	}
 	e.applyObservationDiagnostic(next, receipt.Diagnostic)
 	if reflect.DeepEqual(next, e.runs[id]) {
 		return true

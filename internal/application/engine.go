@@ -58,7 +58,7 @@ type worker struct {
 	ownedInputs             map[string]bool
 	checkpoints             map[string]*workflow.WorkspaceSource
 	gate                    sync.Mutex         // serializes new native dispatch with committed revocation
-	queryCancel             context.CancelFunc // protected by gate; only a read-only preparation scope
+	queryCancel             context.CancelFunc // protected by gate; cancels a read-only native query
 	wake                    chan struct{}
 	port                    b.LifecyclePort
 	observer                b.LifecycleObserver
