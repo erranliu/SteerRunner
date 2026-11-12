@@ -55,7 +55,11 @@ func (e *Engine) ReadNativeConversation(target contracts.NativeSessionTarget, cu
 			userInputs[entry.Text] = true
 		}
 	}
-	page, err := orca.ReadNativeConversation(ctx, e.setup(r, &worker{}), target, cursor, limit, userInputs)
+	setup := b.LifecycleSetup{
+		Snapshot: r.Snapshot.Clone(), ProfileData: r.Profile,
+		ProfileID: r.ID, AcceptedConfigVersion: r.InputDigest, AgentLaunchCommand: r.LaunchCommand,
+	}
+	page, err := orca.ReadNativeConversation(ctx, setup, target, cursor, limit, userInputs)
 	if orca.IsConversationCursorError(err) {
 		return reject("invalid_cursor", "Conversation cursor differs from the original session.", 2)
 	}
