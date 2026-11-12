@@ -9,6 +9,7 @@ import (
 	m "github.com/erranliu/SteerRunner/internal/execution/model"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable/operation"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
+	"slices"
 	"time"
 )
 
@@ -187,13 +188,12 @@ func (r *Record) View() contracts.RunView {
 		}
 	}
 	v.Controls = contracts.Controls{CanReply: r.Allowed && !r.ResumeRequired && !unresolved && (r.Question != nil || r.Status == "blocked") && r.PendingAnswer == nil, CanResume: r.ResumeRequired && (!unresolved || r.ManualPause != nil) && !r.Closed && r.PendingStop == "" && r.PendingResume == "", CanStop: r.StopStatus != "stopped", Reason: r.Diagnostic}
-	v.Controls.CanMessage = r.DevelopmentMessage() && r.Status == "pr_ready" && r.Allowed && !r.ResumeRequired && !unresolved && !r.Closed && r.PendingStop == "" && r.StopStatus == "" && r.PendingResume == "" && r.PendingFeedback == nil && r.PendingAnswer == nil && r.Question == nil && r.Snapshot.PendingTurn == nil
+	v.Controls.CanMessage = r.canMessage(unresolved)
 	if workflow.Content(r.Request.Workflow.ID) {
 		v.RepositorySource = r.RepositorySource
 		v.Closed, v.ContentResult = r.Closed, r.ContentResult
 		v.Controls.CanReply = r.Allowed && !r.ResumeRequired && !unresolved && !r.Closed && r.Question != nil && r.PendingAnswer == nil && r.PendingInterrupt == ""
 		v.Controls.CanResume = r.ResumeRequired && (!unresolved || r.ManualPause != nil) && !r.Closed && r.PendingStop == "" && r.PendingResume == ""
-		v.Controls.CanMessage = r.Request.Workflow.ID == "conversation" && !r.Closed && r.Allowed && !r.ResumeRequired && !unresolved && r.Workflow.StepID == "input" && r.PendingFeedback == nil && r.PendingAnswer == nil && r.PendingInterrupt == ""
 		v.Controls.CanInterrupt = r.Request.Workflow.ID == "conversation" && !r.Closed && r.Allowed && !r.ResumeRequired && !unresolved && r.PendingInterrupt == "" && s.Session.CurrentTurnID != "" && s.Session.CurrentTurnID != s.Session.LastStoppedTurnID
 		v.Controls.CanClose = r.Request.Workflow.ID == "conversation" && !r.Closed
 	}
@@ -202,12 +202,6 @@ func (r *Record) View() contracts.RunView {
 		v.ResourcesSettled = &settled
 	}
 	if r.ManagedConversation() {
-		session := s.Session
-		v.Controls.CanMessage = v.Controls.CanMessage && r.Status == "waiting_input" &&
-			r.StopStatus == "" && r.PendingStop == "" && r.PendingResume == "" &&
-			r.NextStage == nil && r.Question == nil && r.ManagedWorkspace != nil && r.ManagedWorkspace.Local != nil &&
-			s.PendingTurn == nil && session.PendingCommandID == "" && session.PendingTurnID == "" &&
-			session.SessionID != "" && session.CurrentTurnID != "" && session.CurrentTurnID == session.LastStoppedTurnID
 		v.WorkspaceWrite = &contracts.WorkspaceWriteView{Owner: "runner", CanAcquire: v.Controls.CanMessage}
 		if r.WorkspaceWriteLeaseID != "" {
 			v.WorkspaceWrite = &contracts.WorkspaceWriteView{Owner: "steerline", LeaseID: r.WorkspaceWriteLeaseID}
@@ -222,11 +216,43 @@ func (r *Record) View() contracts.RunView {
 		}
 		v.Controls.CanReply = false
 		v.Controls.CanResume = false
-		v.Controls.CanMessage = false
 		v.Controls.CanInterrupt = false
 		v.Controls.CanClose = false
 	}
 	return v
+}
+
+// CanMessage reports whether the saved Run facts allow a new message.
+func (r *Record) CanMessage() bool {
+	return r.canMessage(slices.ContainsFunc(r.Intents, operation.Intent.NeedsReconciliation))
+}
+
+// CanAcquireWorkspaceWrite is the record-side gate before native verification.
+func (r *Record) CanAcquireWorkspaceWrite() bool {
+	return r.ManagedConversation() && r.CanMessage()
+}
+
+func (r *Record) canMessage(unresolved bool) bool {
+	if !r.Allowed || r.ResumeRequired || unresolved || r.Closed || r.PendingFeedback != nil || r.PendingAnswer != nil {
+		return false
+	}
+	if r.Request.Workflow.ID != "conversation" {
+		return r.DevelopmentMessage() && r.Status == "pr_ready" &&
+			r.PendingStop == "" && r.StopStatus == "" && r.PendingResume == "" &&
+			r.Question == nil && r.Snapshot.PendingTurn == nil
+	}
+	if r.Workflow.StepID != "input" || r.PendingInterrupt != "" {
+		return false
+	}
+	if !r.ManagedConversation() {
+		return true
+	}
+	session := r.Snapshot.Session
+	return r.WorkspaceWriteLeaseID == "" && r.Status == "waiting_input" &&
+		r.StopStatus == "" && r.PendingStop == "" && r.PendingResume == "" &&
+		r.NextStage == nil && r.Question == nil && r.ManagedWorkspace != nil && r.ManagedWorkspace.Local != nil &&
+		r.Snapshot.PendingTurn == nil && session.PendingCommandID == "" && session.PendingTurnID == "" &&
+		session.SessionID != "" && session.CurrentTurnID != "" && session.CurrentTurnID == session.LastStoppedTurnID
 }
 
 func (r *Record) ManagedConversation() bool {
