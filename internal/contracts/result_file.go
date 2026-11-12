@@ -7,7 +7,10 @@ const ResultFileContract = "steerrunner-result-file/v1"
 const ResultFileSnapshotContract = "steerrunner-result-file-snapshot/v1"
 const ResultFileEnvironment = "STEERLINE_RESULT_FILE"
 
-type ResultFileInput = ProgressFileInput
+type ResultFileInput struct {
+	InitialContentBase64  string `json:"initial_content_base64"`
+	RequireInitialization bool   `json:"require_initialization,omitempty"`
+}
 type ResultFileView = ProgressFileView
 
 func ValidateResultFile(r RunRequest) *Fault {

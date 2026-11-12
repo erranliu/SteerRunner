@@ -77,6 +77,8 @@ func (e *Engine) prepareRun(id string, w *worker, p b.LifecyclePort, r *runstate
 	if candidate.Done {
 		return false
 	}
+	ensurePreparationDeadline(r, time.Now().UTC())
+	firstInputRequiresResult := nativeInputAction(candidate.Action) && requiresResultInitialization(r) && !fileInputDispatched(r)
 	if nativeInputAction(candidate.Action) && r.Snapshot.Workspace.Path != "" && filesNeedPreparation(r) {
 		// Next has established the original workspace/resource/session. Consume
 		// the optional window only now, before committing the first input intent.
@@ -91,7 +93,20 @@ func (e *Engine) prepareRun(id string, w *worker, p b.LifecyclePort, r *runstate
 			return false
 		}
 	}
-	ensurePreparationDeadline(r, time.Now().UTC())
+	if firstInputRequiresResult {
+		e.mu.Lock()
+		result := e.runs[id].ResultFile
+		e.mu.Unlock()
+		if result == nil || !result.Initialized || result.Sealed || result.InitializationWriteStatus != "settled" ||
+			result.Workspace != r.Snapshot.Workspace.Path || result.Binding != progressBinding(r) {
+			diagnostic := "initialization_unverified"
+			if result != nil && result.View.Diagnostic != "" {
+				diagnostic = result.View.Diagnostic
+			}
+			e.blockRevision(id, r.Revision, "result_file_initialization_failed", errors.New("required result_file initialization failed: "+diagnostic), false)
+			return false
+		}
+	}
 	if time.Now().After(r.PreparationDeadline) && candidate.Action != b.LifecycleStartTurn && candidate.Action != b.LifecycleSubmitInput {
 		e.block(id, "preparation_deadline", errors.New("The original preparation budget is exhausted"), false)
 		return false

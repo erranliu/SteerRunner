@@ -24,6 +24,12 @@ func TestResultFilePublishedContract(t *testing.T) {
 	if input["result_file"] == nil || input["progress_file"] == nil {
 		t.Fatal("missing input schema")
 	}
+	resultProperties := input["result_file"].(map[string]any)["properties"].(map[string]any)
+	progressProperties := input["progress_file"].(map[string]any)["properties"].(map[string]any)
+	flag := resultProperties["require_initialization"].(map[string]any)
+	if flag["type"] != "boolean" || caps["required_initialization"] != "require_initialization" || progressProperties["require_initialization"] != nil {
+		t.Fatal("required initialization must be an opt-in result_file property")
+	}
 	if caps["collection"] != "end_only" || caps["query_reads_file"] != false || caps["delivery"] == nil || caps["version"] == nil {
 		t.Fatal("missing final-only semantics")
 	}

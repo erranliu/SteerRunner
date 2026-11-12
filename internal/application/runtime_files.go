@@ -11,6 +11,7 @@ import (
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
+	"github.com/erranliu/SteerRunner/internal/execution/reliable"
 	"github.com/erranliu/SteerRunner/internal/execution/workspace"
 	"github.com/erranliu/SteerRunner/internal/runstate"
 )
@@ -69,7 +70,22 @@ func fileInputDispatched(r *runstate.Record) bool {
 	return false
 }
 
-// Claim both optional preparations before I/O, under the same gate as stop.
+func requiresResultInitialization(r *runstate.Record) bool {
+	return r.Request.ResultFile != nil && r.Request.ResultFile.RequireInitialization
+}
+
+func resultInitializationDiagnostic(err error) string {
+	switch {
+	case errors.Is(err, context.DeadlineExceeded):
+		return "initialization_timeout"
+	case err != nil && err.Error() == "initialization_seed_mismatch":
+		return err.Error()
+	default:
+		return progressDiagnostic(err)
+	}
+}
+
+// Claim both file preparations before I/O, under the same gate as stop.
 // A failed metadata save consumes this service's attempt but permits no write.
 func (e *Engine) prepareRuntimeFiles(original *runstate.Record) {
 	e.mu.Lock()
@@ -128,7 +144,14 @@ func (e *Engine) prepareRuntimeFiles(original *runstate.Record) {
 		if !allowed {
 			break
 		}
-		ctx, cancel := context.WithTimeout(e.ctx, 4*time.Second)
+		var ctx context.Context
+		var cancel context.CancelFunc
+		if result && requiresResultInitialization(next) {
+			ensurePreparationDeadline(next, time.Now().UTC())
+			ctx, cancel = context.WithDeadline(e.ctx, next.PreparationDeadline)
+		} else {
+			ctx, cancel = context.WithTimeout(e.ctx, 4*time.Second)
+		}
 		sample := e.sampleRuntimeFile(ctx, next.Clone(), result, true)
 		cancel()
 		e.mu.Lock()
@@ -153,6 +176,9 @@ func (e *Engine) publishFilePreparationLocked(original *runstate.Record, sample 
 	}
 	if p.View.Version == 0 {
 		p.View.Diagnostic = progressDiagnostic(sample.err)
+		if result && requiresResultInitialization(r) {
+			p.View.Diagnostic = resultInitializationDiagnostic(sample.err)
+		}
 		if !result {
 			p.View.CollectionStatus = "observing"
 			if sample.err != nil {
@@ -269,6 +295,13 @@ func (e *Engine) sampleRuntimeFile(ctx context.Context, r *runstate.Record, resu
 	done := make(chan runtimeFileSample, 1)
 	go func() {
 		settled := true
+		required := prepare && result && requiresResultInitialization(r)
+		var verification runtimeFileSample
+		if required {
+			// Publish the verdict only after the original channel is closed
+			// and the writer's settlement has been persisted.
+			defer func() { done <- verification }()
+		}
 		if preparer != nil {
 			defer func() { e.finishFilePreparation(r, preparer, result, settled) }()
 		}
@@ -277,21 +310,39 @@ func (e *Engine) sampleRuntimeFile(ctx context.Context, r *runstate.Record, resu
 		}
 		c, err := e.runtimeFile(ctx, r, result, prepare)
 		if err != nil {
-			done <- runtimeFileSample{err: err}
+			if required {
+				verification.err = err
+			} else {
+				done <- runtimeFileSample{err: err}
+			}
 			return
 		}
 		defer c.close()
 		if prepare {
-			seed := r.Request.ProgressFile
+			var seed string
 			if result {
-				seed = r.Request.ResultFile
+				seed = r.Request.ResultFile.InitialContentBase64
+			} else {
+				seed = r.Request.ProgressFile.InitialContentBase64
 			}
-			data, _ := base64.StdEncoding.DecodeString(seed.InitialContentBase64)
+			data, _ := base64.StdEncoding.DecodeString(seed)
 			if err = ctx.Err(); err == nil {
 				// A lost remote reply cannot prove the remote write has exited.
 				settled = r.Request.Execution.Adapter != "orca-terminal"
 				err = c.initialize(ctx, data)
 				settled = settled || err == nil
+			}
+			if required {
+				verification = runtimeFileSample{state: c.state, err: err}
+				if verification.err == nil {
+					var actual []byte
+					actual, verification.err = c.read(ctx)
+					if verification.err == nil && reliable.Digest(actual) != reliable.Digest(data) {
+						verification.err = errors.New("initialization_seed_mismatch")
+					}
+				}
+				c.state.Initialized = verification.err == nil
+				return
 			}
 			if result && err == nil {
 				c.state.Initialized = true

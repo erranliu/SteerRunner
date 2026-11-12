@@ -177,6 +177,74 @@ func TestResultPreparationReadsOnlyAfterUnconfirmedWrite(t *testing.T) {
 	}
 }
 
+func TestRequiredResultInitializationGatesFirstNativeInput(t *testing.T) {
+	for _, tc := range []struct {
+		name           string
+		actual         string
+		readErr        error
+		timeout        bool
+		wantDiagnostic string
+	}{
+		{name: "seed verified", actual: "seed"},
+		{name: "wrong seed", actual: "previous Run", wantDiagnostic: "initialization_seed_mismatch"},
+		{name: "missing file", readErr: errors.New("file_missing"), wantDiagnostic: "file_missing"},
+		{name: "timeout", timeout: true, wantDiagnostic: "initialization_timeout"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			e, w, _ := operationEngine(t)
+			enableTestFiles(t, e, 2)
+			r := e.runs["run"].Clone()
+			r.Request.ResultFile = &contracts.ResultFileInput{InitialContentBase64: "c2VlZA==", RequireInitialization: true}
+			if tc.timeout {
+				r.PreparationDeadline = time.Now().Add(300 * time.Millisecond).UTC()
+			}
+			if err := e.commitLocked(r, nil); err != nil {
+				t.Fatal(err)
+			}
+			port := &fileBusinessPort{}
+			w.port = port
+			var attempts atomic.Int32
+			e.openRuntimeFile = func(_ context.Context, r *runstate.Record, result, prepare bool) (*runtimeFileChannel, error) {
+				return &runtimeFileChannel{
+					state: fileState(r, result),
+					initialize: func(ctx context.Context, raw []byte) error {
+						if !prepare || !result || string(raw) != "seed" {
+							return errors.New("unexpected channel or seed")
+						}
+						attempts.Add(1)
+						if tc.timeout {
+							<-ctx.Done()
+							return ctx.Err()
+						}
+						return nil
+					},
+					read:  func(context.Context) ([]byte, error) { return []byte(tc.actual), tc.readErr },
+					close: func() error { return nil },
+				}, nil
+			}
+			e.advance("run", w)
+			runs, err := e.store.Runs()
+			if err != nil || len(runs) != 1 {
+				t.Fatalf("load Run: %v", err)
+			}
+			got := runs[0]
+			if got.ResultFile == nil || attempts.Load() != 1 {
+				t.Fatalf("expected one initialization attempt, got %d and %+v", attempts.Load(), got.ResultFile)
+			}
+			if tc.wantDiagnostic == "" {
+				if len(port.requests) != 1 || !fileInputDispatched(got) || !got.ResultFile.Initialized || got.ResultFile.InitializationWriteStatus != "settled" {
+					t.Fatalf("verified seed did not permit exactly one dispatch: requests=%d result=%+v", len(port.requests), got.ResultFile)
+				}
+				return
+			}
+			if len(port.requests) != 0 || fileInputDispatched(got) || got.Allowed || got.Phase != "result_file_initialization_failed" ||
+				got.Diagnostic != "required result_file initialization failed: "+tc.wantDiagnostic || got.ResultFile.View.Diagnostic != tc.wantDiagnostic || got.ResultFile.Initialized {
+				t.Fatalf("unverified seed: requests=%d phase=%s diagnostic=%q result=%+v", len(port.requests), got.Phase, got.Diagnostic, got.ResultFile)
+			}
+		})
+	}
+}
+
 func TestRuntimeFilesIndependentDeadlineAndNoRetry(t *testing.T) {
 	e, w, _ := operationEngine(t)
 	enableTestFiles(t, e, 3)

@@ -52,7 +52,11 @@ func runInputSchema(schemas map[string]any) map[string]any {
 	result["required"] = []string{"title", "repository", "documents", "execution", "workflow", "publication"}
 	properties := result["properties"].(map[string]any)
 	properties["progress_file"] = progressInputSchema()
-	properties["result_file"] = progressInputSchema()
+	resultFile := progressInputSchema()
+	resultFile["properties"].(map[string]any)["require_initialization"] = map[string]any{
+		"type": "boolean", "description": "Require the original per-run file and seed SHA-256 to be verified before first business input.",
+	}
+	properties["result_file"] = resultFile
 	properties["title"] = map[string]any{"type": "string", "minLength": 1, "pattern": `\S`}
 	properties["name_prefix"] = namePrefixSchema()
 	properties["reuse_worktree_from_run_id"] = map[string]any{"type": "string", "minLength": 1, "pattern": `^[^\x00\r\n]+$`, "description": "Latest stopped Run whose managed worktree is to be retained; execute/1 only."}

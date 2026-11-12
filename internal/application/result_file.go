@@ -156,7 +156,15 @@ func (e *Engine) sealResult(parent context.Context, id string) {
 	}
 	var data []byte
 	var err error
-	data, err = boundedResultRead(ctx, func() ([]byte, error) { return e.readResult(ctx, r) })
+	if requiresResultInitialization(r) && !fileInputDispatched(r) {
+		diagnostic := "initialization_unverified"
+		if r.ResultFile != nil && r.ResultFile.View.Diagnostic != "" {
+			diagnostic = r.ResultFile.View.Diagnostic
+		}
+		err = errors.New(diagnostic)
+	} else {
+		data, err = boundedResultRead(ctx, func() ([]byte, error) { return e.readResult(ctx, r) })
+	}
 	e.mu.Lock()
 	defer e.mu.Unlock()
 	if err := e.publishResultLocked(r, data, err); err != nil {
@@ -203,6 +211,9 @@ func (e *Engine) publishResultLocked(original *runstate.Record, data []byte, rea
 	p.View = contracts.ResultFileView{Contract: resultContract(original), RunID: original.ID, Encoding: "base64", CollectionStatus: "closed"}
 	if readErr != nil {
 		p.View.Diagnostic = progressDiagnostic(readErr)
+		if requiresResultInitialization(current) && !fileInputDispatched(current) {
+			p.View.Diagnostic = readErr.Error()
+		}
 	} else {
 		encoded := base64.StdEncoding.EncodeToString(data)
 		now := time.Now().UTC()
