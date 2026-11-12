@@ -26,7 +26,7 @@ func (b ExpectedServiceBinding) Valid() bool {
 }
 
 func ServiceBindingCommands() []string {
-	return []string{"capabilities", "progress-file", "result-file", "run-usage", "run-usage-events", "submit", "reply", "resume", "stop", "inspect", "observe", "last-message", "events", "open-native-session", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git", "message", "interrupt", "close", "history", WorkspaceAcquire, WorkspaceRelease}
+	return []string{"capabilities", "progress-file", "result-file", "run-usage", "run-usage-events", "submit", "reply", "resume", "stop", "inspect", "observe", "last-message", NativeConversationHistory, "events", "open-native-session", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git", "message", "interrupt", "close", "history", WorkspaceAcquire, WorkspaceRelease}
 }
 
 func ServiceBindingCommand(command string) bool {

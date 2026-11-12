@@ -100,6 +100,7 @@ func verifyDevelopmentHistory(s b.LifecycleSnapshot, current agentSessionState, 
 		}
 		users[id], nativeTurns[prior.TurnID], turns[prior.TurnItemID] = prior, true, true
 	}
+	replies := acceptedAgentAnswerInputs(s)
 	for _, item := range items {
 		var message struct {
 			Kind, Role string
@@ -110,6 +111,12 @@ func verifyDevelopmentHistory(s b.LifecycleSnapshot, current agentSessionState, 
 		}
 		if message.Kind == "message" && message.Role == "user" {
 			binding, ok := users[item.ItemID]
+			if expected, reply := replies[item.ItemID]; !ok && reply {
+				if len(message.Blocks) != 1 || message.Blocks[0].Type != "text" || digest([]byte(message.Blocks[0].Text)) != expected {
+					return nil, errors.New("Orca answer input differs from the committed reply")
+				}
+				continue
+			}
 			if !ok || len(message.Blocks) != 1 || message.Blocks[0].Type != "text" || digest([]byte(message.Blocks[0].Text)) != binding.InputDigest {
 				return nil, errors.New("unexpected user input in original development session")
 			}
@@ -173,11 +180,11 @@ func (l *Lifecycle) sendStructuredDevelopment(ctx context.Context, r b.Lifecycle
 		}
 		fence := prior.RuntimeFence
 		if input.Purpose != "message" {
-			items, page, err := l.agentHistory(ctx, prior)
+			items, page, err := l.agentHistory(ctx, prior, "")
 			if err != nil {
 				return receipt, nil, err
 			}
-			observed, _, err := l.verifyAgentActivity(r.Snapshot, prior, items, page)
+			observed, _, err := l.verifyAgentActivity(ctx, r.Snapshot, prior, items, page)
 			if err != nil {
 				return receipt, nil, err
 			}

@@ -63,6 +63,7 @@ type agentSessionPort interface {
 	Send(context.Context, native.AgentSend) (json.RawMessage, error)
 	History(context.Context, string, *native.AgentCursor, int) (native.AgentPage, error)
 	Item(context.Context, string, string) (native.AgentItem, error)
+	RespondToQuestion(context.Context, native.AgentQuestionReply) (json.RawMessage, error)
 	Close(context.Context, string) (json.RawMessage, error)
 }
 
@@ -132,10 +133,14 @@ func (l *Lifecycle) agentClient(runtime string) agentSessionPort {
 	if l.agentSessions != nil {
 		return l.agentSessions(runtime)
 	}
-	if l.profile.Environment != "" {
-		return native.NewRemoteAgentSessionClient(l.profile.Environment, runtime, l.agentHostID)
+	return originalAgentClient(l.profile, l.agentHostID, l.setup.Snapshot.Ref.Agent.Name, runtime)
+}
+
+func originalAgentClient(profile Profile, host, agent, runtime string) native.AgentSessionClient {
+	if profile.Environment != "" {
+		return native.NewRemoteAgentSessionClient(profile.Environment, runtime, host)
 	}
-	if l.setup.Snapshot.Ref.Agent.Name == "pi" {
+	if agent == "pi" {
 		return native.NewLocalPiAgentSessionClient(runtime)
 	}
 	return native.NewLocalAgentSessionClient(runtime)
@@ -284,6 +289,8 @@ func (l *Lifecycle) executeStructured(ctx context.Context, r b.LifecycleRequest,
 		receipt, err = l.prepareStructured(ctx, r)
 	case b.LifecycleStopExecution:
 		receipt, err = l.structuredStop(ctx, r, reconcile)
+	case b.LifecycleDeliverFeedback:
+		receipt, err = l.deliverAgentQuestion(ctx, r, reconcile)
 	case b.LifecycleStartTurn, b.LifecycleSubmitInput:
 		state, e := l.agentState(r.Snapshot)
 		if e != nil {
@@ -349,11 +356,11 @@ func (l *Lifecycle) executeStructured(ctx context.Context, r b.LifecycleRequest,
 
 // Read all public pages from the same epoch. Missing pages or shortened items
 // cannot silently become a successful result. Bounds never trigger resubmission.
-func (l *Lifecycle) agentHistory(ctx context.Context, state agentSessionState) ([]native.AgentItem, native.AgentPage, error) {
+func (l *Lifecycle) agentHistory(ctx context.Context, state agentSessionState, replyID string) ([]native.AgentItem, native.AgentPage, error) {
 	client := l.agentClient(state.RuntimeID)
 	var before *native.AgentCursor
 	var tail native.AgentPage
-	var originalSubmission *native.AgentSubmission
+	submissions := map[string]native.AgentSubmission{}
 	items := map[string]native.AgentItem{}
 	bytesRead := 0
 	for pageNo := 0; pageNo < 64; pageNo++ {
@@ -377,16 +384,20 @@ func (l *Lifecycle) agentHistory(ctx context.Context, state agentSessionState) (
 		}
 		// Submissions may appear only on the page containing the original input.
 		// Keep live session fields from the latest page.
-		submissionOnPage := false
+		onPage := map[string]bool{}
 		for _, submission := range page.Submissions {
-			if submission.ClientMessageID != state.MessageID {
+			id := submission.ClientMessageID
+			if id != state.MessageID && (replyID == "" || id != replyID && submission.QueuedMessageID != replyID) {
 				continue
 			}
-			if submissionOnPage || (originalSubmission != nil && *originalSubmission != submission) {
+			if id == "" || onPage[id] {
+				return nil, tail, errors.New("duplicate Orca submission on one history page")
+			}
+			onPage[id] = true
+			if prior, exists := submissions[id]; exists && prior != submission {
 				return nil, tail, &b.AdapterError{Kind: b.AdapterIdentityMismatch, Operation: "observe", Diagnostic: "original agent submission binding changed"}
 			}
-			submissionOnPage = true
-			originalSubmission = &submission
+			submissions[id] = submission
 		}
 		for _, item := range page.Items {
 			if item.ItemID == "" {
@@ -427,8 +438,8 @@ func (l *Lifecycle) agentHistory(ctx context.Context, state agentSessionState) (
 					return nil, tail, errors.New("agent history item order is ambiguous")
 				}
 			}
-			if originalSubmission != nil {
-				tail.Submissions = []native.AgentSubmission{*originalSubmission}
+			for _, submission := range submissions {
+				tail.Submissions = append(tail.Submissions, submission)
 			}
 			return ordered, tail, nil
 		}
@@ -459,17 +470,17 @@ func (l *Lifecycle) readStructuredActivity(ctx context.Context, s b.LifecycleSna
 	if state.TurnID != "" {
 		receipt.State.SessionID, receipt.State.TurnID = state.SessionID, state.TurnID
 	}
-	items, page, err := l.agentHistory(ctx, state)
+	items, page, err := l.agentHistory(ctx, state, "")
 	if err != nil {
 		if errors.Is(err, native.ErrStateIdentityChanged) {
 			err = &b.AdapterError{Kind: b.AdapterIdentityMismatch, Operation: "observe", Diagnostic: "original Orca history identity changed", Cause: err}
 		}
 		return receipt, nil, err
 	}
-	return l.verifyAgentActivity(s, state, items, page)
+	return l.verifyAgentActivity(ctx, s, state, items, page)
 }
 
-func (l *Lifecycle) verifyAgentActivity(s b.LifecycleSnapshot, state agentSessionState, items []native.AgentItem, page native.AgentPage) (b.LifecycleReceipt, *b.PublicMessage, error) {
+func (l *Lifecycle) verifyAgentActivity(ctx context.Context, s b.LifecycleSnapshot, state agentSessionState, items []native.AgentItem, page native.AgentPage) (b.LifecycleReceipt, *b.PublicMessage, error) {
 	receipt := b.LifecycleReceipt{Disposition: b.OperationUnknown}
 	if state.TurnID != "" {
 		receipt.State.SessionID, receipt.State.TurnID = state.SessionID, state.TurnID
@@ -548,13 +559,21 @@ func (l *Lifecycle) verifyAgentActivity(s b.LifecycleSnapshot, state agentSessio
 		receipt.State.QuestionPending = true
 		receipt.Diagnostic = "Original Orca session requires native input/approval. Stop remains available."
 	}
+	if receipt.State.TurnStarted && !ended {
+		fact, err := l.agentQuestionFact(ctx, s, state, page, items)
+		if err != nil {
+			return receipt, nil, err
+		}
+		if fact != nil {
+			receipt.Facts = append(receipt.Facts, *fact)
+			receipt.Diagnostic = ""
+		}
+	}
+	asyncCalls := asyncAgentCalls(items, turnItem)
 	var messages, ids []string
 	var message *b.PublicMessage
 	for _, item := range items {
-		var body struct {
-			Kind, Role string
-			Blocks     []native.AgentTextBlock
-		}
+		var body agentHistoryMessage
 		_ = json.Unmarshal(item.Body, &body)
 		if body.Kind != "message" || body.Role != "assistant" {
 			continue
@@ -567,10 +586,18 @@ func (l *Lifecycle) verifyAgentActivity(s b.LifecycleSnapshot, state agentSessio
 		}
 		var text strings.Builder
 		for _, block := range body.Blocks {
-			if block.Type != "text" {
+			switch {
+			case block.Type == "text":
+				text.WriteString(block.Text)
+			case isAsyncAgentQuestion(block), block.Type == "tool-result" && asyncCalls[block.CallID]:
+				// Orca carries the nonblocking interaction in assistant blocks.
+				// It is observed separately from the final assistant text.
+			default:
 				return receipt, nil, errors.New("non-text assistant result cannot be returned completely")
 			}
-			text.WriteString(block.Text)
+		}
+		if text.Len() == 0 {
+			continue
 		}
 		messages = append(messages, text.String())
 		ids = append(ids, item.ItemID)
@@ -643,6 +670,7 @@ func (l *Lifecycle) observeStructured(s b.LifecycleSnapshot) b.LifecycleObserver
 		started := s.Session.CurrentTurnID != ""
 		lastDiagnostic := ""
 		lastMessage := ""
+		activeQuestion := s.QuestionRoute
 		send := func(event b.LifecycleEvent) bool {
 			event.Persisted = make(chan error, 1)
 			select {
@@ -687,6 +715,24 @@ func (l *Lifecycle) observeStructured(s b.LifecycleSnapshot) b.LifecycleObserver
 					return
 				}
 				lastDiagnostic = receipt.Diagnostic
+			}
+			if len(receipt.Facts) > 0 {
+				fact := receipt.Facts[0]
+				if activeQuestion == nil || activeQuestion.QuestionID != fact.QuestionRoute.QuestionID {
+					fact.SourceEventID += ":" + contracts.NewID()
+					if !send(b.LifecycleEvent{Fact: fact, Implementation: receipt.Implementation}) {
+						return
+					}
+					activeQuestion = fact.QuestionRoute
+				}
+			} else if activeQuestion != nil && activeQuestion.ImplementationKey == agentQuestionRouteKey && receipt.State.InputAccepted {
+				fact := b.EventFact{Kind: b.EventQuestionResolved, Source: agentResultSource, SourceIdentity: receipt.State.SessionID,
+					SourceSegment: receipt.State.TurnID, SourceEventID: "question-resolved:" + activeQuestion.QuestionID + ":" + contracts.NewID(),
+					SessionID: receipt.State.SessionID, StartedTurnID: receipt.State.TurnID, QuestionRoute: activeQuestion}
+				if !send(b.LifecycleEvent{Fact: fact}) {
+					return
+				}
+				activeQuestion = nil
 			}
 			if message != nil && message.Text != "" && message.Text != lastMessage {
 				if !send(b.LifecycleEvent{PublicMessage: message}) {

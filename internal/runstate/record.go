@@ -187,7 +187,7 @@ func (r *Record) View() contracts.RunView {
 			unresolved = true
 		}
 	}
-	v.Controls = contracts.Controls{CanReply: r.Allowed && !r.ResumeRequired && !unresolved && (r.Question != nil || r.Status == "blocked"), CanResume: r.ResumeRequired && (!unresolved || r.ManualPause != nil) && !r.Closed && r.PendingStop == "" && r.PendingResume == "", CanStop: r.StopStatus != "stopped", Reason: r.Diagnostic}
+	v.Controls = contracts.Controls{CanReply: r.Allowed && !r.ResumeRequired && !unresolved && (r.Question != nil || r.Status == "blocked") && r.PendingAnswer == nil, CanResume: r.ResumeRequired && (!unresolved || r.ManualPause != nil) && !r.Closed && r.PendingStop == "" && r.PendingResume == "", CanStop: r.StopStatus != "stopped", Reason: r.Diagnostic}
 	v.Controls.CanMessage = r.canMessage(unresolved)
 	if workflow.Content(r.Request.Workflow.ID) {
 		v.RepositorySource = r.RepositorySource

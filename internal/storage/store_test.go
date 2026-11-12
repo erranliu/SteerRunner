@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	"github.com/erranliu/SteerRunner/internal/runstate"
 )
 
 func TestSRShutdownReceipt(t *testing.T) {
@@ -71,5 +72,46 @@ func TestSRUnsupportedStorage(t *testing.T) {
 	after, err := os.ReadFile(path)
 	if err != nil || string(after) != string(before) {
 		t.Fatal("foreign database changed")
+	}
+}
+
+func TestSubmitAdmissionCommitsRunAndReceiptTogether(t *testing.T) {
+	store, err := Open(t.TempDir())
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer store.Close()
+	request := contracts.Request{Protocol: contracts.Protocol, RequestID: "submit-once", Input: json.RawMessage(`{}`)}
+	digest := RequestDigest("submit", "", request)
+	command, err := store.BeginSubmit(request, digest)
+	if err != nil {
+		t.Fatal(err)
+	}
+	command.AcceptSubmit("run-once")
+	run := &runstate.Record{ID: command.RunID, Revision: 1}
+	if err := store.Commit(run, 0, &command, "run_accepted"); err != nil {
+		t.Fatal(err)
+	}
+	rejection := contracts.Rejected(request.RequestID, contracts.Fail(5, "invalid_state", "must not replace a committed Run"))
+	if err := store.RejectSubmit(command, rejection); err == nil {
+		t.Fatal("accepted submission was overwritten")
+	}
+	if err := store.ReconcileSubmissions(); err != nil {
+		t.Fatal(err)
+	}
+	view, err := store.Command("request_id", request.RequestID)
+	if err != nil || view.ReceiptStatus != "accepted" || view.RunID == nil || *view.RunID != run.ID || view.CommandID != command.ID {
+		t.Fatal(view, err)
+	}
+	original, found, err := store.Original(request.RequestID, digest)
+	if err != nil || !found || !original.OK || original.Data.(map[string]any)["run_id"] != run.ID {
+		t.Fatal(original, found, err)
+	}
+	command.AcceptSubmit("duplicate-run")
+	if err := store.Commit(&runstate.Record{ID: command.RunID, Revision: 1}, 0, &command); err == nil {
+		t.Fatal("original admission created a second Run")
+	}
+	if runs, err := store.Runs(); err != nil || len(runs) != 1 || runs[0].ID != run.ID {
+		t.Fatal(runs, err)
 	}
 }

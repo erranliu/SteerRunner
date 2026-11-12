@@ -85,6 +85,9 @@ func Serve(ctx context.Context, dir, startupID string) (outErr error) {
 		return err
 	}
 	defer store.Close()
+	if err := store.ReconcileSubmissions(); err != nil {
+		return err
+	}
 	engine, err := application.New(ctx, dir, store, logger, func(ctx context.Context, ownerDir string) error { return launchExecutionOwner(ctx, dir, ownerDir) })
 	if err != nil {
 		return err
@@ -295,9 +298,14 @@ func (s *server) handle(connection net.Conn) string {
 	if wire.Request != nil {
 		id = wire.Request.RequestID
 	}
+	started := time.Now()
 	response, stop := s.dispatch(wire)
 	if err := contracts.Encode(response, connection); err != nil {
-		s.logger.Printf("response delivery unavailable command=%s request=%s", wire.Options.Command, id)
+		outcome := "success"
+		if response.Error != nil {
+			outcome = response.Error.Code
+		}
+		s.logger.Printf("response delivery unavailable command=%s request=%s outcome=%s elapsed=%s", wire.Options.Command, id, outcome, time.Since(started))
 	}
 	if stop {
 		return id
@@ -371,6 +379,11 @@ func (s *server) dispatch(wire wireRequest) (contracts.Response, bool) {
 		return s.engine.HandleProgress(wire.Options.RunID), false
 	case "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git":
 		return s.engine.HandleEvidence(wire.Options.Command, wire.Options.RunID, wire.Options.ArtifactID, wire.Request), false
+	case contracts.NativeConversationHistory:
+		if wire.Request != nil || wire.Options.NativeSession == nil || wire.Options.NativeSession.RunID != wire.Options.RunID {
+			return reject(contracts.Fail(2, "invalid_arguments", "Native conversation history requires an exact session target and no input."))
+		}
+		return s.engine.ReadNativeConversation(*wire.Options.NativeSession, wire.Options.After, wire.Options.Limit), false
 	case "open-native-session":
 		if s.stopping || wire.Request != nil || wire.Options.NativeSession == nil || wire.Options.NativeSession.RunID != wire.Options.RunID {
 			return reject(contracts.Fail(5, "invalid_state", "Native viewer requires a ready service and exact original target."))

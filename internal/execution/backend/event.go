@@ -96,12 +96,13 @@ type EventFact struct {
 type EventKind string
 
 const (
-	EventInputAccepted EventKind = "input_accepted"
-	EventStarted       EventKind = "started"
-	EventQuestion      EventKind = "question"
-	EventCompleted     EventKind = "completed"
-	EventGap           EventKind = "gap"
-	EventStatus        EventKind = "status"
-	EventWorkObserved  EventKind = "work_observed"
-	EventEscalation    EventKind = "escalation"
+	EventInputAccepted    EventKind = "input_accepted"
+	EventStarted          EventKind = "started"
+	EventQuestion         EventKind = "question"
+	EventQuestionResolved EventKind = "question_resolved"
+	EventCompleted        EventKind = "completed"
+	EventGap              EventKind = "gap"
+	EventStatus           EventKind = "status"
+	EventWorkObserved     EventKind = "work_observed"
+	EventEscalation       EventKind = "escalation"
 )

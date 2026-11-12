@@ -27,3 +27,9 @@ go test ./internal/runstate -run '^TestRecordMessageAndWorkspaceAcquireEligibili
 受控入口内的正式 Windows 构建通过。候选 `source_dirty=true`，`source_digest=a93fb3f809b67fae6aeeceec63b9b6204388b547716d6336c767bf93746f3728`，Runner EXE SHA256 为 `cf67e7f84ebfb6bc361d6e0dcdb3d759133bcc8efa4f9e461cd9c17082027ff0`，与实际通过的 EXE 和构建输入一致。基线和最终原始输出分别保存在本工作副本 `.evidence/run-record-command-eligibility/`。
 
 验收限于定向组件和两个定向受控场景。完整 L1–L4、完整 Controlled 和真实模型场景未运行。
+
+## PR #151 冲突复验（2026-11-12）
+
+在独立 worktree 将 `main` 的 `94c247d6` 合入 PR 源分支。唯一冲突位于 `internal/runstate/record.go`，保留已有待提交回答时禁用回复的条件，以及由 `runstate.Record` 统一判断消息和工作区写入资格的逻辑。
+
+合入 `main` 后、PR 合并前，Run 记录资格及 5 项定向应用测试通过。受控入口的构建和四项基础测试通过，`TestSRContentConversation`、`TestSRContentQuestionAndUnknown` 和 `TestSRManagedConversationWorkspaceWrite` 全部通过。日志与结果位于隔离 worktree 的 `.evidence/pr151-conflict-controlled/`。本轮未执行完整 L1–L4、完整 Controlled 或真实模型场景。

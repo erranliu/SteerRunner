@@ -183,7 +183,7 @@ func Capabilities() any {
 		"capability_catalog":      Catalog(),
 		"execution_configuration": ExecutionConfiguration(),
 		"cli_schema":              json.RawMessage(Read("cli.schema.json")),
-		"commands":                []string{"execution-config", "progress-file", "result-file", "run-usage", "run-usage-events", "estimate-run-cost", "version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "inspect", "submit", "last-message", "open-native-session", "observe", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git", contracts.WorkspaceAcquire, contracts.WorkspaceRelease},
+		"commands":                []string{"execution-config", "progress-file", "result-file", "run-usage", "run-usage-events", "estimate-run-cost", "version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "inspect", "submit", "last-message", contracts.NativeConversationHistory, "open-native-session", "observe", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git", contracts.WorkspaceAcquire, contracts.WorkspaceRelease},
 		"result_acquisition_configuration_schema": json.RawMessage(Read("result-acquisition.schema.json")),
 		"parser_support": map[string]any{"supported": parserSupported, "profile": ra.ParserProfile, "reason": parserReason, "readiness": "CLI_existing_login; in_memory_task; internal_process_cleanup", "empty_tool_guarantee": false},
 	}

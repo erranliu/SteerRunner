@@ -139,7 +139,7 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 	switch value.opts.Command {
 	case "progress-file", "result-file", "run-usage", "run-usage-events":
 	case "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git", contracts.WorkspaceAcquire, contracts.WorkspaceRelease:
-	case "execution-config", "native-catalog", "version", "serve", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "submit", "inspect", "observe", "last-message", "open-native-session", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history":
+	case "execution-config", "native-catalog", "version", "serve", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "submit", "inspect", "observe", "last-message", contracts.NativeConversationHistory, "open-native-session", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history":
 	default:
 		return value, contracts.Fail(2, "invalid_arguments", "Expected a documented SteerRunner command; use --help.")
 	}
@@ -208,7 +208,7 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 		if selectors != 1 {
 			return value, contracts.Fail(2, "invalid_arguments", "inspect requires exactly one identifier.")
 		}
-	case "progress-file", "result-file", "run-usage", "run-usage-events", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git", "last-message", "open-native-session", "observe", "events", "reply", "resume", "stop", "message", "interrupt", "close", "history", contracts.WorkspaceAcquire, contracts.WorkspaceRelease:
+	case "progress-file", "result-file", "run-usage", "run-usage-events", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git", "last-message", contracts.NativeConversationHistory, "open-native-session", "observe", "events", "reply", "resume", "stop", "message", "interrupt", "close", "history", contracts.WorkspaceAcquire, contracts.WorkspaceRelease:
 		if selectors != 1 || value.opts.RunID == "" {
 			return value, contracts.Fail(2, "invalid_arguments", "This command requires only run-id.")
 		}
@@ -217,7 +217,7 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 			return value, contracts.Fail(2, "invalid_arguments", "This command does not accept a target identifier.")
 		}
 	}
-	if value.opts.Command != "events" && value.opts.Command != "history" && value.opts.Command != "run-usage-events" && value.opts.Command != "observe" && (value.opts.After != "" || value.opts.Limit != 0) {
+	if value.opts.Command != "events" && value.opts.Command != "history" && value.opts.Command != contracts.NativeConversationHistory && value.opts.Command != "run-usage-events" && value.opts.Command != "observe" && (value.opts.After != "" || value.opts.Limit != 0) {
 		return value, contracts.Fail(2, "invalid_arguments", "An option does not apply to this command.")
 	}
 	if (value.opts.Command == "events" || value.opts.Command == "history" || value.opts.Command == "run-usage-events" || value.opts.Command == "observe") && value.opts.Limit == 0 {
@@ -236,14 +236,14 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 	} else if seen["--artifact-id"] {
 		return value, contracts.Fail(2, "invalid_arguments", "artifact-id applies only to artifacts read.")
 	}
-	if value.opts.Command == "open-native-session" {
+	if value.opts.Command == "open-native-session" || value.opts.Command == contracts.NativeConversationHistory {
 		target := value.opts.NativeSession
 		if target == nil || target.AttemptID == "" || target.SessionID == "" || target.Generation == "" {
-			return value, contracts.Fail(2, "invalid_arguments", "Native viewer requires run-id, attempt-id, session-id and generation.")
+			return value, contracts.Fail(2, "invalid_arguments", "Native session query or viewer requires run-id, attempt-id, session-id and generation.")
 		}
 		target.RunID = value.opts.RunID
 	} else if value.opts.NativeSession != nil {
-		return value, contracts.Fail(2, "invalid_arguments", "Native session options apply only to open-native-session.")
+		return value, contracts.Fail(2, "invalid_arguments", "Native session options apply only to native session commands.")
 	}
 	return value, nil
 }
@@ -316,7 +316,7 @@ func Run(argv []string, input io.Reader, output, diagnostics io.Writer) int {
 		return finish(contracts.Success("", resources.VersionInfo()), 0)
 	}
 	if options.opts.Command == "help" {
-		return finish(contracts.Success("", map[string]any{"usage": "steerrunner <command> --state-dir <absolute-path> --json", "commands": []string{"execution-config", "native-catalog", "progress-file", "result-file", "run-usage", "run-usage-events", "version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "submit", "inspect", "last-message", "open-native-session", "observe", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git", contracts.WorkspaceAcquire, contracts.WorkspaceRelease}, "input": "Write commands consume a UTF-8 JSON envelope from --input -. validate consumes a bare object. service start optionally consumes a bare pending_stops object.", "static": "capabilities --offline; validate --kind run-configuration|run --input -", "run_evidence": "artifacts discover|list --run-id R; artifacts collect --run-id R --input -; artifacts read --run-id R --artifact-id A; workspace-git --run-id R. Producer writes .steerrunner/artifacts/<relative_path> in original workspace. Max file 1 MiB. Read is base64; schema/limits in capabilities.run_evidence.", "instance_binding": "--expected-instance-id <id> fences resident business/query commands and disables implicit service startup."}), 0)
+		return finish(contracts.Success("", map[string]any{"usage": "steerrunner <command> --state-dir <absolute-path> --json", "commands": []string{"execution-config", "native-catalog", "progress-file", "result-file", "run-usage", "run-usage-events", "version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "submit", "inspect", "last-message", contracts.NativeConversationHistory, "open-native-session", "observe", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git", contracts.WorkspaceAcquire, contracts.WorkspaceRelease}, "input": "Write commands consume a UTF-8 JSON envelope from --input -. validate consumes a bare object. service start optionally consumes a bare pending_stops object.", "static": "capabilities --offline; validate --kind run-configuration|run --input -", "run_evidence": "artifacts discover|list --run-id R; artifacts collect --run-id R --input -; artifacts read --run-id R --artifact-id A; workspace-git --run-id R. Producer writes .steerrunner/artifacts/<relative_path> in original workspace. Max file 1 MiB. Read is base64; schema/limits in capabilities.run_evidence.", "instance_binding": "--expected-instance-id <id> fences resident business/query commands and disables implicit service startup."}), 0)
 	}
 	if options.offline && options.opts.Command == "capabilities" {
 		executable, err := os.Executable()

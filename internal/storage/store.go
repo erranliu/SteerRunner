@@ -198,11 +198,29 @@ func (s *Store) Command(selector, id string) (contracts.CommandView, error) {
 	if selector == "command_id" {
 		column = "command_id"
 	}
-	err := s.db.QueryRow(`SELECT request_id, command_id, command, action_status,run_id FROM commands WHERE `+column+`=?`, id).Scan(&value.RequestID, &value.CommandID, &value.Command, &value.ActionStatus, &value.RunID)
+	var raw []byte
+	err := s.db.QueryRow(`SELECT request_id,command_id,command,action_status,run_id,response FROM commands WHERE `+column+`=?`, id).Scan(&value.RequestID, &value.CommandID, &value.Command, &value.ActionStatus, &value.RunID, &raw)
 	if err != nil {
 		return value, err
 	}
 	value.ReceiptStatus = "accepted"
+	if value.Command == "submit" && value.RunID == nil {
+		switch value.ActionStatus {
+		case "preparing":
+			value.ReceiptStatus = "pending"
+		case "rejected":
+			var response contracts.Response
+			if err := json.Unmarshal(raw, &response); err != nil {
+				return value, err
+			}
+			if response.OK || response.Error == nil {
+				return value, errors.New("invalid persisted submit rejection")
+			}
+			value.ReceiptStatus, value.Error = "rejected", response.Error
+		default:
+			return value, errors.New("invalid persisted submit admission")
+		}
+	}
 	return value, nil
 }
 

@@ -78,7 +78,17 @@ Get-Content -Raw -Encoding utf8 .\request.json | .\bin\steerrunner.exe submit --
 .\bin\steerrunner.exe last-message --state-dir C:\Temp\SteerRunnerDemo --run-id <run_id> --json
 ```
 
+结构化 Orca 原会话支持只读分页。命令要求已运行的原 Runner 服务以及原 Run、Attempt、Session 和 generation。首次取最近一页，随后将返回的 `next_cursor` 传给 `--after`。消息的 `body_cursor` 也通过 `--after` 读取，返回该条的 `body_offset` 和一段正文。游标只对原会话和原 epoch 有效。
+
+```powershell
+.\bin\steerrunner.exe native-conversation-history --state-dir C:\Temp\SteerRunnerDemo --expected-instance-id <instance_id> --run-id <run_id> --attempt-id <attempt_id> --session-id <session_id> --generation <generation> --limit 25 --json
+```
+
+消息按原顺序返回助手文字和可核实的用户输入。工具、推理和组装后的工作流指令不进入响应。原生历史有缺口或 Run 有过往 Attempt 时返回 `partial`，无法核实原会话时返回错误。读取不会启动服务、恢复会话或发送输入。
+
 accepted 表示文档路径及原请求已持久化，不表示文档存在性已核验，执行结果以 Run 和命令 action_status 为准。丢失响应时查询原 request_id；同 ID 的重试必须保留原正文。兼容服务重启保留原流程授权，自动补收原事实并接续尚未派发的后继；原暂停、人工等待、业务阻断和显式 stop 保留。未知输入只对账，旧 epoch 答案仍需人工确认；新保存答案绑定原执行范围。
+
+`submit` 在准备仓库和材料前保存原请求身份。丢失回执后，用原 `request_id` 查询。准备中返回 `receipt_status=pending` 和 `action_status=preparing`，Run 为空。准备失败返回 `rejected` 及原错误，Run 仍为空。成功时接受回执与 Run 在同一事务写入，查询继续使用原 command_id。服务重启会将尚未创建 Run 的准备中请求结算为已拒绝。
 
 同一服务内，Orca 下一轮发送前的状态连接失败会在冻结的 `transport.wait_timeout` 内退避重试，每次 WebSocket 建连最多等待 5 秒。恢复后重新核验原终端、工作区和 provider session，再发送一次原输入；认证拒绝、身份变化和等待/阻塞状态不重试。超过期限仍明确阻断。已经尝试发送但结果未知的操作继续只对账原请求，不自动重发。
 

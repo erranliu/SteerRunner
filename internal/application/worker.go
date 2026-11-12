@@ -270,7 +270,7 @@ func (e *Engine) invoke(id string, w *worker, p b.LifecyclePort, index int, reco
 		deadline = deadlines[0]
 	}
 	ctx, cancel := context.WithDeadline(e.ctx, deadline)
-	if !reconcile && r.Snapshot.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 && nativeInputAction(b.LifecycleAction(request.Operation.Action)) {
+	if !reconcile && r.Snapshot.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 && (nativeInputAction(b.LifecycleAction(request.Operation.Action)) || request.Operation.Action == string(b.LifecycleDeliverFeedback)) {
 		// The immutable in-flight intent already committed. Recheck its original
 		// authority at the IPC write, after read-only connection/qualification.
 		ctx = native.WithDispatchCheckpoint(ctx, func() error {
@@ -371,7 +371,14 @@ func (e *Engine) invoke(id string, w *worker, p b.LifecyclePort, index int, reco
 			next.CommandStates[command] = "unknown"
 		}
 	}
-	if !progress && !preparationStopped && next.PendingStop == "" && !next.Closed && next.StopStatus != "stopped" {
+	orcaAnswer := next.Snapshot.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 && intent.Request.Input.Feedback != nil
+	rejectedOrcaAnswer := orcaAnswer && status == string(b.OperationRejected) && next.PendingAnswer != nil
+	if rejectedOrcaAnswer {
+		next.CommandStates[next.PendingAnswer.CommandID] = "failed"
+		next.PendingAnswer = nil
+		next.Phase = "question"
+	}
+	if !progress && !rejectedOrcaAnswer && !preparationStopped && next.PendingStop == "" && !next.Closed && next.StopStatus != "stopped" {
 		next.Status = "reconciling"
 		if status == "rejected" {
 			next.Status = "blocked"
@@ -392,6 +399,13 @@ func (e *Engine) invoke(id string, w *worker, p b.LifecyclePort, index int, reco
 		next.Snapshot.QuestionRoute = nil
 		next.Snapshot.PendingQuestions = nil
 		next.Status = "running"
+		if orcaAnswer {
+			next.Phase = "observing"
+			if w.observer != nil {
+				_ = w.observer.Close(context.Background())
+				w.observer = nil
+			}
+		}
 	}
 	if progress && next.Snapshot.Session.CurrentCommandID != "" {
 		next.CommandStates[next.SubmitCommandID] = "completed"
