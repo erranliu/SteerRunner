@@ -35,15 +35,16 @@ type conversationReader interface {
 }
 
 func ReadNativeConversation(ctx context.Context, setup b.LifecycleSetup, target contracts.NativeSessionTarget, cursor string, limit int, userInputs map[string]bool) (contracts.NativeConversationPage, error) {
-	reader, err := decodeFrozenRecord(setup)
+	profile, err := decodeAgentSessionProfile(setup)
 	if err != nil {
 		return contracts.NativeConversationPage{}, err
 	}
-	state, err := reader.agentState(setup.Snapshot)
+	snapshot := setup.Snapshot
+	state, err := readAgentSessionState(snapshot, profile.Transport, profile.Development, snapshot)
 	if err != nil || state.SessionID != target.SessionID || state.Epoch == "" || state.RuntimeID == "" {
 		return contracts.NativeConversationPage{}, errors.New("original Orca conversation binding is unavailable")
 	}
-	client := originalAgentClient(reader.profile, reader.agentHostID, setup.Snapshot.Ref.Agent.Name, state.RuntimeID)
+	client := originalAgentClient(profile.Transport, profile.PairingHostID, snapshot.Ref.Agent.Name, state.RuntimeID)
 	return readNativeConversationPage(ctx, client, state, target, cursor, limit, userInputs)
 }
 
