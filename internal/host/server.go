@@ -371,6 +371,11 @@ func (s *server) dispatch(wire wireRequest) (contracts.Response, bool) {
 		return s.engine.HandleProgress(wire.Options.RunID), false
 	case "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git":
 		return s.engine.HandleEvidence(wire.Options.Command, wire.Options.RunID, wire.Options.ArtifactID, wire.Request), false
+	case contracts.NativeConversationHistory:
+		if wire.Request != nil || wire.Options.NativeSession == nil || wire.Options.NativeSession.RunID != wire.Options.RunID {
+			return reject(contracts.Fail(2, "invalid_arguments", "Native conversation history requires an exact session target and no input."))
+		}
+		return s.engine.ReadNativeConversation(*wire.Options.NativeSession, wire.Options.After, wire.Options.Limit), false
 	case "open-native-session":
 		if s.stopping || wire.Request != nil || wire.Options.NativeSession == nil || wire.Options.NativeSession.RunID != wire.Options.RunID {
 			return reject(contracts.Fail(5, "invalid_state", "Native viewer requires a ready service and exact original target."))
