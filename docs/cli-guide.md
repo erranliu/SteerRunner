@@ -88,6 +88,8 @@ Get-Content -Raw -Encoding utf8 .\request.json | .\bin\steerrunner.exe submit --
 
 accepted 表示文档路径及原请求已持久化，不表示文档存在性已核验，执行结果以 Run 和命令 action_status 为准。丢失响应时查询原 request_id；同 ID 的重试必须保留原正文。兼容服务重启保留原流程授权，自动补收原事实并接续尚未派发的后继；原暂停、人工等待、业务阻断和显式 stop 保留。未知输入只对账，旧 epoch 答案仍需人工确认；新保存答案绑定原执行范围。
 
+`submit` 在准备仓库和材料前保存原请求身份。丢失回执后，用原 `request_id` 查询。准备中返回 `receipt_status=pending` 和 `action_status=preparing`，Run 为空。准备失败返回 `rejected` 及原错误，Run 仍为空。成功时接受回执与 Run 在同一事务写入，查询继续使用原 command_id。服务重启会将尚未创建 Run 的准备中请求结算为已拒绝。
+
 同一服务内，Orca 下一轮发送前的状态连接失败会在冻结的 `transport.wait_timeout` 内退避重试，每次 WebSocket 建连最多等待 5 秒。恢复后重新核验原终端、工作区和 provider session，再发送一次原输入；认证拒绝、身份变化和等待/阻塞状态不重试。超过期限仍明确阻断。已经尝试发送但结果未知的操作继续只对账原请求，不自动重发。
 
 Orca 远端 Codex 的 SessionStart 可能清空输入预览并改变显示回合标记，原任务仍在工作。Runner 在原有界补查中可调用现有只读 `nativeChat.readSession`：固定 baseline 后必须只有一条真实用户输入且完整匹配原请求，读取前后原会话、主记录与标记保持一致。新的同文输入也拒绝；缺页、截断、API 不可用或读取中状态变化仍保持未核实。该读取只补输入归属，完成仍由原主 agent done 和原完整结果核验决定；不重发输入、不修改 Orca。

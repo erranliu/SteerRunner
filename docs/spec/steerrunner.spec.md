@@ -395,6 +395,8 @@ request_id 是调用方生成的非空不透明字符串，以规范化状态目
 
 `inspect --request-id` / `--command-id` 返回原回执及关联 Run；查不到返回 `request_not_found` / `command_not_found`。服务恢复对账尚未完成时，不能据暂未查到断言旧外部动作不存在；对已提交请求的可核实“尚未接受”与恢复中的未知分别表达。没有 Run ID 的 submit 重试仍使用原 request_id 和原正文。
 
+`submit` 在受理前准备开始时持久保存原 request_id、规范化输入摘要和 command_id。此时 inspect 的命令为 `receipt_status=pending`、`action_status=preparing`，run_id 与 error 均为空。受理成功将 Run、接受回执及事件原子提交。准备失败将同一命令结算为 `receipt_status=rejected`、`action_status=rejected`，保留公开错误且 run_id 为空。获得独占写入权的替代服务将遗留 preparing 请求结算为拒绝，同 ID 重试回放该结果。
+
 事件拥有稳定 event_id、run_id、持久游标、类型及必要关联。游标不透明，客户端不能用时间或日志行数替代；错 Run 或无效游标明确拒绝，不能悄悄从头读取。分页/断线重读允许重复交付已提交事件，调用方按 event_id 去重。无新事件返回空页和可继续查询的游标。旧 Attempt/步骤结果可以记为历史事实，但不能推进当前步骤或污染其他 Run。首版保留持久事件，不自动裁剪游标对应范围。
 
 ## 6. RunRequest 与输入冻结
