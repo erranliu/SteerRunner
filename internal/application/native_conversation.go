@@ -2,11 +2,14 @@ package application
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	"github.com/erranliu/SteerRunner/internal/execution/process"
 )
 
 var nativeConversationSlots = make(chan struct{}, 2)
@@ -34,7 +37,8 @@ func (e *Engine) ReadNativeConversation(target contracts.NativeSessionTarget, cu
 		e.mu.Unlock()
 		return reject("stale_revision", "Original native session changed. Refresh the candidate.", 5)
 	}
-	if r.Snapshot.Ref.Protocol != b.ProtocolOrcaAgentSessionV1 {
+	protocol := r.Snapshot.Ref.Protocol
+	if protocol != b.ProtocolOrcaAgentSessionV1 && protocol != b.ProtocolLocalCodexAppServer {
 		e.mu.Unlock()
 		return reject("unsupported_capability", "Original adapter does not publish native conversation history.", 3)
 	}
@@ -59,9 +63,21 @@ func (e *Engine) ReadNativeConversation(target contracts.NativeSessionTarget, cu
 		Snapshot: r.Snapshot.Clone(), ProfileData: r.Profile,
 		ProfileID: r.ID, AcceptedConfigVersion: r.InputDigest, AgentLaunchCommand: r.LaunchCommand,
 	}
-	page, err := orca.ReadNativeConversation(ctx, setup, target, cursor, limit, userInputs)
-	if orca.IsConversationCursorError(err) {
+	var page contracts.NativeConversationPage
+	var err error
+	switch protocol {
+	case b.ProtocolLocalCodexAppServer:
+		setup.RunDirectory = e.dir
+		setup.ProcessHost = process.New(4 * time.Second)
+		page, err = codex.ReadNativeConversation(ctx, setup, target, cursor, limit, userInputs)
+	case b.ProtocolOrcaAgentSessionV1:
+		page, err = orca.ReadNativeConversation(ctx, setup, target, cursor, limit, userInputs)
+	}
+	if orca.IsConversationCursorError(err) || errors.Is(err, codex.ErrConversationCursor) {
 		return reject("invalid_cursor", "Conversation cursor differs from the original session.", 2)
+	}
+	if errors.Is(err, codex.ErrConversationUnsupported) {
+		return reject("unsupported_capability", "Original Codex app-server does not publish paged thread items.", 3)
 	}
 	if err != nil {
 		return reject("environment_unavailable", "Original conversation page could not be verified. Refresh and retry.", 4)
