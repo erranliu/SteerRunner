@@ -133,10 +133,14 @@ func (l *Lifecycle) agentClient(runtime string) agentSessionPort {
 	if l.agentSessions != nil {
 		return l.agentSessions(runtime)
 	}
-	if l.profile.Environment != "" {
-		return native.NewRemoteAgentSessionClient(l.profile.Environment, runtime, l.agentHostID)
+	return originalAgentClient(l.profile, l.agentHostID, l.setup.Snapshot.Ref.Agent.Name, runtime)
+}
+
+func originalAgentClient(profile Profile, host, agent, runtime string) native.AgentSessionClient {
+	if profile.Environment != "" {
+		return native.NewRemoteAgentSessionClient(profile.Environment, runtime, host)
 	}
-	if l.setup.Snapshot.Ref.Agent.Name == "pi" {
+	if agent == "pi" {
 		return native.NewLocalPiAgentSessionClient(runtime)
 	}
 	return native.NewLocalAgentSessionClient(runtime)
