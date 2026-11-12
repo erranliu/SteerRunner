@@ -19,6 +19,7 @@ type Command struct {
 	RequestID, ID, RunID, Name, Digest string
 	Response                           contracts.Response
 	Status                             string
+	admission                          bool
 }
 
 func RequestDigest(command, target string, input contracts.Request) string {
@@ -56,9 +57,14 @@ func (s *Store) Original(requestID, digest string) (contracts.Response, bool, er
 	return response, true, nil
 }
 func NewCommand(name, target string, input contracts.Request) Command {
-	id := contracts.NewID()
-	response := contracts.Success(input.RequestID, map[string]any{"command_id": id, "run_id": target, "receipt_status": "accepted", "action_status": "pending"})
-	return Command{RequestID: input.RequestID, ID: id, RunID: target, Name: name, Digest: RequestDigest(name, target, input), Response: response, Status: "pending"}
+	command := Command{RequestID: input.RequestID, ID: contracts.NewID(), Name: name, Digest: RequestDigest(name, target, input), Status: "pending"}
+	command.bindRun(target)
+	return command
+}
+
+func (c *Command) bindRun(runID string) {
+	c.RunID = runID
+	c.Response = contracts.Success(c.RequestID, map[string]any{"command_id": c.ID, "run_id": runID, "receipt_status": "accepted", "action_status": c.Status})
 }
 
 // Commit writes the aggregate, optional accepted command and events together.
@@ -109,7 +115,11 @@ func (s *Store) Commit(r *runstate.Record, expected uint64, command *Command, ev
 		if e != nil {
 			return e
 		}
-		_, err = tx.Exec(`INSERT INTO commands(request_id,command_id,command,instance_id,digest,response,action_status,run_id) VALUES(?,?,?,?,?,?,?,?)`, command.RequestID, command.ID, command.Name, "", command.Digest, body, command.Status, command.RunID)
+		if command.admission {
+			err = updateSubmit(tx, *command, body, command.Status, command.RunID)
+		} else {
+			_, err = tx.Exec(`INSERT INTO commands(request_id,command_id,command,instance_id,digest,response,action_status,run_id) VALUES(?,?,?,?,?,?,?,?)`, command.RequestID, command.ID, command.Name, "", command.Digest, body, command.Status, command.RunID)
+		}
 		if err != nil {
 			return err
 		}

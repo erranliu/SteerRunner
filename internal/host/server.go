@@ -85,6 +85,9 @@ func Serve(ctx context.Context, dir, startupID string) (outErr error) {
 		return err
 	}
 	defer store.Close()
+	if err := store.ReconcileSubmissions(); err != nil {
+		return err
+	}
 	engine, err := application.New(ctx, dir, store, logger, func(ctx context.Context, ownerDir string) error { return launchExecutionOwner(ctx, dir, ownerDir) })
 	if err != nil {
 		return err
@@ -295,9 +298,14 @@ func (s *server) handle(connection net.Conn) string {
 	if wire.Request != nil {
 		id = wire.Request.RequestID
 	}
+	started := time.Now()
 	response, stop := s.dispatch(wire)
 	if err := contracts.Encode(response, connection); err != nil {
-		s.logger.Printf("response delivery unavailable command=%s request=%s", wire.Options.Command, id)
+		outcome := "success"
+		if response.Error != nil {
+			outcome = response.Error.Code
+		}
+		s.logger.Printf("response delivery unavailable command=%s request=%s outcome=%s elapsed=%s", wire.Options.Command, id, outcome, time.Since(started))
 	}
 	if stop {
 		return id
