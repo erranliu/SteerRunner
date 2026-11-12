@@ -144,6 +144,16 @@ func (c *HistoryClient) WritersAbsent() bool {
 	}
 }
 
+type historyRPCError struct {
+	method  string
+	code    int
+	message string
+}
+
+func (e *historyRPCError) Error() string {
+	return fmt.Sprintf("Codex %s (%d): %s", e.method, e.code, e.message)
+}
+
 func (c *HistoryClient) call(ctx context.Context, method string, params any) (json.RawMessage, error) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
@@ -177,7 +187,7 @@ func (c *HistoryClient) call(ctx context.Context, method string, params any) (js
 				continue
 			}
 			if reply.Error != nil {
-				return nil, fmt.Errorf("Codex %s (%d): %s", method, reply.Error.Code, reply.Error.Message)
+				return nil, &historyRPCError{method, reply.Error.Code, reply.Error.Message}
 			}
 			if len(reply.Result) == 0 {
 				return nil, errors.New("Codex app-server omitted result")
@@ -205,7 +215,11 @@ type HistoryTurn struct {
 
 // ReadThread reads the original durable thread without resuming or starting it.
 func (c *HistoryClient) ReadThread(ctx context.Context, id, cwd string) (HistoryThread, error) {
-	raw, err := c.call(ctx, "thread/read", map[string]any{"threadId": id, "includeTurns": true})
+	return c.readThread(ctx, id, cwd, true)
+}
+
+func (c *HistoryClient) readThread(ctx context.Context, id, cwd string, includeTurns bool) (HistoryThread, error) {
+	raw, err := c.call(ctx, "thread/read", map[string]any{"threadId": id, "includeTurns": includeTurns})
 	if err != nil {
 		return HistoryThread{}, err
 	}

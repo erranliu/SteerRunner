@@ -78,7 +78,7 @@ Get-Content -Raw -Encoding utf8 .\request.json | .\bin\steerrunner.exe submit --
 .\bin\steerrunner.exe last-message --state-dir C:\Temp\SteerRunnerDemo --run-id <run_id> --json
 ```
 
-结构化 Orca 原会话支持只读分页。命令要求已运行的原 Runner 服务以及原 Run、Attempt、Session 和 generation。首次取最近一页，随后将返回的 `next_cursor` 传给 `--after`。消息的 `body_cursor` 也通过 `--after` 读取，返回该条的 `body_offset` 和一段正文。游标只对原会话和原 epoch 有效。
+结构化 Orca 与支持 `thread/items/list` 的本地 Codex app-server 原会话都支持只读分页。命令要求当前 Runner 服务以及原 Run、Attempt、Session 和 generation。首次取最近一页，随后将返回的 `next_cursor` 传给 `--after`。消息的 `body_cursor` 也通过 `--after` 读取，返回该条的 `body_offset` 和一段正文。游标只对原会话绑定有效。
 
 ```powershell
 .\bin\steerrunner.exe native-conversation-history --state-dir C:\Temp\SteerRunnerDemo --expected-instance-id <instance_id> --run-id <run_id> --attempt-id <attempt_id> --session-id <session_id> --generation <generation> --limit 25 --json
