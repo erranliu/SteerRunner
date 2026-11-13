@@ -17,6 +17,13 @@ import (
 )
 
 func (e *Engine) run(id string, w *worker) {
+	e.mu.Lock()
+	environment := e.runs[id].Request.EnvironmentCheck != nil
+	e.mu.Unlock()
+	if environment {
+		e.runEnvironmentCheck(id, w)
+		return
+	}
 	defer e.closeWorker(id, w)
 	timer := time.NewTicker(time.Second)
 	defer timer.Stop()
