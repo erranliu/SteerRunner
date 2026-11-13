@@ -55,6 +55,9 @@ func executionWorkspace(dir, id string) string {
 	return filepath.Join(dir, "workspaces", compactDirectoryKey(id))
 }
 
+// Repository clones can copy gigabytes of objects without hard links.
+const repositoryCloneTimeout = 5 * time.Minute
+
 func gitHost() workspace.Git {
 	return workspace.Git{Command: b.LaunchCommand{Executable: "git", Args: []string{"-c", "core.longpaths=true"}}, Timeout: 30 * time.Second, Start: process.New(30 * time.Second).StartManaged}
 }
@@ -318,6 +321,8 @@ func freezeWithWorkspace(ctx context.Context, dir string, input contracts.Reques
 
 func freezeRepository(ctx context.Context, dir string, r *runstate.Record) (workspace.Repository, error) {
 	git := gitHost()
+	cloneGit := git
+	cloneGit.Timeout = repositoryCloneTimeout
 	cache := repositoryCache(dir, r.Request.Repository)
 	entry, _ := repositoryLocks.LoadOrStore(cache, &sync.Mutex{})
 	cacheLock := entry.(*sync.Mutex)
@@ -343,7 +348,7 @@ func freezeRepository(ctx context.Context, dir string, r *runstate.Record) (work
 			return workspace.Repository{}, err
 		}
 		defer os.RemoveAll(staging) // Only the private directory created above.
-		if _, err := git.Output(ctx, dir, "clone", "--no-checkout", "--no-hardlinks", "--origin", r.Request.Repository.Remote, "--", source, staging); err != nil {
+		if _, err := cloneGit.Output(ctx, dir, "clone", "--no-checkout", "--no-hardlinks", "--origin", r.Request.Repository.Remote, "--", source, staging); err != nil {
 			return workspace.Repository{}, contracts.Fail(4, "environment_unavailable", "Cannot prepare the repository cache; no run was accepted. "+redactDiagnostic(r, err.Error()))
 		}
 		if _, err := git.Output(ctx, staging, "remote", "set-url", r.Request.Repository.Remote, r.Request.Repository.URL); err != nil {
@@ -392,7 +397,7 @@ func freezeRepository(ctx context.Context, dir string, r *runstate.Record) (work
 			return workspace.Repository{}, err
 		}
 		defer os.RemoveAll(staging) // Only the private directory allocated above.
-		if _, err = git.Output(ctx, dir, "clone", "--no-checkout", "--no-hardlinks", "--dissociate", "--origin", r.Request.Repository.Remote, "--", cache, staging); err != nil {
+		if _, err = cloneGit.Output(ctx, dir, "clone", "--no-checkout", "--no-hardlinks", "--dissociate", "--origin", r.Request.Repository.Remote, "--", cache, staging); err != nil {
 			return workspace.Repository{}, contracts.Fail(4, "environment_unavailable", "Cannot prepare the private Run repository; no run was accepted. "+redactDiagnostic(r, err.Error()))
 		}
 		if _, err = git.Output(ctx, staging, "remote", "set-url", r.Request.Repository.Remote, r.Request.Repository.URL); err != nil {
