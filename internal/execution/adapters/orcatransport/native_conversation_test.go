@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
@@ -26,15 +27,29 @@ func TestNativeConversationPagesOnlyReadOriginalPublicMessages(t *testing.T) {
 		item("earlier", 3, `{"kind":"message","role":"assistant","blocks":[{"type":"text","text":"Earlier assistant message"}]}`),
 		item("prompt", 2, `{"kind":"message","role":"user","blocks":[{"type":"text","text":"Composed internal instructions"}]}`),
 	}}
-	f := &agentFixture{pages: []native.AgentPage{tail, older}}
+	turn := item("turn-item", 3, `{"kind":"turn","turnId":"native-turn","userItemId":"reply","startedAt":1794557411123}`)
+	tail.Items[0].TurnScope.Kind = "turn"
+	tail.Items[0].TurnScope.TurnItemID = turn.ItemID
+	tail.Items = append(tail.Items, turn)
+	older.Items[0].TurnScope.Kind = "turn"
+	older.Items[0].TurnScope.TurnItemID = "older-turn-item"
+	f := &agentFixture{pages: []native.AgentPage{tail, older}, detail: item("older-turn-item", 1, `{"kind":"turn","turnId":"older-native-turn","startedAt":1794557311123}`)}
 	inputs := map[string]bool{"Explicit user reply": true}
 	first, err := readNativeConversationPage(context.Background(), f, state, target, "", 25, inputs)
 	if err != nil || f.reads != 1 || len(first.Messages) != 2 || first.Messages[0].ID != "reply" || first.Messages[1].ID != "last" || first.NextCursor == "" {
 		t.Fatalf("unexpected first page: %+v, reads=%d, error=%v", first, f.reads, err)
 	}
+	for _, message := range first.Messages {
+		if message.TurnStartedAt == nil || !message.TurnStartedAt.Equal(time.UnixMilli(1794557411123)) {
+			t.Fatalf("wrong turn time for %s: %v", message.ID, message.TurnStartedAt)
+		}
+	}
 	second, err := readNativeConversationPage(context.Background(), f, state, target, first.NextCursor, 25, inputs)
 	if err != nil || f.reads != 2 || len(second.Messages) != 1 || second.Messages[0].ID != "earlier" || second.NextCursor != "" {
 		t.Fatalf("unexpected older page: %+v, reads=%d, error=%v", second, f.reads, err)
+	}
+	if at := second.Messages[0].TurnStartedAt; f.details != 1 || at == nil || !at.Equal(time.UnixMilli(1794557311123)) {
+		t.Fatalf("wrong time on older page: %v, detail reads=%d", at, f.details)
 	}
 	target.AttemptID = "another-attempt"
 	if _, err := readNativeConversationPage(context.Background(), f, state, target, first.NextCursor, 25, inputs); !IsConversationCursorError(err) || f.reads != 2 {

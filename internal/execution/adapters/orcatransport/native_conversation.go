@@ -7,6 +7,7 @@ import (
 	"errors"
 	"sort"
 	"strings"
+	"time"
 	"unicode/utf8"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
@@ -89,12 +90,19 @@ func readNativeConversationPage(ctx context.Context, client conversationReader, 
 		return a.Sequence < b.Sequence
 	})
 	seen := make(map[string]bool)
+	turns := make(map[string]native.AgentTurn)
+	userTurns := make(map[string]string)
 	for i, item := range page.Items {
 		if item.ItemID == "" || seen[item.ItemID] || before != nil && item.Sequence > before.Sequence ||
 			i > 0 && item.Sequence == page.Items[i-1].Sequence && item.SequenceIndex == page.Items[i-1].SequenceIndex {
 			return out, errors.New("original conversation order is ambiguous")
 		}
 		seen[item.ItemID] = true
+		if turn, ok := conversationTurn(item); ok {
+			turns[item.ItemID] = turn
+			bindConversationUserTurn(userTurns, turn.UserItemID, item.ItemID)
+			continue
+		}
 		role, value, valid := conversationText(item, userInputs)
 		out.Partial = out.Partial || !valid
 		if role == "" {
@@ -117,6 +125,7 @@ func readNativeConversationPage(ctx context.Context, client conversationReader, 
 		}
 		out.Messages = append(out.Messages, message)
 	}
+	addOrcaConversationTimes(ctx, client, state.SessionID, out.Messages, turns, userTurns)
 	if page.HasOlder {
 		next := page.Window.NextCursor
 		if next == nil || next.Epoch != state.Epoch || next.Sequence <= 0 || before != nil && next.Sequence >= before.Sequence {
@@ -125,6 +134,61 @@ func readNativeConversationPage(ctx context.Context, client conversationReader, 
 		out.NextCursor = encodeConversationCursor(conversationCursor{Binding: key, Before: next})
 	}
 	return out, nil
+}
+
+func conversationTurn(item native.AgentItem) (native.AgentTurn, bool) {
+	var body struct {
+		Kind string `json:"kind"`
+		native.AgentTurn
+	}
+	err := json.Unmarshal(item.Body, &body)
+	return body.AgentTurn, err == nil && body.Kind == "turn" && body.TurnID != ""
+}
+
+func addOrcaConversationTimes(ctx context.Context, client conversationReader, session string, messages []contracts.NativeConversationMessage, turns map[string]native.AgentTurn, userTurns map[string]string) {
+	ctx, cancel := context.WithTimeout(ctx, 750*time.Millisecond)
+	defer cancel()
+	// Thread-scoped user items can be joined only through a turn's exact userItemId.
+	for i := len(messages) - 1; i >= 0; i-- {
+		message := &messages[i]
+		if message.TurnID == "" {
+			continue
+		}
+		if _, found := turns[message.TurnID]; found || ctx.Err() != nil {
+			continue
+		}
+		turn := native.AgentTurn{}
+		item, err := client.Item(ctx, session, message.TurnID)
+		if err == nil && item.ItemID == message.TurnID && !item.Shortened {
+			if original, ok := conversationTurn(item); ok {
+				turn = original
+				bindConversationUserTurn(userTurns, turn.UserItemID, item.ItemID)
+			}
+		}
+		turns[message.TurnID] = turn
+	}
+	for i := range messages {
+		message := &messages[i]
+		if message.Role == "user" && message.TurnID == "" {
+			message.TurnID = userTurns[message.ID]
+		}
+		if turn := turns[message.TurnID]; turn.StartedAt > 0 {
+			started := time.UnixMilli(turn.StartedAt).UTC()
+			if started.Year() <= 9999 {
+				message.TurnStartedAt = &started
+			}
+		}
+	}
+}
+
+func bindConversationUserTurn(userTurns map[string]string, userID, turnID string) {
+	if userID == "" {
+		return
+	}
+	if existing, found := userTurns[userID]; found && existing != turnID {
+		turnID = ""
+	}
+	userTurns[userID] = turnID
 }
 
 func encodeConversationCursor(cursor conversationCursor) string {
