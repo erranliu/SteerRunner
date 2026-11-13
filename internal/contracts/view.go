@@ -51,19 +51,21 @@ type QuestionView struct {
 	NativeQuestions []QuestionView   `json:"native_questions,omitempty"`
 }
 type PRFact struct {
-	URL            string     `json:"url"`
-	Provider       string     `json:"provider"`
-	Repository     string     `json:"repository"`
-	Number         int        `json:"number"`
-	BaseBranch     string     `json:"base_branch"`
-	HeadRepository string     `json:"head_repository"`
-	HeadBranch     string     `json:"head_branch"`
-	HeadRevision   string     `json:"head_revision,omitempty"`
-	State          string     `json:"state"`
-	Merged         bool       `json:"merged"`
-	MergedAt       *time.Time `json:"merged_at,omitempty"`
-	MergeCommit    *string    `json:"merge_commit,omitempty"`
-	CheckedAt      time.Time  `json:"checked_at"`
+	URL                  string     `json:"url"`
+	Provider             string     `json:"provider"`
+	Repository           string     `json:"repository"`
+	Number               int        `json:"number"`
+	BaseBranch           string     `json:"base_branch"`
+	HeadRepository       string     `json:"head_repository"`
+	HeadBranch           string     `json:"head_branch"`
+	HeadRevision         string     `json:"head_revision,omitempty"`
+	Draft                *bool      `json:"draft,omitempty"`
+	InitialDraftVerified bool       `json:"initial_draft_verified,omitempty"`
+	State                string     `json:"state"`
+	Merged               bool       `json:"merged"`
+	MergedAt             *time.Time `json:"merged_at,omitempty"`
+	MergeCommit          *string    `json:"merge_commit,omitempty"`
+	CheckedAt            time.Time  `json:"checked_at"`
 }
 type Controls struct {
 	CanMessage   bool   `json:"can_message"`

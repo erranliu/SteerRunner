@@ -343,6 +343,7 @@
         "query"
       ],
       "properties": {
+        "draft": {"type": "boolean", "description": "Create the initial PR as a draft and verify the platform reports it as draft."},
         "base_url": {
           "type": "string",
           "format": "uri"

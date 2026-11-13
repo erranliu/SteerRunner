@@ -1,6 +1,14 @@
 package workflow
 
-import "encoding/json"
+import (
+	_ "embed"
+	"encoding/json"
+)
+
+//go:embed publication-draft.md
+var draftPublicationInstruction string
+
+func DraftPublicationInstruction() string { return draftPublicationInstruction }
 
 func PublicationInstruction(state State, policy json.RawMessage, remote, base string) string {
 	if state.Contract != "publication" || state.Kind != "execute" {
@@ -11,6 +19,7 @@ func PublicationInstruction(state State, policy json.RawMessage, remote, base st
 		Repository string `json:"repository"`
 		Settings   struct {
 			BaseURL string `json:"base_url"`
+			Draft   bool   `json:"draft,omitempty"`
 		} `json:"settings"`
 	}
 	_ = json.Unmarshal(policy, &p)
@@ -20,6 +29,10 @@ func PublicationInstruction(state State, policy json.RawMessage, remote, base st
 		BaseURL    string `json:"base_url,omitempty"`
 		Remote     string `json:"remote"`
 		Base       string `json:"base"`
-	}{p.Provider, p.Repository, p.Settings.BaseURL, remote, base})
+		Draft      bool   `json:"draft,omitempty"`
+	}{p.Provider, p.Repository, p.Settings.BaseURL, remote, base, p.Settings.Draft})
+	if p.Settings.Draft {
+		return PublicationLabel + string(target) + draftPublicationInstruction
+	}
 	return PublicationLabel + string(target)
 }
