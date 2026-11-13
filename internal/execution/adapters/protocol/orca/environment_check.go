@@ -267,8 +267,14 @@ func (c EnvironmentTerminalClient) CheckoutIdle(ctx context.Context, worktree st
 			return errors.New("Existing checkout is occupied by an Orca session tab.")
 		}
 		terminal, err := c.Terminal(ctx, TerminalIdentity{RuntimeID: c.Runtime, Handle: tab.Terminal, IncarnationID: tab.IncarnationID})
-		if err != nil || terminal.WorktreeID != worktree || !terminal.Exited() {
-			return errors.New("Existing checkout session tab is active or its exit could not be verified.")
+		if err != nil || terminal.WorktreeID != worktree {
+			return errors.New("Existing checkout session tab identity could not be verified.")
+		}
+		if !terminal.Exited() {
+			code, err := c.Exit(ctx, terminal.Handle)
+			if err != nil || code == nil {
+				return errors.New("Existing checkout session tab is active or its exit could not be verified.")
+			}
 		}
 	}
 	return nil
