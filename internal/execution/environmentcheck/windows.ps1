@@ -24,7 +24,7 @@ function Read-Material([string]$Relative) {
     if ($item.PSIsContainer -or $item.Length -gt 1048576) { throw 'material exceeds bounds or is not a regular file' }
     return ,([IO.File]::ReadAllBytes($current))
 }
-function Verify {
+function Verify-Repository {
     $actual = & git rev-parse --show-toplevel 2>$null
     if ($LASTEXITCODE -ne 0 -or [IO.Path]::GetFullPath($actual) -ne $root) { throw 'project checkout identity differs' }
     $actual = & git config --get ('remote.' + $spec.remote + '.url') 2>$null
@@ -32,6 +32,8 @@ function Verify {
     if ($actual -cne $spec.url) {
         if ($actual -cnotmatch '^https?://' -or $spec.url -cnotmatch '^https?://' -or ($actual -creplace '\.git$', '') -cne ($spec.url -creplace '\.git$', '')) { throw 'project checkout remote differs' }
     }
+}
+function Verify-Materials {
     $doc = [Text.UTF8Encoding]::new($false, $true).GetString((Read-Material 'SteerlineFlow/environment.md')).Replace([string][char]13 + [char]10, [string][char]10)
     $fence = [regex]::Escape([string][char]96 * 3)
     $matches = [regex]::Matches($doc, ('(?ms)^' + $fence + 'steerline-environment\n(.*?)\n' + $fence + '$'))
@@ -39,6 +41,38 @@ function Verify {
     foreach ($entry in $spec.files.PSObject.Properties) {
         if (!( (Hash-Material (Read-Material $entry.Name)) -ccontains $entry.Value )) { throw ('environment material differs: ' + $entry.Name) }
     }
+}
+function Confirm-Updateable {
+    $branch = & git symbolic-ref --quiet HEAD 2>$null
+    if ($LASTEXITCODE -ne 0 -or $branch -cne ('refs/heads/' + $spec.branch)) { throw 'checkout is not on the requested branch' }
+    $status = & git --no-optional-locks status --porcelain=v1 --untracked-files=all --ignore-submodules=none 2>$null
+    if ($LASTEXITCODE -ne 0 -or $status) { throw 'checkout has local changes or could not be checked' }
+    foreach ($name in @('MERGE_HEAD','CHERRY_PICK_HEAD','REVERT_HEAD','REBASE_HEAD','rebase-merge','rebase-apply','sequencer','index.lock')) {
+        $state = & git rev-parse --git-path $name 2>$null
+        if ($LASTEXITCODE -ne 0 -or (Test-Path -LiteralPath $state)) { throw 'checkout has a Git operation in progress' }
+    }
+}
+function Update-Checkout {
+    & git check-ref-format ('refs/heads/' + $spec.branch) 2>$null | Out-Null
+    if ($LASTEXITCODE -ne 0) { throw 'invalid checkout target branch' }
+    Confirm-Updateable
+    $head = & git rev-parse --verify HEAD 2>$null
+    if ($LASTEXITCODE -ne 0) { throw 'checkout HEAD is unavailable' }
+    $env:GIT_TERMINAL_PROMPT = '0'
+    & git -c gc.auto=0 fetch --quiet --refmap= --no-tags --no-recurse-submodules --no-auto-maintenance -- $spec.remote ('refs/heads/' + $spec.branch) 2>$null
+    if ($LASTEXITCODE -ne 0) { throw 'could not fetch the requested checkout branch' }
+    $fetched = & git --no-replace-objects rev-parse --verify 'FETCH_HEAD^{commit}' 2>$null
+    if ($LASTEXITCODE -ne 0 -or $fetched -ine $spec.revision) { throw 'remote branch changed since the requested baseline was fixed; refresh the baseline and retry' }
+    & git --no-replace-objects merge-base --is-ancestor $head $fetched 2>$null
+    if ($LASTEXITCODE -ne 0) { throw 'checkout cannot fast-forward to the requested baseline' }
+    Verify-Repository
+    Confirm-Updateable
+    if ((& git rev-parse --verify HEAD 2>$null) -cne $head -or $LASTEXITCODE -ne 0) { throw 'checkout HEAD changed during fetch' }
+    if ($head -cne $fetched) {
+        & git --no-replace-objects -c core.hooksPath=/dev/null -c merge.autostash=false -c submodule.recurse=false merge --ff-only --no-overwrite-ignore --quiet -- $fetched 2>$null
+        if ($LASTEXITCODE -ne 0) { throw 'Git refused the checkout fast-forward' }
+    }
+    if ((& git rev-parse --verify HEAD 2>$null) -cne $fetched -or $LASTEXITCODE -ne 0) { throw 'checkout HEAD does not match the requested baseline' }
 }
 $code = 125
 $result = ''
@@ -48,30 +82,44 @@ try {
     $spec = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('@@INPUT@@')) | ConvertFrom-Json
     $root = (Get-Item -LiteralPath . -Force).FullName
     if ($root -ne [IO.Path]::GetFullPath($spec.root)) { throw 'execution directory differs from the registered checkout' }
-    Verify
-    $tempRoot = (Get-Item -LiteralPath ([IO.Path]::GetTempPath()) -Force).FullName
-    if ($tempRoot -eq $root -or $tempRoot.StartsWith($root.TrimEnd('\') + '\', [StringComparison]::OrdinalIgnoreCase)) { throw 'temporary directory is inside the project' }
-    for ($ancestor = Get-Item -LiteralPath $tempRoot -Force; $null -ne $ancestor; $ancestor = $ancestor.Parent) {
-        if ($ancestor.Attributes -band [IO.FileAttributes]::ReparsePoint) { throw 'temporary directory is redirected' }
-    }
-    $scratch = Join-Path $tempRoot ('steerrunner-env-' + [Guid]::NewGuid().ToString('N'))
-    [IO.Directory]::CreateDirectory($scratch) | Out-Null
-    $resultPath = Join-Path $scratch 'result.json'
-    [IO.File]::WriteAllBytes($resultPath, [Convert]::FromBase64String($spec.initial))
-    $env:STEERLINE_RESULT_FILE = $resultPath
-    $env:TEMP = $scratch
-    $env:TMP = $scratch
-    $env:TMPDIR = $scratch
-    if ($spec.interpreter -ceq 'powershell.exe') {
-        & powershell.exe -NoProfile -NonInteractive -File (Join-Path $root $spec.script) *> $null
+    Verify-Repository
+    if ($spec.fast_forward) {
+        Update-Checkout
+        $result = 'e30='
+        $code = 0
+    } elseif ($spec.verify_only) {
+        $sameMaterials = $true
+        try { Verify-Materials } catch { $sameMaterials = $false }
+        $value = if ($sameMaterials) { '{"matches":true}' } else { '{"matches":false}' }
+        $result = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($value))
+        $code = 0
     } else {
-        & bash $spec.script *> $null
+        Verify-Materials
+        $tempRoot = (Get-Item -LiteralPath ([IO.Path]::GetTempPath()) -Force).FullName
+        if ($tempRoot -eq $root -or $tempRoot.StartsWith($root.TrimEnd('\') + '\', [StringComparison]::OrdinalIgnoreCase)) { throw 'temporary directory is inside the project' }
+        for ($ancestor = Get-Item -LiteralPath $tempRoot -Force; $null -ne $ancestor; $ancestor = $ancestor.Parent) {
+            if ($ancestor.Attributes -band [IO.FileAttributes]::ReparsePoint) { throw 'temporary directory is redirected' }
+        }
+        $scratch = Join-Path $tempRoot ('steerrunner-env-' + [Guid]::NewGuid().ToString('N'))
+        [IO.Directory]::CreateDirectory($scratch) | Out-Null
+        $resultPath = Join-Path $scratch 'result.json'
+        [IO.File]::WriteAllBytes($resultPath, [Convert]::FromBase64String($spec.initial))
+        $env:STEERLINE_RESULT_FILE = $resultPath
+        $env:TEMP = $scratch
+        $env:TMP = $scratch
+        $env:TMPDIR = $scratch
+        if ($spec.interpreter -ceq 'powershell.exe') {
+            & powershell.exe -NoProfile -NonInteractive -File (Join-Path $root $spec.script) *> $null
+        } else {
+            & bash $spec.script *> $null
+        }
+        $code = $LASTEXITCODE
+        Verify-Repository
+        Verify-Materials
+        $item = Get-Item -LiteralPath $resultPath -Force
+        if ($item.PSIsContainer -or ($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -or $item.Length -gt 65536) { throw 'result file is missing, redirected or exceeds bounds' }
+        $result = [Convert]::ToBase64String([IO.File]::ReadAllBytes($resultPath))
     }
-    $code = $LASTEXITCODE
-    Verify
-    $item = Get-Item -LiteralPath $resultPath -Force
-    if ($item.PSIsContainer -or ($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -or $item.Length -gt 65536) { throw 'result file is missing, redirected or exceeds bounds' }
-    $result = [Convert]::ToBase64String([IO.File]::ReadAllBytes($resultPath))
 } catch {
     $code = 125
     $result = ''

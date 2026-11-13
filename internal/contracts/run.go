@@ -62,6 +62,7 @@ type Publication struct {
 }
 
 type RunRequest struct {
+	FastForward            bool                   `json:"checkout_fast_forward,omitempty"`
 	EnvironmentCheck       *EnvironmentCheckInput `json:"checkout_probe,omitempty"`
 	ReuseWorktreeFromRunID string                 `json:"reuse_worktree_from_run_id,omitempty"`
 	ProgressFile           *ProgressFileInput     `json:"progress_file,omitempty"`
@@ -255,6 +256,12 @@ func ValidateRun(data []byte) *Fault {
 	}
 	if _, present := fields["name_prefix"]; present && (len(value.NamePrefix) > MaxNamePrefixLength || !namePrefixPattern.MatchString(value.NamePrefix)) {
 		return invalid
+	}
+	if raw, present := fields["checkout_fast_forward"]; present {
+		if string(raw) != "true" || !value.FastForward {
+			return invalid
+		}
+		return ValidateCheckoutFastForward(value)
 	}
 	if raw, present := fields["checkout_probe"]; present {
 		if string(raw) == "null" {
