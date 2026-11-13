@@ -396,10 +396,36 @@ func validatePR(r *runstate.Record, info evidence.PRInfo) error {
 	}
 	return publication.ValidateWorkerPRIdentity(info, url, r.Request.Publication.Repository, r.Request.Repository.BaseBranch, r.Snapshot.Ref.WorkspaceBranch)
 }
+func initialDraftQualified(r *runstate.Record, info evidence.PRInfo) bool {
+	if r.PR != nil && r.PR.InitialDraftVerified {
+		return true
+	}
+	if r.Request.Publication.Provider != "command" {
+		return true
+	}
+	var settings contracts.CommandProviderSettings
+	if contracts.DecodeStrict(r.Request.Publication.Settings, &settings) != nil {
+		return false
+	}
+	return !settings.Draft || (info.Draft != nil && *info.Draft && info.State == "open" && validDraftHead(info.HeadRevision))
+}
+
+func validDraftHead(sha string) bool {
+	if len(sha) != 40 && len(sha) != 64 {
+		return false
+	}
+	for _, digit := range sha {
+		if !(digit >= '0' && digit <= '9' || digit >= 'a' && digit <= 'f') {
+			return false
+		}
+	}
+	return true
+}
+
 func prFact(r *runstate.Record, info evidence.PRInfo) *contracts.PRFact {
 	provider, _ := providerFor(r)
 	number, _ := provider.Config.PRNumber(info.URL)
-	return &contracts.PRFact{URL: info.URL, Provider: r.Request.Publication.Provider, Repository: info.Repository, Number: number, BaseBranch: info.BaseBranch, HeadRepository: info.HeadRepository, HeadBranch: info.HeadBranch, HeadRevision: info.HeadRevision, State: info.State, Merged: info.Merged, MergedAt: info.MergedAt, MergeCommit: info.MergeCommit, CheckedAt: time.Now().UTC()}
+	return &contracts.PRFact{URL: info.URL, Provider: r.Request.Publication.Provider, Repository: info.Repository, Number: number, BaseBranch: info.BaseBranch, HeadRepository: info.HeadRepository, HeadBranch: info.HeadBranch, HeadRevision: info.HeadRevision, Draft: info.Draft, InitialDraftVerified: r.PR != nil && r.PR.InitialDraftVerified || info.Draft != nil && *info.Draft && info.State == "open" && validDraftHead(info.HeadRevision), State: info.State, Merged: info.Merged, MergedAt: info.MergedAt, MergeCommit: info.MergeCommit, CheckedAt: time.Now().UTC()}
 }
 func (e *Engine) verifyPublication(id string) bool {
 	e.mu.Lock()
@@ -442,6 +468,10 @@ func (e *Engine) verifyPublication(id string) bool {
 	info, err := provider.Query(e.ctx, r.PendingPRURL)
 	if err == nil {
 		err = validatePR(r, info)
+	}
+	if err == nil && !initialDraftQualified(r, info) {
+		e.blockRevision(id, r.Revision, "draft_pr_unverified", errors.New("The original PR is missing a verified open draft state and head revision"), true)
+		return false
 	}
 	if err == nil && r.Workflow.RequiresWorkspace() {
 		post := checkpoint(r, r.Workflow.AuditResultID)
@@ -503,7 +533,7 @@ func (e *Engine) probePRClues(id string) bool {
 	verified := []evidence.PRInfo{}
 	for _, url := range r.PRClues {
 		info, err := provider.Query(e.ctx, url)
-		if err == nil && publication.ValidateWorkerPRIdentity(info, url, r.Request.Publication.Repository, r.Request.Repository.BaseBranch, r.Snapshot.Ref.WorkspaceBranch) == nil {
+		if err == nil && initialDraftQualified(r, info) && publication.ValidateWorkerPRIdentity(info, url, r.Request.Publication.Repository, r.Request.Repository.BaseBranch, r.Snapshot.Ref.WorkspaceBranch) == nil {
 			verified = append(verified, info)
 		}
 	}

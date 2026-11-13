@@ -55,6 +55,8 @@ func resourceDigest(catalog CapabilityCatalog) string {
 	definition, _ := json.Marshal(workflow.Catalog())
 	digest.Write([]byte("compiled-workflow-definitions\x00"))
 	digest.Write(definition)
+	digest.Write([]byte("draft-publication-instruction\x00"))
+	digest.Write([]byte(workflow.DraftPublicationInstruction()))
 	digest.Write([]byte("model-input-contract\x00"))
 	digest.Write(marshal(ModelInputContract()))
 	digest.Write([]byte("published-configuration\x00"))

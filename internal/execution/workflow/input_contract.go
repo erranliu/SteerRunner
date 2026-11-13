@@ -25,7 +25,7 @@ func InputContract() any {
 		"facts":                 "report source=original command_id, optional failure; exact turn/version/digest and audit/publication prerequisites stay program-verified, never internal ledgers",
 		"result_format":         "implementation execute and reports keep the fixed state.result_instruction; audit execute format remains part of overridable body",
 		"commit":                CommitInstruction, "success": SuccessLabel, "feedback": FeedbackLabel,
-		"publication": map[string]any{"label": PublicationLabel, "slots": "execute only: provider/repository/base_url/remote/base; no provider query or authentication configuration"},
+		"publication": map[string]any{"label": PublicationLabel, "slots": "execute only: provider/repository/base_url/remote/base and optional draft; draft adds the fixed initial draft creation instruction; no provider query or authentication configuration"},
 		"progress":    map[string]any{"text": ProgressInstruction, "continue": ContinueProgressInstruction, "when": "enabled non-plan-driven implementation/audit execute and execute/1; reuse rule only if already supplied in this original session"},
 		"result_file": map[string]any{"text": ResultFileInstruction, "remote_orca_execute_snapshot": ResultFileSnapshotInstruction, "legacy_orca_development_snapshot": DevelopmentResultFileSnapshotInstruction, "continue": ContinueResultInstruction, "when": "enabled non-plan-driven implementation/audit execute and execute/1; snapshot instructions apply only to their matching frozen legacy profiles; reuse rule only if already supplied in this original session"},
 	}

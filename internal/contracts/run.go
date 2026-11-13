@@ -120,6 +120,7 @@ type QuerySettings struct {
 }
 
 type CommandProviderSettings struct {
+	Draft              bool          `json:"draft,omitempty"`
 	BaseURL            string        `json:"base_url"`
 	Query              QuerySettings `json:"query"`
 	AuthenticationRefs []string      `json:"authentication_refs,omitempty"`
