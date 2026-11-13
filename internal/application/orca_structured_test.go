@@ -198,6 +198,11 @@ func TestStructuredFileEnvironmentBindings(t *testing.T) {
 
 func TestSRFreezeRemoteStructuredExecutePinsHostAndSealContract(t *testing.T) {
 	f := newBaseRefreshFixture(t, "origin", "main")
+	// The remote is offline. The fixed commit exists locally even though the
+	// local branch is behind it. Admission must use that exact object.
+	if err := os.Rename(f.remote, f.remote+"-offline"); err != nil {
+		t.Fatal(err)
+	}
 	cli, err := exec.LookPath("git")
 	if err != nil {
 		t.Fatal(err)
@@ -214,6 +219,12 @@ func TestSRFreezeRemoteStructuredExecutePinsHostAndSealContract(t *testing.T) {
 	f.request.ResultFile = &contracts.ResultFileInput{InitialContentBase64: ""}
 	f.input.Input = canonical(f.request)
 	r := f.freeze()
+	if !workspace.SamePath(r.RepositoryPath, f.source) || !workspace.SamePath(r.RepositoryCommon, filepath.Join(f.source, ".git")) {
+		t.Fatalf("admission did not bind the original local repository: %q, %q", r.RepositoryPath, r.RepositoryCommon)
+	}
+	if _, err := os.Stat(filepath.Join(f.state, "r")); !os.IsNotExist(err) {
+		t.Fatalf("admission created a repository cache: %v", err)
+	}
 	if err := queueInput(r, workflow.StageInput{StepID: r.Workflow.StepID}, ""); err != nil {
 		t.Fatal(err)
 	}
@@ -252,6 +263,35 @@ func TestSRFreezeRemoteStructuredExecutePinsHostAndSealContract(t *testing.T) {
 	old.Snapshot.Ref.Protocol = b.ProtocolOrcaTerminalV3
 	if resultContract(old) != contracts.ResultFileContract {
 		t.Fatal("old remote record reinterpreted")
+	}
+}
+
+func TestRemoteExecuteLocalBaseRejectsInvalidInput(t *testing.T) {
+	f := newBaseRefreshFixture(t, "origin", "main")
+	blob := f.git(f.source, "rev-parse", f.pinned+":spec.md")
+	// An explicit replacement must not make a missing original commit valid.
+	missing := strings.Repeat("a", len(f.pinned))
+	f.git(f.source, "update-ref", "refs/replace/"+missing, f.pinned)
+	for _, tc := range []struct {
+		name string
+		edit func(*contracts.Repository)
+		code string
+	}{
+		{"wrong remote", func(r *contracts.Repository) { r.URL += "-other" }, "invalid_input"},
+		{"invalid branch", func(r *contracts.Repository) { r.BaseBranch = "invalid..branch" }, "invalid_input"},
+		{"blob", func(r *contracts.Repository) { r.BaseRevision = blob }, "invalid_input"},
+		{"missing commit with replacement", func(r *contracts.Repository) { r.BaseRevision = missing }, "invalid_input"},
+		{"relative checkout", func(r *contracts.Repository) { r.LocalPath = "relative" }, "invalid_input"},
+		{"missing checkout", func(r *contracts.Repository) { r.LocalPath = filepath.Join(f.root, "absent") }, "environment_unavailable"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			request := f.request.Repository
+			tc.edit(&request)
+			_, err := verifyLocalExecutionBase(context.Background(), gitHost(), request)
+			if err == nil || fault(err).Detail.Code != tc.code {
+				t.Fatalf("got %v, want %s", err, tc.code)
+			}
+		})
 	}
 }
 

@@ -321,6 +321,11 @@ func freezeWithWorkspace(ctx context.Context, dir string, input contracts.Reques
 
 func freezeRepository(ctx context.Context, dir string, r *runstate.Record) (workspace.Repository, error) {
 	git := gitHost()
+	// Paired Orca execute/1 opens the actual worktree on the execution host.
+	// The caller already fixed the base, so admission only checks it locally.
+	if r.Request.Execution.Adapter == "orca-terminal" && r.Request.Execution.Target.Kind == "orca_environment" && r.Request.Workflow.ID == workflow.SingleExecution {
+		return verifyLocalExecutionBase(ctx, git, r.Request.Repository)
+	}
 	cloneGit := git
 	cloneGit.Timeout = repositoryCloneTimeout
 	cache := repositoryCache(dir, r.Request.Repository)
@@ -425,6 +430,28 @@ func freezeRepository(ctx context.Context, dir string, r *runstate.Record) (work
 		return workspace.Repository{}, err
 	}
 
+	return repo, nil
+}
+
+func verifyLocalExecutionBase(ctx context.Context, git workspace.Git, request contracts.Repository) (workspace.Repository, error) {
+	if !filepath.IsAbs(request.LocalPath) {
+		return workspace.Repository{}, contracts.Fail(2, "invalid_input", "repository.local_path must be absolute.")
+	}
+	repo, err := workspace.ResolveRepository(ctx, git, request.LocalPath)
+	if err != nil || !workspace.SamePath(repo.Path, request.LocalPath) {
+		return workspace.Repository{}, contracts.Fail(4, "environment_unavailable", "The original local repository root is unavailable or redirected; no run was accepted.")
+	}
+	remote, err := git.Output(ctx, repo.Path, "config", "--get", "remote."+request.Remote+".url")
+	if err != nil || strings.TrimSpace(string(remote)) != request.URL {
+		return workspace.Repository{}, contracts.Fail(2, "invalid_input", "The local repository remote differs from the frozen URL.")
+	}
+	if _, err := git.Output(ctx, repo.Path, "check-ref-format", "refs/heads/"+request.BaseBranch); err != nil {
+		return workspace.Repository{}, contracts.Fail(2, "invalid_input", "Invalid base branch.")
+	}
+	commit, err := git.Output(ctx, repo.Path, "--no-lazy-fetch", "--no-replace-objects", "rev-parse", "--verify", "--end-of-options", request.BaseRevision+"^{commit}")
+	if err != nil || !strings.EqualFold(strings.TrimSpace(string(commit)), request.BaseRevision) {
+		return workspace.Repository{}, contracts.Fail(2, "invalid_input", "The pinned base commit is unavailable in the original local repository.")
+	}
 	return repo, nil
 }
 
