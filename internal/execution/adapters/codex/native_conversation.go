@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"slices"
 	"strings"
+	"time"
 	"unicode/utf8"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
@@ -28,6 +29,7 @@ var (
 type codexConversationCursor struct {
 	Binding string                 `json:"b"`
 	Page    string                 `json:"p,omitempty"`
+	Turns   string                 `json:"turns,omitempty"`
 	Body    *codexConversationBody `json:"m,omitempty"`
 }
 
@@ -59,6 +61,15 @@ type codexThreadItems struct {
 
 type codexConversationReader interface {
 	listConversationItems(context.Context, string, string, int) (codexThreadItems, error)
+	listConversationTurns(context.Context, string, string, int) (codexConversationTurns, error)
+}
+
+type codexConversationTurns struct {
+	Data []struct {
+		ID        string `json:"id"`
+		StartedAt int64  `json:"startedAt"`
+	} `json:"data"`
+	Next string `json:"nextCursor"`
 }
 
 func ReadNativeConversation(ctx context.Context, setup b.LifecycleSetup, target contracts.NativeSessionTarget, cursor string, limit int, userInputs map[string]bool) (contracts.NativeConversationPage, error) {
@@ -143,6 +154,22 @@ func (c *HistoryClient) listConversationItems(ctx context.Context, thread, curso
 	return page, nil
 }
 
+func (c *HistoryClient) listConversationTurns(ctx context.Context, thread, cursor string, limit int) (codexConversationTurns, error) {
+	params := map[string]any{"threadId": thread, "limit": limit, "sortDirection": "desc", "itemsView": "notLoaded"}
+	if cursor != "" {
+		params["cursor"] = cursor
+	}
+	raw, err := c.call(ctx, "thread/turns/list", params)
+	if err != nil {
+		return codexConversationTurns{}, err
+	}
+	var page codexConversationTurns
+	if json.Unmarshal(raw, &page) != nil || page.Data == nil || len(page.Data) > limit {
+		return codexConversationTurns{}, errors.New("invalid Codex thread turns page")
+	}
+	return page, nil
+}
+
 func parseCodexConversationCursor(raw, binding string) (codexConversationCursor, error) {
 	cursor := codexConversationCursor{Binding: binding}
 	if raw == "" {
@@ -215,11 +242,57 @@ func readCodexConversationPage(ctx context.Context, reader codexConversationRead
 	}
 	// App-server lists newest first. The public page is chronological.
 	slices.Reverse(out.Messages)
+	turnCursor := addCodexConversationTimes(ctx, reader, target.SessionID, cursor.Turns, out.Messages)
 	if native.Next != "" {
-		out.NextCursor = encodeCodexConversationCursor(codexConversationCursor{Binding: cursor.Binding, Page: native.Next})
+		out.NextCursor = encodeCodexConversationCursor(codexConversationCursor{Binding: cursor.Binding, Page: native.Next, Turns: turnCursor})
+		if out.NextCursor == "" && turnCursor != "" {
+			out.NextCursor = encodeCodexConversationCursor(codexConversationCursor{Binding: cursor.Binding, Page: native.Next})
+		}
 		out.Partial = out.Partial || out.NextCursor == ""
 	}
 	return out, nil
+}
+
+func addCodexConversationTimes(ctx context.Context, reader codexConversationReader, thread, cursor string, messages []contracts.NativeConversationMessage) string {
+	if len(messages) == 0 {
+		return cursor
+	}
+	ctx, cancel := context.WithTimeout(ctx, 750*time.Millisecond)
+	defer cancel()
+	pending := make(map[string]bool)
+	for _, message := range messages {
+		pending[message.TurnID] = true
+	}
+	times := make(map[string]*time.Time)
+	next := cursor
+	for range 4 {
+		page, err := reader.listConversationTurns(ctx, thread, next, 50)
+		if err != nil {
+			break
+		}
+		for _, turn := range page.Data {
+			if !pending[turn.ID] {
+				continue
+			}
+			delete(pending, turn.ID)
+			if started := time.Unix(turn.StartedAt, 0).UTC(); turn.StartedAt > 0 && started.Year() <= 9999 {
+				times[turn.ID] = &started
+			}
+		}
+		if len(pending) == 0 {
+			// The next item page can still contain messages from this turn page.
+			cursor = next
+			break
+		}
+		if page.Next == "" || page.Next == next {
+			break
+		}
+		next = page.Next
+	}
+	for i := range messages {
+		messages[i].TurnStartedAt = times[messages[i].TurnID]
+	}
+	return cursor
 }
 
 func (item codexThreadItem) publicMessage(userInputs map[string]bool) (contracts.NativeConversationMessage, bool) {

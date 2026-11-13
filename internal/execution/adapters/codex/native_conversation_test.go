@@ -6,17 +6,29 @@ import (
 	"errors"
 	"strings"
 	"testing"
+	"time"
 	"unicode/utf8"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
 )
 
-type codexConversationFixture map[string]codexThreadItems
+type codexConversationFixture struct {
+	items map[string]codexThreadItems
+	turns map[string]codexConversationTurns
+}
 
 func (f codexConversationFixture) listConversationItems(_ context.Context, thread, cursor string, limit int) (codexThreadItems, error) {
-	page, ok := f[cursor]
+	page, ok := f.items[cursor]
 	if !ok || thread != "thread" || len(page.Data) > limit {
 		return page, errors.New("wrong native history query")
+	}
+	return page, nil
+}
+
+func (f codexConversationFixture) listConversationTurns(_ context.Context, thread, cursor string, limit int) (codexConversationTurns, error) {
+	page, ok := f.turns[cursor]
+	if !ok || thread != "thread" || len(page.Data) > limit {
+		return page, errors.New("wrong native turn history query")
 	}
 	return page, nil
 }
@@ -38,7 +50,7 @@ func codexConversationItem(t *testing.T, id, kind, text string) codexThreadItem 
 
 func TestNativeConversationCodexPagesFilterAndPreserveOrder(t *testing.T) {
 	target := contracts.NativeSessionTarget{SessionID: "thread"}
-	fixture := codexConversationFixture{
+	fixture := codexConversationFixture{items: map[string]codexThreadItems{
 		"": {Data: []codexThreadItem{
 			codexConversationItem(t, "final", "agentMessage", "final reply"),
 			codexConversationItem(t, "tool", "commandExecution", "tool output"),
@@ -49,12 +61,28 @@ func TestNativeConversationCodexPagesFilterAndPreserveOrder(t *testing.T) {
 			codexConversationItem(t, "human", "userMessage", "actual human input"),
 			codexConversationItem(t, "prompt", "userMessage", "assembled instruction"),
 		}},
+	}, turns: make(map[string]codexConversationTurns)}
+	fixture.items["older"].Data[1].TurnID = "old-turn"
+	for cursor, raw := range map[string]string{
+		"":            `{"data":[{"id":"turn","startedAt":1794557411}],"nextCursor":"older-turns"}`,
+		"older-turns": `{"data":[{"id":"old-turn","startedAt":1794557311}]}`,
+	} {
+		var page codexConversationTurns
+		if err := json.Unmarshal([]byte(raw), &page); err != nil {
+			t.Fatal(err)
+		}
+		fixture.turns[cursor] = page
 	}
 	users := map[string]bool{"actual human input": true}
 	start := codexConversationCursor{Binding: "original"}
 	first, err := readCodexConversationPage(t.Context(), fixture, target, start, 3, users)
 	if err != nil || len(first.Messages) != 2 || first.Messages[0].ID != "public" || first.Messages[1].ID != "final" || first.NextCursor == "" {
 		t.Fatalf("invalid latest page: %+v, %v", first, err)
+	}
+	for _, message := range first.Messages {
+		if message.TurnStartedAt == nil || !message.TurnStartedAt.Equal(time.Unix(1794557411, 0)) {
+			t.Fatalf("wrong turn time for %s: %v", message.ID, message.TurnStartedAt)
+		}
 	}
 	if _, err := parseCodexConversationCursor(first.NextCursor, "different"); !errors.Is(err, ErrConversationCursor) {
 		t.Fatalf("cursor crossed bindings: %v", err)
@@ -67,12 +95,17 @@ func TestNativeConversationCodexPagesFilterAndPreserveOrder(t *testing.T) {
 	if err != nil || len(older.Messages) != 1 || older.Messages[0].ID != "human" || older.Messages[0].Role != "user" || older.NextCursor != "" {
 		t.Fatalf("invalid older page: %+v, %v", older, err)
 	}
+	if at := older.Messages[0].TurnStartedAt; at == nil || !at.Equal(time.Unix(1794557311, 0)) {
+		t.Fatalf("wrong time on older page: %v", at)
+	}
 }
 
 func TestNativeConversationCodexBodyChecksDigestAndByteOffsets(t *testing.T) {
 	target := contracts.NativeSessionTarget{SessionID: "thread"}
 	text := strings.Repeat("中文", 12000)
-	fixture := codexConversationFixture{"": {Data: []codexThreadItem{codexConversationItem(t, "long", "agentMessage", text)}}}
+	fixture := codexConversationFixture{items: map[string]codexThreadItems{
+		"": {Data: []codexThreadItem{codexConversationItem(t, "long", "agentMessage", text)}},
+	}}
 	page, err := readCodexConversationPage(t.Context(), fixture, target, codexConversationCursor{Binding: "original"}, 1, nil)
 	if err != nil || len(page.Messages) != 1 || !page.Messages[0].Truncated || len(page.Messages[0].Text) > 4096 || !utf8.ValidString(page.Messages[0].Text) {
 		t.Fatalf("invalid preview: %v", err)
@@ -95,7 +128,7 @@ func TestNativeConversationCodexBodyChecksDigestAndByteOffsets(t *testing.T) {
 		segment.Messages[0].Text+last.Messages[0].Text != text || last.NextCursor != "" {
 		t.Fatalf("invalid continuation: %v", err)
 	}
-	fixture[""] = codexThreadItems{Data: []codexThreadItem{codexConversationItem(t, "long", "agentMessage", text+" changed")}}
+	fixture.items[""] = codexThreadItems{Data: []codexThreadItem{codexConversationItem(t, "long", "agentMessage", text+" changed")}}
 	if _, err = readCodexConversationPage(t.Context(), fixture, target, continuation, 1, nil); !errors.Is(err, ErrConversationCursor) {
 		t.Fatalf("changed native body was accepted: %v", err)
 	}

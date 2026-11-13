@@ -86,6 +86,8 @@ Get-Content -Raw -Encoding utf8 .\request.json | .\bin\steerrunner.exe submit --
 
 消息按原顺序返回助手文字和可核实的用户输入。工具、推理和组装后的工作流指令不进入响应。原生历史有缺口或 Run 有过往 Attempt 时返回 `partial`，无法核实原会话时返回错误。读取不会启动服务、恢复会话或发送输入。
 
+原生记录提供轮次开始时间时，消息带有 UTC RFC 3339 格式的 `turn_started_at`。字段缺失表示本次读取未取得原轮次的开始时间。
+
 accepted 表示文档路径及原请求已持久化，不表示文档存在性已核验，执行结果以 Run 和命令 action_status 为准。丢失响应时查询原 request_id；同 ID 的重试必须保留原正文。兼容服务重启保留原流程授权，自动补收原事实并接续尚未派发的后继；原暂停、人工等待、业务阻断和显式 stop 保留。未知输入只对账，旧 epoch 答案仍需人工确认；新保存答案绑定原执行范围。
 
 `submit` 在准备仓库和材料前保存原请求身份。丢失回执后，用原 `request_id` 查询。准备中返回 `receipt_status=pending` 和 `action_status=preparing`，Run 为空。准备失败返回 `rejected` 及原错误，Run 仍为空。成功时接受回执与 Run 在同一事务写入，查询继续使用原 command_id。服务重启会将尚未创建 Run 的准备中请求结算为已拒绝。
