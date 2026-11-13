@@ -23,7 +23,11 @@ import (
 )
 
 func freezeEnvironmentCheck(request contracts.RunRequest) (*runstate.Record, error) {
-	if err := contracts.ValidateEnvironmentCheck(request); err != nil {
+	if request.FastForward {
+		if err := contracts.ValidateCheckoutFastForward(request); err != nil {
+			return nil, err
+		}
+	} else if err := contracts.ValidateEnvironmentCheck(request); err != nil {
 		return nil, err
 	}
 	if request.Execution.Adapter == "codex-app-server" && runtime.GOOS != "windows" {
@@ -386,6 +390,12 @@ func (e *Engine) startEnvironmentTerminal(ctx context.Context, r *runstate.Recor
 		return
 	}
 	client := native.EnvironmentTerminalClient{Environment: r.Request.Execution.Target.Environment, Runtime: runtimeID, Host: r.Snapshot.Ref.Target.ExecutionHost}
+	if r.Request.FastForward {
+		if err := client.CheckoutIdle(ctx, work.ID); err != nil {
+			e.finishEnvironment(r.ID, environmentcheck.Result{}, err, true)
+			return
+		}
+	}
 	expected, err := client.ExpectedHandle(ctx, work.ID, r.ID)
 	if err != nil {
 		e.finishEnvironment(r.ID, environmentcheck.Result{}, err, true)
@@ -395,6 +405,13 @@ func (e *Engine) startEnvironmentTerminal(ctx context.Context, r *runstate.Recor
 	ctx = native.WithDispatchCheckpoint(ctx, func() error {
 		e.mu.Lock()
 		defer e.mu.Unlock()
+		for id, other := range e.runs {
+			state := other.EnvironmentInvocation
+			if id != r.ID && other.StopStatus != "stopped" && state != nil && state.Attempted &&
+				state.Host == client.Host && state.Worktree == work.ID && (r.Request.FastForward || other.Request.FastForward) {
+				return errors.New("Existing checkout is occupied by an original Runner operation.")
+			}
+		}
 		next := e.runs[r.ID].Clone()
 		next.EnvironmentInvocation = &runstate.EnvironmentInvocation{Attempted: true, Runtime: runtimeID, Host: client.Host, Worktree: work.ID, WorkspaceInstance: work.InstanceID, Terminal: expected}
 		next.Snapshot.Ref.WorkspacePath = work.Path
@@ -403,7 +420,11 @@ func (e *Engine) startEnvironmentTerminal(ctx context.Context, r *runstate.Recor
 		dispatched = err == nil
 		return err
 	})
-	terminal, err := client.Start(ctx, work.ID, r.ID, command.Startup, command.Shell, command.Environment)
+	title := "Project environment check"
+	if r.Request.FastForward {
+		title = "Checkout fast-forward"
+	}
+	terminal, err := client.Start(ctx, work.ID, r.ID, title, command.Startup, command.Shell, command.Environment)
 	if err != nil {
 		if dispatched {
 			e.noteEnvironment(r.ID, "Original Orca terminal creation is unverified")

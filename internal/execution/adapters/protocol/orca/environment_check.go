@@ -20,7 +20,7 @@ type EnvironmentTerminalClient struct {
 func (c EnvironmentTerminalClient) call(ctx context.Context, method string, params any, mutation bool, shell string) (json.RawMessage, error) {
 	var conn agentSessionConnection
 	var advertised []string
-	capabilities := []string{terminalCreateID, terminalShell}
+	capabilities := append(remoteAgentSessionCapabilities(), terminalCreateID, terminalShell)
 	if c.Environment == "" {
 		if c.Runtime == "" {
 			var err error
@@ -119,8 +119,8 @@ func (c EnvironmentTerminalClient) Checkout(ctx context.Context, path string) (W
 	return query.Worktree, err
 }
 
-func (c EnvironmentTerminalClient) Start(ctx context.Context, worktree, id, command, shell string, env map[string]string) (Terminal, error) {
-	params := map[string]any{"env": env, "worktree": "id:" + worktree, "clientMutationId": id, "command": command, "title": "SteerLine environment check", "presentation": "background"}
+func (c EnvironmentTerminalClient) Start(ctx context.Context, worktree, id, title, command, shell string, env map[string]string) (Terminal, error) {
+	params := map[string]any{"env": env, "worktree": "id:" + worktree, "clientMutationId": id, "command": command, "title": title, "presentation": "background"}
 	if shell != "" {
 		params["shell"] = shell
 	}
@@ -226,6 +226,56 @@ func (c EnvironmentTerminalClient) Stop(ctx context.Context, id TerminalIdentity
 	var value struct{ Close TerminalClosure }
 	if json.Unmarshal(raw, &value) != nil || value.Close.Handle != id.Handle || !value.Close.PtyKilled {
 		return errors.New("original environment terminal stop is unverified")
+	}
+	return nil
+}
+
+// CheckoutIdle conservatively observes original-host checkout users.
+func (c EnvironmentTerminalClient) CheckoutIdle(ctx context.Context, worktree string) error {
+	selector := "id:" + worktree
+	raw, err := c.call(ctx, "terminal.list", map[string]any{"worktree": selector, "requireFreshPtyLiveness": true, "includeVisualLayouts": false}, false, "")
+	if err != nil {
+		return err
+	}
+	inventory := DecodeTerminalInventory(Result{Payload: raw})
+	if !inventory.Decoded() || inventory.Terminals == nil || inventory.Total == nil || *inventory.Total != len(inventory.Terminals) ||
+		inventory.Truncated == nil || *inventory.Truncated || inventory.Hosts == nil || inventory.Hosts.Omitted == nil || !slices.Contains(inventory.Hosts.IDs, "local") ||
+		slices.Contains(inventory.Hosts.Omitted, "local") {
+		return errors.New("Existing checkout terminal inventory is incomplete.")
+	}
+	// Fresh liveness filters out exited PTYs. Any row still present is busy.
+	if len(inventory.Terminals) != 0 {
+		return errors.New("Existing checkout is occupied by an Orca terminal.")
+	}
+	raw, err = c.call(ctx, "session.tabs.list", map[string]string{"worktree": selector}, false, "")
+	if err != nil {
+		return err
+	}
+	var sessions struct {
+		Worktree string
+		Tabs     []struct {
+			Terminal      string
+			IncarnationID string
+		}
+		Truncated bool
+	}
+	if json.Unmarshal(raw, &sessions) != nil || sessions.Worktree != worktree || sessions.Tabs == nil || sessions.Truncated {
+		return errors.New("Existing checkout session inventory is incomplete.")
+	}
+	for _, tab := range sessions.Tabs {
+		if tab.Terminal == "" || tab.IncarnationID == "" {
+			return errors.New("Existing checkout is occupied by an Orca session tab.")
+		}
+		terminal, err := c.Terminal(ctx, TerminalIdentity{RuntimeID: c.Runtime, Handle: tab.Terminal, IncarnationID: tab.IncarnationID})
+		if err != nil || terminal.WorktreeID != worktree {
+			return errors.New("Existing checkout session tab identity could not be verified.")
+		}
+		if !terminal.Exited() {
+			code, err := c.Exit(ctx, terminal.Handle)
+			if err != nil || code == nil {
+				return errors.New("Existing checkout session tab is active or its exit could not be verified.")
+			}
+		}
 	}
 	return nil
 }

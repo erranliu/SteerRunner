@@ -36,7 +36,7 @@ func (e *Engine) admitSubmit(input contracts.Request, digest string) contracts.R
 		defer unlock()
 	}
 	var r *runstate.Record
-	if request.EnvironmentCheck != nil {
+	if request.CheckoutOperation() {
 		r, err = freezeEnvironmentCheck(request)
 	} else {
 		r, err = freezeWithWorkspace(e.ctx, e.dir, input, source)

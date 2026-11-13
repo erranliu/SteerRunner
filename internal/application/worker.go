@@ -18,7 +18,7 @@ import (
 
 func (e *Engine) run(id string, w *worker) {
 	e.mu.Lock()
-	environment := e.runs[id].Request.EnvironmentCheck != nil
+	environment := e.runs[id].Request.CheckoutOperation()
 	e.mu.Unlock()
 	if environment {
 		e.runEnvironmentCheck(id, w)

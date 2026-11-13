@@ -12,6 +12,7 @@ const EnvironmentDocument = "SteerlineFlow/environment.md"
 const EnvironmentCheckContract = "steerrunner-checkout-probe/v1"
 
 type EnvironmentCheckInput struct {
+	VerifyOnly     bool              `json:"verify_only,omitempty"`
 	Interpreter    string            `json:"interpreter"`
 	Script         string            `json:"script"`
 	ManifestSHA256 string            `json:"manifest_sha256"`
@@ -47,3 +48,19 @@ func ValidateEnvironmentCheck(r RunRequest) *Fault {
 	}
 	return ValidateExecutionSelection(r.Execution, r.Workflow)
 }
+
+const CheckoutFastForwardContract = "steerrunner-checkout-fast-forward/v1"
+
+func ValidateCheckoutFastForward(r RunRequest) *Fault {
+	if !r.FastForward || r.EnvironmentCheck != nil || r.Execution.Adapter != "orca-terminal" || r.Execution.Target.Kind != "orca_environment" ||
+		r.Workflow.ID != workflow.SingleExecution || r.Workflow.Version != 1 || len(r.Workflow.PromptOverrides) != 0 ||
+		r.Workflow.AuditModel != nil || r.Workflow.ProjectPolicySlots != nil || r.ReuseWorktreeFromRunID != "" ||
+		r.Conversation != nil || r.Generate != nil || r.ProgressFile != nil || r.ResultFile == nil ||
+		r.Publication.Provider != "" || r.Publication.Repository != "" || r.Publication.BaseBranch != "" || len(r.Publication.Settings) != 0 ||
+		!validRepository(r.Repository) || !filepath.IsAbs(r.Repository.LocalPath) {
+		return Fail(2, "invalid_input", "Checkout fast-forward requires a paired Orca target, a fixed repository and a result channel.")
+	}
+	return ValidateExecutionSelection(r.Execution, r.Workflow)
+}
+
+func (r RunRequest) CheckoutOperation() bool { return r.EnvironmentCheck != nil || r.FastForward }
