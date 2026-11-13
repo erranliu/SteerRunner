@@ -169,6 +169,8 @@ func Capabilities() any {
 		"result_file":             ResultFileCapabilities(),
 		"result_file_schema":      json.RawMessage(Read("result-file.schema.json")),
 		"offline_inspect":         map[string]any{"command": "inspect --offline", "read_only": true, "writer_absent": true, "starts_workers": false},
+		"checkout_fast_forward":   map[string]string{"contract": contracts.CheckoutFastForwardContract, "submit_property": "checkout_fast_forward", "workspace": "existing_checkout"},
+		"checkout_probe":          map[string]string{"contract": contracts.EnvironmentCheckContract, "submit_property": "checkout_probe", "workspace": "existing_checkout"},
 		"run_evidence":            json.RawMessage(Read("run-evidence.capabilities.json")),
 		"run_evidence_schema":     json.RawMessage(Read("run-evidence.schema.json")),
 		"native_session_viewer":   map[string]any{"adapters": viewerAdapters},

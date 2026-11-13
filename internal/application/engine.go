@@ -140,7 +140,9 @@ func (e *Engine) commitLocked(next *runstate.Record, command *storage.Command, e
 		// Published progress values are immutable; the collector/preparer commits
 		// new copies. Avoid cloning the whole execution record for this field.
 		next.Progress = prior.Progress
-		next.ResultFile = prior.ResultFile
+		if !next.Request.CheckoutOperation() {
+			next.ResultFile = prior.ResultFile
+		}
 		if prior.ResultFileEnd != nil {
 			next.ResultFileEnd = prior.ResultFileEnd
 		}
@@ -218,6 +220,9 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 			return reject(contracts.Fail(5, "workspace_write_held", "SteerLine holds the worktree write lease. Return it before sending Run controls."))
 		}
 		isContent := workflow.Content(r.Request.Workflow.ID)
+		if r.Request.CheckoutOperation() && command != "stop" {
+			return reject(contracts.Fail(3, "unsupported_capability", "Environment detection accepts only stop or inspection."))
+		}
 		single := r.Request.Workflow.ID == workflow.SingleExecution
 		if single && (command == "reply" || command == "resume" || command == "message" || command == "interrupt" || command == "close") {
 			return reject(contracts.Fail(3, "unsupported_capability", "Single execution accepts no additional input; use the original stop or inspect."))
@@ -277,6 +282,17 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 			if next.PendingResume != "" {
 				next.CommandStates[next.PendingResume] = "failed"
 				next.PendingResume = ""
+			}
+			if next.Request.CheckoutOperation() {
+				next.Allowed = false
+				if next.StopStatus == "stopped" {
+					next.CommandStates[receipt.ID] = "completed"
+					receipt.Status = "completed"
+					receipt.Response.Data.(map[string]any)["action_status"] = receipt.Status
+				} else {
+					next.PendingStop, next.StopStatus, next.Phase = receipt.ID, "pending", "stop_requested"
+				}
+				break
 			}
 			if isContent || single {
 				closeContent(next, receipt.ID)

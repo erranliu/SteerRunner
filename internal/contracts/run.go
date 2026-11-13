@@ -62,19 +62,21 @@ type Publication struct {
 }
 
 type RunRequest struct {
-	ReuseWorktreeFromRunID string             `json:"reuse_worktree_from_run_id,omitempty"`
-	ProgressFile           *ProgressFileInput `json:"progress_file,omitempty"`
-	ResultFile             *ResultFileInput   `json:"result_file,omitempty"`
-	Conversation           *ConversationInput `json:"conversation,omitempty"`
-	Generate               *GenerateInput     `json:"generate,omitempty"`
-	Title                  string             `json:"title"`
-	NamePrefix             string             `json:"name_prefix,omitempty"`
-	Correlation            map[string]string  `json:"correlation,omitempty"`
-	Repository             Repository         `json:"repository,omitzero"`
-	Documents              Documents          `json:"documents,omitzero"`
-	Workflow               Workflow           `json:"workflow"`
-	Execution              Execution          `json:"execution"`
-	Publication            Publication        `json:"publication,omitzero"`
+	FastForward            bool                   `json:"checkout_fast_forward,omitempty"`
+	EnvironmentCheck       *EnvironmentCheckInput `json:"checkout_probe,omitempty"`
+	ReuseWorktreeFromRunID string                 `json:"reuse_worktree_from_run_id,omitempty"`
+	ProgressFile           *ProgressFileInput     `json:"progress_file,omitempty"`
+	ResultFile             *ResultFileInput       `json:"result_file,omitempty"`
+	Conversation           *ConversationInput     `json:"conversation,omitempty"`
+	Generate               *GenerateInput         `json:"generate,omitempty"`
+	Title                  string                 `json:"title"`
+	NamePrefix             string                 `json:"name_prefix,omitempty"`
+	Correlation            map[string]string      `json:"correlation,omitempty"`
+	Repository             Repository             `json:"repository,omitzero"`
+	Documents              Documents              `json:"documents,omitzero"`
+	Workflow               Workflow               `json:"workflow"`
+	Execution              Execution              `json:"execution"`
+	Publication            Publication            `json:"publication,omitzero"`
 }
 
 type AgentSettings struct {
@@ -254,6 +256,18 @@ func ValidateRun(data []byte) *Fault {
 	}
 	if _, present := fields["name_prefix"]; present && (len(value.NamePrefix) > MaxNamePrefixLength || !namePrefixPattern.MatchString(value.NamePrefix)) {
 		return invalid
+	}
+	if raw, present := fields["checkout_fast_forward"]; present {
+		if string(raw) != "true" || !value.FastForward {
+			return invalid
+		}
+		return ValidateCheckoutFastForward(value)
+	}
+	if raw, present := fields["checkout_probe"]; present {
+		if string(raw) == "null" {
+			return invalid
+		}
+		return ValidateEnvironmentCheck(value)
 	}
 	if workflow.Content(value.Workflow.ID) {
 		return validateContentRun(data, value)

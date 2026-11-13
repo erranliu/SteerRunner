@@ -27,7 +27,7 @@ func VerifyStopped(ctx context.Context, dir string, runs []*runstate.Record) con
 		setup := b.LifecycleSetup{Snapshot: r.Snapshot.Clone(), ProfileData: r.Profile, ProfileID: r.ID, AcceptedConfigVersion: r.InputDigest, AgentLaunchCommand: r.LaunchCommand, ProcessHost: process.New(30 * time.Second), RepositoryPath: repository, RepositoryURL: r.Request.Repository.URL, RunDirectory: dir}
 		scope := ""
 		var scopeErr error
-		if r.Request.Execution.Adapter == "orca-terminal" {
+		if r.Request.Execution.Adapter == "orca-terminal" && !r.Request.CheckoutOperation() {
 			scope, scopeErr = orca.StopEvidenceScope(setup)
 			if scopeErr == nil && requiresFrozenOrcaScope(r, scope) && scope != r.StopEvidenceScope {
 				scopeErr = fmt.Errorf("frozen stop evidence scope is missing or inconsistent")
@@ -42,7 +42,7 @@ func VerifyStopped(ctx context.Context, dir string, runs []*runstate.Record) con
 			settled = scopeErr == nil && confirmedOrcaTerminalStop(r, scope)
 		}
 		probeErr := scopeErr
-		if scopeErr == nil && !settled && r.ID != "" && r.InputDigest != "" && r.Request.Execution.Adapter == "orca-terminal" && r.Snapshot.Ref.RunID == r.ID && r.Snapshot.Session.ExecutionID == r.ID && r.Snapshot.ConfigurationDigest == r.InputDigest {
+		if !r.Request.CheckoutOperation() && scopeErr == nil && !settled && r.ID != "" && r.InputDigest != "" && r.Request.Execution.Adapter == "orca-terminal" && r.Snapshot.Ref.RunID == r.ID && r.Snapshot.Session.ExecutionID == r.ID && r.Snapshot.ConfigurationDigest == r.InputDigest {
 			probeCtx, cancel := context.WithTimeout(ctx, 30*time.Second)
 			probeErr = orca.VerifyStopped(probeCtx, setup)
 			cancel()
