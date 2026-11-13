@@ -28,7 +28,10 @@ function Verify {
     $actual = & git rev-parse --show-toplevel 2>$null
     if ($LASTEXITCODE -ne 0 -or [IO.Path]::GetFullPath($actual) -ne $root) { throw 'project checkout identity differs' }
     $actual = & git config --get ('remote.' + $spec.remote + '.url') 2>$null
-    if ($LASTEXITCODE -ne 0 -or $actual -cne $spec.url) { throw 'project checkout remote differs' }
+    if ($LASTEXITCODE -ne 0 -or !($actual -is [string])) { throw 'project checkout remote differs' }
+    if ($actual -cne $spec.url) {
+        if ($actual -cnotmatch '^https?://' -or $spec.url -cnotmatch '^https?://' -or ($actual -creplace '\.git$', '') -cne ($spec.url -creplace '\.git$', '')) { throw 'project checkout remote differs' }
+    }
     $doc = [Text.UTF8Encoding]::new($false, $true).GetString((Read-Material 'SteerlineFlow/environment.md')).Replace([string][char]13 + [char]10, [string][char]10)
     $fence = [regex]::Escape([string][char]96 * 3)
     $matches = [regex]::Matches($doc, ('(?ms)^' + $fence + 'steerline-environment\n(.*?)\n' + $fence + '$'))

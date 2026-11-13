@@ -31,7 +31,7 @@ func TestExistingCheckoutInvocation(t *testing.T) {
 		return strings.TrimSpace(string(body))
 	}
 	runGit("init", "--quiet")
-	runGit("remote", "add", "origin", "https://example.invalid/project.git")
+	runGit("remote", "add", "origin", "https://example.invalid/project")
 	runGit("-c", "user.name=fixture", "-c", "user.email=fixture@example.invalid", "-c", "commit.gpgSign=false", "commit", "--allow-empty", "-m", "different HEAD")
 	manifest := `{"version":6}`
 	fence := strings.Repeat(string(rune(96)), 3)

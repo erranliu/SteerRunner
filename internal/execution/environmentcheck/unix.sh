@@ -41,7 +41,13 @@ verify() {
     failure='project checkout identity differs'
     [ "$(pwd -P)" = "$root" ] && [ "$(git rev-parse --show-toplevel 2>/dev/null)" = "$root" ] || return 1
     failure='project checkout remote differs'
-    [ "$(git config --get "remote.$remote.url" 2>/dev/null)" = "$url" ] || return 1
+    local actual
+    actual=$(git config --get "remote.$remote.url" 2>/dev/null) || return 1
+    if [ "$actual" != "$url" ]; then
+        case "$actual" in http://*|https://*) ;; *) return 1 ;; esac
+        case "$url" in http://*|https://*) ;; *) return 1 ;; esac
+        [ "${actual%.git}" = "${url%.git}" ] || return 1
+    fi
     failure='environment manifest differs'
     ordinary SteerlineFlow/environment.md || return 1
     local digest
