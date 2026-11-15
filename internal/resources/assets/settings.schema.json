@@ -384,7 +384,12 @@
       "required": [
         "base_url"
       ],
+      "if": {"required": ["draft"], "properties": {"draft": {"const": true}}},
+      "then": {"required": ["draft_title_prefix"]},
+      "else": {"not": {"required": ["draft_title_prefix"]}},
       "properties": {
+        "draft": {"type": "boolean", "description": "Create the initial Gitea PR as a draft and verify the platform reports it as draft."},
+        "draft_title_prefix": {"type": "string", "pattern": "^[^\\p{Cc}\\p{Z}][^\\p{Cc}]{0,63}$", "description": "Configured Gitea work-in-progress title prefix used on initial PR creation."},
         "base_url": {
           "type": "string",
           "format": "uri"

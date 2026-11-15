@@ -57,6 +57,8 @@ func resourceDigest(catalog CapabilityCatalog) string {
 	digest.Write(definition)
 	digest.Write([]byte("draft-publication-instruction\x00"))
 	digest.Write([]byte(workflow.DraftPublicationInstruction()))
+	digest.Write([]byte("gitea-draft-publication-instruction\x00"))
+	digest.Write([]byte(workflow.GiteaDraftPublicationInstruction()))
 	digest.Write([]byte("model-input-contract\x00"))
 	digest.Write(marshal(ModelInputContract()))
 	digest.Write([]byte("published-configuration\x00"))
