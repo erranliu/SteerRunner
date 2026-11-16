@@ -73,6 +73,19 @@ turn、原生 outcome、final item/source 和 verified。历史不收集完整�
 Runner 创建独立受管 worktree，并将 Run、原生 session 和 worktree 身份绑定。后续输入仍使用
 `message`，各轮结果可通过 `inspect` 和 `history` 查看。该版本的原生交互入口由 Runner 管理。
 
+### 读取对话事件
+
+`conversation-events --run-id R --expected-instance-id I --limit 64 --json` 读取本机
+Codex `conversation/2` 的显示事件。使用 `--after` 原样传回上页 `next_cursor`。
+`has_more` 表示需要继续补读，`active` 表示原轮次仍在执行。页绑定原 Run 和
+Codex 会话，事件带稳定的 ID 与轮次；条目事件另有原生条目 ID。
+
+`assistant_delta` 提供生成中的正文，`assistant_completed` 提供该条目的完整
+正文，`assistant_started` 提供原生条目边界。客户端用已完成正文对齐增量。
+`tool` 只提供工具类别与状态。`turn_settled` 来自已结算的原轮次。
+读取沿用已验证的 Runner 服务绑定，不接收文件路径或输入信封。
+
+
 ### 写入权交接
 
 1. 通过 `inspect --run-id R` 等待 `run.workspace_write.can_acquire=true`。用同一
