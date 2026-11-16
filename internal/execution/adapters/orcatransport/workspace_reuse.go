@@ -16,7 +16,11 @@ func ManagedWorkspaceIdentity(setup b.LifecycleSetup) (string, error) {
 	if err != nil || state.Worktree.InstanceID == "" {
 		return "", errors.Join(err, errors.New("managed Orca workspace identity unavailable"))
 	}
-	return "orca:" + digest([]byte(l.agentHostID+"\x00"+state.RuntimeID+"\x00"+state.Worktree.ID+"\x00"+state.Worktree.InstanceID)), nil
+	return managedOrcaWorkspaceIdentity(l, state), nil
+}
+
+func managedOrcaWorkspaceIdentity(l *frozenRecord, state agentSessionState) string {
+	return "orca:" + digest([]byte(l.agentHostID+"\x00"+state.RuntimeID+"\x00"+state.Worktree.ID+"\x00"+state.Worktree.InstanceID))
 }
 
 // ReuseManagedWorkspace retains only workspace facts. Session, input, close,

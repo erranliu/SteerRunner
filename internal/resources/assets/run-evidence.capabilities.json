@@ -42,6 +42,15 @@
   "git": {
     "command": "workspace-git --run-id R",
     "read_only": true,
+    "targets": [
+      {
+        "adapter": "orca-terminal",
+        "target_kind": "orca_environment",
+        "workflow": "execute/1",
+        "source": "original_authenticated_orca_git_status",
+        "workspace": "latest_managed_worktree_incarnation"
+      }
+    ],
     "agent_calls": 0,
     "resume_calls": 0,
     "includes_untracked": true,

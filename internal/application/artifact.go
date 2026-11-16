@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
@@ -144,8 +145,17 @@ func (e *Engine) handleEvidence(command, runID, artifactID string, input *contra
 	defer cancel()
 	if command == "workspace-git" {
 		out := contracts.WorkspaceGit{RunID: runID}
-		err := verifyEvidenceWorkspace(ctx, git, r)
-		if err == nil {
+		var err error
+		x := r.Request.Execution
+		if x.Adapter == "orca-terminal" && x.Target.Kind == "orca_environment" &&
+			r.Request.Workflow.ID == workflow.SingleExecution && r.Request.Workflow.Version == 1 {
+			var commit string
+			var clean bool
+			commit, clean, err = e.pairedEvidenceGit(ctx, r)
+			if err == nil {
+				out.Commit, out.Clean, out.Verified = &commit, &clean, true
+			}
+		} else if err = verifyEvidenceWorkspace(ctx, git, r); err == nil {
 			var commit string
 			var clean bool
 			var repo workspace.Repository
@@ -251,6 +261,36 @@ func evidenceIdentity(current, original *runstate.Record) error {
 	}
 	return nil
 }
+func (e *Engine) pairedEvidenceGit(ctx context.Context, r *runstate.Record) (string, bool, error) {
+	if err := e.checkPairedEvidenceOwner(r); err != nil {
+		return "", false, err
+	}
+	commit, clean, err := orca.ObservePairedWorkspaceGit(ctx, workspaceSetup(r), r.ManagedWorkspace.Identity)
+	if err != nil {
+		return "", false, err
+	}
+	if err := e.checkPairedEvidenceOwner(r); err != nil {
+		return "", false, err
+	}
+	return commit, clean, nil
+}
+
+func (e *Engine) checkPairedEvidenceOwner(original *runstate.Record) error {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+	current := e.runs[original.ID]
+	if err := evidenceIdentity(current, original); err != nil {
+		return err
+	}
+	managed, old := current.ManagedWorkspace, original.ManagedWorkspace
+	if managed == nil || old == nil || managed.Identity == "" || managed.OriginRunID == "" ||
+		managed.Identity != old.Identity || managed.OriginRunID != old.OriginRunID ||
+		managed.SourceRunID != old.SourceRunID || e.workspaceSuperseded(current) {
+		return contracts.Fail(5, "workspace_source_unknown", "Original Run is not the latest holder of the paired worktree.")
+	}
+	return nil
+}
+
 func (e *Engine) checkEvidenceIdentity(original *runstate.Record) error {
 	e.mu.Lock()
 	defer e.mu.Unlock()
