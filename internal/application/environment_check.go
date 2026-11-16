@@ -6,8 +6,10 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"os"
 	"os/exec"
 	"path"
+	"path/filepath"
 	"runtime"
 	"strings"
 	"time"
@@ -138,7 +140,13 @@ func (e *Engine) environmentRecord(id string) *runstate.Record {
 
 func (e *Engine) startLocalEnvironment(r *runstate.Record, w *worker) <-chan environmentExecution {
 	root := r.Request.Repository.LocalPath
-	prepared, err := environmentcheck.Build(r.Request, root, r.ID, runtime.GOOS == "windows", false)
+	dir := e.localEnvironmentDir(r.ID)
+	// An earlier writer may have exited before committing a launch receipt.
+	if err := os.RemoveAll(dir); err != nil {
+		e.finishEnvironment(r.ID, environmentcheck.Result{}, err, true)
+		return nil
+	}
+	prepared, err := environmentcheck.PrepareLocalWindows(r.Request, root, r.ID, dir)
 	if err != nil {
 		e.finishEnvironment(r.ID, environmentcheck.Result{}, err, true)
 		return nil
@@ -181,6 +189,10 @@ func (e *Engine) startLocalEnvironment(r *runstate.Record, w *worker) <-chan env
 	return done
 }
 
+func (e *Engine) localEnvironmentDir(id string) string {
+	return filepath.Join(e.dir, "environment-invocation-"+id)
+}
+
 type environmentOutput struct {
 	body      strings.Builder
 	truncated bool
@@ -220,6 +232,11 @@ func (e *Engine) finishEnvironment(id string, result environmentcheck.Result, er
 	r := e.runs[id].Clone()
 	if r.StopStatus == "stopped" || !settled {
 		return
+	}
+	if runtime.GOOS == "windows" && r.Request.Execution.Adapter == "codex-app-server" {
+		if cleanupErr := os.RemoveAll(e.localEnvironmentDir(id)); cleanupErr != nil {
+			err = errors.Join(err, fmt.Errorf("remove environment invocation files: %w", cleanupErr))
+		}
 	}
 	r.Allowed, r.Closed = false, true
 	r.StopStatus, r.Phase = "stopped", "closed"

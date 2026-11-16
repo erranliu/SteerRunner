@@ -4,7 +4,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"runtime"
 	"strings"
 	"testing"
 
@@ -40,10 +39,7 @@ func TestCheckoutFastForward(t *testing.T) {
 		ResultFile: &contracts.ResultFileInput{InitialContentBase64: "e30="}}
 	invoke := func(code int, diagnostic string) {
 		t.Helper()
-		built, err := Build(r, checkout, "fixture", runtime.GOOS == "windows", false)
-		if err != nil {
-			t.Fatal(err)
-		}
+		built := localCheckoutCommand(t, r, checkout)
 		cmd := exec.Command(built.Executable, built.Args...)
 		cmd.Dir = checkout
 		cmd.Env = append(os.Environ(), "GIT_CONFIG_NOSYSTEM=1", "GIT_CONFIG_GLOBAL="+filepath.Join(root, "empty-config"))

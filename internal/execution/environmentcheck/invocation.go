@@ -6,6 +6,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"os"
+	"path/filepath"
 	"slices"
 	"strconv"
 	"strings"
@@ -32,20 +34,12 @@ type Command struct {
 func Build(r contracts.RunRequest, root, id string, windows, terminal bool) (Command, error) {
 	c := r.EnvironmentCheck
 	if windows {
-		raw, err := json.Marshal(struct {
-			*contracts.EnvironmentCheckInput
-			Root        string `json:"root"`
-			URL         string `json:"url"`
-			Remote      string `json:"remote"`
-			Branch      string `json:"branch"`
-			Revision    string `json:"revision"`
-			FastForward bool   `json:"fast_forward"`
-			Initial     string `json:"initial"`
-		}{c, root, r.Repository.URL, r.Repository.Remote, r.Repository.BaseBranch, r.Repository.BaseRevision, r.FastForward, r.ResultFile.InitialContentBase64})
+		raw, err := windowsInput(r, root)
 		if err != nil {
 			return Command{}, err
 		}
-		body := strings.NewReplacer("@@INPUT@@", base64.StdEncoding.EncodeToString(raw), "@@ID@@", id, "@@SETTLE@@", strconv.Itoa(settleDelay(terminal))).Replace(windowsScript)
+		readInput := "[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('" + base64.StdEncoding.EncodeToString(raw) + "'))"
+		body := windowsBody(readInput, id, settleDelay(terminal))
 		units := utf16.Encode([]rune(body))
 		encoded := make([]byte, 0, len(units)*2)
 		for _, unit := range units {
@@ -55,7 +49,7 @@ func Build(r contracts.RunRequest, root, id string, windows, terminal bool) (Com
 		if len(data) > 26000 {
 			return Command{}, errors.New("environment invocation exceeds the Windows command budget")
 		}
-		return Command{"powershell.exe", []string{"-NoProfile", "-NonInteractive", "-EncodedCommand", data}, "& powershell.exe -NoProfile -NonInteractive -EncodedCommand $env:STEERRUNNER_ENV_BODY; exit $LASTEXITCODE", "powershell.exe", map[string]string{"STEERRUNNER_ENV_BODY": data}}, nil
+		return Command{Startup: "& powershell.exe -NoProfile -NonInteractive -EncodedCommand $env:STEERRUNNER_ENV_BODY; exit $LASTEXITCODE", Shell: "powershell.exe", Environment: map[string]string{"STEERRUNNER_ENV_BODY": data}}, nil
 	}
 	if !r.FastForward && c.Interpreter != "bash" {
 		return Command{}, errors.New("configured interpreter requires Windows")
@@ -82,6 +76,46 @@ func Build(r contracts.RunRequest, root, id string, windows, terminal bool) (Com
 		return Command{}, errors.New("environment invocation exceeds the terminal command budget")
 	}
 	return Command{"bash", []string{"-c", body}, startup, "", map[string]string{"STEERRUNNER_ENV_BODY": data}}, nil
+}
+
+// PrepareLocalWindows writes the wrapper and its input to a Run-owned directory.
+// The caller removes the directory after the managed process tree settles.
+func PrepareLocalWindows(r contracts.RunRequest, root, id, dir string) (Command, error) {
+	raw, err := windowsInput(r, root)
+	if err != nil {
+		return Command{}, err
+	}
+	if err := os.Mkdir(dir, 0700); err != nil {
+		return Command{}, err
+	}
+	input := filepath.Join(dir, "input.json")
+	if err := os.WriteFile(input, raw, 0600); err != nil {
+		return Command{}, err
+	}
+	script := filepath.Join(dir, "invoke.ps1")
+	// A UTF-8 BOM makes Windows PowerShell 5.1 read the wrapper as UTF-8.
+	body := "\uFEFFparam([string]$InputPath)\n" + windowsBody("[IO.File]::ReadAllText($InputPath, [Text.UTF8Encoding]::new($false, $true))", id, 0)
+	if err := os.WriteFile(script, []byte(body), 0600); err != nil {
+		return Command{}, err
+	}
+	return Command{Executable: "powershell.exe", Args: []string{"-NoProfile", "-NonInteractive", "-File", script, "-InputPath", input}}, nil
+}
+
+func windowsInput(r contracts.RunRequest, root string) ([]byte, error) {
+	return json.Marshal(struct {
+		*contracts.EnvironmentCheckInput
+		Root        string `json:"root"`
+		URL         string `json:"url"`
+		Remote      string `json:"remote"`
+		Branch      string `json:"branch"`
+		Revision    string `json:"revision"`
+		FastForward bool   `json:"fast_forward"`
+		Initial     string `json:"initial"`
+	}{r.EnvironmentCheck, root, r.Repository.URL, r.Repository.Remote, r.Repository.BaseBranch, r.Repository.BaseRevision, r.FastForward, r.ResultFile.InitialContentBase64})
+}
+
+func windowsBody(readInput, id string, settle int) string {
+	return strings.NewReplacer("@@READ_INPUT@@", readInput, "@@ID@@", id, "@@SETTLE@@", strconv.Itoa(settle)).Replace(windowsScript)
 }
 
 // Orca discards scrollback on PTY exit. Keep the wrapper alive briefly
