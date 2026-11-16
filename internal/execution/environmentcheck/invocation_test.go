@@ -59,7 +59,7 @@ func TestExistingCheckoutInvocation(t *testing.T) {
 	request := contracts.RunRequest{Repository: contracts.Repository{URL: "https://example.invalid/project.git", Remote: "origin", BaseRevision: strings.Repeat("a", 40)},
 		EnvironmentCheck: &contracts.EnvironmentCheckInput{Interpreter: interpreter, Script: name, ManifestSHA256: fmt.Sprintf("%x", sha256.Sum256([]byte(manifest))),
 			Files: map[string]string{name: fmt.Sprintf("%x", sha256.Sum256([]byte(normalized)))}},
-		ResultFile: &contracts.ResultFileInput{InitialContentBase64: base64.StdEncoding.EncodeToString([]byte("{}"))}}
+		ResultFile: &contracts.ResultFileInput{InitialContentBase64: base64.StdEncoding.EncodeToString([]byte(`{"padding":"` + strings.Repeat("x", 8192) + `"}`))}}
 	before := runGit("status", "--porcelain")
 	for _, tc := range []struct {
 		name   string
@@ -70,10 +70,7 @@ func TestExistingCheckoutInvocation(t *testing.T) {
 			if tc.mutate {
 				write(name, normalized+"# drift")
 			}
-			invocation, err := Build(request, root, "fixture", runtime.GOOS == "windows", false)
-			if err != nil {
-				t.Fatal(err)
-			}
+			invocation := localCheckoutCommand(t, request, root)
 			cmd := exec.Command(invocation.Executable, invocation.Args...)
 			cmd.Dir = root
 			out, _ := cmd.CombinedOutput()
@@ -99,4 +96,20 @@ func TestExistingCheckoutInvocation(t *testing.T) {
 	if _, err := os.Stat(filepath.Join(root, ".steerrunner")); !os.IsNotExist(err) {
 		t.Fatalf("run files leaked into repository: %v", err)
 	}
+}
+
+func localCheckoutCommand(t *testing.T, request contracts.RunRequest, root string) Command {
+	t.Helper()
+	if runtime.GOOS == "windows" {
+		cmd, err := PrepareLocalWindows(request, root, "fixture", filepath.Join(t.TempDir(), "invocation files"))
+		if err != nil {
+			t.Fatal(err)
+		}
+		return cmd
+	}
+	cmd, err := Build(request, root, "fixture", false, false)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return cmd
 }

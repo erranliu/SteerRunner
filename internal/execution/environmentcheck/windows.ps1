@@ -79,7 +79,7 @@ $result = ''
 $diagnostic = ''
 $scratch = $null
 try {
-    $spec = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('@@INPUT@@')) | ConvertFrom-Json
+    $spec = @@READ_INPUT@@ | ConvertFrom-Json
     $root = (Get-Item -LiteralPath . -Force).FullName
     if ($root -ne [IO.Path]::GetFullPath($spec.root)) { throw 'execution directory differs from the registered checkout' }
     Verify-Repository
