@@ -648,7 +648,9 @@ func (l *Lifecycle) verifyAgentActivity(ctx context.Context, s b.LifecycleSnapsh
 			return receipt, nil, errors.New("original audited result selector returned an invalid item")
 		}
 		result, ids, origin = messages[index], ids[index:index+1], "original_audited_structured_message"
-	} else if l.agentDevelopment && len(messages) != 0 {
+	} else if len(messages) != 0 && (l.agentDevelopment || l.profile.Environment != "" && s.Ref.Agent.Name == "codex") {
+		// Paired execute exposes the original final assistant item on its own.
+		// Earlier assistant activity remains in the native turn history.
 		result, ids, origin = messages[len(messages)-1], ids[len(ids)-1:], "native_turn_last_assistant_message"
 	}
 	receipt.TurnEvidence = &b.TurnEvidence{CommandID: state.CommandID, SessionID: state.SessionID, TurnID: turn.TurnID, Started: true, Completed: true, Succeeded: outcome == "succeeded", NativeOutcome: outcome, LastMessage: result, FinalVerified: true, FinalSource: agentResultSource, FinalItemID: turnItem + ":" + digest([]byte(strings.Join(ids, "\n")+"\x00"+result)), FinalSessionID: state.SessionID, FinalTurnID: turn.TurnID, FinalNativeSessionID: state.SessionID, FinalNativeTurnID: turn.TurnID, FinalOrigin: origin}
