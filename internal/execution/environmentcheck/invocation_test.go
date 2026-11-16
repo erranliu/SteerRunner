@@ -46,9 +46,13 @@ func TestExistingCheckoutInvocation(t *testing.T) {
 		}
 	}
 	write(contracts.EnvironmentDocument, "Project notes\n"+fence+"steerline-environment\n"+manifest+"\n"+fence+"\n")
+	padding := 4096
 	interpreter, suffix, script := "bash", ".sh", `printf '%s' '{"completed":true}' > "$STEERLINE_RESULT_FILE"`
 	if runtime.GOOS == "windows" {
-		interpreter, suffix, script = "powershell.exe", ".ps1", `[IO.File]::WriteAllText($env:STEERLINE_RESULT_FILE, '{"completed":true}')`
+		padding = 48 << 10
+		interpreter, suffix, script = "powershell.exe", ".ps1", `$saved = Get-Content -LiteralPath $env:STEERLINE_RESULT_FILE -Raw | ConvertFrom-Json
+if ($saved.padding.Length -ne 49152 -or (Get-ChildItem Env:STEERRUNNER_ENV_*)) { exit 126 }
+[IO.File]::WriteAllText($env:STEERLINE_RESULT_FILE, '{"completed":true}')`
 	}
 	name := "SteerlineFlow/scripts/verify-environment" + suffix
 	normalized := script + "\n"
@@ -59,23 +63,34 @@ func TestExistingCheckoutInvocation(t *testing.T) {
 	request := contracts.RunRequest{Repository: contracts.Repository{URL: "https://example.invalid/project.git", Remote: "origin", BaseRevision: strings.Repeat("a", 40)},
 		EnvironmentCheck: &contracts.EnvironmentCheckInput{Interpreter: interpreter, Script: name, ManifestSHA256: fmt.Sprintf("%x", sha256.Sum256([]byte(manifest))),
 			Files: map[string]string{name: fmt.Sprintf("%x", sha256.Sum256([]byte(normalized)))}},
-		ResultFile: &contracts.ResultFileInput{InitialContentBase64: base64.StdEncoding.EncodeToString([]byte(`{"padding":"` + strings.Repeat("x", 8192) + `"}`))}}
+		ResultFile: &contracts.ResultFileInput{InitialContentBase64: base64.StdEncoding.EncodeToString([]byte(`{"padding":"` + strings.Repeat("x", padding) + `"}`))}}
 	before := runGit("status", "--porcelain")
-	for _, tc := range []struct {
-		name   string
-		mutate bool
-		code   int
-	}{{"matching materials", false, 0}, {"different script", true, 125}} {
+	type scenario struct {
+		name     string
+		mutate   bool
+		terminal bool
+		code     int
+	}
+	cases := []scenario{{name: "matching materials"}}
+	if runtime.GOOS == "windows" {
+		cases = append(cases, scenario{name: "large Windows terminal invocation", terminal: true})
+	}
+	cases = append(cases, scenario{name: "different script", mutate: true, code: 125})
+	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
 			if tc.mutate {
 				write(name, normalized+"# drift")
 			}
-			invocation := localCheckoutCommand(t, request, root)
-			cmd := exec.Command(invocation.Executable, invocation.Args...)
-			cmd.Dir = root
+			cmd := terminalOrLocalCommand(t, request, root, tc.terminal)
+			temp := t.TempDir()
+			cmd.Env = append(cmd.Environ(), "TEMP="+temp, "TMP="+temp)
 			out, _ := cmd.CombinedOutput()
 			if cmd.ProcessState == nil || cmd.ProcessState.ExitCode() != tc.code {
 				t.Fatalf("expected exit %d, got %v: %s", tc.code, cmd.ProcessState, out)
+			}
+			entries, err := os.ReadDir(temp)
+			if err != nil || len(entries) != 0 {
+				t.Fatalf("invocation left temporary files: %v, %v", entries, err)
 			}
 			result, err := Decode(strings.Split(string(out), "\n"), "fixture", &tc.code)
 			if err != nil {
@@ -96,6 +111,30 @@ func TestExistingCheckoutInvocation(t *testing.T) {
 	if _, err := os.Stat(filepath.Join(root, ".steerrunner")); !os.IsNotExist(err) {
 		t.Fatalf("run files leaked into repository: %v", err)
 	}
+}
+
+func terminalOrLocalCommand(t *testing.T, request contracts.RunRequest, root string, terminal bool) *exec.Cmd {
+	t.Helper()
+	if !terminal {
+		invocation := localCheckoutCommand(t, request, root)
+		cmd := exec.Command(invocation.Executable, invocation.Args...)
+		cmd.Dir = root
+		return cmd
+	}
+	invocation, err := Build(request, root, "fixture", true, true)
+	if err != nil {
+		t.Fatal(err)
+	}
+	cmd := exec.Command(invocation.Shell, "-NoProfile", "-NonInteractive", "-Command", invocation.Startup)
+	cmd.Dir = root
+	cmd.Env = os.Environ()
+	for name, value := range invocation.Environment {
+		if len(value) > 8192 {
+			t.Fatalf("terminal environment value too large: %s (%d bytes)", name, len(value))
+		}
+		cmd.Env = append(cmd.Env, name+"="+value)
+	}
+	return cmd
 }
 
 func localCheckoutCommand(t *testing.T, request contracts.RunRequest, root string) Command {

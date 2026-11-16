@@ -1,4 +1,5 @@
 $ErrorActionPreference = 'Stop'
+@@TEMPORARY@@
 function Hash([byte[]]$Bytes) {
     $sha = [Security.Cryptography.SHA256]::Create()
     try { ([BitConverter]::ToString($sha.ComputeHash($Bytes))).Replace('-', '').ToLowerInvariant() } finally { $sha.Dispose() }
@@ -79,7 +80,8 @@ $result = ''
 $diagnostic = ''
 $scratch = $null
 try {
-    $spec = @@READ_INPUT@@ | ConvertFrom-Json
+    $spec = [IO.File]::ReadAllText((Join-Path $PSScriptRoot 'input.json'), [Text.UTF8Encoding]::new($false, $true)) | ConvertFrom-Json
+    Remove-EnvironmentInvocation $PSScriptRoot
     $root = (Get-Item -LiteralPath . -Force).FullName
     if ($root -ne [IO.Path]::GetFullPath($spec.root)) { throw 'execution directory differs from the registered checkout' }
     Verify-Repository
@@ -95,13 +97,7 @@ try {
         $code = 0
     } else {
         Verify-Materials
-        $tempRoot = (Get-Item -LiteralPath ([IO.Path]::GetTempPath()) -Force).FullName
-        if ($tempRoot -eq $root -or $tempRoot.StartsWith($root.TrimEnd('\') + '\', [StringComparison]::OrdinalIgnoreCase)) { throw 'temporary directory is inside the project' }
-        for ($ancestor = Get-Item -LiteralPath $tempRoot -Force; $null -ne $ancestor; $ancestor = $ancestor.Parent) {
-            if ($ancestor.Attributes -band [IO.FileAttributes]::ReparsePoint) { throw 'temporary directory is redirected' }
-        }
-        $scratch = Join-Path $tempRoot ('steerrunner-env-' + [Guid]::NewGuid().ToString('N'))
-        [IO.Directory]::CreateDirectory($scratch) | Out-Null
+        $scratch = New-EnvironmentScratch $root 'steerrunner-env-'
         $resultPath = Join-Path $scratch 'result.json'
         [IO.File]::WriteAllBytes($resultPath, [Convert]::FromBase64String($spec.initial))
         $env:STEERLINE_RESULT_FILE = $resultPath
@@ -134,5 +130,4 @@ for ($offset = 0; $offset -lt $result.Length; $offset += 1024) {
     [Console]::WriteLine($prefix + 'data:' + $result.Substring($offset, [Math]::Min(1024, $result.Length - $offset)))
 }
 [Console]::WriteLine($prefix + 'end:' + $code + ':' + [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($diagnostic)))
-if (@@SETTLE@@ -gt 0) { Start-Sleep -Seconds @@SETTLE@@ }
 exit $code

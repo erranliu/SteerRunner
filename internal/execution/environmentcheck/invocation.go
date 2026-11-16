@@ -20,6 +20,12 @@ import (
 //go:embed windows.ps1
 var windowsScript string
 
+//go:embed windows-bootstrap.ps1
+var windowsBootstrap string
+
+//go:embed windows-temporary.ps1
+var windowsTemporary string
+
 //go:embed unix.sh
 var unixScript string
 
@@ -34,22 +40,7 @@ type Command struct {
 func Build(r contracts.RunRequest, root, id string, windows, terminal bool) (Command, error) {
 	c := r.EnvironmentCheck
 	if windows {
-		raw, err := windowsInput(r, root)
-		if err != nil {
-			return Command{}, err
-		}
-		readInput := "[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('" + base64.StdEncoding.EncodeToString(raw) + "'))"
-		body := windowsBody(readInput, id, settleDelay(terminal))
-		units := utf16.Encode([]rune(body))
-		encoded := make([]byte, 0, len(units)*2)
-		for _, unit := range units {
-			encoded = binary.LittleEndian.AppendUint16(encoded, unit)
-		}
-		data := base64.StdEncoding.EncodeToString(encoded)
-		if len(data) > 26000 {
-			return Command{}, errors.New("environment invocation exceeds the Windows command budget")
-		}
-		return Command{Startup: "& powershell.exe -NoProfile -NonInteractive -EncodedCommand $env:STEERRUNNER_ENV_BODY; exit $LASTEXITCODE", Shell: "powershell.exe", Environment: map[string]string{"STEERRUNNER_ENV_BODY": data}}, nil
+		return buildWindowsTerminal(r, root, id)
 	}
 	if !r.FastForward && c.Interpreter != "bash" {
 		return Command{}, errors.New("configured interpreter requires Windows")
@@ -81,24 +72,68 @@ func Build(r contracts.RunRequest, root, id string, windows, terminal bool) (Com
 // PrepareLocalWindows writes the wrapper and its input to a Run-owned directory.
 // The caller removes the directory after the managed process tree settles.
 func PrepareLocalWindows(r contracts.RunRequest, root, id, dir string) (Command, error) {
-	raw, err := windowsInput(r, root)
+	input, script, err := windowsFiles(r, root, id)
 	if err != nil {
 		return Command{}, err
 	}
 	if err := os.Mkdir(dir, 0700); err != nil {
 		return Command{}, err
 	}
-	input := filepath.Join(dir, "input.json")
-	if err := os.WriteFile(input, raw, 0600); err != nil {
+	if err := os.WriteFile(filepath.Join(dir, "input.json"), input, 0600); err != nil {
 		return Command{}, err
 	}
-	script := filepath.Join(dir, "invoke.ps1")
-	// A UTF-8 BOM makes Windows PowerShell 5.1 read the wrapper as UTF-8.
-	body := "\uFEFFparam([string]$InputPath)\n" + windowsBody("[IO.File]::ReadAllText($InputPath, [Text.UTF8Encoding]::new($false, $true))", id, 0)
-	if err := os.WriteFile(script, []byte(body), 0600); err != nil {
+	scriptPath := filepath.Join(dir, "invoke.ps1")
+	if err := os.WriteFile(scriptPath, script, 0600); err != nil {
 		return Command{}, err
 	}
-	return Command{Executable: "powershell.exe", Args: []string{"-NoProfile", "-NonInteractive", "-File", script, "-InputPath", input}}, nil
+	return Command{Executable: "powershell.exe", Args: []string{"-NoProfile", "-NonInteractive", "-File", scriptPath}}, nil
+}
+
+func windowsFiles(r contracts.RunRequest, root, id string) (input, script []byte, err error) {
+	input, err = windowsInput(r, root)
+	if err != nil {
+		return nil, nil, err
+	}
+	// Windows PowerShell 5.1 needs a BOM to recognize this file as UTF-8.
+	body := strings.NewReplacer("@@ID@@", id, "@@TEMPORARY@@", windowsTemporary).Replace(windowsScript)
+	return input, []byte("\uFEFF" + body), nil
+}
+
+func buildWindowsTerminal(r contracts.RunRequest, root, id string) (Command, error) {
+	input, script, err := windowsFiles(r, root, id)
+	if err != nil {
+		return Command{}, err
+	}
+	env := make(map[string]string)
+	prefix := "STEERRUNNER_ENV_" + id + "_"
+	inputChunks := windowsPayload(env, prefix+"INPUT_", input)
+	scriptChunks := windowsPayload(env, prefix+"SCRIPT_", script)
+	body := strings.NewReplacer("@@ID@@", id, "@@PREFIX@@", prefix, "@@TEMPORARY@@", windowsTemporary,
+		"@@INPUT_CHUNKS@@", strconv.Itoa(inputChunks), "@@SCRIPT_CHUNKS@@", strconv.Itoa(scriptChunks),
+		"@@SETTLE@@", strconv.Itoa(settleDelay(true))).Replace(windowsBootstrap)
+	// Only the launcher goes on the command line. The files travel as
+	// environment values safely below the Windows per-variable size limit.
+	units := utf16.Encode([]rune(body))
+	encoded := make([]byte, 0, len(units)*2)
+	for _, unit := range units {
+		encoded = binary.LittleEndian.AppendUint16(encoded, unit)
+	}
+	env["STEERRUNNER_ENV_BOOTSTRAP"] = base64.StdEncoding.EncodeToString(encoded)
+	return Command{
+		Startup: "& powershell.exe -NoProfile -NonInteractive -EncodedCommand $env:STEERRUNNER_ENV_BOOTSTRAP; exit $LASTEXITCODE",
+		Shell:   "powershell.exe", Environment: env,
+	}, nil
+}
+
+func windowsPayload(env map[string]string, prefix string, data []byte) int {
+	const chunkSize = 8 << 10
+	encoded := base64.StdEncoding.EncodeToString(data)
+	chunks := 0
+	for offset := 0; offset < len(encoded); offset += chunkSize {
+		env[prefix+strconv.Itoa(chunks)] = encoded[offset:min(offset+chunkSize, len(encoded))]
+		chunks++
+	}
+	return chunks
 }
 
 func windowsInput(r contracts.RunRequest, root string) ([]byte, error) {
@@ -112,10 +147,6 @@ func windowsInput(r contracts.RunRequest, root string) ([]byte, error) {
 		FastForward bool   `json:"fast_forward"`
 		Initial     string `json:"initial"`
 	}{r.EnvironmentCheck, root, r.Repository.URL, r.Repository.Remote, r.Repository.BaseBranch, r.Repository.BaseRevision, r.FastForward, r.ResultFile.InitialContentBase64})
-}
-
-func windowsBody(readInput, id string, settle int) string {
-	return strings.NewReplacer("@@READ_INPUT@@", readInput, "@@ID@@", id, "@@SETTLE@@", strconv.Itoa(settle)).Replace(windowsScript)
 }
 
 // Orca discards scrollback on PTY exit. Keep the wrapper alive briefly
