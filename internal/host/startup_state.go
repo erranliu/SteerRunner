@@ -28,9 +28,16 @@ func checkOrcaStartupState(dir string) error {
 		return err
 	}
 	for _, run := range runs {
-		if run.Request.Execution.Adapter == "orca-terminal" && run.Snapshot.Ref.Protocol != b.ProtocolOrcaAgentSessionV1 {
-			return contracts.Fail(5, "legacy_orca_state", "Drain the original Orca terminal Runs with the original Runner build and start the new build in a fresh state directory.")
+		if run.Request.Execution.Adapter != "orca-terminal" || run.Snapshot.Ref.Protocol == b.ProtocolOrcaAgentSessionV1 {
+			continue
 		}
+		// Checkout operations use Runner-owned terminals with local-process
+		// receipts, independent of the retired Orca agent terminal protocol.
+		if run.Snapshot.Ref.Backend == b.BackendOrca && run.Snapshot.Ref.Protocol == b.ProtocolLocalProcess &&
+			run.Request.CheckoutOperation() && run.EnvironmentInvocation != nil {
+			continue
+		}
+		return contracts.Fail(5, "legacy_orca_state", "Drain the original Orca terminal Runs with the original Runner build and start the new build in a fresh state directory.")
 	}
 	return nil
 }
