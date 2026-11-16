@@ -129,6 +129,8 @@ type CommandProviderSettings struct {
 }
 
 type GiteaSettings struct {
+	Draft              bool     `json:"draft,omitempty"`
+	DraftTitlePrefix   string   `json:"draft_title_prefix,omitempty"`
 	BaseURL            string   `json:"base_url"`
 	AuthenticationRefs []string `json:"authentication_refs,omitempty"`
 }
@@ -574,6 +576,8 @@ func ValidateExecution(value Execution) *Fault {
 	return nil
 }
 
+var giteaDraftTitlePrefix = regexp.MustCompile(`^[^\p{Cc}\p{Z}][^\p{Cc}]{0,63}$`)
+
 func ValidatePublication(repository Repository, value Publication) *Fault {
 	invalid := Fail(2, "invalid_input", "Publication settings do not match the fixed repository.")
 	if !plain(value.Repository) || value.BaseBranch != repository.BaseBranch {
@@ -593,6 +597,13 @@ func ValidatePublication(repository Repository, value Publication) *Fault {
 	case "gitea":
 		var settings GiteaSettings
 		if DecodeStrict(value.Settings, &settings) != nil || !safeURL(settings.BaseURL) {
+			return invalid
+		}
+		if settings.Draft {
+			if !giteaDraftTitlePrefix.MatchString(settings.DraftTitlePrefix) {
+				return Fail(2, "invalid_input", "Gitea draft publication requires a valid WIP title prefix.")
+			}
+		} else if settings.DraftTitlePrefix != "" {
 			return invalid
 		}
 	default:

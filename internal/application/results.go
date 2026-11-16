@@ -396,18 +396,39 @@ func validatePR(r *runstate.Record, info evidence.PRInfo) error {
 	}
 	return publication.ValidateWorkerPRIdentity(info, url, r.Request.Publication.Repository, r.Request.Repository.BaseBranch, r.Snapshot.Ref.WorkspaceBranch)
 }
-func initialDraftQualified(r *runstate.Record, info evidence.PRInfo) bool {
+func initialDraftRequired(p contracts.Publication) (bool, error) {
+	if p.Provider == "gitea" {
+		var settings contracts.GiteaSettings
+		err := contracts.DecodeStrict(p.Settings, &settings)
+		return settings.Draft, err
+	}
+	var settings contracts.CommandProviderSettings
+	err := contracts.DecodeStrict(p.Settings, &settings)
+	return settings.Draft, err
+}
+
+func (e *Engine) initialDraftQualified(r *runstate.Record, info evidence.PRInfo) bool {
 	if r.PR != nil && r.PR.InitialDraftVerified {
 		return true
 	}
-	if r.Request.Publication.Provider != "command" {
-		return true
+	required, err := initialDraftRequired(r.Request.Publication)
+	if err != nil || !required {
+		return err == nil
 	}
-	var settings contracts.CommandProviderSettings
-	if contracts.DecodeStrict(r.Request.Publication.Settings, &settings) != nil {
+	if !isOpenDraft(info) {
 		return false
 	}
-	return !settings.Draft || (info.Draft != nil && *info.Draft && info.State == "open" && validDraftHead(info.HeadRevision))
+	if r.Request.Publication.Provider == "gitea" {
+		ref := "refs/heads/" + r.Snapshot.Ref.WorkspaceBranch
+		raw, err := gitHost().Output(e.ctx, r.RepositoryPath, "ls-remote", "--exit-code", "--refs", "--", r.Request.Repository.URL, ref)
+		fields := strings.Fields(string(raw))
+		return err == nil && len(fields) == 2 && fields[0] == info.HeadRevision && fields[1] == ref
+	}
+	return true
+}
+
+func isOpenDraft(info evidence.PRInfo) bool {
+	return info.Draft != nil && *info.Draft && info.State == "open" && validDraftHead(info.HeadRevision)
 }
 
 func validDraftHead(sha string) bool {
@@ -425,7 +446,9 @@ func validDraftHead(sha string) bool {
 func prFact(r *runstate.Record, info evidence.PRInfo) *contracts.PRFact {
 	provider, _ := providerFor(r)
 	number, _ := provider.Config.PRNumber(info.URL)
-	return &contracts.PRFact{URL: info.URL, Provider: r.Request.Publication.Provider, Repository: info.Repository, Number: number, BaseBranch: info.BaseBranch, HeadRepository: info.HeadRepository, HeadBranch: info.HeadBranch, HeadRevision: info.HeadRevision, Draft: info.Draft, InitialDraftVerified: r.PR != nil && r.PR.InitialDraftVerified || info.Draft != nil && *info.Draft && info.State == "open" && validDraftHead(info.HeadRevision), State: info.State, Merged: info.Merged, MergedAt: info.MergedAt, MergeCommit: info.MergeCommit, CheckedAt: time.Now().UTC()}
+	required, _ := initialDraftRequired(r.Request.Publication)
+	verified := r.PR != nil && r.PR.InitialDraftVerified || r.PR == nil && required && isOpenDraft(info)
+	return &contracts.PRFact{URL: info.URL, Provider: r.Request.Publication.Provider, Repository: info.Repository, Number: number, BaseBranch: info.BaseBranch, HeadRepository: info.HeadRepository, HeadBranch: info.HeadBranch, HeadRevision: info.HeadRevision, Draft: info.Draft, InitialDraftVerified: verified, State: info.State, Merged: info.Merged, MergedAt: info.MergedAt, MergeCommit: info.MergeCommit, CheckedAt: time.Now().UTC()}
 }
 func (e *Engine) verifyPublication(id string) bool {
 	e.mu.Lock()
@@ -469,7 +492,7 @@ func (e *Engine) verifyPublication(id string) bool {
 	if err == nil {
 		err = validatePR(r, info)
 	}
-	if err == nil && !initialDraftQualified(r, info) {
+	if err == nil && !e.initialDraftQualified(r, info) {
 		e.blockRevision(id, r.Revision, "draft_pr_unverified", errors.New("The original PR is missing a verified open draft state and head revision"), true)
 		return false
 	}
@@ -533,7 +556,7 @@ func (e *Engine) probePRClues(id string) bool {
 	verified := []evidence.PRInfo{}
 	for _, url := range r.PRClues {
 		info, err := provider.Query(e.ctx, url)
-		if err == nil && initialDraftQualified(r, info) && publication.ValidateWorkerPRIdentity(info, url, r.Request.Publication.Repository, r.Request.Repository.BaseBranch, r.Snapshot.Ref.WorkspaceBranch) == nil {
+		if err == nil && publication.ValidateWorkerPRIdentity(info, url, r.Request.Publication.Repository, r.Request.Repository.BaseBranch, r.Snapshot.Ref.WorkspaceBranch) == nil && e.initialDraftQualified(r, info) {
 			verified = append(verified, info)
 		}
 	}
