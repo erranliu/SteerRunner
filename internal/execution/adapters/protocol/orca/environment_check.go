@@ -6,8 +6,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"path"
 	"slices"
 	"strconv"
+	"strings"
 )
 
 const terminalCreateID = "terminal.create-idempotency.v2"
@@ -243,9 +245,15 @@ func (c EnvironmentTerminalClient) CheckoutIdle(ctx context.Context, worktree st
 		slices.Contains(inventory.Hosts.Omitted, "local") {
 		return errors.New("Existing checkout terminal inventory is incomplete.")
 	}
-	// Fresh liveness filters out exited PTYs. Any row still present is busy.
-	if len(inventory.Terminals) != 0 {
-		return errors.New("Existing checkout is occupied by an Orca terminal.")
+	inspected := make(map[string]string, len(inventory.Terminals))
+	for _, terminal := range inventory.Terminals {
+		if terminal.Handle == "" || terminal.IncarnationID == "" || terminal.WorktreeID != worktree || inspected[terminal.Handle] != "" {
+			return errors.New("Existing checkout terminal inventory identity changed.")
+		}
+		if err := c.checkCheckoutTerminalIdle(ctx, terminal); err != nil {
+			return err
+		}
+		inspected[terminal.Handle] = terminal.IncarnationID
 	}
 	raw, err = c.call(ctx, "session.tabs.list", map[string]string{"worktree": selector}, false, "")
 	if err != nil {
@@ -266,6 +274,12 @@ func (c EnvironmentTerminalClient) CheckoutIdle(ctx context.Context, worktree st
 		if tab.Terminal == "" || tab.IncarnationID == "" {
 			return errors.New("Existing checkout is occupied by an Orca session tab.")
 		}
+		if incarnation := inspected[tab.Terminal]; incarnation != "" {
+			if incarnation != tab.IncarnationID {
+				return errors.New("Existing checkout session tab terminal identity changed.")
+			}
+			continue
+		}
 		terminal, err := c.Terminal(ctx, TerminalIdentity{RuntimeID: c.Runtime, Handle: tab.Terminal, IncarnationID: tab.IncarnationID})
 		if err != nil || terminal.WorktreeID != worktree {
 			return errors.New("Existing checkout session tab identity could not be verified.")
@@ -278,4 +292,94 @@ func (c EnvironmentTerminalClient) CheckoutIdle(ctx context.Context, worktree st
 		}
 	}
 	return nil
+}
+
+// A live PTY can be an idle shell. Require the host's child-process evidence
+// as well as a shell in the foreground; older hosts' boolean alone is ambiguous.
+func (c EnvironmentTerminalClient) checkCheckoutTerminalIdle(ctx context.Context, terminal Terminal) error {
+	raw, err := c.call(ctx, "terminal.inspectProcess", map[string]any{
+		"terminal": terminal.Handle, "expectedIncarnationId": terminal.IncarnationID, "scanChildProcesses": true,
+	}, false, "")
+	if err != nil {
+		return fmt.Errorf("Existing checkout terminal activity could not be verified: %w", err)
+	}
+	var result struct {
+		Process struct {
+			ForegroundProcess    string
+			HasChildProcesses    *bool
+			ChildProcessEvidence string
+		}
+	}
+	if json.Unmarshal(raw, &result) != nil || result.Process.HasChildProcesses == nil {
+		return errors.New("Existing checkout terminal activity could not be verified.")
+	}
+	p := result.Process
+	if p.ChildProcessEvidence == "children" {
+		return errors.New("Existing checkout is occupied by a running Orca terminal command.")
+	}
+	if p.ChildProcessEvidence != "no-children" || *p.HasChildProcesses || p.ForegroundProcess == "" {
+		return errors.New("Existing checkout terminal activity could not be verified.")
+	}
+	name := strings.ToLower(path.Base(strings.ReplaceAll(p.ForegroundProcess, "\\", "/")))
+	shell := strings.TrimSuffix(name, ".exe")
+	switch shell {
+	case "cmd", "powershell", "pwsh":
+		return c.checkCheckoutWindowsPrompt(ctx, terminal, shell)
+	case "bash", "dash", "fish", "ksh", "sh", "zsh":
+		if windowsDrivePath(terminal.WorktreePath) {
+			return errors.New("Existing checkout terminal activity could not be verified.")
+		}
+		return nil
+	default:
+		return errors.New("Existing checkout is occupied by a running Orca terminal command.")
+	}
+}
+
+// Orca on Windows can report no-children while a shell command is running.
+// Require the current screen to corroborate the shell's idle prompt.
+func (c EnvironmentTerminalClient) checkCheckoutWindowsPrompt(ctx context.Context, terminal Terminal, shell string) error {
+	raw, err := c.call(ctx, "terminal.read", map[string]any{
+		"terminal": terminal.Handle, "expectedIncarnationId": terminal.IncarnationID, "screen": true, "limit": 1,
+	}, false, "")
+	if err != nil {
+		return fmt.Errorf("Existing checkout terminal prompt could not be verified: %w", err)
+	}
+	var result struct {
+		Terminal struct {
+			Handle, Status, Source string
+			Tail                   []string
+			TailRows               []struct {
+				Wrapped        *bool
+				TrailingSpaces int
+			}
+		}
+	}
+	if json.Unmarshal(raw, &result) != nil {
+		return errors.New("Existing checkout terminal prompt could not be verified.")
+	}
+	screen := result.Terminal
+	if screen.Handle != terminal.Handle || screen.Status != "running" || screen.Source != "screen" ||
+		len(screen.Tail) == 0 || len(screen.TailRows) != len(screen.Tail) {
+		return errors.New("Existing checkout terminal prompt could not be verified.")
+	}
+	prompt, row := screen.Tail[len(screen.Tail)-1], screen.TailRows[len(screen.TailRows)-1]
+	if row.Wrapped == nil || *row.Wrapped {
+		return errors.New("Existing checkout terminal prompt could not be verified.")
+	}
+	if shell == "powershell" || shell == "pwsh" {
+		if !strings.HasPrefix(prompt, "PS ") || row.TrailingSpaces != 1 {
+			return errors.New("Existing checkout Orca terminal is not at an idle shell prompt.")
+		}
+		prompt = strings.TrimPrefix(prompt, "PS ")
+	}
+	directory, ok := strings.CutSuffix(prompt, ">")
+	if !ok || !windowsDrivePath(directory) || strings.ContainsAny(directory[3:], "<>|:?*") {
+		return errors.New("Existing checkout Orca terminal is not at an idle shell prompt.")
+	}
+	return nil
+}
+
+func windowsDrivePath(value string) bool {
+	return len(value) >= 3 && ((value[0] >= 'A' && value[0] <= 'Z') || (value[0] >= 'a' && value[0] <= 'z')) &&
+		value[1] == ':' && (value[2] == '\\' || value[2] == '/')
 }
