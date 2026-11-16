@@ -6,6 +6,7 @@ import (
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/workspace"
+	"github.com/erranliu/SteerRunner/internal/runstate"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -338,5 +339,22 @@ func TestR2CollectionCommitFailureReplaysOriginalRequest(t *testing.T) {
 	_ = json.Unmarshal(canonical(replay), &replayed)
 	if !reflect.DeepEqual(original, replayed) || len(e.runs["run"].Artifacts) != 1 {
 		t.Fatal(replay)
+	}
+}
+
+func TestPairedEvidenceRejectsSupersededHolder(t *testing.T) {
+	e, _ := evidenceEngine(t)
+	r := e.runs["run"]
+	r.ManagedWorkspace = &runstate.ManagedWorkspace{Identity: "orca:workspace", OriginRunID: r.ID}
+	original := r.Clone()
+	if err := e.checkPairedEvidenceOwner(original); err != nil {
+		t.Fatal(err)
+	}
+	successor := original.Clone()
+	successor.ID = "successor"
+	successor.ManagedWorkspace.SourceRunID = r.ID
+	e.runs[successor.ID] = successor
+	if err := e.checkPairedEvidenceOwner(original); err == nil {
+		t.Fatal("superseded Run returned the new holder's Git facts")
 	}
 }

@@ -75,6 +75,11 @@ stale_revision 表示该次未接受，刷新 revision 后方可用新请求。s
 
 ## 当前 Git 与诊断
 
+配对 Orca 的 `execute/1` Run 可以查询 `workspace-git`。Runner 核对原配对主机、runtime、已登记仓库、工作区 ID 与实例 ID，
+只接受原受管分支的两次一致 `git.status` 观测。查询前后均要求所查 Run 仍为工作区的最新持有者。
+原工作区替换、转交、返回不完整或两次观察不同均返回 `verified:false`。该查询使用原 Orca runtime 的只读 RPC，
+不打开终端、不调用 Agent。支持组合见 `capabilities.data.run_evidence.git.targets`。
+
 Git 的 commit、clean 来自同次 `status --porcelain=v2 --branch --untracked-files=all`，
 关闭 fsmonitor/untracked cache、可选 index 写锁。原身份核验前后两份样本一致才核实，
 检测到变化时返回未知；观察区间在第二次样本结束，不缓存结果或保存脏文件指纹。

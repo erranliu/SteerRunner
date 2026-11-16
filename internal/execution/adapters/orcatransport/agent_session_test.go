@@ -77,9 +77,14 @@ func (f *agentFixture) Item(context.Context, string, string) (native.AgentItem, 
 
 func structuredFixture(t *testing.T) (*Lifecycle, b.LifecycleSnapshot, *agentFixture) {
 	t.Helper()
-	l, _, s := structuredFixtureOn(t, "")
+	return structuredAgentFixtureOn(t, "")
+}
+
+func structuredAgentFixtureOn(t *testing.T, environment string) (*Lifecycle, b.LifecycleSnapshot, *agentFixture) {
+	t.Helper()
+	l, _, s := structuredFixtureOn(t, environment)
 	s.Ref.Protocol = b.ProtocolOrcaAgentSessionV1
-	s.Ref.External = b.ProcessIdentity{Kind: "orca_agent_session", RuntimeID: "original-runtime", WorktreeID: "worktree", ExecutionHost: "local", Executable: "orca.exe"}
+	s.Ref.External = b.ProcessIdentity{Kind: "orca_agent_session", RuntimeID: "original-runtime", WorktreeID: "worktree", ExecutionHost: l.profile.Target().ExecutionHost, Executable: "orca.exe"}
 	s.Workspace = b.WorkspaceIntent{Path: "original-workspace", Branch: "original-branch", BaseCommit: strings.Repeat("e", 40)}
 	s.Session.PendingCommandID = strings.Repeat("c", 32)
 	s.PendingTurn = &b.TurnInput{CommandID: s.Session.PendingCommandID, Prompt: "one\r\n\r\n中文😀 \"quote\" \\path\n```\n<&>\n```  \r\n"}
@@ -127,6 +132,20 @@ func TestStructuredObservationRecoversPagedCompletedTurn(t *testing.T) {
 		evidence.SessionID != f.pages[0].SessionID || evidence.TurnID != "native-turn" ||
 		evidence.LastMessage != "tool preamble\n\n"+strings.Repeat("complete result 中文😀\n", 300) {
 		t.Fatal("paged observation did not recover the complete original result")
+	}
+}
+
+func TestPairedStructuredExecuteFinalExcludesEarlierActivity(t *testing.T) {
+	l, s, f := structuredAgentFixtureOn(t, "paired-worker")
+	receipt, err := l.readStructured(context.Background(), s)
+	if err != nil || receipt.TurnEvidence == nil {
+		t.Fatal("missing original paired final", err)
+	}
+	final := receipt.TurnEvidence
+	if !final.FinalVerified || !final.Succeeded || f.reads != 2 || final.FinalOrigin != "native_turn_last_assistant_message" ||
+		final.LastMessage != strings.Repeat("complete result 中文😀\n", 300) ||
+		final.FinalItemID != "original-turn-item:"+digest([]byte("final\x00"+final.LastMessage)) {
+		t.Fatal("paired final included earlier activity or lost its original item binding")
 	}
 }
 
