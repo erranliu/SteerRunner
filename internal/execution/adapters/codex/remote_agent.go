@@ -399,7 +399,7 @@ func AuditRemoteAgent(ctx context.Context, wd, session string) (RemoteAudit, err
 	if err != nil {
 		return audit, err
 	}
-	reader, err := OpenHistory(ctx, b.Command{Executable: native}, wd, "", process.New(30*time.Second).StartManaged)
+	reader, err := OpenHistory(ctx, b.Command{Executable: native}, wd, "", dir, process.New(30*time.Second).StartManaged)
 	if err != nil {
 		return audit, err
 	}

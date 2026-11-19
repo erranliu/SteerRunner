@@ -45,10 +45,7 @@ func NewExecutionLifecycle(setup executionbackend.LifecycleSetup) (executionback
 	if err != nil {
 		return nil, err
 	}
-	serverDir := filepath.Join(setup.RunDirectory, "runs", snapshot.Session.WorkflowRunID, "app-server")
-	if setup.AttemptNumber > 1 {
-		serverDir = filepath.Join(setup.RunDirectory, "runs", snapshot.Session.WorkflowRunID, "attempts", snapshot.Session.AttemptID, "app-server")
-	}
+	serverDir := lifecycleServerDirectory(setup)
 	processEnv := func(base []string) []string {
 		env := lifecycleProcessEnvironment(base, snapshot.Session.WorkflowRunID, snapshot.Session.ExecutionID, append(append([]string{}, setup.BlockedEnvironment...), "STEERLINE_PROGRESS_FILE", "STEERLINE_RESULT_FILE"))
 		if setup.ProgressFile != "" {
@@ -77,6 +74,14 @@ func NewExecutionLifecycle(setup executionbackend.LifecycleSetup) (executionback
 	}
 	history := ReaderCommand(executionbackend.Command{Executable: profile.Executable, Args: []string(nil)}, "")
 	return &ExecutionLifecycle{setup: setup, Backend: backend, HistoryCommand: history}, nil
+}
+
+func lifecycleServerDirectory(setup executionbackend.LifecycleSetup) string {
+	session := setup.Snapshot.Session
+	if setup.AttemptNumber > 1 {
+		return filepath.Join(setup.RunDirectory, "runs", session.WorkflowRunID, "attempts", session.AttemptID, "app-server")
+	}
+	return filepath.Join(setup.RunDirectory, "runs", session.WorkflowRunID, "app-server")
 }
 
 func lifecycleProcessEnvironment(base []string, runID, executionID string, blocked []string) []string {
@@ -612,7 +617,7 @@ func (l ExecutionLifecycle) readRecoveryThread(ctx context.Context, snapshot exe
 	if l.setup.ProcessHost == nil {
 		return HistoryThread{}, errors.New("public history process capability unavailable")
 	}
-	client, err := OpenHistory(ctx, history.Command, history.Workspace, history.Home, l.setup.ProcessHost.StartManaged)
+	client, err := OpenHistory(ctx, history.Command, history.Workspace, history.Home, l.Backend.Config.ServerDir, l.setup.ProcessHost.StartManaged)
 	if err != nil {
 		return HistoryThread{}, err
 	}

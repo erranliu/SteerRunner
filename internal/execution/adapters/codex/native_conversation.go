@@ -84,7 +84,7 @@ func ReadNativeConversation(ctx context.Context, setup b.LifecycleSetup, target 
 	}
 	// The reader does not need the original worktree to exist. Its identity is
 	// verified against the thread's recorded cwd, independent of process cwd.
-	client, err := OpenHistory(ctx, history.Command, history.Home, history.Home, setup.ProcessHost.StartManaged)
+	client, err := OpenHistory(ctx, history.Command, history.Home, history.Home, lifecycleServerDirectory(setup), setup.ProcessHost.StartManaged)
 	if err != nil {
 		return contracts.NativeConversationPage{}, err
 	}
