@@ -57,6 +57,13 @@ func LaunchServer[T any](config LaunchConfig, start func(*exec.Cmd) (T, error), 
 	if err != nil {
 		return identity, nil, "", err
 	}
+	// Concurrent app-servers can share authentication and configuration, while
+	// their SQLite runtimes must belong to the original server resource.
+	sqliteConfig, err := serverSQLiteConfig(config.ServerDir)
+	if err != nil {
+		return identity, nil, "", err
+	}
+	args = append(args, "--config", sqliteConfig)
 	listener, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
 		return identity, nil, "", err
@@ -101,4 +108,15 @@ func LaunchServer[T any](config LaunchConfig, start func(*exec.Cmd) (T, error), 
 
 	}()
 	return identity, cmd.Process, endpoint, nil
+}
+
+func serverSQLiteConfig(serverDir string) (string, error) {
+	if !filepath.IsAbs(serverDir) {
+		return "", fmt.Errorf("original app-server directory must be absolute")
+	}
+	home := filepath.Join(serverDir, "sqlite")
+	if err := os.MkdirAll(home, 0700); err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("sqlite_home=%q", home), nil
 }

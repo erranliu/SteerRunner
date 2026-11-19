@@ -90,7 +90,7 @@ func InspectRemoteTurn(ctx context.Context, q RemoteTurnQuery) (out RemoteTurnRe
 	if err != nil {
 		return out, errors.New("original_turn_native_unavailable")
 	}
-	reader, err = OpenHistory(ctx, b.Command{Executable: exe}, q.Workspace, "", func(cmd *exec.Cmd) (b.StopHandle, error) {
+	reader, err = OpenHistory(ctx, b.Command{Executable: exe}, q.Workspace, "", dir, func(cmd *exec.Cmd) (b.StopHandle, error) {
 		handle, e := process.New(30 * time.Second).StartManaged(cmd)
 		if e == nil {
 			owned = handle

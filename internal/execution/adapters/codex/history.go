@@ -37,8 +37,14 @@ type HistoryClient struct {
 	writersAbsent bool
 }
 
-func OpenHistory(ctx context.Context, command executionbackend.Command, dir, home string, start func(*exec.Cmd) (executionbackend.StopHandle, error)) (*HistoryClient, error) {
-	cmd := exec.Command(command.Executable, append(append([]string{}, command.Args...), "app-server", "--stdio")...)
+func OpenHistory(ctx context.Context, command executionbackend.Command, dir, home, serverDir string, start func(*exec.Cmd) (executionbackend.StopHandle, error)) (*HistoryClient, error) {
+	// History must use the original server's index, including after its process
+	// exits. A fresh index can omit turns even when the rollout is discoverable.
+	sqliteConfig, err := serverSQLiteConfig(serverDir)
+	if err != nil {
+		return nil, err
+	}
+	cmd := exec.Command(command.Executable, append(append([]string{}, command.Args...), "app-server", "--stdio", "--config", sqliteConfig)...)
 	cmd.Dir = dir
 	if home != "" {
 		cmd.Env = historyEnvironment(cmd.Environ(), home)
