@@ -1,0 +1,111 @@
+{
+  "records": [
+    {
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\a678\\SteerRunner\\.evidence\\l4-migration\\component-scheduler-recheck\\first-default-r1-fixture.json",
+      "case_id": "default",
+      "identity": {
+        "input_start": {
+          "fingerprint": "fixed"
+        },
+        "input_finish": {
+          "fingerprint": "fixed"
+        }
+      },
+      "scenario": "first",
+      "level": "L4",
+      "status": "passed",
+      "manifest": null,
+      "started_at": "2026-11-20T04:49:43.0165278Z",
+      "repeat_index": 1,
+      "finished_at": "2026-11-20T04:49:43.2926076Z",
+      "evidence": null
+    },
+    {
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\a678\\SteerRunner\\.evidence\\l4-migration\\component-scheduler-recheck\\second-default-r1-fixture.json",
+      "case_id": "default",
+      "identity": {
+        "input_start": {
+          "fingerprint": "fixed"
+        },
+        "input_finish": {
+          "fingerprint": "fixed"
+        }
+      },
+      "scenario": "second",
+      "level": "L4",
+      "status": "passed",
+      "manifest": null,
+      "started_at": "2026-11-20T04:49:45.1753592Z",
+      "repeat_index": 1,
+      "finished_at": "2026-11-20T04:49:45.4422531Z",
+      "evidence": null
+    },
+    {
+      "finished_at": "2026-11-20T04:49:47.5682849Z",
+      "started_at": "2026-11-20T04:49:47.0791689Z",
+      "identity": {
+        "input_finish": {
+          "fingerprint": "other"
+        },
+        "input_start": {
+          "fingerprint": "other"
+        }
+      },
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\a678\\SteerRunner\\.evidence\\l4-migration\\component-scheduler-recheck\\changed-default-r1-fixture.json",
+      "repeat_index": 1,
+      "status": "failed",
+      "error": "Source/build changed within qualification batch: component",
+      "evidence": null,
+      "case_id": "default",
+      "manifest": null,
+      "scenario": "changed",
+      "level": "L4"
+    },
+    {
+      "finished_at": "2026-11-20T04:49:49.5742233Z",
+      "started_at": "2026-11-20T04:49:49.061658Z",
+      "identity": {
+        "input_start": {
+          "fingerprint": "fixed"
+        },
+        "input_finish": {
+          "fingerprint": "other"
+        }
+      },
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\a678\\SteerRunner\\.evidence\\l4-migration\\component-scheduler-recheck\\during-default-r1-fixture.json",
+      "repeat_index": 1,
+      "status": "failed",
+      "error": "Source/build changed within qualification batch: component",
+      "evidence": null,
+      "case_id": "default",
+      "manifest": null,
+      "scenario": "during",
+      "level": "L4"
+    },
+    {
+      "finished_at": "2026-11-20T04:49:51.3458070Z",
+      "started_at": "2026-11-20T04:49:50.8080961Z",
+      "identity": {
+        "input_finish": {
+          "fingerprint": "fixed"
+        },
+        "input_start": {
+          "fingerprint": ""
+        }
+      },
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\a678\\SteerRunner\\.evidence\\l4-migration\\component-scheduler-recheck\\missing-default-r1-fixture.json",
+      "repeat_index": 1,
+      "status": "failed",
+      "error": "Source/build changed within qualification batch: component",
+      "evidence": null,
+      "case_id": "default",
+      "manifest": null,
+      "scenario": "missing",
+      "level": "L4"
+    }
+  ],
+  "drift_rejections": 3,
+  "passed": true,
+  "stable_components": 2,
+  "exclusive": true
+}

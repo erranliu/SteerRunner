@@ -1,0 +1,20 @@
+{
+  "pid": 33644,
+  "process_started_at": "2026-11-20T04:49:32.9638800Z",
+  "pattern": "^TestSRResultAcquisition$",
+  "result_file_cases": [],
+  "controlled_cases": [
+    "TestSRResultAcquisition/parser-tool"
+  ],
+  "runner_sha256": "91E9A40D5593D596D6B7C432AB9728608F3AB3994EA5669106BF6EEAADD1667D",
+  "fixture_sha256": "37D8ACE3CFBD119A5F9F6ADAB6A68DDB19E0FFA73B24FF0C48E9A147333C0311",
+  "native_fixture_sha256": "F46028B86154E07BDDCB68B03DB96E4A21F5A57273EC215E8A26F58D0AEA0B66",
+  "source_commit": "8ebbc717776eb2ad85371060566776c4402773fa",
+  "source_dirty": true,
+  "go_version": "go version go1.26.4 windows/amd64",
+  "os_version": "Microsoft Windows NT 10.0.26200.0",
+  "machine": "LIUMING-ASUS",
+  "prepared_artifacts_directory": "C:\\Users\\lmas1\\.codex\\worktrees\\a678\\SteerRunner\\.evidence\\l4-migration\\l4-worker\\controlled",
+  "original_identity_path": "C:\\Users\\lmas1\\.codex\\worktrees\\a678\\SteerRunner\\.evidence\\l4-migration\\l4-worker\\controlled.result-acquisition-fallback-parser-tool-r1\\source-identity.json",
+  "original_identity_sha256": "eb73e22f1aa7701db1c032c57610ca1413e315132573c7e3b705d6fa407d6081"
+}

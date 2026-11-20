@@ -1,0 +1,109 @@
+{
+  "results": [
+    {
+      "case_id": "audit-report",
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\a678\\SteerRunner\\.evidence\\l4-migration\\l4-worker\\controlled.result-acquisition-fallback-audit-report-r1",
+      "identity": {
+        "pid": 12260,
+        "process_started_at": "2026-11-20T04:46:35.645101Z",
+        "pattern": "^TestSRResultAcquisition$",
+        "result_file_cases": [],
+        "controlled_cases": [
+          "TestSRResultAcquisition/audit-report"
+        ],
+        "runner_sha256": "91e9a40d5593d596d6b7c432ab9728608f3ab3994ea5669106bf6eeaadd1667d",
+        "fixture_sha256": "37d8ace3cfbd119a5f9f6adab6a68ddb19e0ffa73b24ff0c48e9a147333c0311",
+        "native_fixture_sha256": "f46028b86154e07bddcb68b03db96e4a21f5a57273ec215e8a26f58d0aea0b66",
+        "source_commit": "8ebbc717776eb2ad85371060566776c4402773fa",
+        "source_dirty": true,
+        "go_version": "go version go1.26.4 windows/amd64",
+        "os_version": "Microsoft Windows NT 10.0.26200.0",
+        "machine": "LIUMING-ASUS",
+        "prepared_artifacts_directory": "C:\\Users\\lmas1\\.codex\\worktrees\\a678\\SteerRunner\\.evidence\\l4-migration\\l4-worker\\controlled"
+      },
+      "expected_outcome": "pr_ready",
+      "manifest": null,
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\a678\\SteerRunner\\.evidence\\l4-migration\\l4-worker\\controlled.result-acquisition-fallback-audit-report-r1-fixture.json",
+      "scenario": "controlled.result-acquisition-fallback",
+      "repeat_index": 1,
+      "level": "L4",
+      "finished_at": "2026-11-20T04:47:58.5786936Z",
+      "status": "passed",
+      "timings": {
+        "total_seconds": 83.4904448
+      },
+      "started_at": "2026-11-20T04:46:35.104184Z"
+    },
+    {
+      "case_id": "parser-unsupported",
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\a678\\SteerRunner\\.evidence\\l4-migration\\l4-worker\\controlled.result-acquisition-fallback-parser-unsupported-r1",
+      "identity": {
+        "pid": 27992,
+        "process_started_at": "2026-11-20T04:48:00.835766Z",
+        "pattern": "^TestSRResultAcquisition$",
+        "result_file_cases": [],
+        "controlled_cases": [
+          "TestSRResultAcquisition/parser-unsupported"
+        ],
+        "runner_sha256": "91e9a40d5593d596d6b7c432ab9728608f3ab3994ea5669106bf6eeaadd1667d",
+        "fixture_sha256": "37d8ace3cfbd119a5f9f6adab6a68ddb19e0ffa73b24ff0c48e9a147333c0311",
+        "native_fixture_sha256": "f46028b86154e07bddcb68b03db96e4a21f5a57273ec215e8a26f58d0aea0b66",
+        "source_commit": "8ebbc717776eb2ad85371060566776c4402773fa",
+        "source_dirty": true,
+        "go_version": "go version go1.26.4 windows/amd64",
+        "os_version": "Microsoft Windows NT 10.0.26200.0",
+        "machine": "LIUMING-ASUS",
+        "prepared_artifacts_directory": "C:\\Users\\lmas1\\.codex\\worktrees\\a678\\SteerRunner\\.evidence\\l4-migration\\l4-worker\\controlled"
+      },
+      "expected_outcome": "pr_ready",
+      "manifest": null,
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\a678\\SteerRunner\\.evidence\\l4-migration\\l4-worker\\controlled.result-acquisition-fallback-parser-unsupported-r1-fixture.json",
+      "scenario": "controlled.result-acquisition-fallback",
+      "repeat_index": 1,
+      "level": "L4",
+      "finished_at": "2026-11-20T04:49:30.8152543Z",
+      "status": "passed",
+      "timings": {
+        "total_seconds": 90.6299942
+      },
+      "started_at": "2026-11-20T04:48:00.1999175Z"
+    },
+    {
+      "case_id": "parser-tool",
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\a678\\SteerRunner\\.evidence\\l4-migration\\l4-worker\\controlled.result-acquisition-fallback-parser-tool-r1",
+      "identity": {
+        "pid": 33644,
+        "process_started_at": "2026-11-20T04:49:32.96388Z",
+        "pattern": "^TestSRResultAcquisition$",
+        "result_file_cases": [],
+        "controlled_cases": [
+          "TestSRResultAcquisition/parser-tool"
+        ],
+        "runner_sha256": "91e9a40d5593d596d6b7c432ab9728608f3ab3994ea5669106bf6eeaadd1667d",
+        "fixture_sha256": "37d8ace3cfbd119a5f9f6adab6a68ddb19e0ffa73b24ff0c48e9a147333c0311",
+        "native_fixture_sha256": "f46028b86154e07bddcb68b03db96e4a21f5a57273ec215e8a26f58d0aea0b66",
+        "source_commit": "8ebbc717776eb2ad85371060566776c4402773fa",
+        "source_dirty": true,
+        "go_version": "go version go1.26.4 windows/amd64",
+        "os_version": "Microsoft Windows NT 10.0.26200.0",
+        "machine": "LIUMING-ASUS",
+        "prepared_artifacts_directory": "C:\\Users\\lmas1\\.codex\\worktrees\\a678\\SteerRunner\\.evidence\\l4-migration\\l4-worker\\controlled"
+      },
+      "expected_outcome": "pr_ready",
+      "manifest": null,
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\a678\\SteerRunner\\.evidence\\l4-migration\\l4-worker\\controlled.result-acquisition-fallback-parser-tool-r1-fixture.json",
+      "scenario": "controlled.result-acquisition-fallback",
+      "repeat_index": 1,
+      "level": "L4",
+      "finished_at": "2026-11-20T04:50:54.8332906Z",
+      "status": "passed",
+      "timings": {
+        "total_seconds": 82.7355266
+      },
+      "started_at": "2026-11-20T04:49:32.11386Z"
+    }
+  ],
+  "validation_scope": "l4-selection",
+  "qualification_eligible": false,
+  "complete_level_passed": false
+}

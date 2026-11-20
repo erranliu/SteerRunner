@@ -1,0 +1,8 @@
+{"Time":"2026-11-20T12:51:24.4717529+08:00","Action":"start","Package":"github.com/erranliu/SteerRunner/internal/application"}
+{"Time":"2026-11-20T12:51:24.9259676+08:00","Action":"run","Package":"github.com/erranliu/SteerRunner/internal/application","Test":"TestRunNamePrefixFreeze"}
+{"Time":"2026-11-20T12:51:24.9259676+08:00","Action":"output","Package":"github.com/erranliu/SteerRunner/internal/application","Test":"TestRunNamePrefixFreeze","Output":"=== RUN   TestRunNamePrefixFreeze\n"}
+{"Time":"2026-11-20T12:51:48.1207531+08:00","Action":"output","Package":"github.com/erranliu/SteerRunner/internal/application","Test":"TestRunNamePrefixFreeze","Output":"--- PASS: TestRunNamePrefixFreeze (23.20s)\n"}
+{"Time":"2026-11-20T12:51:48.1207531+08:00","Action":"pass","Package":"github.com/erranliu/SteerRunner/internal/application","Test":"TestRunNamePrefixFreeze","Elapsed":23.2}
+{"Time":"2026-11-20T12:51:48.132234+08:00","Action":"output","Package":"github.com/erranliu/SteerRunner/internal/application","Output":"PASS\n"}
+{"Time":"2026-11-20T12:51:48.132234+08:00","Action":"output","Package":"github.com/erranliu/SteerRunner/internal/application","Output":"ok  \tgithub.com/erranliu/SteerRunner/internal/application\t23.658s\n"}
+{"Time":"2026-11-20T12:51:48.132234+08:00","Action":"pass","Package":"github.com/erranliu/SteerRunner/internal/application","Elapsed":23.662}

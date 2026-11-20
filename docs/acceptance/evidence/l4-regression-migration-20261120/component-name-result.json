@@ -1,0 +1,13 @@
+{
+  "passed_count": 1,
+  "validation_scope": "l4-component",
+  "package": "./internal/application",
+  "started_at": "2026-11-20T04:50:55.5233400Z",
+  "status": "passed",
+  "finished_at": "2026-11-20T04:51:51.2809351Z",
+  "tags": [
+    "l4"
+  ],
+  "exit_code": 0,
+  "test": "TestRunNamePrefixFreeze"
+}

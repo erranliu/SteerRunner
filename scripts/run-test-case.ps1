@@ -18,20 +18,25 @@ try {
         $taskDriverArguments=@{DriverExe=$taskJob.native_driver;DriverSHA256=$taskJob.native_driver_sha256}
     }
     $taskRecord.started_at = [DateTime]::UtcNow.ToString('o')
-    $taskRecord.status=if($taskJob.entry.driver -eq 'controlled-integration'){'running'}else{'preparing'}
+    $taskRecord.status=if($taskJob.entry.driver -in @('controlled-integration','l4-component')){'running'}else{'preparing'}
     Save-Case
-    if ($taskJob.entry.driver -eq 'controlled-integration') {
-        $taskRecord.evidence = Join-Path $taskJob.output ($taskJob.entry.id + '-r' + $taskJob.repeat_index)
+    if ($taskJob.entry.driver -eq 'l4-component') {
+        $taskRecord.evidence = Join-Path $taskJob.output ($taskJob.entry.id + '-' + $taskJob.case.id + '-r' + $taskJob.repeat_index)
+        & (Join-Path $PSScriptRoot 'test-l4-component.ps1') -OutDir $taskRecord.evidence -Package $taskJob.case.package -Test $taskJob.case.test -TimeoutMinutes $taskJob.entry.timeout_minutes -PrerequisitesFrom $taskJob.output
+    } elseif ($taskJob.entry.driver -eq 'controlled-integration') {
+        $taskRecord.evidence = Join-Path $taskJob.output ($taskJob.entry.id + '-' + $taskJob.case.id + '-r' + $taskJob.repeat_index)
         $taskPattern = '^' + [regex]::Escape($taskJob.case.test) + '$'
-        & (Join-Path $PSScriptRoot 'test-foundation.ps1') -OutDir $taskRecord.evidence -Pattern $taskPattern -TimeoutMinutes $taskJob.entry.timeout_minutes -PreparedArtifactsDirectory (Join-Path $taskJob.output 'controlled') | Out-Host
+        $taskCaseArguments=@{}
+        if ($taskJob.case.PSObject.Properties['controlled_cases']) { $taskCaseArguments['Case']=@($taskJob.case.controlled_cases | ForEach-Object { $taskJob.case.test + '/' + $_ }) }
+        & (Join-Path $PSScriptRoot 'test-foundation.ps1') -OutDir $taskRecord.evidence -Pattern $taskPattern -TimeoutMinutes $taskJob.entry.timeout_minutes -PreparedArtifactsDirectory (Join-Path $taskJob.output 'controlled') @taskCaseArguments | Out-Host
         $taskUntil = [DateTime]::UtcNow.AddMinutes($taskJob.entry.timeout_minutes).AddSeconds(30)
-        $taskResultPath = Join-Path $taskRecord.evidence 'result.json'
-        while (-not (Test-Path -LiteralPath $taskResultPath)) {
-            if ([DateTime]::UtcNow -gt $taskUntil) { throw 'Controlled case timed out; preserve original evidence' }
-            Start-Sleep -Milliseconds 500
-        }
-        $taskResult = Get-Content -LiteralPath $taskResultPath -Raw | ConvertFrom-Json
+        . (Join-Path $PSScriptRoot 'test-prerequisite-contract.ps1')
+        $taskResult = Wait-SRControlledResult $taskRecord.evidence $taskUntil
         if ($taskResult.exit_code -ne 0 -or $taskResult.scenario_count -ne 1 -or (Select-String -LiteralPath (Join-Path $taskRecord.evidence 'integration.log') -Pattern '--- SKIP:' -Quiet)) { throw 'Controlled case failed, skipped or did not execute exactly once' }
+        if ($taskCaseArguments.Count) {
+            . (Join-Path $PSScriptRoot 'controlled-tests.ps1')
+            $null=Get-SRControlledCaseEvidence $taskRecord.evidence $taskJob.case.test @($taskJob.case.controlled_cases)
+        }
     } else {
         foreach ($taskArtifact in @(@{identity='configuration_sha256';path='config'},@{identity='runner_sha256';path='runner_exe'},@{identity='helper_sha256';path='config_helper'})) {
             $taskExpected=$taskJob.PSObject.Properties[$taskArtifact.identity]

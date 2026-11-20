@@ -1,0 +1,122 @@
+[
+  {
+    "path": "audit-report-identity.json",
+    "sha256": "af92f2541bfaa7de9a45c38a16de271c94df33b4e33c06ae1c7ac15774b6b7aa"
+  },
+  {
+    "path": "audit-report-integration.log",
+    "sha256": "e3c0a60700cd10d62802da6bb68d25deada606902489b47b41b9fe26b3c9da81"
+  },
+  {
+    "path": "audit-report-result.json",
+    "sha256": "f5bdd2c90f03deee99084c52528ba36b34eee13a73c717213c0c299f56f1dec4"
+  },
+  {
+    "path": "component-display-go-test.jsonl",
+    "sha256": "8d364ca1173aefbdaab7fad45d4f1852c17a4c1b895b92c7b7911e8716e9f636"
+  },
+  {
+    "path": "component-display-identity.json",
+    "sha256": "35993b882ce6af3a2ab4a80f0c41ad7de04b9cd3472e17f914e53057a4e55048"
+  },
+  {
+    "path": "component-display-result.json",
+    "sha256": "14f15a239d9c6e5c9a94447502189a08452deb29c7ddad9deb83d2a78348298f"
+  },
+  {
+    "path": "component-name-go-test.jsonl",
+    "sha256": "50fe9d0bc871203f0e7cecbbfd842f2ee1ea21f31c7aaa8733673a0811a85cbe"
+  },
+  {
+    "path": "component-name-identity.json",
+    "sha256": "4c8d0d0b72b3b56bcaeb7d598ca548df4c3215d57540c79364abfbddc4852e76"
+  },
+  {
+    "path": "component-name-result.json",
+    "sha256": "a752630aa598927e5948a3e23955a22676e0721477e33eecb75e54bb5fa71c63"
+  },
+  {
+    "path": "component-scheduler-verified.json",
+    "sha256": "e57c673ae6d8495ae5a9477355733a65ad173c99f5c0cce3a8e4e80a472275ce"
+  },
+  {
+    "path": "daily-identity.json",
+    "sha256": "ba1f265bcd97b907e77d82cca5508766eb98c9f7be41b3fceb686d11cd32a60e"
+  },
+  {
+    "path": "daily-integration.log",
+    "sha256": "19450777ed403c82f4f6d9a8e725a6d183122eaba09fc487853c561921bdf99a"
+  },
+  {
+    "path": "daily-result.json",
+    "sha256": "1ba9ad604962577b250a8c0cba7b38a9ea1c33265086c82ba296fd0e4bf08d96"
+  },
+  {
+    "path": "framework-result.json",
+    "sha256": "243d8329119726372b26e9cf8ba858720e51407569fd63ae3977fcbbfa1c0069"
+  },
+  {
+    "path": "initial-daily-integration.log",
+    "sha256": "1d60dd8142d431eea76234c987195ff740ca863870ba84f423705cdd3067e83c"
+  },
+  {
+    "path": "initial-daily-result.json",
+    "sha256": "6b58405135a9f20a8c3f1b07f4ad8aac363fb0b81123f29da358905d0292f601"
+  },
+  {
+    "path": "initial-framework-worker-failure.json",
+    "sha256": "550378b60dce035a670410c5be73912dbbf0056f555fe94bcc6427bef132137e"
+  },
+  {
+    "path": "inventory-proof.json",
+    "sha256": "e57c173df807e0623cd7cc2476f9f4a760317402c655cc488e83f75ff07aa29a"
+  },
+  {
+    "path": "l4-worker-summary.json",
+    "sha256": "39438b5c935c50a7dfe0ed25ac892e5c826374fd880d256dc2425a6664c5232f"
+  },
+  {
+    "path": "parser-tool-identity.json",
+    "sha256": "dc827ff46a44261a4debd4fbcd70f99d3e1096e3d445d3375a0a397215a3336f"
+  },
+  {
+    "path": "parser-tool-integration.log",
+    "sha256": "d229dcac02a9e48267dcc9592d091529ff97354e5e1b47df2cad7ceeec229173"
+  },
+  {
+    "path": "parser-tool-result.json",
+    "sha256": "69efa841e29a19c03bca5e79c9688d851477f0b6e77f87f6d74b20a71e48c559"
+  },
+  {
+    "path": "parser-unsupported-identity.json",
+    "sha256": "3f107b3f144815b355efc380f67dd0b555ca6d595b4b5c97358c751b6d3c858e"
+  },
+  {
+    "path": "parser-unsupported-integration.log",
+    "sha256": "13a5eb915948a98c6f9fb76ea9cae94adb98ee101ab4bcda24db459e15047e9e"
+  },
+  {
+    "path": "parser-unsupported-result.json",
+    "sha256": "2a77b4e8ddf8bb122e1eb351465bf05fe345546efda9dd7ad152916233401d06"
+  },
+  {
+    "path": "registry-proof.json",
+    "sha256": "733801c3e0d05706d71af25290cf6c12f5cc6556687f0c81f5098f46b72145cb"
+  },
+  {
+    "path": "selection-verified.json",
+    "sha256": "70d50efad70ebe7d1065b3e3b3be744931f8204d276ce59c0ea067728bee2430"
+  },
+  {
+    "path": "standalone-failure-integration.log",
+    "sha256": "7a4801b60eb696f0700697c0c8231845bfada767c5159679242afd7d2055b3b8"
+  },
+  {
+    "path": "standalone-failure-result.json",
+    "sha256": "e493b9f759b62aefe23b3eb0afe93f64c7413bd0037b24619cde021c6f1fc512"
+  },
+  {
+    "path": "verification.json",
+    "sha256": "40fe720cf08355e7ee155c4eca6ca77bd8c6a6560a8f7bea35452be2d4838346"
+  }
+]

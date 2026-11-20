@@ -1,0 +1,16 @@
+{
+  "manifest": null,
+  "started_at": "2026-11-20T04:41:34.1280078Z",
+  "evidence": null,
+  "level": "L3",
+  "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\a678\\SteerRunner\\.evidence\\l4-migration\\framework-final\\configuration\\changed-snapshot-fixture.json",
+  "status": "failed",
+  "repeat_index": 1,
+  "scenario": "configured",
+  "case_id": "default",
+  "finished_at": "2026-11-20T04:41:34.1664847Z",
+  "timings": {
+    "total_seconds": 0.060507
+  },
+  "error": "The property 'target' cannot be found on this object. Verify that the property exists."
+}

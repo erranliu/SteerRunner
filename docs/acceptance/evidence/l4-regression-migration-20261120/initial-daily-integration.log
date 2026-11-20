@@ -1,0 +1,19 @@
+=== RUN   TestSRResultAcquisition
+=== RUN   TestSRResultAcquisition/plain-marker
+=== RUN   TestSRResultAcquisition/audit-zero
+    audit_test.go:116: audit-zero: audit.code.input original clean completion checkpoint unavailable
+    workflow_test.go:226: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-3602886892
+=== RUN   TestSRResultAcquisition/audit-positive
+    audit_test.go:78: [submit --input - --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-3629951885\runner --json] exit=6 expected=0 error=<nil> response={"protocol":"steerrunner-cli/v1","ok":false,"request_id":"original-submit","data":null,"error":{"code":"request_outcome_unknown","message":"The original request outcome is unknown; inspect or retry the same request_id and input."}} stderr=
+    workflow_test.go:226: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-3629951885
+=== RUN   TestSRResultAcquisition/audit-offline
+=== RUN   TestSRResultAcquisition/parser-complete
+    audit_test.go:116: parser-complete: publish.verify publication no longer matches audited source
+    workflow_test.go:226: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-4247065865
+--- FAIL: TestSRResultAcquisition (430.96s)
+    --- PASS: TestSRResultAcquisition/plain-marker (36.74s)
+    --- FAIL: TestSRResultAcquisition/audit-zero (92.44s)
+    --- FAIL: TestSRResultAcquisition/audit-positive (55.27s)
+    --- PASS: TestSRResultAcquisition/audit-offline (137.66s)
+    --- FAIL: TestSRResultAcquisition/parser-complete (108.85s)
+FAIL

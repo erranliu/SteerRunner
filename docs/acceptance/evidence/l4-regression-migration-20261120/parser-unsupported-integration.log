@@ -1,0 +1,5 @@
+=== RUN   TestSRResultAcquisition
+=== RUN   TestSRResultAcquisition/parser-unsupported
+--- PASS: TestSRResultAcquisition (89.48s)
+    --- PASS: TestSRResultAcquisition/parser-unsupported (89.45s)
+PASS

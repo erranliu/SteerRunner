@@ -19,10 +19,12 @@ func RegistryDigest() string {
 }
 
 type Case struct {
-	ID           string        `json:"id"`
-	Outcome      string        `json:"outcome"`
-	Test         string        `json:"test,omitempty"`
-	Requirements *Requirements `json:"requirements,omitempty"`
+	ID              string        `json:"id"`
+	Outcome         string        `json:"outcome"`
+	Test            string        `json:"test,omitempty"`
+	Package         string        `json:"package,omitempty"`
+	ControlledCases []string      `json:"controlled_cases,omitempty"`
+	Requirements    *Requirements `json:"requirements,omitempty"`
 }
 
 type RoleRequirement struct {

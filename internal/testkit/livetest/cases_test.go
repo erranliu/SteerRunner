@@ -7,7 +7,7 @@ import (
 )
 
 func TestRegistryPreservesReliabilityAndBindsControlledEdges(t *testing.T) {
-	reliability, edges := 0, 0
+	reliability, edges, regressions := 0, 0, 0
 	seen := map[string]bool{}
 	for _, scenario := range Scenarios() {
 		cases := map[string]bool{}
@@ -23,18 +23,35 @@ func TestRegistryPreservesReliabilityAndBindsControlledEdges(t *testing.T) {
 				reliability++
 			}
 			if scenario.Level == "L4" {
-				if scenario.Driver != "controlled-integration" || scenario.Target != "controlled" || !strings.HasPrefix(c.Test, "TestSREdge") || seen[c.Test] {
+				key := c.Package + "/" + c.Test + "/" + strings.Join(c.ControlledCases, ",")
+				if scenario.Target != "controlled" || seen[key] {
 					t.Fatal("edge has missing, duplicate or unsafe test binding", scenario.ID)
 				}
-				seen[c.Test] = true
-				edges++
+				seen[key] = true
+				switch scenario.ID {
+				case "component.low-frequency":
+					if scenario.Driver != "l4-component" || c.Package != "./internal/application" || len(c.ControlledCases) != 0 || (c.Test != "TestRunNamePrefixFreeze" && c.Test != "TestDisplayRunsIgnoreRolledBackChanges") {
+						t.Fatal("invalid L4 component binding", c)
+					}
+					regressions++
+				case "controlled.result-acquisition-fallback":
+					if scenario.Driver != "controlled-integration" || c.Test != "TestSRResultAcquisition" || c.Package != "" || len(c.ControlledCases) != 1 || c.ControlledCases[0] != c.ID || (c.ID != "audit-report" && c.ID != "parser-unsupported" && c.ID != "parser-tool") {
+						t.Fatal("invalid L4 fallback binding", c)
+					}
+					regressions++
+				default:
+					if scenario.Driver != "controlled-integration" || !strings.HasPrefix(c.Test, "TestSREdge") || c.Package != "" || len(c.ControlledCases) != 0 {
+						t.Fatal("invalid L4 edge binding", c)
+					}
+					edges++
+				}
 			} else if c.Test != "" {
 				t.Fatal("native case bound to a controlled substitute", scenario.ID)
 			}
 		}
 	}
-	if reliability != 14 || edges != 4 {
-		t.Fatalf("core/edge coverage changed: reliability=%d edges=%d", reliability, edges)
+	if reliability != 14 || edges != 4 || regressions != 5 {
+		t.Fatalf("core/edge/regression coverage changed: reliability=%d edges=%d regressions=%d", reliability, edges, regressions)
 	}
 }
 
