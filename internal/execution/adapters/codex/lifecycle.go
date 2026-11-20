@@ -617,7 +617,7 @@ func (l ExecutionLifecycle) readRecoveryThread(ctx context.Context, snapshot exe
 	if l.setup.ProcessHost == nil {
 		return HistoryThread{}, errors.New("public history process capability unavailable")
 	}
-	client, err := OpenHistory(ctx, history.Command, history.Workspace, history.Home, l.Backend.Config.ServerDir, l.setup.ProcessHost.StartManaged)
+	client, err := OpenHistory(ctx, history.Command, history.Workspace, history.Home, l.setup.ProcessHost.StartManaged)
 	if err != nil {
 		return HistoryThread{}, err
 	}

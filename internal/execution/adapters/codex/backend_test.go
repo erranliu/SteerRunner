@@ -15,18 +15,27 @@ import (
 type capturedProcess struct {
 	identity executionbackend.ProcessIdentity
 	closed   bool
+	onClose  func()
 }
 
 func (p *capturedProcess) Identity() executionbackend.ProcessIdentity { return p.identity }
 
-func (p *capturedProcess) Close() { p.closed = true }
+func (p *capturedProcess) Close() {
+	if p.onClose != nil {
+		p.onClose()
+	}
+	p.closed = true
+}
 
 func (p *capturedProcess) Kill() {}
 
 func TestPrepareSessionRetainsPartialProcessReceiptOnWriteFailure(t *testing.T) {
 	root := t.TempDir()
+	home := t.TempDir()
+	t.Setenv("CODEX_HOME", home)
 	sentinel := errors.New("receipt persistence failed")
 	process := &capturedProcess{identity: executionbackend.ProcessIdentity{PID: 123, Created: "456", Executable: os.Args[0]}}
+	process.onClose = func() { assertStartupHeld(t, home) }
 	backend := Backend{Config: Config{Executable: os.Args[0], Workspace: root, RunDir: root, RunID: strings.Repeat("a", 32), ServerDir: filepath.Join(root, "server"), Sandbox: "danger-full-access", WindowsSandbox: "", Environment: func(env []string) []string { return env }}, Process: ProcessPort{Start: func(*exec.Cmd) (executionbackend.StopHandle, error) { return process, nil }, NewGeneration: func() string { return "new-generation" }, WriteAtomic: func(path string, raw []byte) error {
 		if filepath.Base(path) == "process.json" {
 			return sentinel

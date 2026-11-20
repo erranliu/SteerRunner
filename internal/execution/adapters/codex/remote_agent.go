@@ -146,6 +146,11 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 	if err != nil {
 		return err
 	}
+	releaseStartup, err := acquireStartup(ctx, EnvironmentHome())
+	if err != nil {
+		return err
+	}
+	defer releaseStartup()
 	owned, _, endpoint, err := LaunchServer(LaunchConfig{Executable: native, Workspace: wd, ServerDir: dir, Sandbox: permissions.Sandbox, WindowsSandbox: permissions.WindowsSandbox, Runtime: worker, WritableRoots: roots, Model: c.Model, ReasoningEffort: c.ReasoningEffort}, host.StartManaged, func(env []string) []string {
 		return lifecycleProcessEnvironment(env, "remote-runtime", "remote-runtime", nil)
 	})
@@ -170,6 +175,7 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 	if err != nil {
 		return err
 	}
+	releaseStartup()
 	defer client.Close()
 	identity := owned.Identity()
 	params, err := ThreadStartParams(wd, permissions.Sandbox, c.Model, nil)
@@ -399,7 +405,7 @@ func AuditRemoteAgent(ctx context.Context, wd, session string) (RemoteAudit, err
 	if err != nil {
 		return audit, err
 	}
-	reader, err := OpenHistory(ctx, b.Command{Executable: native}, wd, "", dir, process.New(30*time.Second).StartManaged)
+	reader, err := OpenHistory(ctx, b.Command{Executable: native}, wd, "", process.New(30*time.Second).StartManaged)
 	if err != nil {
 		return audit, err
 	}
