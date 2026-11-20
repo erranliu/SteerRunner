@@ -380,9 +380,41 @@ func TestSRStandalonePackage(t *testing.T) {
 	if err != nil || exit != 4 || response.Error == nil || response.Error.Code != "environment_unavailable" {
 		t.Fatal("unavailable native executable was not rejected before acceptance")
 	}
+	rejection := *response.Error
 	response, exit, _, err = invoke(copyEXE, []string{"inspect", "--state-dir", dir, "--request-id", "unsupported-submit", "--json"}, "")
-	if err != nil || exit != 5 || response.Error == nil || response.Error.Code != "request_not_found" {
-		t.Fatal("rejected submit persisted an accepted receipt")
+	if err != nil || exit != 0 || !response.OK {
+		t.Fatalf("rejected submit lost its durable receipt: %+v exit=%d err=%v", response, exit, err)
+	}
+	type rejectedInspection struct {
+		Command contracts.CommandView
+		Run     *json.RawMessage
+	}
+	var inspected rejectedInspection
+	encoded, err := json.Marshal(response.Data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := json.Unmarshal(encoded, &inspected); err != nil {
+		t.Fatal(err)
+	}
+	command := inspected.Command
+	if command.CommandID == "" || command.RequestID != "unsupported-submit" || command.Command != "submit" ||
+		command.ReceiptStatus != "rejected" || command.ActionStatus != "rejected" ||
+		command.RunID != nil || inspected.Run != nil || command.Error == nil || *command.Error != rejection {
+		t.Fatalf("rejected submit became accepted or lost its original error: %+v", inspected)
+	}
+	response, exit, _, err = invoke(copyEXE, []string{"submit", "--state-dir", dir, "--input", "-", "--json"}, request)
+	if err != nil || exit != 4 || response.Error == nil || *response.Error != rejection {
+		t.Fatalf("same request did not replay the original rejection: %+v exit=%d err=%v", response, exit, err)
+	}
+	response, exit, _, err = invoke(copyEXE, []string{"inspect", "--state-dir", dir, "--command-id", command.CommandID, "--json"}, "")
+	encoded, encodeErr := json.Marshal(response.Data)
+	inspected = rejectedInspection{}
+	if err != nil || exit != 0 || !response.OK || encodeErr != nil || json.Unmarshal(encoded, &inspected) != nil ||
+		inspected.Command.CommandID != command.CommandID || inspected.Command.RunID != nil || inspected.Run != nil ||
+		inspected.Command.ReceiptStatus != "rejected" || inspected.Command.ActionStatus != "rejected" ||
+		inspected.Command.Error == nil || *inspected.Command.Error != rejection {
+		t.Fatalf("replayed rejection changed command identity or created a Run: %+v exit=%d err=%v", response, exit, err)
 	}
 	for _, name := range []string{"runner.db", "logs/service.log"} {
 		if _, err := os.Stat(filepath.Join(dir, name)); err != nil {
