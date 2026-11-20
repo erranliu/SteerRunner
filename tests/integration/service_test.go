@@ -187,6 +187,18 @@ func call(t *testing.T, dir string, argv []string, input string, expected int) c
 	t.Helper()
 	argv = append(argv, "--state-dir", dir, "--json")
 	response, exit, diagnostics, err := invoke(runnerEXE, argv, input)
+	if expected == 0 && argv[0] == "submit" && err == nil && exit == 6 && response.Error != nil && response.Error.Code == "request_outcome_unknown" {
+		var original contracts.Request
+		if contracts.DecodeStrict([]byte(input), &original) != nil || original.RequestID == "" ||
+			response.RequestID == nil || *response.RequestID != original.RequestID {
+			t.Fatal("unknown submit did not retain the original request identity", response)
+		}
+		// Preparation may outlive the client's finite response window. The
+		// documented reconciliation is the exact same request, never a new ID
+		// or native input. Both physical CLI responses remain in the journal.
+		t.Logf("reconciling original submit request=%s with identical bytes after request_outcome_unknown", original.RequestID)
+		response, exit, diagnostics, err = invoke(runnerEXE, argv, input)
+	}
 	if err != nil || exit != expected {
 		body, _ := json.Marshal(response)
 		t.Fatalf("%v exit=%d expected=%d error=%v response=%s stderr=%s", argv, exit, expected, err, body, diagnostics)
