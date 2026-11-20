@@ -2,6 +2,8 @@
 
 2026-11-20，按用户要求将本轮 Runner 修复整理提交 PR；基线 `8ebbc717776eb2ad85371060566776c4402773fa`，分支 `codex/isolate-appserver-history`。不部署、不合并，不操作原 SteerLine 重构任务。
 
+本页保留首次提交的验证范围；随后用户要求闭环完整 L1/Controlled，已完成修复和正式直接验证，见 [#172 资格补齐](runner172-qualification.md)。下方旧失败和旧冻结产物仍按原身份读取。
+
 ## 修复和原始证据
 
 - [启动索引复用](codex-startup-index-reuse.md)：不再为每个 app-server 指定新 sqlite_home，保留原生 home/config 的索引选择；本机 prepare、远端 helper 和 stdio history reader 在同一 home 取得 OS 初始化锁。成功 initialize 后释放，模型回合和每个 Run 的资源/停止责任仍独立；失败清理先于锁释放。

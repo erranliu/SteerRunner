@@ -2,6 +2,8 @@
 
 2026-11-19；基线 `8ebbc717776eb2ad85371060566776c4402773fa`，独立分支 `codex/isolate-appserver-history`。本次只修改、构建和测试源码，不部署，不恢复、停止或重新提交原安装任务。
 
+本页保留原批次及其资格边界。2026-11-20 的后续修复已取得匹配输入的完整 L1 与 Controlled 直接通过结果，见 [#172 失败闭环](runner172-qualification.md)；下方历史失败不覆盖。
+
 ## 原因与策略
 
 SteerLine 原 Run `d9f8ce00c99db0f6f5a8ede27dea75e3` 的 Codex 进程在北京时间 11:29:06 创建，11:37:37 才监听。每个新服务指定 `ServerDir/sqlite`，同时保留用户 `CODEX_HOME`，使新索引重复导入该 home 的全部历史。原生回填在 11:37:36 完成，索引包含 8,033 条用户历史；Runner 在 11:31:25 已对账耗尽。证据：`C:/SteerlineDebug/wt-9ed5-refactoring-blocked/diagnostics/native-startup-evidence.json`。
