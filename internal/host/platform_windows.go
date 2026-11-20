@@ -115,14 +115,23 @@ func replaceFile(source, target string) error {
 	// Status polling may still have the previous discovery file open without
 	// FILE_SHARE_DELETE. Retry only that transient Windows sharing collision;
 	// keep publication atomic and never remove the old endpoint first.
-	for attempt := 0; attempt < 100; attempt++ {
+	deadline := time.Now().Add(500 * time.Millisecond)
+	for {
 		err = windows.MoveFileEx(from, to, windows.MOVEFILE_REPLACE_EXISTING|windows.MOVEFILE_WRITE_THROUGH)
 		if err != windows.ERROR_SHARING_VIOLATION && err != windows.ERROR_ACCESS_DENIED {
 			return err
 		}
-		time.Sleep(5 * time.Millisecond)
+		remaining := time.Until(deadline)
+		if remaining <= 0 {
+			return err
+		}
+		time.Sleep(min(5*time.Millisecond, remaining))
+		// Windows timer granularity and scheduling can make a short sleep take
+		// longer. Bound elapsed time instead of multiplying a retry count.
+		if !time.Now().Before(deadline) {
+			return err
+		}
 	}
-	return err
 }
 
 func processFacts() (string, bool, error) {

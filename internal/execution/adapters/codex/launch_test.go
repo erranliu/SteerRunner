@@ -3,7 +3,6 @@ package codexworker
 import (
 	"context"
 	"errors"
-	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -43,15 +42,16 @@ func TestLaunchServerFixesWindowsSandboxBeforeStarting(t *testing.T) {
 	}
 }
 
-func TestHistoryUsesOriginalServerSQLiteAndSharedAuthentication(t *testing.T) {
-	home, server := t.TempDir(), t.TempDir()
+func TestHistoryUsesOriginalHomeAndConfiguredIndex(t *testing.T) {
+	home := t.TempDir()
 	t.Setenv("CODEX_HOME", home)
 	sentinel := errors.New("captured history launch")
 	for range 2 {
-		_, err := OpenHistory(context.Background(), b.Command{Executable: os.Args[0]}, home, home, server, func(cmd *exec.Cmd) (b.StopHandle, error) {
-			if !slices.Contains(cmd.Args, fmt.Sprintf("sqlite_home=%q", filepath.Join(server, "sqlite"))) || !slices.Contains(cmd.Env, "CODEX_HOME="+home) {
+		_, err := OpenHistory(context.Background(), b.Command{Executable: os.Args[0]}, home, home, func(cmd *exec.Cmd) (b.StopHandle, error) {
+			if strings.Contains(strings.Join(cmd.Args, " "), "sqlite_home=") || !slices.Contains(cmd.Env, "CODEX_HOME="+home) {
 				t.Fatal("history changed the original SQLite/authentication binding", cmd.Args)
 			}
+			assertStartupHeld(t, home)
 			return nil, sentinel
 		})
 		if !errors.Is(err, sentinel) {
@@ -72,11 +72,10 @@ func TestLifecycleServerDirectorySeparatesAttempts(t *testing.T) {
 	}
 }
 
-func TestLaunchServerIsolatesSQLiteWithSharedCodexHome(t *testing.T) {
+func TestLaunchServerPreservesConfiguredIndexAndSharedCodexHome(t *testing.T) {
 	home := t.TempDir()
 	t.Setenv("CODEX_HOME", home)
 	sentinel := errors.New("captured launch")
-	var databases []string
 	for range 2 {
 		server := t.TempDir()
 		config := LaunchConfig{Executable: os.Args[0], Workspace: t.TempDir(), ServerDir: server, Sandbox: "danger-full-access"}
@@ -84,22 +83,16 @@ func TestLaunchServerIsolatesSQLiteWithSharedCodexHome(t *testing.T) {
 			if !slices.Contains(cmd.Env, "CODEX_HOME="+home) {
 				t.Fatal("shared authentication/configuration home changed")
 			}
-			want := fmt.Sprintf("sqlite_home=%q", filepath.Join(server, "sqlite"))
-			if !slices.Contains(cmd.Args, want) {
-				t.Fatal("missing resource-owned SQLite directory", cmd.Args)
+			if strings.Contains(strings.Join(cmd.Args, " "), "sqlite_home=") {
+				t.Fatal("new server overrides the native history index", cmd.Args)
 			}
-			databases = append(databases, want)
-			info, err := os.Stat(filepath.Join(server, "sqlite"))
-			if err != nil || !info.IsDir() {
-				t.Fatal("SQLite directory unavailable before launch", err)
+			if _, err := os.Stat(filepath.Join(server, "sqlite")); !os.IsNotExist(err) {
+				t.Fatal("new server created a fresh history index", err)
 			}
 			return 0, sentinel
 		}, func(env []string) []string { return env })
 		if !errors.Is(err, sentinel) {
 			t.Fatal(err)
 		}
-	}
-	if databases[0] == databases[1] {
-		t.Fatal("independent servers share a SQLite runtime")
 	}
 }

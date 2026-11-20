@@ -5,9 +5,11 @@ package integration
 import (
 	"bufio"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
+	"sync"
 	"testing"
 	"time"
 
@@ -19,6 +21,7 @@ import (
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"github.com/erranliu/SteerRunner/internal/storage"
 	"github.com/erranliu/SteerRunner/internal/testkit/livetest"
+	"golang.org/x/sys/windows"
 )
 
 // Workspace preparation and recovery cannot dispatch legacy terminal input.
@@ -264,6 +267,36 @@ func awaitCreationFile(t *testing.T, pattern string) string {
 	return ""
 }
 
+// An existing pathname does not prove that Windows has made its bytes readable.
+// Keep the original fault-window budget and reject malformed or foreign facts.
+func readCreationJSON(t *testing.T, pattern string, value any) string {
+	t.Helper()
+	var lastRead error
+	for until := time.Now().Add(60 * time.Second); time.Now().Before(until); time.Sleep(30 * time.Millisecond) {
+		paths, err := filepath.Glob(pattern)
+		if err != nil || len(paths) > 1 {
+			t.Fatal("ambiguous creation evidence", pattern, paths, err)
+		}
+		if len(paths) == 0 {
+			continue
+		}
+		raw, err := os.ReadFile(paths[0])
+		if err != nil {
+			if os.IsNotExist(err) || errors.Is(err, windows.ERROR_SHARING_VIOLATION) || errors.Is(err, windows.ERROR_ACCESS_DENIED) {
+				lastRead = err
+				continue
+			}
+			t.Fatal("creation evidence read failed", err)
+		}
+		if err := json.Unmarshal(raw, value); err != nil {
+			t.Fatal("creation evidence JSON invalid", paths[0], err)
+		}
+		return paths[0]
+	}
+	t.Fatal("creation evidence was not readable within the original window", pattern, lastRead)
+	return ""
+}
+
 // An intentionally unknown external creation cannot truthfully settle as
 // stopped. This fixture owns no real Orca resources, so cleanup verifies only
 // its exact service and finite creation-owner processes, retaining that verdict.
@@ -306,6 +339,32 @@ func cleanupCreationService(t *testing.T, dir string, info contracts.ServiceInfo
 
 func TestSRResourceCreationRecovery(t *testing.T) {
 	testCount.Add(1)
+	t.Run("evidence-reader-sharing", func(t *testing.T) {
+		path := filepath.Join(t.TempDir(), "creation.json")
+		name, err := windows.UTF16PtrFromString(path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		handle, err := windows.CreateFile(name, windows.GENERIC_WRITE, 0, nil, windows.CREATE_NEW, windows.FILE_ATTRIBUTE_NORMAL, 0)
+		if err != nil {
+			t.Fatal(err)
+		}
+		release := sync.OnceFunc(func() { _ = windows.CloseHandle(handle) })
+		t.Cleanup(release)
+		var written uint32
+		if err := windows.WriteFile(handle, []byte(`{"identity":"original"}`), &written, nil); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := os.ReadFile(path); !errors.Is(err, windows.ERROR_SHARING_VIOLATION) {
+			t.Fatal("fixture did not hold a real Windows sharing collision", err)
+		}
+		go func() { time.Sleep(50 * time.Millisecond); release() }()
+		var got struct{ Identity string }
+		readCreationJSON(t, path, &got)
+		if got.Identity != "original" {
+			t.Fatal("readiness changed original evidence", got)
+		}
+	})
 	for _, mode := range []string{"graceful", "kill", "receipt-before-commit", "wire-loss", "owner-crash", "worktree-receipt-without-terminal", "missing-creation-plan"} {
 		t.Run(mode, func(t *testing.T) {
 			dir, request := setupRun(t)
@@ -348,15 +407,10 @@ func TestSRResourceCreationRecovery(t *testing.T) {
 				Terminal native.Terminal
 				CLI      b.ProcessIdentity
 			}
-			path := awaitCreationFile(t, filepath.Join(state, "worktree-created.json"))
-			body, _ := os.ReadFile(path)
-			if json.Unmarshal(body, &effect) != nil {
-				t.Fatal("fixture did not record actual creation identity")
-			}
-			ownerPath := awaitCreationFile(t, filepath.Join(dir, "orca-creations", "*", "owner-ready.json"))
+			readCreationJSON(t, filepath.Join(state, "worktree-created.json"), &effect)
 			var owner struct{ Process b.ProcessIdentity }
-			body, _ = os.ReadFile(ownerPath)
-			if json.Unmarshal(body, &owner) != nil || process.InspectProcess(&owner.Process) != "matching process still exists" && mode != "receipt-before-commit" {
+			ownerPath := readCreationJSON(t, filepath.Join(dir, "orca-creations", "*", "owner-ready.json"), &owner)
+			if process.InspectProcess(&owner.Process) != "matching process still exists" && mode != "receipt-before-commit" {
 				t.Fatal("original independent creation owner not observed")
 			}
 			if mode == "receipt-before-commit" {
@@ -369,7 +423,7 @@ func TestSRResourceCreationRecovery(t *testing.T) {
 			var before struct {
 				Run contracts.RunView `json:"run"`
 			}
-			body, _ = json.Marshal(observed.Data)
+			body, _ := json.Marshal(observed.Data)
 			if json.Unmarshal(body, &before) != nil || before.Run.Execution.Workspace != "" || before.Run.Execution.SessionID != "" || len(before.Run.Operations) != 1 || before.Run.Operations[0].Status != "in_flight" {
 				t.Fatal("fault did not precede the original receipt commit", before.Run)
 			}

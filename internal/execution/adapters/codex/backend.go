@@ -115,6 +115,12 @@ func (b Backend) PrepareSession(ctx context.Context, fixed Binding, input execut
 		return nil, receipt, err
 	}
 
+	var releaseStartup func()
+	defer func() {
+		if releaseStartup != nil {
+			releaseStartup()
+		}
+	}()
 	h := &SessionHandle{Binding: fixed, Paths: paths, input: input}
 	defer func() {
 		receipt = h.Binding
@@ -142,6 +148,11 @@ func (b Backend) PrepareSession(ctx context.Context, fixed Binding, input execut
 			return nil, receipt, err
 		}
 	} else {
+		environment := b.Config.Environment(os.Environ())
+		releaseStartup, err = acquireStartup(ctx, environmentValue(environment, "CODEX_HOME"))
+		if err != nil {
+			return nil, receipt, err
+		}
 		var endpoint string
 		h.process, _, endpoint, err = LaunchServer(LaunchConfig{Executable: b.Config.Executable, Args: b.Config.Args, Profile: b.Config.Profile, Sandbox: b.Config.Sandbox, WindowsSandbox: b.Config.WindowsSandbox, Workspace: b.Config.Workspace, ServerDir: b.Config.ServerDir, Runtime: workerSetup}, b.Process.Start, b.Config.Environment)
 		if err != nil {
@@ -161,6 +172,10 @@ func (b Backend) PrepareSession(ctx context.Context, fixed Binding, input execut
 	h.client, err = ConnectAppServer(ctx, h.Binding.Endpoint)
 	if err != nil {
 		return nil, receipt, err
+	}
+	if releaseStartup != nil {
+		releaseStartup()
+		releaseStartup = nil
 	}
 	if fixed.SessionID == "" {
 		if err = b.verifySandboxReadiness(ctx, h, input); err != nil {

@@ -288,9 +288,13 @@ func TestCLITimeoutStartsAfterAdmission(t *testing.T) {
 	firstConfig := c
 	go func() { _, err := a.Analyze(ctx, request(), firstConfig); firstDone <- err }()
 	waitStarted(t, home, "started-1", firstDone)
-	queued := &admissionContext{Context: context.Background(), waiting: make(chan struct{})}
+	queuedContext, cancelQueued := context.WithCancel(context.Background())
+	defer cancelQueued()
+	queued := &admissionContext{Context: queuedContext, waiting: make(chan struct{})}
 	secondConfig := c
-	secondConfig.TimeoutSeconds = 1 // Short test deadline; production config remains >= 10s.
+	// The attempt includes the version query and OS process startup. Use the
+	// minimum supported production timeout, not a one-second launch race.
+	secondConfig.TimeoutSeconds = 10
 	secondDone := make(chan error, 1)
 	go func() { _, err := a.Analyze(queued, request(), secondConfig); secondDone <- err }()
 	select {
@@ -314,7 +318,7 @@ func TestCLITimeoutStartsAfterAdmission(t *testing.T) {
 		if !errors.Is(err, context.DeadlineExceeded) {
 			t.Fatal("attempt did not time out", err)
 		}
-	case <-time.After(10 * time.Second):
+	case <-time.After(time.Duration(secondConfig.TimeoutSeconds+10) * time.Second):
 		t.Fatal("attempt deadline did not stop CLI")
 	}
 	calls, _ := os.ReadFile(filepath.Join(home, "calls"))

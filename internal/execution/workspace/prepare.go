@@ -63,7 +63,9 @@ func Prepare(ctx context.Context, git Git, repository Repository, root string, i
 		// preparation budget. The other Git commands keep their own limits.
 		checkout.Timeout = max(time.Until(deadline), time.Nanosecond)
 	}
-	if _, err = checkout.Output(ctx, repository.Path, "--no-replace-objects", "-c", "core.hooksPath=/dev/null", "worktree", "add", "--no-track", "-b", intent.Branch, "--", intent.Path, intent.BaseCommit); err != nil {
+	// Git LFS also consumes this setting. A Unix device path on Windows is
+	// interpreted as a worktree directory and receives auto-installed hooks.
+	if _, err = checkout.Output(ctx, repository.Path, "--no-replace-objects", "-c", "core.hooksPath="+os.DevNull, "worktree", "add", "--no-track", "-b", intent.Branch, "--", intent.Path, intent.BaseCommit); err != nil {
 		if errors.Is(err, context.DeadlineExceeded) {
 			// The owned Git invocation has exited. It did not prove checkout
 			// completion, and there is no native session to reconcile.

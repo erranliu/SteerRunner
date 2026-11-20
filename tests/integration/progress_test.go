@@ -65,8 +65,10 @@ func TestSRProgressFile(t *testing.T) {
 		id := accepted.Data.(map[string]any)["run_id"].(string)
 		ids = append(ids, id)
 		waitRun(t, dir, id, func(v contracts.RunView) bool { return v.Execution.Workspace != "" })
-		wait(id, func(v contracts.ProgressFileView) bool { return v.Version == 1 })
+		// Optional files are prepared immediately before the first input, after
+		// session preparation. Workspace existence alone is not that barrier.
 		run := waitRun(t, dir, id, func(v contracts.RunView) bool { return v.Execution.TurnID != "" })
+		wait(id, func(v contracts.ProgressFileView) bool { return v.Version == 1 })
 		paths = append(paths, filepath.Join(run.Execution.Workspace, ".steerrunner", "progress", id, "progress.bin"))
 		replay := call(t, dir, []string{"submit", "--input", "-"}, string(raw), 0)
 		if replay.Data.(map[string]any)["run_id"] != id {
