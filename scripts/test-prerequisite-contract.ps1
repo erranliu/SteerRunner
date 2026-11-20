@@ -104,6 +104,7 @@ function Assert-SRL1Evidence([string]$Directory, $Record, [string[]]$Packages) {
     Assert-SRPrerequisiteSet $completed $Packages 'L1 package'
     $passed = @($events | Where-Object { $_.Action -eq 'pass' -and $_.PSObject.Properties['Test'] -and $_.Test -notmatch '/' }).Count
     $skips = @($events | Where-Object { $_.Action -eq 'skip' -and $_.PSObject.Properties['Test'] } | ForEach-Object { $_.Test })
+    if (@($events | Where-Object { $_.PSObject.Properties['Test'] -and $_.Test -cin @('TestRunNamePrefixFreeze','TestDisplayRunsIgnoreRolledBackChanges') }).Count) { throw 'L4 component tests leaked into L1' }
     $tap = Get-Content -LiteralPath (Join-Path $Directory 'terminal-extensions.tap') -Raw
     $framework = Get-Content -LiteralPath (Join-Path $Directory 'framework/result.json') -Raw | ConvertFrom-Json
     if ($Record.exit_code -ne 0 -or $passed -eq 0 -or $Record.test_count -ne $passed -or @($events | Where-Object {$_.Action -eq 'fail'}).Count -or @($skips | Where-Object {$_ -notin @(Get-SRL1AllowedSkips)}).Count -or

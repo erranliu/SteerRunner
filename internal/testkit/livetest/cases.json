@@ -943,6 +943,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "component.low-frequency",
+      "level": "L4",
+      "driver": "l4-component",
+      "target": "controlled",
+      "timeout_minutes": 15,
+      "cases": [
+        {
+          "id": "name-prefix",
+          "outcome": "passed",
+          "test": "TestRunNamePrefixFreeze",
+          "package": "./internal/application"
+        },
+        {
+          "id": "display-rollback",
+          "outcome": "passed",
+          "test": "TestDisplayRunsIgnoreRolledBackChanges",
+          "package": "./internal/application"
+        }
+      ]
+    },
+    {
+      "id": "controlled.result-acquisition-fallback",
+      "level": "L4",
+      "driver": "controlled-integration",
+      "target": "controlled",
+      "timeout_minutes": 15,
+      "cases": [
+        {
+          "id": "audit-report",
+          "outcome": "pr_ready",
+          "test": "TestSRResultAcquisition",
+          "controlled_cases": [
+            "audit-report"
+          ]
+        },
+        {
+          "id": "parser-unsupported",
+          "outcome": "pr_ready",
+          "test": "TestSRResultAcquisition",
+          "controlled_cases": [
+            "parser-unsupported"
+          ]
+        },
+        {
+          "id": "parser-tool",
+          "outcome": "pr_ready",
+          "test": "TestSRResultAcquisition",
+          "controlled_cases": [
+            "parser-tool"
+          ]
+        }
+      ]
     }
   ]
 }

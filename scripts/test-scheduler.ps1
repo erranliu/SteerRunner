@@ -107,12 +107,18 @@ function Invoke-SRCaseBatch {
                 foreach ($taskKey in $taskDone.Keys) { $taskChild.record[$taskKey]=$taskDone[$taskKey] }
                 if ($taskDone.status -eq 'passed') {
                     $taskIdentity=$taskDone.identity
-                    if ($taskSourceBuilds.ContainsKey('runner') -and $taskSourceBuilds.runner -cne $taskIdentity.runner_sha256) { throw 'Source/build changed within qualification batch: Runner' }
-                    $taskSourceBuilds.runner=$taskIdentity.runner_sha256
-                    $taskFamily=if($taskChild.driver -eq 'controlled-integration'){'controlled'}else{'native'}
-                    $taskBuild=if($taskFamily -eq 'controlled'){@($taskIdentity.runner_sha256,$taskIdentity.fixture_sha256)}else{@($taskIdentity.runner_sha256,$taskIdentity.driver_sha256)}
-                    if ($taskSourceBuilds.ContainsKey($taskFamily) -and $taskSourceBuilds[$taskFamily] -cne ($taskBuild -join ',')) { throw 'Source/build changed within qualification batch' }
-                    $taskSourceBuilds[$taskFamily]=$taskBuild -join ','
+                    if ($taskChild.driver -eq 'l4-component') {
+                        $taskFingerprint=$taskIdentity.input_start.fingerprint
+                        if (-not $taskFingerprint -or $taskFingerprint -cne $taskIdentity.input_finish.fingerprint -or ($taskSourceBuilds.ContainsKey('component') -and $taskSourceBuilds.component -cne $taskFingerprint)) { throw 'Source/build changed within qualification batch: component' }
+                        $taskSourceBuilds.component=$taskFingerprint
+                    } else {
+                        if ($taskSourceBuilds.ContainsKey('runner') -and $taskSourceBuilds.runner -cne $taskIdentity.runner_sha256) { throw 'Source/build changed within qualification batch: Runner' }
+                        $taskSourceBuilds.runner=$taskIdentity.runner_sha256
+                        $taskFamily=if($taskChild.driver -eq 'controlled-integration'){'controlled'}else{'native'}
+                        $taskBuild=if($taskFamily -eq 'controlled'){@($taskIdentity.runner_sha256,$taskIdentity.fixture_sha256)}else{@($taskIdentity.runner_sha256,$taskIdentity.driver_sha256)}
+                        if ($taskSourceBuilds.ContainsKey($taskFamily) -and $taskSourceBuilds[$taskFamily] -cne ($taskBuild -join ',')) { throw 'Source/build changed within qualification batch' }
+                        $taskSourceBuilds[$taskFamily]=$taskBuild -join ','
+                    }
                     if ($taskChild.driver -eq 'execution-stability') {
                         $taskTools=@($taskIdentity.helper_sha256,$taskIdentity.runtime_sha256,$taskIdentity.network_sha256) -join ','
                         if ($taskSourceBuilds.ContainsKey('stability') -and $taskSourceBuilds.stability -cne $taskTools) { throw 'Source/build changed within qualification batch: stability tools' }

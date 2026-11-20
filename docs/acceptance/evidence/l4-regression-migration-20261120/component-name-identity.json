@@ -1,0 +1,25 @@
+{
+  "source_dirty": true,
+  "package": "./internal/application",
+  "tags": [
+    "l4"
+  ],
+  "test": "TestRunNamePrefixFreeze",
+  "source_commit": "8ebbc717776eb2ad85371060566776c4402773fa",
+  "input_start": {
+    "fingerprint": "64a7fbc50c8bbc30e9d8655f3d3db7fab0116c1682613131e5ec3eb285335984",
+    "source_digest": "804324a4680f7cb6f615ca058349a1682b08e7bf71121e38885a07f63f9c6d56",
+    "source_commit": "8ebbc717776eb2ad85371060566776c4402773fa",
+    "source_dirty": true,
+    "supported": true
+  },
+  "input_finish": {
+    "fingerprint": "64a7fbc50c8bbc30e9d8655f3d3db7fab0116c1682613131e5ec3eb285335984",
+    "source_digest": "804324a4680f7cb6f615ca058349a1682b08e7bf71121e38885a07f63f9c6d56",
+    "source_commit": "8ebbc717776eb2ad85371060566776c4402773fa",
+    "source_dirty": true,
+    "supported": true
+  },
+  "original_identity_path": "C:\\Users\\lmas1\\.codex\\worktrees\\a678\\SteerRunner\\.evidence\\l4-migration\\component-name-final\\source-identity.json",
+  "original_identity_sha256": "186d29b1c402da7d9a6e2debb07aacafa0402b129b500d3701fbd7449b4d282f"
+}

@@ -1,0 +1,8 @@
+{"Time":"2026-11-20T12:51:56.4458151+08:00","Action":"start","Package":"github.com/erranliu/SteerRunner/internal/application"}
+{"Time":"2026-11-20T12:51:56.7981294+08:00","Action":"run","Package":"github.com/erranliu/SteerRunner/internal/application","Test":"TestDisplayRunsIgnoreRolledBackChanges"}
+{"Time":"2026-11-20T12:51:56.7981294+08:00","Action":"output","Package":"github.com/erranliu/SteerRunner/internal/application","Test":"TestDisplayRunsIgnoreRolledBackChanges","Output":"=== RUN   TestDisplayRunsIgnoreRolledBackChanges\n"}
+{"Time":"2026-11-20T12:51:56.8900206+08:00","Action":"output","Package":"github.com/erranliu/SteerRunner/internal/application","Test":"TestDisplayRunsIgnoreRolledBackChanges","Output":"--- PASS: TestDisplayRunsIgnoreRolledBackChanges (0.09s)\n"}
+{"Time":"2026-11-20T12:51:56.8900206+08:00","Action":"pass","Package":"github.com/erranliu/SteerRunner/internal/application","Test":"TestDisplayRunsIgnoreRolledBackChanges","Elapsed":0.09}
+{"Time":"2026-11-20T12:51:56.8900206+08:00","Action":"output","Package":"github.com/erranliu/SteerRunner/internal/application","Output":"PASS\n"}
+{"Time":"2026-11-20T12:51:56.8936868+08:00","Action":"output","Package":"github.com/erranliu/SteerRunner/internal/application","Output":"ok  \tgithub.com/erranliu/SteerRunner/internal/application\t0.447s\n"}
+{"Time":"2026-11-20T12:51:56.8936868+08:00","Action":"pass","Package":"github.com/erranliu/SteerRunner/internal/application","Elapsed":0.448}

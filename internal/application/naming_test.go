@@ -1,3 +1,5 @@
+//go:build l4
+
 package application
 
 import (

@@ -11,7 +11,7 @@
 | L1 | 快速单元、组件、协议、存储、框架及依赖边界反馈 | 默认不启动真实模型或创建真实 PR；包含框架、`./internal/...`、Node 扩展及原生 driver 编译/零匹配保护 |
 | L2 | 最小核心 Smoke 交付 | 当前只有本机 Codex smoke，完整交付、真实 PR 合入与停止 |
 | L3 | 不同流程、后端兼容性及核心可靠性 | case 独立且可隔离；重启、断连、未知对账、停止撤销均属于核心保证 |
-| L4 | 复杂边界、精确竞态或确实无法并行的测试 | 声明独有故障及唯一预期；当前四项受控边界测试独占调度 |
+| L4 | 低频完整回归、复杂边界、精确竞态或确实无法并行的测试 | 当前 6 场景/9 case；保留固定预期和原断言，全部沿用独占调度 |
 
 Controlled 是受控集成前置入口，不是第五级。它使用真实 EXE/CLI/IPC/Git/SQLite 和原生协议夹具，可做隔离本地 push，不创建真实 PR。其内部子场景不重复算作顶层测试。
 
@@ -32,13 +32,34 @@ Copy-Item tests/test-config.example.json .evidence/test-config.json
 .\scripts\test.ps1 -Level L4
 ```
 
-未显式复用时，有可执行 case 的 L2/L3/L4 自动先运行 L1 和完整 Controlled；单级 L2/L3 可通过下文的 `-PrerequisitesFrom` 核验并复用完整前置的直接成功证明。前置失败不启动依赖它的模型。全缺配置只报告不可用，不启动前置。L2 的原生 Git 检查归其 worker，失败不阻止独立 L3。L4 使用同批 Controlled 的三份冻结二进制并校验摘要、退出及无 skip，不借用历史通过。
+未显式复用时，有可执行 case 的 L2/L3/L4 自动先运行 L1 和完整 Controlled；单级 L2/L3 可通过下文的 `-PrerequisitesFrom` 核验并复用完整前置的直接成功证明。前置失败不启动依赖它的模型。全缺配置只报告不可用，不启动前置。L2 的原生 Git 检查归其 worker，失败不阻止独立 L3。L4 的受控集成 case 使用同批 Controlled 的三份冻结二进制并校验摘要、退出及无 skip；组件 case 用 `-tags=l4` 运行精确测试，核验执行一次、无 skip 及前后源码/环境指纹一致，不借用历史通过。
 
 `-Scenario` 必须是注册的精确 ID，重复、未匹配或跨级选择拒绝；选择场景执行其全部 case。PowerShell 可传数组，外部命令行须传实际数组参数，不能把逗号串当作一个 ID。`-Repeat` 为 1–10，每个 case/repeat 建新现场。`-MaxParallel` 默认为 1、范围 1–8；L2/L3 有界并行，L4 排空队列后独占。
 
 当前 L1 的 Go 包级聚合预算为 **30 分钟**，完整 Controlled 为 **45 分钟**、另加 30 秒落盘等待；定向 foundation/controlled 默认 **25 分钟**，可用 `-TimeoutMinutes 1..60`。这些聚合预算不延长产品调用或用例内期限。以[前置脚本](../scripts/test-prerequisite-contract.ps1)和[定向入口](../scripts/test-foundation.ps1)为准。裸 `go test ./...` 还包含 L4 资源压力测试，不等同于 L1。
 
 宿主八个 OS 文件锁槽协调使用本调度器的批次；它不限制其它应用。锁随协调器退出释放，后台 worker/服务可能仍在运行，必须先按原现场对账和停止再启动独占批次。每个 case 的 state-dir、工作区、Run/session、base/head、PR、故障设施及证据目录独立；只有冻结且只读的产物可共享。每项只清理自己的资源，不切断共享 runtime 或整机网络。平台容量、并行资格和资源清理分别举证。
+
+## L4 执行频率与本次迁移（2026-11-20）
+
+日常 L1 不编译 `l4` build tag 的两个测试；完整 Controlled 仍为 30 个顶层测试，ResultAcquisition 默认五项。L2 的唯一核心 smoke 保留，L3 核心恢复、授权及停止矩阵不变。L4 从 4 场景/4 case 增为 6 场景/9 case，新增五项逐一登记在[测试清单](test-catalog.md#l4低频回归受控边界与资源压力)。
+
+- 每周五 16:00（Asia/Shanghai）由本聊天的「SteerRunner 每周 L4 回归」自动任务执行一次完整 L4；发布前对拟发布构建执行完整 L4。
+- 修改命名或展示/事务提交时执行 `component.low-frequency`；修改结果获取、审计报告或 parser 后备时执行 `controlled.result-acquisition-fallback`。涉及多个模块时取并集；定向通过只代表实际所选 case。
+- 每周通过只属于该次构建，不代替后续发布构建的验收。失败现场保留并修复，不能通过迁移、skip 或拼装历史证据取得资格。
+
+```powershell
+# 每周/发布前；默认仍执行本批完整 L1 与日常完整 Controlled 前置。
+./scripts/test.ps1 -Level L4
+# 相关改动的定向 L4；仍运行完整前置，选择的场景执行全部内部 case。
+./scripts/test.ps1 -Level L4 -Scenario component.low-frequency,controlled.result-acquisition-fallback
+# 快速组件反馈（不授予完整 L4 资格）。
+go test -tags=l4 ./internal/application -run '^(TestRunNamePrefixFreeze|TestDisplayRunsIgnoreRolledBackChanges)$' -count=1
+# 单个迁入分支的定向反馈；保留原 Case 入口，不计日常完整或 L4 资格。
+./scripts/test-controlled.ps1 -Combination result-parser -Case TestSRResultAcquisition/parser-tool -OutDir .evidence/parser-tool-new
+```
+
+三个旧结果获取子场景 ID 仍接受显式 `-Case`，供相关改动快速验证；组、组合及无显式选择的 foundation 默认均不自动带跑它们。完整 Controlled 前置核验精确的五项实际回执和 RUN/PASS 路径，多跑、少跑、skip、失败或重复均不合格。完整 L4 核验九个注册 case（包括三个回退分支各自的实际回执），不能只凭同一个父测试通过认定三个分支通过。迁移后的源码及选择清单参与前置指纹，旧前置证明不复用。
 
 ## 快速定向验证（P1，2026-11-01）
 
@@ -80,8 +101,8 @@ Copy-Item tests/test-config.example.json .evidence/test-config.json
 | content-flow | content 组的五项，加 NativeUnknownAndStop、ManualReconciliation |
 | acceptance-control | foundation 与 recovery 两组的全部注册项 |
 | result-plain | ResultAcquisition/plain-marker |
-| result-audit | ResultAcquisition/audit-zero、audit-positive、audit-offline、audit-report |
-| result-parser | ResultAcquisition/parser-unsupported、parser-complete、parser-tool |
+| result-audit | ResultAcquisition/audit-zero、audit-positive、audit-offline |
+| result-parser | ResultAcquisition/parser-complete |
 | restart-continuation | RestartPreservesAuthorization/graceful、kill |
 | restart-create-receipt | RestartPreservesAuthorization/creation_receipt |
 | restart-pending-stop | RestartPreservesAuthorization/pending_stop |
@@ -98,7 +119,7 @@ Copy-Item tests/test-config.example.json .evidence/test-config.json
 
 入口复用 `test-foundation.ps1`，不运行完整 L1；其原有四项 foundation 单元前置、真实 EXE/受控 peer、独立进程、原超时与清理保持。Group 与 Combination 二选一，支持多个精确 ID、拒绝未知/重复/通配 ID；展开后的测试去重并按原完整目录顺序记录；实际执行顺序沿用原 Go 测试执行器，不按分组重新排序。每次使用新 OutDir，可用 `-TimeoutMinutes 1..60` 选择原 foundation 聚合预算，单项调用期限不变。
 
-`summary.json` 固定记录 `validation_scope=controlled-selection`、`complete_controlled_passed=false`、`qualification_eligible=false`，保存组合/精确测试集合、catalog 摘要及入口总耗时。即使选择六组全部测试，成功也只表示这次选择通过；不生成 `prerequisites.json`，不能用于 `-PrerequisitesFrom`。`test.ps1 -Level Controlled`、独立完整前置及默认 L2/L3/L4 仍执行原完整集合；单级 L2/L3 显式复用也只接受该完整集合的直接成功证明，不接受选测资格。
+`summary.json` 固定记录 `validation_scope=controlled-selection`、`complete_controlled_passed=false`、`qualification_eligible=false`，保存组合/精确测试集合、catalog 摘要及入口总耗时。即使选择六组全部测试，成功也只表示这次选择通过；不生成 `prerequisites.json`，不能用于 `-PrerequisitesFrom`。`test.ps1 -Level Controlled`、独立完整前置及默认 L2/L3/L4 执行当前日常完整集合（结果获取五项，不含已迁入 L4 的三项）；单级 L2/L3 显式复用也只接受该完整集合的直接成功证明，不接受选测资格。
 
 `timings.json` 只累计 Go 顶层 `--- PASS/FAIL/SKIP: Test… (…s)`，不重复累计子测试；记录逐项状态、主分组、分组已观测数量/缺项、已观测耗时合计、最慢十项和原 log/result/source-identity 摘要。未完成项的耗时为 null，零执行、缺结果、重复记录、未知测试、失败/跳过或精确集合不匹配不能报告选测通过。顶层耗时合计不等于构建/准备/清理在内的入口墙钟耗时；日志精度为 Go 输出的百分之一秒，不用它推导细粒度性能收益。
 
@@ -153,13 +174,13 @@ ResultFile 的实际子场景明细另见下节。报告新增 `subtests`（逐�
 
 八项共同保留独立现场、公开服务/submit、最终 pr_ready、thread/start=1、原权限/模型夹具、停止及服务清理。各操作和整流程的既有期限不延长。已清理的 parser-restart/parser-kill/parser-stop 条件不在原八项常量列表内，且循环变量未被重写；只删除该不可达测试分支及其专属导入，不删除业务 owner 的恢复/停止义务。
 
-本轮将 ResultFile 的回执/选择机制与 ResultAcquisition 共用，使用 `-Case <父测试/子场景>` 和 Go driver 的 `-controlled-cases`，支持的父测试受登记清单限制，包含 ResultFile、ResultAcquisition 和下节 Restart。每个父测试独立解析，未指定的父测试仍运行自己的完整集合；不会以全局 `-test.run` 子路径过滤其他测试。原四个组合保持，结果获取增量新增三项职责组合；加上下节 Restart 三项，当前共十个固定组合；workflow 组和完整 Controlled 的 ResultAcquisition 仍执行全部八项。
+本轮将 ResultFile 的回执/选择机制与 ResultAcquisition 共用，使用 `-Case <父测试/子场景>` 和 Go driver 的 `-controlled-cases`，支持的父测试受登记清单限制，包含 ResultFile、ResultAcquisition 和下节 Restart。每个父测试独立解析，未指定的父测试仍运行自己的完整集合；不会以全局 `-test.run` 子路径过滤其他测试。原四个组合保持，结果获取增量新增三项职责组合；加上下节 Restart 三项，当前共十个固定组合；自 2026-11-20 起，workflow 组和完整 Controlled 的 ResultAcquisition 默认执行五项；audit-report、parser-unsupported、parser-tool 由 L4 执行。上表八项的原断言、原生预算及独立清理均保留。
 
 ```powershell
 ./scripts/test-controlled.ps1 -Combination result-plain -OutDir .evidence/result-plain-new
 ./scripts/test-controlled.ps1 -Combination result-audit -OutDir .evidence/result-audit-new
 ./scripts/test-controlled.ps1 -Combination result-parser -OutDir .evidence/result-parser-new
-# 合并三类，得到原八项；不能据此获取完整 Controlled 资格。
+# 合并三类，得到日常五项；不能据此获取完整 Controlled 资格。
 ./scripts/test-controlled.ps1 -Combination result-plain,result-audit,result-parser -OutDir .evidence/result-all-new
 # 每个父测试单独选择；Restart 等同批测试不受到子路径过滤。
 ./scripts/test-controlled.ps1 -Combination result-plain,execute-stop -OutDir .evidence/result-mixed-new
@@ -169,7 +190,7 @@ ResultFile 的实际子场景明细另见下节。报告新增 `subtests`（逐�
 
 不同组合对同一父测试取并集；任一所选组/组合要求全量时保留全量。显式 Case 仅覆盖其父测试的选择，未知父测试、未知/重复 case、通配符、额外路径层级、缺父测试和旧参数冲突均拒绝。`summary.selection.cases` 与 `source-identity.controlled_cases` 记录实际请求，`result.json.controlled_cases` 按父测试记录实际完成 ID、成功布尔和包含清理的耗时。ResultFile 的原 result_file_cases 回执保留，存在通用回执时两者必须一致。
 
-`timings.case_coverage` 按父测试核实实际回执与 RUN/PASS 路径，ResultFile 还要求全部选定 enabled 叶例。完整资格须具备 ResultFile 两类、ResultAcquisition 八项及 Restart 四项，不能仅凭全部父测试通过；所有定向入口仍不生成前置证明、完整资格标志始终 false。历史 ResultAcquisition 日志没有新回执时只统计成本、标 unverified_import，不补签覆盖。子场景和父测试时间不重复累计。
+`timings.case_coverage` 按父测试核实实际回执与 RUN/PASS 路径，ResultFile 还要求全部选定 enabled 叶例。完整资格须具备 ResultFile 两类、ResultAcquisition 日常五项及 Restart 四项，不能仅凭全部父测试通过；所有定向入口仍不生成前置证明、完整资格标志始终 false。历史 ResultAcquisition 日志没有新回执时只统计成本、标 unverified_import，不补签覆盖。子场景和父测试时间不重复累计。
 
 ### Restart 职责与断言对照（2026-11-02）
 

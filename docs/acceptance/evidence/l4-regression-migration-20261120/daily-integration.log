@@ -1,0 +1,13 @@
+=== RUN   TestSRResultAcquisition
+=== RUN   TestSRResultAcquisition/plain-marker
+=== RUN   TestSRResultAcquisition/audit-zero
+=== RUN   TestSRResultAcquisition/audit-positive
+=== RUN   TestSRResultAcquisition/audit-offline
+=== RUN   TestSRResultAcquisition/parser-complete
+--- PASS: TestSRResultAcquisition (318.86s)
+    --- PASS: TestSRResultAcquisition/plain-marker (26.33s)
+    --- PASS: TestSRResultAcquisition/audit-zero (64.88s)
+    --- PASS: TestSRResultAcquisition/audit-positive (72.62s)
+    --- PASS: TestSRResultAcquisition/audit-offline (77.53s)
+    --- PASS: TestSRResultAcquisition/parser-complete (77.50s)
+PASS

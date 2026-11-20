@@ -1,0 +1,4 @@
+=== RUN   TestSRStandalonePackage
+    service_test.go:385: rejected submit persisted an accepted receipt
+--- FAIL: TestSRStandalonePackage (4.74s)
+FAIL

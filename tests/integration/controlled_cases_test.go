@@ -81,6 +81,9 @@ func selectedControlledCases(parent string) []string {
 	if selected, ok := controlledCaseSelection[parent]; ok {
 		return selected
 	}
+	if parent == "TestSRResultAcquisition" {
+		return []string{"plain-marker", "audit-zero", "audit-positive", "audit-offline", "parser-complete"}
+	}
 	return knownControlledCases()[parent]
 }
 

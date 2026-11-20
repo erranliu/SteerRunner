@@ -1,0 +1,37 @@
+{
+  "schema": "steerrunner-test-migration-verification/v1",
+  "validation_scope": "migration-targeted",
+  "qualification_eligible": false,
+  "source_commit": "8ebbc717776eb2ad85371060566776c4402773fa",
+  "source_dirty": true,
+  "framework_count": 27,
+  "selection_checks": 87,
+  "daily_cases": [
+    "plain-marker",
+    "audit-zero",
+    "audit-positive",
+    "audit-offline",
+    "parser-complete"
+  ],
+  "l4_acquisition_cases": [
+    "audit-report",
+    "parser-unsupported",
+    "parser-tool"
+  ],
+  "migrated_component_tests": [
+    "TestRunNamePrefixFreeze",
+    "TestDisplayRunsIgnoreRolledBackChanges"
+  ],
+  "coverage_partition_exact": true,
+  "runner_sha256": "91E9A40D5593D596D6B7C432AB9728608F3AB3994EA5669106BF6EEAADD1667D",
+  "complete_l1_run": false,
+  "complete_controlled_run": false,
+  "complete_l4_run": false,
+  "weekly_automation": {
+    "id": "steerrunner-l4",
+    "timezone": "Asia/Shanghai",
+    "weekday": "Friday",
+    "time": "16:00",
+    "status": "ACTIVE"
+  }
+}

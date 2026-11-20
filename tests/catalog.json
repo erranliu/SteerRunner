@@ -149,15 +149,12 @@
         "TestSRResultAcquisition": [
           "audit-zero",
           "audit-positive",
-          "audit-offline",
-          "audit-report"
+          "audit-offline"
         ]
       },
       "result-parser": {
         "TestSRResultAcquisition": [
-          "parser-unsupported",
-          "parser-complete",
-          "parser-tool"
+          "parser-complete"
         ]
       },
       "restart-continuation": {
@@ -208,7 +205,9 @@
     "orca-local.native-development",
     "orca-local.native-active-stop",
     "orca-remote.native-development",
-    "orca-remote.native-active-stop"
+    "orca-remote.native-active-stop",
+    "component.low-frequency",
+    "controlled.result-acquisition-fallback"
   ],
   "focused_native_scenarios": [
     {

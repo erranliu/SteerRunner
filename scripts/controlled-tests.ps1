@@ -1,14 +1,18 @@
 # Test selection and diagnostic timings only; never creates prerequisite proof.
-function Get-SRControlledCaseDefinitions {
-    [ordered]@{
+function Get-SRControlledCaseDefinitions([switch]$IncludeL4) {
+    $definitions=[ordered]@{
         TestSRRestartPreservesAuthorization=@('graceful','kill','creation_receipt','pending_stop')
         TestSRResultFile=@('optional-file-failure-business-loop','final-seal')
         TestSRResultAcquisition=@('plain-marker','audit-zero','audit-positive','audit-offline','audit-report','parser-unsupported','parser-complete','parser-tool')
     }
+    if (-not $IncludeL4) {
+        $definitions['TestSRResultAcquisition']=@('plain-marker','audit-zero','audit-positive','audit-offline','parser-complete')
+    }
+    $definitions
 }
 
 function Assert-SRControlledCaseSelection([string]$Parent,[string[]]$Cases) {
-    $definitions=Get-SRControlledCaseDefinitions
+    $definitions=Get-SRControlledCaseDefinitions -IncludeL4
     if ($Parent -cnotin @($definitions.Keys) -or -not $Cases.Count) { throw 'Unknown controlled parent or empty case selection' }
     $seen=[Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
     foreach ($id in $Cases) {
@@ -153,7 +157,7 @@ function Resolve-SRControlledSelection($Catalog, [string[]]$Groups=@(), [string[
         if ($tests -cnotcontains $parent) { throw "Case requires its parent in selected tests: $parent" }
     }
     $plan=@{}
-    $definitions=Get-SRControlledCaseDefinitions
+    $definitions=Get-SRControlledCaseDefinitions -IncludeL4
     foreach ($parent in $definitions.Keys) {
         if ($tests -cnotcontains $parent) { continue }
         if ($explicit.ContainsKey($parent)) { $plan[$parent]=@($definitions[$parent] | Where-Object {$explicit[$parent] -ccontains $_}); continue }
@@ -171,7 +175,7 @@ function Resolve-SRControlledSelection($Catalog, [string[]]$Groups=@(), [string[
                     if ($entry.Count) { $narrow=@($entry[0].Value) }
                 }
             }
-            if (-not $narrow.Count) { $narrow=@($definitions[$parent]) }
+            if (-not $narrow.Count) { $narrow=@((Get-SRControlledCaseDefinitions)[$parent]) }
             foreach ($caseID in $narrow) { $null=$wanted.Add($caseID) }
         }
         $plan[$parent]=@($definitions[$parent] | Where-Object {$wanted.Contains($_)})

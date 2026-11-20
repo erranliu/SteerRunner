@@ -36,14 +36,25 @@ $taskChecks.Add('result-case-union-and-unfiltered-pattern')
 $acquisition=Resolve-SRControlledSelection $taskCatalog @() @('result-parser')
 $acquisitionAll=Resolve-SRControlledSelection $taskCatalog @() @('result-plain','result-audit','result-parser')
 $mixed=Resolve-SRControlledSelection $taskCatalog @() @('result-plain','execute-stop')
-if($acquisition.cases['TestSRResultAcquisition'].Count -ne 3 -or $acquisitionAll.cases['TestSRResultAcquisition'].Count -ne 8 -or
-    $taskAll.cases['TestSRResultAcquisition'].Count -ne 8 -or $mixed.cases['TestSRResultFile'].Count -ne 1 -or $mixed.pattern.Contains('/')){throw 'Per-parent cases lost default/union/mixed coverage'}
+if($acquisition.cases['TestSRResultAcquisition'].Count -ne 1 -or $acquisitionAll.cases['TestSRResultAcquisition'].Count -ne 5 -or
+    $taskAll.cases['TestSRResultAcquisition'].Count -ne 5 -or $mixed.cases['TestSRResultFile'].Count -ne 1 -or $mixed.pattern.Contains('/')){throw 'Per-parent cases lost default/union/mixed coverage'}
 Reject 'case-path-without-parent' {Resolve-SRControlledSelection $taskCatalog @('foundation') @() @() @('TestSRResultAcquisition/plain-marker')}
 Reject 'case-path-unknown-parent' {ConvertTo-SRControlledCasePlan @('TestForeign/plain-marker')}
 Reject 'case-path-wildcard' {ConvertTo-SRControlledCasePlan @('TestSRResultAcquisition/*')}
 Reject 'case-path-duplicate' {ConvertTo-SRControlledCasePlan @('TestSRResultAcquisition/plain-marker','TestSRResultAcquisition/plain-marker')}
 Reject 'legacy-generic-conflict' {Resolve-SRControlledSelection $taskCatalog @('files') @() @('final-seal') @('TestSRResultFile/final-seal')}
 $taskChecks.Add('per-parent-case-default-union-and-isolation')
+$coreCases=@((Get-SRControlledCaseDefinitions)['TestSRResultAcquisition'])
+$allCases=@((Get-SRControlledCaseDefinitions -IncludeL4)['TestSRResultAcquisition'])
+$registry=Get-Content (Join-Path $Repository 'internal/testkit/livetest/cases.json') -Raw|ConvertFrom-Json
+$l4Cases=@(($registry.scenarios | Where-Object {$_.id -ceq 'controlled.result-acquisition-fallback'}).cases)
+$migrated=@($l4Cases | ForEach-Object {
+    if($_.test -cne 'TestSRResultAcquisition' -or $_.controlled_cases.Count -ne 1 -or $_.id -cne $_.controlled_cases[0]){throw 'L4 fallback does not bind its exact parent/case'}
+    $_.controlled_cases[0]
+})
+if($migrated.Count -ne 3 -or @($coreCases | Where-Object {$_ -cin $migrated}).Count -or
+    (($coreCases+$migrated | Sort-Object -Unique) -join ',') -cne (($allCases|Sort-Object) -join ',')){throw 'Daily and L4 cases overlap or lost original acquisition coverage'}
+$taskChecks.Add('daily-five-plus-l4-three-partition-original-eight')
 $restartParent='TestSRRestartPreservesAuthorization'
 $restartIDs=@('graceful','kill','creation_receipt','pending_stop')
 $restartAll=Resolve-SRControlledSelection $taskCatalog @() @('restart-continuation','restart-create-receipt','restart-pending-stop')
@@ -194,9 +205,9 @@ catch {$caseGateRejected=$_.Exception.Message -like '*Actual ResultFile cases di
 if(-not $caseGateRejected){throw 'Complete 30-test count bypassed the actual ResultFile case gate'}
 $taskChecks.Add('full-30-count-cannot-hide-partial-result-cases')
 $acqSource=Join-Path $taskRoot 'result-parser/controlled'
-$acqProof=Get-SRControlledCaseEvidence $acqSource 'TestSRResultAcquisition' @('parser-unsupported','parser-complete','parser-tool')
-if($acqProof.required_paths.Count -ne 3){throw 'Parser subset was not verified by actual paths'}
-Reject 'parser-subset-not-full-eight' {Get-SRControlledCaseEvidence $acqSource 'TestSRResultAcquisition' @((Get-SRControlledCaseDefinitions)['TestSRResultAcquisition'])}
+$acqProof=Get-SRControlledCaseEvidence $acqSource 'TestSRResultAcquisition' @('parser-complete')
+if($acqProof.required_paths.Count -ne 1){throw 'Parser subset was not verified by actual paths'}
+Reject 'parser-subset-not-core-five' {Get-SRControlledCaseEvidence $acqSource 'TestSRResultAcquisition' @((Get-SRControlledCaseDefinitions)['TestSRResultAcquisition'])}
 $acqNegative=Join-Path $taskRoot 'acquisition-negatives'
 $null=New-Item -ItemType Directory -Path $acqNegative
 $acqLog=[IO.File]::ReadAllText((Join-Path $acqSource 'integration.log'))
@@ -205,10 +216,10 @@ foreach($mode in @('parent-only','missing-case','skipped-case','foreign-case','d
     $log=$acqLog;$result=$acqResult|ConvertFrom-Json
     switch($mode) {
         'parent-only' {$log="=== RUN   TestSRResultAcquisition`n--- PASS: TestSRResultAcquisition (1.00s)"}
-        'missing-case' {$log=($log -split "`n" | Where-Object {$_ -notlike '*TestSRResultAcquisition/parser-tool*'}) -join "`n"}
-        'skipped-case' {$log=$log.Replace('--- PASS: TestSRResultAcquisition/parser-tool','--- SKIP: TestSRResultAcquisition/parser-tool')}
-        'foreign-case' {$log=$log.Replace('parser-tool','audit-zero')}
-        'duplicate-case' {$log+="`n=== RUN   TestSRResultAcquisition/parser-tool`n"}
+        'missing-case' {$log=($log -split "`n" | Where-Object {$_ -notlike '*TestSRResultAcquisition/parser-complete*'}) -join "`n"}
+        'skipped-case' {$log=$log.Replace('--- PASS: TestSRResultAcquisition/parser-complete','--- SKIP: TestSRResultAcquisition/parser-complete')}
+        'foreign-case' {$log=$log.Replace('parser-complete','audit-zero')}
+        'duplicate-case' {$log+="`n=== RUN   TestSRResultAcquisition/parser-complete`n"}
         'missing-receipt' {$result.PSObject.Properties.Remove('controlled_cases')}
         'wrong-parent' {$result.controlled_cases.PSObject.Properties.Remove('TestSRResultAcquisition')}
         'false-receipt' {$result.controlled_cases.TestSRResultAcquisition[0].passed=$false}
@@ -216,7 +227,7 @@ foreach($mode in @('parent-only','missing-case','skipped-case','foreign-case','d
     }
     [IO.File]::WriteAllText((Join-Path $acqNegative 'integration.log'),$log)
     JSON (Join-Path $acqNegative 'result.json') $result
-    Reject ('acquisition-proof-'+$mode) {Get-SRControlledCaseEvidence $acqNegative 'TestSRResultAcquisition' @('parser-unsupported','parser-complete','parser-tool')}
+    Reject ('acquisition-proof-'+$mode) {Get-SRControlledCaseEvidence $acqNegative 'TestSRResultAcquisition' @('parser-complete')}
 }
 $acqFullNegative=Join-Path $taskRoot 'full-count-partial-acquisition'
 $null=New-Item -ItemType Directory -Path $acqFullNegative
@@ -227,7 +238,7 @@ JSON (Join-Path $acqFullNegative 'result.json') $partial
 $acqGateRejected=$false
 try{Assert-SRControlledEvidence $acqFullNegative @($taskCatalog.controlled_scenarios) | Out-Null}catch{$acqGateRejected=$_.Exception.Message -like '*Actual ResultAcquisition cases differ*'}
 if(-not $acqGateRejected){throw 'Full parent count hid incomplete acquisition cases'}
-$taskChecks.Add('full-30-count-requires-all-eight-acquisition-cases')
+$taskChecks.Add('full-30-count-requires-all-five-core-acquisition-cases')
 $restartSource=Join-Path $taskRoot 'restart-continuation/controlled'
 $restartProof=Get-SRControlledCaseEvidence $restartSource $restartParent @('graceful','kill')
 if($restartProof.required_paths.Count -ne 2){throw 'Restart continuation lost actual two-case proof'}

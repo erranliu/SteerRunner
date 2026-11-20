@@ -12,8 +12,8 @@
 | Controlled | 30 个顶层测试 | 六个主分组；完整资格还要求规定的子场景实际覆盖 |
 | L2 | 1 场景 | 1 case |
 | L3 | 25 场景 | 33 case |
-| L4 | 4 场景 | 4 case |
-| 通用 L2–L4 合计 | 30 场景 | 38 case |
+| L4 | 6 场景 | 9 case |
+| 通用 L2–L4 合计 | 32 场景 | 43 case |
 | 独立原生 L3 专项 | 3 项 | 不由 `test.ps1 -Level L3` 自动执行 |
 
 ### 当前接线与资格缺口
@@ -37,7 +37,7 @@
 | files | 4 | `TestSRRunEvidenceR2`、`TestSRProgressFile`、`TestSRResultFile`、`TestSRSingleExecutionColdStop` |
 | orca-cli | 1 | `TestSROrcaCLIWaitRetry` |
 
-ResultFile 默认两类/各 enabled-0..3，ResultAcquisition 默认八项，RestartPreservesAuthorization 默认四项；完整 Controlled 不能只看父测试总数。选测即使覆盖全部注册也保持完整资格 false，不生成前置复用证明。断言、原生预算和组合并集详见[ResultFile](testing.md#resultfile-职责与定向粒度2026-11-02)、[ResultAcquisition](testing.md#resultacquisition-断言对照2026-11-02)、[Restart](testing.md#restart-职责与断言对照2026-11-02)。
+ResultFile 默认两类/各 enabled-0..3，ResultAcquisition 默认五项（plain-marker、audit-zero、audit-positive、audit-offline、parser-complete），其余三项迁入 L4，RestartPreservesAuthorization 默认四项；完整 Controlled 不能只看父测试总数。选测即使覆盖全部注册也保持完整资格 false，不生成前置复用证明。断言、原生预算和组合并集详见[ResultFile](testing.md#resultfile-职责与定向粒度2026-11-02)、[ResultAcquisition](testing.md#resultacquisition-断言对照2026-11-02)、[Restart](testing.md#restart-职责与断言对照2026-11-02)。
 
 R2 覆盖原报告/日志、实际 Git 状态、限额/越界/幂等/跨 Run 隔离、重启后原回执及 producer 删除后不可变读取，零新 Agent 调用。[R2 Spec](archive/2026-11/implementation/spec/run-evidence-r2.spec.md)及[验收](archive/2026-11/implementation/acceptance/run-evidence-r2.md)保存详细来源。
 
@@ -97,9 +97,9 @@ CLI wait 两项使用真实用户共享 cache 和独占测试 lease，故障互�
 
 历史并行样本、远端共享 environment、其它模型/平台容量和跨批次收尾各按构建登记，不从原 feedback/审计上限 2 的样本推导全部组合通过。
 
-## L4：受控边界与资源压力
+## L4：低频回归、受控边界与资源压力
 
-四项均已注册，使用 `test.ps1 -Level L4`；无模型或真实 PR。测试 driver 使用真实服务、
+六个场景/九个 case 均已注册，使用 `test.ps1 -Level L4`；无模型或真实 PR。测试 driver 使用真实服务、
 Git、SQLite 和受控原生协议，故障只注入专属临时目录、协议历史或 SQLite 触发器。
 这些是已经冻结的可执行契约，不能据此宣称已覆盖任意磁盘损坏或整机资源耗尽。
 
@@ -109,6 +109,18 @@ Git、SQLite 和受控原生协议，故障只注入专属临时目录、协议�
 | L4-P02 `controlled.stop-commit-race` / `default` | 原 managed worker 已停止，但 stop receipt 的 SQLite 提交被触发器拒绝；换代后仍不得假报 stopped；恢复提交能力再换代，同一 operation 意图结算为 `stopped`，零业务重发 | L4 调度独占；故障触发器及服务均限本现场 | `TestSREdgeStopCommitRace`；覆盖原生动作与持久化结果交错，多代外来回执的排列穷举尚未覆盖 |
 | L4-P03 `controlled.storage-failure` / `default` | 拒绝受理前的原请求 command INSERT，CLI 返回 `request_outcome_unknown`；按原 request_id 核验 `request_not_found`，零原生输入；恢复后同 ID/正文只接受一次并完成、停止；故障阶段预期 `rejected` | L4 调度独占；仅操作测试 DB 的接受触发器 | `TestSREdgeStorageFailure`；验证真实事务回滚，不等同于物理磁盘满、页损坏或任意存储恢复 |
 | L4-P04 `controlled.resource-pressure` / `default` | 同一服务连续 20 次提交/原 ID 重试/交付/停止；每轮原生进程确认退出，thread=20、turn=60；首轮预热后服务 handles 增长不超过 128；预期所有 Run `stopped` | L4 调度独占全部宿主调度槽；不耗尽用户机器 | `TestSREdgeResourcePressure`；这是有界负载/资源增长检查；长期内存增长与极端耗尽需另定时长、阈值、独占专用宿主及故障契约 |
+
+2026-11-20 新增的低频回归如下，原测试正文、预算及清理断言保留。全部沿用 L4 独占调度；无真实模型或 PR。
+
+| 场景 ID | Case ID / 原测试 | 独有验证目标 |
+| --- | --- | --- |
+| `component.low-frequency` | `name-prefix` / `TestRunNamePrefixFreeze` | 三种命名前缀、默认 sr、correlation 不干扰，以及请求与摘要冻结 |
+| `component.low-frequency` | `display-rollback` / `TestDisplayRunsIgnoreRolledBackChanges` | 真实 SQLite 提交失败后，展示仍读取已提交的状态及标题；L1 保留事务回滚及展示白名单检查 |
+| `controlled.result-acquisition-fallback` | `audit-report` / `TestSRResultAcquisition/audit-report` | 纯文本审计后一次补报、原审计来源、单 thread 与精确 turn 预算 |
+| `controlled.result-acquisition-fallback` | `parser-unsupported` / `TestSRResultAcquisition/parser-unsupported` | 不可用 parser 的 failed attempt 和原流程后备完成，不隐藏不可用资格 |
+| `controlled.result-acquisition-fallback` | `parser-tool` / `TestSRResultAcquisition/parser-tool` | 原 PARSER_TOOL 输入、工具事件回退、审计来源及精确预算 |
+
+组件 driver 编译 `-tags=l4` 并核验精确测试实际运行一次、无失败/skip、前后输入指纹一致；受控 driver 复用同批冻结产物并按每个 case 传独立的父/子 ID，核验子场景实际回执、完整 RUN/PASS 及原 harness 退出。执行频率为每周、发布前和相关模块变更时，见[运行规则](testing.md#l4-执行频率与本次迁移2026-11-20)。
 
 L4 判定包括固定断言、故障命中、原身份、零重复副作用和真实收尾，不允许故障发生后
 任选“可恢复/阻断”结果。暂时不可达停止和普通阶段切换依然保留在 L3。
